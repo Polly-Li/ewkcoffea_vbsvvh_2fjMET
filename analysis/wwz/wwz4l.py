@@ -13,9 +13,9 @@ from topcoffea.modules.paths import topcoffea_path
 import topcoffea.modules.event_selection as es_tc
 import topcoffea.modules.object_selection as os_tc
 
-from topeft.modules.paths import topeft_path as ewkcoffea_path
-import topeft.modules.selection_wwz as es_ec
-import topeft.modules.objects_wwz as os_ec
+from ewkcoffea.modules.paths import ewkcoffea_path as ewkcoffea_path
+import ewkcoffea.modules.selection_wwz as es_ec
+import ewkcoffea.modules.objects_wwz as os_ec
 
 from topcoffea.modules.get_param_from_jsons import GetParam
 get_tc_param = GetParam(topcoffea_path("params/params.json"))

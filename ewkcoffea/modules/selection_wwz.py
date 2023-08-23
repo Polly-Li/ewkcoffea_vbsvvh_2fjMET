@@ -3,8 +3,11 @@ import awkward as ak
 from mt2 import mt2
 from coffea.nanoevents.methods import vector
 
-from topeft.modules.get_param_from_jsons import get_te_param
 import topcoffea.modules.event_selection as tc_es
+
+from ewkcoffea.modules.paths import ewkcoffea_path
+from topcoffea.modules.get_param_from_jsons import GetParam
+get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
 
 
 # The datasets we are using, and the triggers in them
