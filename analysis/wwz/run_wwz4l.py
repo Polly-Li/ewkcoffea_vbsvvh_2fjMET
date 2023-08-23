@@ -243,7 +243,7 @@ if __name__ == '__main__':
             'tasks_accum_log': 'tasks.log',
 
             'environment_file': remote_environment.get_environment(
-                extra_pip=["mt2","xgboost"]
+                extra_pip=["mt2","xgboost"],
                 extra_pip_local = {"ewkcoffea": ["ewkcoffea", "setup.py"]},
             ),
             'extra_input_files': ["wwz4l.py"],
