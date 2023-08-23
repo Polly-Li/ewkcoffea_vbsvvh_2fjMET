@@ -2,6 +2,8 @@ import numpy as np
 import awkward as ak
 import xgboost as xgb
 
+from topcoffea.modules.paths import topcoffea_path
+
 from ewkcoffea.modules.paths import ewkcoffea_path
 from topcoffea.modules.get_param_from_jsons import GetParam
 get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
