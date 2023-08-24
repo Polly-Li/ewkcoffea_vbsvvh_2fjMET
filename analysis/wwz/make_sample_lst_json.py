@@ -352,12 +352,13 @@ def main():
     #make_jsons_for_dict_of_samples(test_wwz_dict, "/ceph/cms/","2017",".",on_das=False) # An example
 
     # Specify output paths
-    out_dir_data_16APV = os.path.join(topcoffea_path("json"),"wwz_analysis_samples/data_samples/UL16APV")
-    out_dir_data_16 = os.path.join(topcoffea_path("json"),"wwz_analysis_samples/data_samples/UL16")
-    out_dir_data_17 = os.path.join(topcoffea_path("json"),"wwz_analysis_samples/data_samples/UL17")
-    out_dir_data_18 = os.path.join(topcoffea_path("json"),"wwz_analysis_samples/data_samples/UL18")
-    out_dir_bkg = os.path.join(topcoffea_path("json"),"wwz_analysis_samples/bkg_samples/")
-    out_dir_sig = os.path.join(topcoffea_path("json"),"wwz_analysis_samples/sig_samples/")
+    jsons_path = "../../input_samples/sample_jsons/"
+    out_dir_data_16APV = os.path.join(jsons_path,"wwz_analysis_skims_v0/data_samples/UL16APV")
+    out_dir_data_16 = os.path.join(jsons_path,"wwz_analysis_skims_v0/data_samples/UL16")
+    out_dir_data_17 = os.path.join(jsons_path,"wwz_analysis_skims_v0/data_samples/UL17")
+    out_dir_data_18 = os.path.join(jsons_path,"wwz_analysis_skims_v0/data_samples/UL18")
+    out_dir_bkg = os.path.join(jsons_path,"wwz_analysis_skims_v0/bkg_samples/")
+    out_dir_sig = os.path.join(jsons_path,"wwz_analysis_skims_v0/sig_samples/")
 
     # Make configs for data samples
     #make_jsons_for_dict_of_samples(data_UL16APV, "/ceph/cms/","2016APV", out_dir_data_16APV,on_das=False)
