@@ -1,6 +1,5 @@
 import os
 import subprocess
-from topcoffea.modules.paths import topcoffea_path
 import topcoffea.modules.sample_lst_jsons_tools as sjt
 
 
