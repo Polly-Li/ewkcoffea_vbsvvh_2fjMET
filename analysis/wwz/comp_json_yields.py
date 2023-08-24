@@ -3,9 +3,6 @@ import json
 import sys
 
 from topcoffea.modules import utils
-from topcoffea.modules.yield_tools import YieldTools
-
-yt = YieldTools()
 
 # This script takes two json files of yields, and prints out information about how they compare
 
@@ -29,8 +26,8 @@ def main():
 
     # Get the difference between the yields
     print("yld_dict_1",yld_dict_1)
-    pdiff_dict = yt.get_diff_between_nested_dicts(yld_dict_1,yld_dict_2,difftype="percent_diff")
-    diff_dict  = yt.get_diff_between_nested_dicts(yld_dict_1,yld_dict_2,difftype="absolute_diff")
+    pdiff_dict = utils.get_diff_between_nested_dicts(yld_dict_1,yld_dict_2,difftype="percent_diff")
+    diff_dict  = utils.get_diff_between_nested_dicts(yld_dict_1,yld_dict_2,difftype="absolute_diff")
 
     # Print the yields
     if not args.quiet:
