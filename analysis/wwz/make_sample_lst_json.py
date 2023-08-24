@@ -1,5 +1,5 @@
 import os
-from topcoffea.modules.paths import topcoffea_path
+import subprocess
 import topcoffea.modules.sample_lst_jsons_tools as sjt
 
 
@@ -139,6 +139,40 @@ test_wwz_dict = {
     },
 }
 
+############################ Convenience function ############################
+
+# Convenience function for running sample_lst_jsons_tools make_json() on all entries in a dictionary of samples, and moving the results to out_dir
+def make_jsons_for_dict_of_samples(samples_dict,prefix,year,out_dir,on_das=False):
+    failed = []
+    for sample_name,sample_info in sorted(samples_dict.items()):
+        print(f"\n\nMaking JSON for {sample_name}...")
+        path = sample_info["path"]
+        hist_axis_name = sample_info["histAxisName"]
+        xsec_name = sample_info["xsecName"]
+        print("we are here")
+        sjt.make_json(
+            sample_dir = path,
+            sample_name = sample_name,
+            prefix = prefix,
+            sample_yr = year,
+            xsec_name = xsec_name,
+            hist_axis_name = hist_axis_name,
+            on_das = on_das,
+        )
+        out_name = sample_name+".json"
+        if not os.path.exists(out_name):
+            failed.append(sample_name)
+
+        subprocess.run(["mv",out_name,out_dir])
+
+    if len(failed):
+        print("Failed:")
+        for l in failed:
+            print(f"\t{l}")
+    else:
+        print("Failed: None")
+
+
 
 ############################ Main ############################
 
@@ -146,29 +180,30 @@ test_wwz_dict = {
 def main():
 
     # A simple example
-    #sjt.make_jsons_for_dict_of_samples(test_wwz_dict, "/ceph/cms/","2017",".",on_das=False) # An example
+    #make_jsons_for_dict_of_samples(test_wwz_dict, "/ceph/cms/","2017",".",on_das=False) # An example
 
     # Specify output paths
-    out_dir_sig = os.path.join(topcoffea_path("json"),"wwz_analysis_samples/sig_samples/")
-    out_dir_bkg = os.path.join(topcoffea_path("json"),"wwz_analysis_samples/bkg_samples/")
+    jsons_path = "../../input_samples/sample_jsons/"
+    out_dir_sig = os.path.join(jsons_path,"wwz_analysis_skims_v0/sig_samples/")
+    out_dir_bkg = os.path.join(jsons_path,"wwz_analysis_skims_v0/bkg_samples/")
 
     # Make configs for signal samples
-    #sjt.make_jsons_for_dict_of_samples(central_UL16APV_bkg_dict, "/ceph/cms/","2016APV", out_dir_sig,on_das=False)
-    #sjt.make_jsons_for_dict_of_samples(central_UL16_bkg_dict, "/ceph/cms/","2016", out_dir_sig,on_das=False)
-    #sjt.make_jsons_for_dict_of_samples(central_UL17_bkg_dict, "/ceph/cms/","2017", out_dir_sig,on_das=False)
-    #sjt.make_jsons_for_dict_of_samples(central_UL18_bkg_dict, "/ceph/cms/","2018", out_dir_sig,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL16APV_bkg_dict, "/ceph/cms/","2016APV", out_dir_sig,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL16_bkg_dict, "/ceph/cms/","2016", out_dir_sig,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL17_bkg_dict, "/ceph/cms/","2017", out_dir_sig,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL18_bkg_dict, "/ceph/cms/","2018", out_dir_sig,on_das=False)
 
     # Make configs for bkg samples
-    sjt.make_jsons_for_dict_of_samples(central_UL16APV_sig_dict, "/ceph/cms/","2016APV", out_dir_bkg,on_das=False)
-    sjt.make_jsons_for_dict_of_samples(central_UL16_sig_dict, "/ceph/cms/","2016", out_dir_bkg,on_das=False)
-    sjt.make_jsons_for_dict_of_samples(central_UL17_sig_dict, "/ceph/cms/","2017", out_dir_bkg,on_das=False)
-    sjt.make_jsons_for_dict_of_samples(central_UL18_sig_dict, "/ceph/cms/","2018", out_dir_bkg,on_das=False)
+    make_jsons_for_dict_of_samples(central_UL16APV_sig_dict, "/ceph/cms/","2016APV", out_dir_bkg,on_das=False)
+    make_jsons_for_dict_of_samples(central_UL16_sig_dict, "/ceph/cms/","2016", out_dir_bkg,on_das=False)
+    make_jsons_for_dict_of_samples(central_UL17_sig_dict, "/ceph/cms/","2017", out_dir_bkg,on_das=False)
+    make_jsons_for_dict_of_samples(central_UL18_sig_dict, "/ceph/cms/","2018", out_dir_bkg,on_das=False)
 
     # Replace xsec numbers
-    #sjt.replace_xsec_for_dict_of_samples(central_UL16APV_bkg_dict,out_dir_bkg)
-    #sjt.replace_xsec_for_dict_of_samples(central_UL16_bkg_dict,out_dir_bkg)
-    #sjt.replace_xsec_for_dict_of_samples(central_UL17_bkg_dict,out_dir_bkg)
-    #sjt.replace_xsec_for_dict_of_samples(central_UL18_bkg_dict,out_dir_bkg)
+    #replace_xsec_for_dict_of_samples(central_UL16APV_bkg_dict,out_dir_bkg)
+    #replace_xsec_for_dict_of_samples(central_UL16_bkg_dict,out_dir_bkg)
+    #replace_xsec_for_dict_of_samples(central_UL17_bkg_dict,out_dir_bkg)
+    #replace_xsec_for_dict_of_samples(central_UL18_bkg_dict,out_dir_bkg)
 
 
 if __name__ == "__main__":
