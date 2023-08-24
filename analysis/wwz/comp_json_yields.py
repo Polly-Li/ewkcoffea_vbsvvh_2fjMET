@@ -2,6 +2,7 @@ import argparse
 import json
 import sys
 
+from topcoffea.modules import utils
 from topcoffea.modules.yield_tools import YieldTools
 
 yt = YieldTools()
@@ -34,13 +35,13 @@ def main():
     # Print the yields
     if not args.quiet:
 
-        yt.print_yld_dicts(yld_dict_1,args.tag1)
-        yt.print_yld_dicts(yld_dict_2,args.tag2)
-        yt.print_yld_dicts(pdiff_dict,f"Percent diff between {args.tag1} and {args.tag2}")
-        yt.print_yld_dicts(diff_dict,f"Diff between {args.tag1} and {args.tag2}")
+        utils.print_yld_dicts(yld_dict_1,args.tag1)
+        utils.print_yld_dicts(yld_dict_2,args.tag2)
+        utils.print_yld_dicts(pdiff_dict,f"Percent diff between {args.tag1} and {args.tag2}")
+        utils.print_yld_dicts(diff_dict,f"Diff between {args.tag1} and {args.tag2}")
 
     # Raise errors if yields are too different
-    yields_agree_bool = yt.print_yld_dicts(pdiff_dict,f"Percent diff between {args.tag1} and {args.tag2}",tolerance=args.tolerance)
+    yields_agree_bool = utils.print_yld_dicts(pdiff_dict,f"Percent diff between {args.tag1} and {args.tag2}",tolerance=args.tolerance)
     if not yields_agree_bool:
         sys.exit(1)
 
