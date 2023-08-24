@@ -1,0 +1,20 @@
+{
+  "xsec": 1.0,
+  "year": "2016",
+  "treeName": "Events",
+  "histAxisName": "dataUL16",
+  "options": "",
+  "WCnames": [],
+  "files": [
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_5.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_1.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_4.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_3.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_2.root"
+  ],
+  "nEvents": 5401,
+  "nGenEvents": 5401,
+  "nSumOfWeights": 5401,
+  "isData": true,
+  "path": "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep"
+}

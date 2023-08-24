@@ -1,0 +1,27 @@
+{
+  "xsec": 0.23529979999999998,
+  "year": "2016",
+  "treeName": "Events",
+  "histAxisName": "UL16_TTWJetsToLNu",
+  "options": "",
+  "WCnames": [],
+  "files": [
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_8.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_6.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_11.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_5.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_7.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_10.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_12.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_1.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_4.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_3.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_9.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_2.root"
+  ],
+  "nEvents": 259537,
+  "nGenEvents": 3322643,
+  "nSumOfWeights": 1113150.4285124398,
+  "isData": false,
+  "path": "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep"
+}

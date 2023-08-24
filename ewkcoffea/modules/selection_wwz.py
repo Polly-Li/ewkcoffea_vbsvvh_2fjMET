@@ -243,8 +243,8 @@ def get_wwz_candidates(lep_collection):
     leps_from_z_candidate = lep_collection[z_candidate_mask]
     leps_not_z_candidate = lep_collection[~z_candidate_mask]
 
-    leps_from_z_candidate_ptordered = leps_from_z_candidate[ak.argsort(leps_from_z_candidate.pt, axis=-1,ascending=False)]
-    leps_not_z_candidate_ptordered  = leps_not_z_candidate[ak.argsort(leps_not_z_candidate.pt, axis=-1,ascending=False)]
+    #leps_from_z_candidate_ptordered = leps_from_z_candidate[ak.argsort(leps_from_z_candidate.pt, axis=-1,ascending=False)]
+    #leps_not_z_candidate_ptordered = leps_not_z_candidate[ak.argsort(leps_not_z_candidate.pt, axis=-1,ascending=False)] # This fails wehn the leps_not_z_candidate.pt is None, if/when we need this to be pt ordered will need to figure out how we want to work around this
 
     return [leps_from_z_candidate,leps_not_z_candidate]
 
@@ -253,31 +253,31 @@ def get_wwz_candidates(lep_collection):
 # Convenience function around get_wwz_candidates() and get_z_candidate_mask()
 def attach_wwz_preselection_mask(events,lep_collection):
 
-    leps_z_candidate_ptordered, leps_w_candidate_ptordered = get_wwz_candidates(lep_collection)
+    leps_z_candidate, leps_w_candidate = get_wwz_candidates(lep_collection)
 
     # Pt requirements (assumes lep_collection is pt sorted and padded)
     pt_mask = ak.fill_none((lep_collection[:,0].pt > 25) & (lep_collection[:,1].pt > 15),False)
 
     # Build an event level mask for OS requirements for the W candidates
-    os_mask = ak.any(((leps_w_candidate_ptordered[:,0:1].pdgId)*(leps_w_candidate_ptordered[:,1:2].pdgId)<0),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
+    os_mask = ak.any(((leps_w_candidate[:,0:1].pdgId)*(leps_w_candidate[:,1:2].pdgId)<0),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
     os_mask = ak.fill_none(os_mask,False) # Replace the None with False in the mask just to make it easier to think about
 
     # Build an event level mask for same flavor W lepton candidates
-    sf_mask = ak.any((abs(leps_w_candidate_ptordered[:,0:1].pdgId) == abs(leps_w_candidate_ptordered[:,1:2].pdgId)),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
+    sf_mask = ak.any((abs(leps_w_candidate[:,0:1].pdgId) == abs(leps_w_candidate[:,1:2].pdgId)),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
     sf_mask = ak.fill_none(sf_mask,False) # Replace the None with False in the mask just to make it easier to think about
 
     # Build an event level mask that checks if the z candidates are close enough to the z
-    z_mass = (leps_z_candidate_ptordered[:,0:1]+leps_z_candidate_ptordered[:,1:2]).mass
-    z_mass_mask = (abs((leps_z_candidate_ptordered[:,0:1]+leps_z_candidate_ptordered[:,1:2]).mass-91.2) < 10.0)
+    z_mass = (leps_z_candidate[:,0:1]+leps_z_candidate[:,1:2]).mass
+    z_mass_mask = (abs((leps_z_candidate[:,0:1]+leps_z_candidate[:,1:2]).mass-91.2) < 10.0)
     z_mass_mask = ak.fill_none(ak.any(z_mass_mask,axis=1),False) # Make sure None entries are false
 
     # Build an event level mask to check the iso and sip3d for leps from Z and W
-    leps_z_e = leps_z_candidate_ptordered[abs(leps_z_candidate_ptordered.pdgId)==11] # Just the electrons
-    leps_w_e = leps_w_candidate_ptordered[abs(leps_w_candidate_ptordered.pdgId)==11] # Just the electrons
+    leps_z_e = leps_z_candidate[abs(leps_z_candidate.pdgId)==11] # Just the electrons
+    leps_w_e = leps_w_candidate[abs(leps_w_candidate.pdgId)==11] # Just the electrons
     iso_mask_z_e = ak.fill_none(ak.all((leps_z_e.pfRelIso03_all < get_ec_param("wwz_z_iso")),axis=1),False) # This requirement is just on the electrons
     iso_mask_w_e = ak.fill_none(ak.all((leps_w_e.pfRelIso03_all < get_ec_param("wwz_w_iso")),axis=1),False) # This requirement is just on the electrons
-    id_mask_z = ak.fill_none(ak.all((leps_z_candidate_ptordered.sip3d < get_ec_param("wwz_z_sip3d")),axis=1),False)
-    id_mask_w = ak.fill_none(ak.all((leps_w_candidate_ptordered.sip3d < get_ec_param("wwz_w_sip3d")),axis=1),False)
+    id_mask_z = ak.fill_none(ak.all((leps_z_candidate.sip3d < get_ec_param("wwz_z_sip3d")),axis=1),False)
+    id_mask_w = ak.fill_none(ak.all((leps_w_candidate.sip3d < get_ec_param("wwz_w_sip3d")),axis=1),False)
     id_iso_mask = (id_mask_z & id_mask_w & iso_mask_z_e & iso_mask_w_e)
 
     # The final preselection mask

@@ -2,9 +2,7 @@ import argparse
 import json
 import sys
 
-from topcoffea.modules.yield_tools import YieldTools
-
-yt = YieldTools()
+from topcoffea.modules import utils
 
 # This script takes two json files of yields, and prints out information about how they compare
 
@@ -28,19 +26,19 @@ def main():
 
     # Get the difference between the yields
     print("yld_dict_1",yld_dict_1)
-    pdiff_dict = yt.get_diff_between_nested_dicts(yld_dict_1,yld_dict_2,difftype="percent_diff")
-    diff_dict  = yt.get_diff_between_nested_dicts(yld_dict_1,yld_dict_2,difftype="absolute_diff")
+    pdiff_dict = utils.get_diff_between_nested_dicts(yld_dict_1,yld_dict_2,difftype="percent_diff")
+    diff_dict  = utils.get_diff_between_nested_dicts(yld_dict_1,yld_dict_2,difftype="absolute_diff")
 
     # Print the yields
     if not args.quiet:
 
-        yt.print_yld_dicts(yld_dict_1,args.tag1)
-        yt.print_yld_dicts(yld_dict_2,args.tag2)
-        yt.print_yld_dicts(pdiff_dict,f"Percent diff between {args.tag1} and {args.tag2}")
-        yt.print_yld_dicts(diff_dict,f"Diff between {args.tag1} and {args.tag2}")
+        utils.print_yld_dicts(yld_dict_1,args.tag1)
+        utils.print_yld_dicts(yld_dict_2,args.tag2)
+        utils.print_yld_dicts(pdiff_dict,f"Percent diff between {args.tag1} and {args.tag2}")
+        utils.print_yld_dicts(diff_dict,f"Diff between {args.tag1} and {args.tag2}")
 
     # Raise errors if yields are too different
-    yields_agree_bool = yt.print_yld_dicts(pdiff_dict,f"Percent diff between {args.tag1} and {args.tag2}",tolerance=args.tolerance)
+    yields_agree_bool = utils.print_yld_dicts(pdiff_dict,f"Percent diff between {args.tag1} and {args.tag2}",tolerance=args.tolerance)
     if not yields_agree_bool:
         sys.exit(1)
 
