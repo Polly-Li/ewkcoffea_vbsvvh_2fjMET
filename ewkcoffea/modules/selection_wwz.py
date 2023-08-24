@@ -274,10 +274,10 @@ def attach_wwz_preselection_mask(events,lep_collection):
     # Build an event level mask to check the iso and sip3d for leps from Z and W
     leps_z_e = leps_z_candidate[abs(leps_z_candidate.pdgId)==11] # Just the electrons
     leps_w_e = leps_w_candidate[abs(leps_w_candidate.pdgId)==11] # Just the electrons
-    iso_mask_z_e = ak.fill_none(ak.all((leps_z_e.pfRelIso03_all < get_param("wwz_z_iso")),axis=1),False) # This requirement is just on the electrons
-    iso_mask_w_e = ak.fill_none(ak.all((leps_w_e.pfRelIso03_all < get_param("wwz_w_iso")),axis=1),False) # This requirement is just on the electrons
-    id_mask_z = ak.fill_none(ak.all((leps_z_candidate.sip3d < get_param("wwz_z_sip3d")),axis=1),False)
-    id_mask_w = ak.fill_none(ak.all((leps_w_candidate.sip3d < get_param("wwz_w_sip3d")),axis=1),False)
+    iso_mask_z_e = ak.fill_none(ak.all((leps_z_e.pfRelIso03_all < get_ec_param("wwz_z_iso")),axis=1),False) # This requirement is just on the electrons
+    iso_mask_w_e = ak.fill_none(ak.all((leps_w_e.pfRelIso03_all < get_ec_param("wwz_w_iso")),axis=1),False) # This requirement is just on the electrons
+    id_mask_z = ak.fill_none(ak.all((leps_z_candidate.sip3d < get_ec_param("wwz_z_sip3d")),axis=1),False)
+    id_mask_w = ak.fill_none(ak.all((leps_w_candidate.sip3d < get_ec_param("wwz_w_sip3d")),axis=1),False)
     id_iso_mask = (id_mask_z & id_mask_w & iso_mask_z_e & iso_mask_w_e)
 
     # The final preselection mask
