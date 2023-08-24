@@ -1,0 +1,21 @@
+{
+  "xsec": 1.0,
+  "year": "2017",
+  "treeName": "Events",
+  "histAxisName": "dataUL17",
+  "options": "",
+  "WCnames": [],
+  "files": [
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/MuonEG_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_6.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/MuonEG_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_5.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/MuonEG_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_1.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/MuonEG_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_4.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/MuonEG_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_3.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/MuonEG_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_2.root"
+  ],
+  "nEvents": 86183,
+  "nGenEvents": 86183,
+  "nSumOfWeights": 86183,
+  "isData": true,
+  "path": "/store/user/kdownham/skimOutput/3LepTau_4Lep/MuonEG_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep"
+}

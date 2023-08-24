@@ -1,0 +1,17 @@
+{
+  "xsec": 0.02794,
+  "year": "2017",
+  "treeName": "Events",
+  "histAxisName": "UL17_SSWW",
+  "options": "",
+  "WCnames": [],
+  "files": [
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/SSWW_TuneCP5_13TeV-madgraph-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_3LepTau_4Lep/output_1.root",
+    "/store/user/kdownham/skimOutput/3LepTau_4Lep/SSWW_TuneCP5_13TeV-madgraph-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_3LepTau_4Lep/output_2.root"
+  ],
+  "nEvents": 31761,
+  "nGenEvents": 1000000,
+  "nSumOfWeights": 1000000.0,
+  "isData": false,
+  "path": "/store/user/kdownham/skimOutput/3LepTau_4Lep/SSWW_TuneCP5_13TeV-madgraph-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_3LepTau_4Lep"
+}
