@@ -5,7 +5,7 @@ This analysis repository contains scripts and tools for performing analyses asso
 
 First, clone the repository and `cd` into the toplevel directory. 
 ```
-https://github.com/kmohrman/ewkcoffea.git
+git clone https://github.com/kmohrman/ewkcoffea.git
 cd ewkcoffea
 ```
 Next, create a `conda` environment and activate it. 
