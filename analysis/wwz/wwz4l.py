@@ -32,12 +32,15 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Create the dense axes for the histograms
         self._dense_axes_dict = {
-            "njets"   : axis.Regular(20, 0, 20, name="njets",   label="Jet multiplicity"),
-            "nleps"   : axis.Regular(20, 0, 20, name="nleps",   label="Lep multiplicity"),
-            "nbtagsl" : axis.Regular(20, 0, 20, name="nbtagsl", label="Loose btag multiplicity"),
-            "njets_counts"   : axis.Regular(20, 0, 20, name="njets_counts",   label="Jet multiplicity counts"),
-            "nleps_counts"   : axis.Regular(20, 0, 20, name="nleps_counts",   label="Lep multiplicity counts"),
-            "nbtagsl_counts" : axis.Regular(20, 0, 20, name="nbtagsl_counts", label="Loose btag multiplicity counts"),
+            "met"   : axis.Regular(50, 0, 500, name="met",   label="met"),
+            "ptl4"  : axis.Regular(50, 0, 500, name="ptl4",   label="ptl4"),
+
+            "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
+            "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
+            "nbtagsl" : axis.Regular(4, 0, 4, name="nbtagsl", label="Loose btag multiplicity"),
+            "njets_counts"   : axis.Regular(8, 0, 8, name="njets_counts",   label="Jet multiplicity counts"),
+            "nleps_counts"   : axis.Regular(5, 0, 5, name="nleps_counts",   label="Lep multiplicity counts"),
+            "nbtagsl_counts" : axis.Regular(4, 0, 4, name="nbtagsl_counts", label="Loose btag multiplicity counts"),
         }
 
         # Set the list of hists to fill
@@ -111,6 +114,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Initialize objects
         met  = events.MET
+        #met  = events.PuppiMET
         ele  = events.Electron
         mu   = events.Muon
         tau  = events.Tau
@@ -118,7 +122,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # An array of lenght events that is just 1 for each event
         # Probably there's a better way to do this, but we use this method elsewhere so I guess why not..
-        events.nom = ak.ones_like(events.MET.pt)
+        events.nom = ak.ones_like(met.pt)
 
         # Get the lumi mask for data
         if year == "2016" or year == "2016APV":
@@ -321,6 +325,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             sr_cat_dict = {
                 "lep_chan_lst" : ["4l_wwz_sf_A","4l_wwz_sf_B","4l_wwz_sf_C","4l_wwz_of_1","4l_wwz_of_2","4l_wwz_of_3","4l_wwz_of_4","all_events","4l_presel"],
+                #"lep_chan_lst" : ["4l_wwz_sf_A","4l_wwz_sf_B","4l_wwz_sf_C","4l_wwz_of_1","4l_wwz_of_2","4l_wwz_of_3","4l_wwz_of_4"],
             }
 
 
@@ -330,7 +335,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             hout = {}
 
             dense_variables_dict = {
-                #"met" : met.pt,
+                "met" : met.pt,
+                "ptl4" : ptl4,
                 "nleps" : nleps,
                 "njets" : njets,
                 "nbtagsl" : nbtagsl,
@@ -338,6 +344,10 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "njets_counts" : njets,
                 "nbtagsl_counts" : nbtagsl,
             }
+
+            # List the hists that are only defined for sr bins
+            analysis_var_only = ["ptl4"]
+            analysis_cats = ["4l_wwz_sf_A","4l_wwz_sf_B","4l_wwz_sf_C","4l_wwz_of_1","4l_wwz_of_2","4l_wwz_of_3","4l_wwz_of_4"]
 
 
             # Loop over the hists we want to fill
@@ -360,6 +370,9 @@ class AnalysisProcessor(processor.ProcessorABC):
 
                 # Loop over categories
                 for sr_cat in sr_cat_dict["lep_chan_lst"]:
+
+                    # Skip filling if this variable is not relevant for this selection
+                    if (dense_axis_name in analysis_var_only) and (sr_cat not in analysis_cats): continue
 
                     # Make the cuts mask
                     cuts_lst = [sr_cat]
