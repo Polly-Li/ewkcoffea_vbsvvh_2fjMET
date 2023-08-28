@@ -38,9 +38,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
             "nbtagsl" : axis.Regular(4, 0, 4, name="nbtagsl", label="Loose btag multiplicity"),
-            "njets_counts"   : axis.Regular(8, 0, 8, name="njets_counts",   label="Jet multiplicity counts"),
-            "nleps_counts"   : axis.Regular(5, 0, 5, name="nleps_counts",   label="Lep multiplicity counts"),
-            "nbtagsl_counts" : axis.Regular(4, 0, 4, name="nbtagsl_counts", label="Loose btag multiplicity counts"),
+            "njets_counts"   : axis.Regular(30, 0, 30, name="njets_counts",   label="Jet multiplicity counts"),
+            "nleps_counts"   : axis.Regular(30, 0, 30, name="nleps_counts",   label="Lep multiplicity counts"),
+            "nbtagsl_counts" : axis.Regular(30, 0, 30, name="nbtagsl_counts", label="Loose btag multiplicity counts"),
         }
 
         # Set the list of hists to fill
