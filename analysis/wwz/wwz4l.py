@@ -113,8 +113,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             if d in dataset: dataset = dataset.split('_')[0]
 
         # Initialize objects
-        met  = events.MET
-        #met  = events.PuppiMET
+        #met  = events.MET
+        met  = events.PuppiMET
         ele  = events.Electron
         mu   = events.Muon
         tau  = events.Tau
@@ -284,8 +284,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             w_candidates_mll_far_from_z = ak.fill_none(ak.any((abs(w_candidates_mll - 91.2) > 10.0),axis=1),False) # Will enforce this for SF in the PackedSelection
             ptl4 = (l0+l1+l2+l3).pt
             sf_A = (met.pt > 120.0)
-            sf_B = ((met.pt > 70.0) & (met.pt < 120.0) & (ptl4 > 70.0))
-            sf_C = ((met.pt > 70.0) & (met.pt < 120.0) & (ptl4 > 40.0) & (ptl4 < 70.0))
+            sf_B = ((met.pt > 65.0) & (met.pt < 120.0) & (ptl4 > 70.0))
+            sf_C = ((met.pt > 65.0) & (met.pt < 120.0) & (ptl4 > 40.0) & (ptl4 < 70.0))
 
             # Make masks for the OF regions
             of_1 = ak.fill_none(ak.any((w_candidates_mll > 0.0) & (w_candidates_mll < 40.0),axis=1),False)
