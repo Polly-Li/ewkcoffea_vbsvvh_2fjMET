@@ -22,7 +22,9 @@ def get_counts(histos_dict):
         nobjs_hist = histos_dict[obj][{"category":"all_events","process":wwz_sync_sample}].values(flow=True)
         tot_objs = 0
         for i,v in enumerate(nobjs_hist):
-            tot_objs = tot_objs + (i-1.)*v # Have to adjust for the fact that first bin is underflow, second bin is 0 objects
+            # Have to adjust for the fact that first bin is underflow, second bin is 0 objects
+            # Note this breaks if there are objects with higher multiplicity than n+1 (since we don't know how to weight them in the sum, as they all just fall into the (n+1)th bin)
+            tot_objs = tot_objs + (i-1.)*v
         out_dict[wwz_sync_sample][obj] = (tot_objs,None) # Save err as None
         #print("\ntotobj",obj,tot_objs)
 
