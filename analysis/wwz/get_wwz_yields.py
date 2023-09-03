@@ -1,5 +1,6 @@
 import argparse
 import pickle
+import json
 import gzip
 import os
 import numpy as np
@@ -18,49 +19,49 @@ EWK_PUPPIMET = {'WWZ': {'4l_wwz_sf_A': (2.424348248217939, 0.008680002565746428)
 # Keegan's yields as of Aug 18, 2023
 KEEGAN_YIELDS = {
     "WWZ" : {
-        "4l_wwz_sf_A": 2.39,
-        "4l_wwz_sf_B": 1.75,
-        "4l_wwz_sf_C": 0.53,
-        "4l_wwz_of_1": 0.65,
-        "4l_wwz_of_2": 0.74,
-        "4l_wwz_of_3": 1.49,
+        "4l_wwz_sf_A": 2.33,
+        "4l_wwz_sf_B": 1.97,
+        "4l_wwz_sf_C": 0.572,
+        "4l_wwz_of_1": 0.645,
+        "4l_wwz_of_2": 0.738,
+        "4l_wwz_of_3": 1.48,
         "4l_wwz_of_4": 5.14,
     },
     "ZH" : {
-        "4l_wwz_sf_A": 1.02,
-        "4l_wwz_sf_B": 1.33,
-        "4l_wwz_sf_C": 0.64,
-        "4l_wwz_of_1": 3.06,
-        "4l_wwz_of_2": 1.36,
-        "4l_wwz_of_3": 0.36,
-        "4l_wwz_of_4": 0.15,
+        "4l_wwz_sf_A": 0.952,
+        "4l_wwz_sf_B": 1.52,
+        "4l_wwz_sf_C": 0.677,
+        "4l_wwz_of_1": 3.05,
+        "4l_wwz_of_2": 1.35,
+        "4l_wwz_of_3": 0.348,
+        "4l_wwz_of_4": 0.152,
     },
     "ttZ" : {
-        "4l_wwz_sf_A": 1.39*(0.281/0.2529),
-        "4l_wwz_sf_B": 0.98*(0.281/0.2529),
-        "4l_wwz_sf_C": 0.22*(0.281/0.2529),
-        "4l_wwz_of_1": 0.32*(0.281/0.2529),
-        "4l_wwz_of_2": 0.4*(0.281/0.2529),
-        "4l_wwz_of_3": 0.81*(0.281/0.2529),
+        "4l_wwz_sf_A": 1.32*(0.281/0.2529),
+        "4l_wwz_sf_B": 1.12*(0.281/0.2529),
+        "4l_wwz_sf_C": 0.269*(0.281/0.2529),
+        "4l_wwz_of_1": 0.322*(0.281/0.2529),
+        "4l_wwz_of_2": 0.382*(0.281/0.2529),
+        "4l_wwz_of_3": 0.833*(0.281/0.2529),
         "4l_wwz_of_4": 2.51*(0.281/0.2529),
     },
     "ZZ": {
-        "4l_wwz_sf_A": 1.45,
-        "4l_wwz_sf_B": 4.66,
-        "4l_wwz_sf_C": 3.38,
-        "4l_wwz_of_1": 0.75,
-        "4l_wwz_of_2": 0.96,
-        "4l_wwz_of_3": 0.62,
-        "4l_wwz_of_4": 0.5,
+        "4l_wwz_sf_A": 1.32,
+        "4l_wwz_sf_B": 4.58,
+        "4l_wwz_sf_C": 2.78,
+        "4l_wwz_of_1": 0.623,
+        "4l_wwz_of_2": 0.619,
+        "4l_wwz_of_3": 0.39,
+        "4l_wwz_of_4": 0.503,
     },
     "other": {
-        "4l_wwz_sf_A": 0.71,
-        "4l_wwz_sf_B": 0.39,
-        "4l_wwz_sf_C": 0.04,
-        "4l_wwz_of_1": 0.29,
-        "4l_wwz_of_2": 0.24,
-        "4l_wwz_of_3": 0.16,
-        "4l_wwz_of_4": 0.59,
+        "4l_wwz_sf_A": -99,
+        "4l_wwz_sf_B": -99,
+        "4l_wwz_sf_C": -99,
+        "4l_wwz_of_1": -99,
+        "4l_wwz_of_2": -99,
+        "4l_wwz_of_3": -99,
+        "4l_wwz_of_4": -99,
     },
 }
 
@@ -149,8 +150,6 @@ def create_full_sample_dict(in_dict):
 
 sample_dict = create_full_sample_dict(sample_dict_base)
 
-print(sample_dict)
-
 
 
 
@@ -183,11 +182,12 @@ def get_yields(histos_dict,quiet=False):
 # Print yields
 def print_yields(yld_dict):
 
-    #yld_dict_comp = utils.put_none_errs(KEEGAN_YIELDS)
-    yld_dict_comp = EWK_PUPPIMET
-    tag1 = "ewkcoffea (pfmet)"
-    tag2 = "ewkcoffea (puppi)"
-    #tag2 = "VVVNanoLooper (puppi)"
+    yld_dict_comp = utils.put_none_errs(KEEGAN_YIELDS)
+    #yld_dict_comp = EWK_PUPPIMET
+    #tag1 = "ewkcoffea (pfmet)"
+    #tag2 = "ewkcoffea (puppi without 70-\>65)"
+    tag1 = "ewkcoffea (puppi)"
+    tag2 = "VVVNanoLooper (puppi)"
 
     # Dump the yields to latex table
     yld_dict_for_printing = {}
@@ -308,6 +308,11 @@ def main():
     # Test plotting
     #make_plots(histo_dict)
 
+    # Dump yield dict to json
+    if "json" not in args.output_name: output_name = args.output_name + ".json"
+    else: output_name = args.output_name
+    with open(output_name,"w") as out_file: json.dump(yld_dict, out_file, indent=4)
+    print(f"\nSaved json file: {output_name}\n")
 
 
 
