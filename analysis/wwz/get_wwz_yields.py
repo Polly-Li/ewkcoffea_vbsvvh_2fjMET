@@ -55,13 +55,13 @@ KEEGAN_YIELDS = {
         "4l_wwz_of_4": 0.503,
     },
     "other": {
-        "4l_wwz_sf_A": -99,
-        "4l_wwz_sf_B": -99,
-        "4l_wwz_sf_C": -99,
-        "4l_wwz_of_1": -99,
-        "4l_wwz_of_2": -99,
-        "4l_wwz_of_3": -99,
-        "4l_wwz_of_4": -99,
+        "4l_wwz_sf_A": 0.607 + 0.00855, 
+        "4l_wwz_sf_B": 0.417 + 0.0571,
+        "4l_wwz_sf_C": 0.0967 + 0.0106,
+        "4l_wwz_of_1": 0.27 + 0.107 + 0.0069,
+        "4l_wwz_of_2": -0.055 + 0.0 + 0.0106,
+        "4l_wwz_of_3": -0.0555 + 0.176 + 0.0446,
+        "4l_wwz_of_4": 0.452 + 0.12 + 0.0233,
     },
 }
 
@@ -182,14 +182,7 @@ def get_yields(histos_dict,quiet=False):
 # Print yields
 def print_yields(yld_dict):
 
-    yld_dict_comp = utils.put_none_errs(KEEGAN_YIELDS)
-    #yld_dict_comp = EWK_PUPPIMET
-    #tag1 = "ewkcoffea (pfmet)"
-    #tag2 = "ewkcoffea (puppi without 70-\>65)"
-    tag1 = "ewkcoffea (puppi)"
-    tag2 = "VVVNanoLooper (puppi)"
-
-    # Dump the yields to latex table
+    # Dump the yields to dict for latex table
     yld_dict_for_printing = {}
     cats_to_print = [ "4l_wwz_sf_A", "4l_wwz_sf_B", "4l_wwz_sf_C", "4l_wwz_of_1", "4l_wwz_of_2", "4l_wwz_of_3", "4l_wwz_of_4"]
     for proc in yld_dict.keys():
@@ -197,6 +190,8 @@ def print_yields(yld_dict):
         for cat in yld_dict[proc].keys():
             if cat not in cats_to_print: continue
             yld_dict_for_printing[proc][cat] = yld_dict[proc][cat]
+
+    # Print the yields directly
     mlt.print_latex_yield_table(
         yld_dict_for_printing,
         tag="All yields",
@@ -204,17 +199,24 @@ def print_yields(yld_dict):
         subkey_order=cats_to_print,
         print_begin_info=True,
         print_end_info=True,
-        print_errs=True,
+        #print_errs=True,
         column_variable="subkeys",
     )
 
-    #print(yld_dict_for_printing)
-    #exit()
+
+    # Compare with other yields, print comparison
+
+    #tag1 = "ewkcoffea (pfmet)"
+    #tag2 = "ewkcoffea (puppi without 70-\>65)"
+    tag1 = "ewkcoffea (puppi)"
+    tag2 = "VVVNanoLooper (puppi)"
+
+    yld_dict_comp = utils.put_none_errs(KEEGAN_YIELDS)
+    #yld_dict_comp = EWK_PUPPIMET
 
     yld_dict_1 = yld_dict_for_printing
     yld_dict_2 = yld_dict_comp
 
-    # Compare with Keegan's yields
     pdiff_dict = utils.get_diff_between_nested_dicts(yld_dict_1,yld_dict_2,difftype="percent_diff",inpercent=True)
     diff_dict  = utils.get_diff_between_nested_dicts(yld_dict_1,yld_dict_2,difftype="absolute_diff")
 
