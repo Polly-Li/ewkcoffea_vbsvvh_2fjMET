@@ -12,6 +12,8 @@ import gzip
 def get_counts(histos_dict):
 
     wwz_sync_sample = 'UL17_WWZJetsTo4L2Nu'
+    #wwz_sync_sample_lst = ['UL16_WWZJetsTo4L2Nu','UL16APV_WWZJetsTo4L2Nu','UL17_WWZJetsTo4L2Nu','UL18_WWZJetsTo4L2Nu']
+    #wwz_sync_sample_lst = ['UL16_VHnobb','UL16APV_VHnobb','UL17_VHnobb','UL18_VHnobb']
 
     out_dict = {}
     out_dict[wwz_sync_sample] = {}
@@ -19,7 +21,7 @@ def get_counts(histos_dict):
     # Get object multiplicity counts (nleps, njets, nbtags)
     ojb_lst = ["nleps_counts","njets_counts","nbtagsl_counts"]
     for obj in ojb_lst:
-        nobjs_hist = histos_dict[obj][{"category":"all_events","process":wwz_sync_sample}].values(flow=True)
+        nobjs_hist = sum(histos_dict[obj][{"category":"all_events","process":wwz_sync_sample_lst}].values(flow=True))
         tot_objs = 0
         for i,v in enumerate(nobjs_hist):
             # Have to adjust for the fact that first bin is underflow, second bin is 0 objects
@@ -31,13 +33,13 @@ def get_counts(histos_dict):
     # Look at the event counts in one histo (e.g. njets)
     dense_axis = "njets_counts"
     for cat_name in histos_dict[dense_axis].axes["category"]:
-        val = sum(histos_dict[dense_axis][{"category":cat_name,"process":wwz_sync_sample}].values(flow=True))
+        val = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":wwz_sync_sample_lst}].values(flow=True)))
         out_dict[wwz_sync_sample][cat_name+"_counts"] = (val,None) # Save err as None
 
     # Look at the yields in one histo (e.g. njets)
     dense_axis = "njets"
     for cat_name in histos_dict[dense_axis].axes["category"]:
-        val = sum(histos_dict[dense_axis][{"category":cat_name,"process":wwz_sync_sample}].values(flow=True))
+        val = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":wwz_sync_sample_lst}].values(flow=True)))
         out_dict[wwz_sync_sample][cat_name] = (val,None) # Save err as None
 
 
