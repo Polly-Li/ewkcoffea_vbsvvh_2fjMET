@@ -12,6 +12,7 @@ import gzip
 def get_counts(histos_dict):
 
     wwz_sync_sample = 'UL17_WWZJetsTo4L2Nu'
+    wwz_sync_sample_lst = ['UL17_WWZJetsTo4L2Nu']
     #wwz_sync_sample_lst = ['UL16_WWZJetsTo4L2Nu','UL16APV_WWZJetsTo4L2Nu','UL17_WWZJetsTo4L2Nu','UL18_WWZJetsTo4L2Nu']
     #wwz_sync_sample_lst = ['UL16_VHnobb','UL16APV_VHnobb','UL17_VHnobb','UL18_VHnobb']
 
