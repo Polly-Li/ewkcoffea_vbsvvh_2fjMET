@@ -68,7 +68,7 @@ KEEGAN_YIELDS = {
 
 sample_dict_base = {
     "WWZ" : ["WWZJetsTo4L2Nu"],
-    "ZH"  : ["GluGluZH","ggToZHToZTo2L"],
+    "ZH"  : ["GluGluZH","qqToZHToZTo2L"],
 
     #"qqZZ": ["ZZTo4l"],
     #"ggZZ": ["ggToZZTo2e2mu", "ggToZZTo2e2tau", "ggToZZTo2mu2tau", "ggToZZTo4e", "ggToZZTo4mu", "ggToZZTo4tau"],
@@ -103,7 +103,7 @@ sample_dict_base = {
 
     #"WWZJetsTo4L2Nu":            ["WWZJetsTo4L2Nu"],
     #"GluGluZH":                  ["GluGluZH"],
-    #"ggToZHToZTo2L":             ["ggToZHToZTo2L"],
+    #"qqToZHToZTo2L":             ["qqToZHToZTo2L"],
     #"ZZTo4l":                    ["ZZTo4l"],
     #"ggToZZTo2e2mu":             ["ggToZZTo2e2mu"],
     #"ggToZZTo2e2tau":            ["ggToZZTo2e2tau"],

@@ -248,7 +248,7 @@ central_UL16APV_sig_dict = {
         "histAxisName": "UL16APV_GluGluZH",
         "xsecName": "ggToZHToHToWWTo2L2Nu",
     },
-    "UL16APV_ggToZHToZTo2L"     : { "histAxisName" : "UL16APV_ggToZHToZTo2L"     , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/HZJ_HToWWTo2L2Nu_ZTo2L_M-125_TuneCP5_13TeV-powheg-jhugen727-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_3LepTau_4Lep" , "xsecName" : "ggToZHToZTo2L" , } ,
+    "UL16APV_qqToZHToZTo2L"     : { "histAxisName" : "UL16APV_qqToZHToZTo2L"     , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/HZJ_HToWWTo2L2Nu_ZTo2L_M-125_TuneCP5_13TeV-powheg-jhugen727-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_3LepTau_4Lep" , "xsecName" : "qqToZHToZTo2L" , } ,
 }
 
 central_UL16_sig_dict = {
@@ -262,7 +262,7 @@ central_UL16_sig_dict = {
         "histAxisName": "UL16_GluGluZH",
         "xsecName": "ggToZHToHToWWTo2L2Nu",
     },
-    "UL16_ggToZHToZTo2L"        : { "histAxisName" : "UL16_ggToZHToZTo2L"        , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/HZJ_HToWWTo2L2Nu_ZTo2L_M-125_TuneCP5_13TeV-powheg-jhugen727-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v2_NANOAODSIM_3LepTau_4Lep" , "xsecName" : "ggToZHToZTo2L" , } ,
+    "UL16_qqToZHToZTo2L"        : { "histAxisName" : "UL16_qqToZHToZTo2L"        , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/HZJ_HToWWTo2L2Nu_ZTo2L_M-125_TuneCP5_13TeV-powheg-jhugen727-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v2_NANOAODSIM_3LepTau_4Lep" , "xsecName" : "qqToZHToZTo2L" , } ,
 }
 
 central_UL17_sig_dict = {
@@ -276,7 +276,7 @@ central_UL17_sig_dict = {
         "histAxisName": "UL17_GluGluZH",
         "xsecName": "ggToZHToHToWWTo2L2Nu",
     },
-    "UL17_ggToZHToZTo2L" : { "histAxisName" : "UL17_ggToZHToZTo2L", "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/HZJ_HToWWTo2L2Nu_ZTo2L_M-125_TuneCP5_13TeV-powheg-jhugen727-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_3LepTau_4Lep" , "xsecName" : "ggToZHToZTo2L" , } ,
+    "UL17_qqToZHToZTo2L" : { "histAxisName" : "UL17_qqToZHToZTo2L", "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/HZJ_HToWWTo2L2Nu_ZTo2L_M-125_TuneCP5_13TeV-powheg-jhugen727-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_3LepTau_4Lep" , "xsecName" : "qqToZHToZTo2L" , } ,
 }
 
 central_UL18_sig_dict = {
@@ -290,7 +290,7 @@ central_UL18_sig_dict = {
         "histAxisName": "UL18_GluGluZH",
         "xsecName": "ggToZHToHToWWTo2L2Nu",
     },
-    "UL18_ggToZHToZTo2L" : { "histAxisName" : "UL18_ggToZHToZTo2L", "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/HZJ_HToWWTo2L2Nu_ZTo2L_M-125_TuneCP5_13TeV-powheg-jhugen727-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_3LepTau_4Lep" , "xsecName" : "ggToZHToZTo2L" , } ,
+    "UL18_qqToZHToZTo2L" : { "histAxisName" : "UL18_qqToZHToZTo2L", "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/HZJ_HToWWTo2L2Nu_ZTo2L_M-125_TuneCP5_13TeV-powheg-jhugen727-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_3LepTau_4Lep" , "xsecName" : "qqToZHToZTo2L" , } ,
 }
 
 
