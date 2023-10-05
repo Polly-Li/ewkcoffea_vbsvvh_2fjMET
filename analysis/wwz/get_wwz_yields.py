@@ -156,12 +156,13 @@ sample_dict = create_full_sample_dict(sample_dict_base)
 ################### Getting and printing yields ###################
 
 # Get the yields in the SR
-def get_yields(histos_dict,quiet=False):
+def get_yields(histos_dict,raw_counts=False,quiet=False):
 
     yld_dict = {}
 
     # Look at the yields in one histo (e.g. njets)
-    dense_axis = "njets"
+    if raw_counts: dense_axis = "njets_counts"
+    else: dense_axis = "njets"
     for proc_name in sample_dict.keys():
         yld_dict[proc_name] = {}
         for cat_name in histos_dict[dense_axis].axes["category"]:
@@ -202,6 +203,7 @@ def print_yields(yld_dict):
         #print_errs=True,
         column_variable="subkeys",
     )
+    #exit()
 
 
     # Compare with other yields, print comparison
@@ -232,6 +234,22 @@ def print_yields(yld_dict):
     mlt.print_latex_yield_table(diff_dict, key_order=sample_dict_base.keys(),subkey_order=cats_to_print,tag=f"Diff between {tag1} and {tag2}")
     mlt.print_end()
 
+
+# Dump the counts dict to a latex table
+def print_counts(counts_dict):
+
+    cats_to_print = ["all_events", "4l_presel", "4l_wwz_sf_A", "4l_wwz_sf_B", "4l_wwz_sf_C", "4l_wwz_of_1", "4l_wwz_of_2", "4l_wwz_of_3", "4l_wwz_of_4"]
+
+    # Print the yields directly
+    mlt.print_latex_yield_table(
+        counts_dict,
+        tag="Raw MC counts (ewkcoffea)",
+        key_order=counts_dict.keys(),
+        subkey_order=cats_to_print,
+        print_begin_info=True,
+        print_end_info=True,
+        column_variable="subkeys",
+    )
 
 
 # DRAFTING
@@ -302,6 +320,11 @@ def main():
 
     # Get the counts from the input hiso
     histo_dict = pickle.load(gzip.open(args.pkl_file_path))
+
+    # Wrapper around the code for getting the raw counts and dump to latex table
+    #counts_dict = get_yields(histo_dict,raw_counts=True)
+    #print_counts(counts_dict)
+    #exit()
 
     # Wrapper around the code for getting the yields for sr and bkg samples
     yld_dict = get_yields(histo_dict)
