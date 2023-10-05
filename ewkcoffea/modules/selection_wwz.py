@@ -181,7 +181,7 @@ def trg_matching(events,year):
 
 
 # 4l selection # SYNC
-def add4lmask_wwz(events, year, isData):
+def add4lmask_wwz(events, year, isData, sample_name):
 
     # Leptons and padded leptons
     leps = events.l_wwz_t
@@ -201,6 +201,23 @@ def add4lmask_wwz(events, year, isData):
     cleanup = (events.min_mll_afos > 12)
 
     mask = filters & nlep_4 & on_z & cleanup
+
+    # Do gen cleanups
+    if sample_name in get_ec_param("vh_list"):
+        genparts = events.GenPart
+        is_zh = (abs(genparts[:,2].pdgId) == 23) # 3rd genparticle should be v for these samples
+        is_w_from_h = ((abs(genparts.pdgId)==24) & (abs(genparts.distinctParent.pdgId) == 25))
+        gen_mask = (is_zh & ak.any(is_w_from_h,axis=-1))
+        mask = mask & gen_mask
+
+    # TODO: Check if we need this, and add an if statement to not apply to data
+    #lep1_match_prompt = ((leps_padded[:,0].genPartFlav==1) | (leps_padded[:,0].genPartFlav == 15))
+    #lep2_match_prompt = ((leps_padded[:,1].genPartFlav==1) | (leps_padded[:,1].genPartFlav == 15))
+    #lep3_match_prompt = ((leps_padded[:,2].genPartFlav==1) | (leps_padded[:,2].genPartFlav == 15))
+    #lep4_match_prompt = ((leps_padded[:,3].genPartFlav==1) | (leps_padded[:,3].genPartFlav == 15))
+    #prompt_mask = ( lep1_match_prompt & lep2_match_prompt & lep3_match_prompt & lep4_match_prompt)
+    #mask = (mask & prompt_mask)
+
     events['is4lWWZ'] = ak.fill_none(mask,False)
 
 

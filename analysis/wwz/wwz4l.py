@@ -253,7 +253,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             events["njets"] = njets
             events["l_wwz_t"] = l_wwz_t
 
-            es_ec.add4lmask_wwz(events, year, isData)
+            es_ec.add4lmask_wwz(events, year, isData, histAxisName)
 
 
             ######### Masks we need for the selection ##########
