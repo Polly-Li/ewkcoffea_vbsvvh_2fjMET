@@ -81,6 +81,8 @@ sample_dict_base = {
         "TTZToQQ",
     ],
 
+    "tWZ" : ["tWll"],
+
     "other" : [
         ##"DYJetsToLL_M_10to50_MLM",
         "DYJetsToLL_M_50_MLM",
@@ -99,6 +101,10 @@ sample_dict_base = {
         ##"WJetsToLNu",
         "WWTo2L2Nu",
         "WZTo3LNu",
+
+        "WWW",
+        "WZZ",
+        "ZZZ",
     ],
 
     #"WWZJetsTo4L2Nu":            ["WWZJetsTo4L2Nu"],
@@ -114,6 +120,8 @@ sample_dict_base = {
     #"TTZToLL_M_1to10":           ["TTZToLL_M_1to10"],
     #"TTZToLLNuNu_M_10":          ["TTZToLLNuNu_M_10"],
     #"TTZToQQ":                   ["TTZToQQ"],
+    #"tWll" :                     ["tWll"],
+
     ###"DYJetsToLL_M_10to50_MLM": ["DYJetsToLL_M_10to50_MLM"],
     #"DYJetsToLL_M_50_MLM":       ["DYJetsToLL_M_50_MLM"],
     #"SSWW":                      ["SSWW"],
@@ -131,6 +139,11 @@ sample_dict_base = {
     ###"WJetsToLNu":              ["WJetsToLNu"],
     #"WWTo2L2Nu":                 ["WWTo2L2Nu"],
     #"WZTo3LNu":                  ["WZTo3LNu"],
+
+    #"WWW" : ["WWW"],
+    #"WZZ" : ["WZZ"],
+    #"ZZZ" : ["ZZZ"],
+
 
 }
 
@@ -192,6 +205,11 @@ def print_yields(yld_dict):
             if cat not in cats_to_print: continue
             yld_dict_for_printing[proc][cat] = yld_dict[proc][cat]
 
+
+    for k,v in yld_dict_for_printing.items():
+        print(k,v)
+    exit()
+
     # Print the yields directly
     mlt.print_latex_yield_table(
         yld_dict_for_printing,
@@ -203,7 +221,7 @@ def print_yields(yld_dict):
         #print_errs=True,
         column_variable="subkeys",
     )
-    #exit()
+    exit()
 
 
     # Compare with other yields, print comparison
