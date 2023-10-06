@@ -169,7 +169,7 @@ central_UL16_bkg_dict = {
 
     "UL16_tWll"   : { "histAxisName" : "UL16_tWll"   , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/ST_tWll_5f_TuneCP5_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep" , "xsecName" : "tWll" , } ,
     "UL16_WWW"    : { "histAxisName" : "UL16_WWW"  , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep" , "xsecName" : "WWW"  } ,
-    "UL16_WZZ"    : { "histAxisName" : "UL16_WZZ"  , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/WZZ_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Le" , "xsecName" : "WZZ"  } ,
+    "UL16_WZZ"    : { "histAxisName" : "UL16_WZZ"  , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/WZZ_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep" , "xsecName" : "WZZ"  } ,
     "UL16_ZZZ"    : { "histAxisName" : "UL16_ZZZ"  , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep" , "xsecName" : "ZZZ"  } ,
 }
 
