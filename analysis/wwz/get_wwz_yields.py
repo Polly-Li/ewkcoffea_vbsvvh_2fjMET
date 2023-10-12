@@ -206,10 +206,6 @@ def print_yields(yld_dict):
             yld_dict_for_printing[proc][cat] = yld_dict[proc][cat]
 
 
-    for k,v in yld_dict_for_printing.items():
-        print(k,v)
-    exit()
-
     # Print the yields directly
     mlt.print_latex_yield_table(
         yld_dict_for_printing,
