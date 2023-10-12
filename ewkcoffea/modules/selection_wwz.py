@@ -207,7 +207,7 @@ def add4lmask_wwz(events, year, isData, sample_name):
         genparts = events.GenPart
         is_zh = (abs(genparts[:,2].pdgId) == 23) # 3rd genparticle should be v for these samples
         is_w_from_h = ((abs(genparts.pdgId)==24) & (abs(genparts.distinctParent.pdgId) == 25))
-        gen_mask = (is_zh & ak.any(is_w_from_h,axis=-1))
+        gen_mask = ~(is_zh & ak.any(is_w_from_h,axis=-1))
         mask = mask & gen_mask
 
     # TODO: Check if we need this, and add an if statement to not apply to data
