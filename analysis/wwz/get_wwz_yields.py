@@ -6,6 +6,8 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
+from topcoffea.scripts.make_html import make_html
+
 from topcoffea.modules import utils
 import topcoffea.modules.MakeLatexTable as mlt
 
@@ -107,6 +109,7 @@ sample_dict_base = {
         "ZZZ",
     ],
 
+    ## Indiviudally
     #"WWZJetsTo4L2Nu":            ["WWZJetsTo4L2Nu"],
     #"GluGluZH":                  ["GluGluZH"],
     #"qqToZHToZTo2L":             ["qqToZHToZTo2L"],
@@ -214,7 +217,7 @@ def print_yields(yld_dict):
         subkey_order=cats_to_print,
         print_begin_info=True,
         print_end_info=True,
-        #print_errs=True,
+        print_errs=True,
         column_variable="subkeys",
     )
     exit()
@@ -283,17 +286,33 @@ def group(h, oldname, newname, grouping):
     return hnew
 
 # Takes a hist with one sparse axis and one dense axis, overlays everything on the sparse axis
-def make_single_fig(histo,overlay_name,unit_norm_bool=False):
+def make_cr_fig(histo_mc,histo_data,title,overlay_name,unit_norm_bool=False):
     #print("\nPlotting values:",histo.values())
     fig, ax = plt.subplots(1, 1, figsize=(7,7))
-    histo.plot1d(
-        overlay=overlay_name,
+
+    # Plot the mc
+    histo_mc.plot1d(
         stack=True,
         histtype="fill",
+        color=["red","yellow","blue","green","orange","grey"],
+        yerr=True,
     )
+    # Plot the data
+    histo_data.plot1d(
+        #overlay=overlay_name,
+        stack=False,
+        histtype="errorbar",
+        color="k",
+    )
+
+    #print(histo_mc)
+    #histo_data.plot_ratio(histo_mc.sum("process_grp"),ax)
+
+    plt.title(title)
     ax.autoscale(axis='y')
     plt.legend()
     return fig
+
 
 def make_plots(histo_dict):
 
@@ -301,23 +320,41 @@ def make_plots(histo_dict):
 
     for var_name in histo_dict.keys():
         print("\n",var_name)
-        if var_name == "ptl4": continue
-
+        if var_name not in ["met","njets","nleps","nbtagsl"]: continue
         histo = histo_dict[var_name]
 
-        grouping = sample_dict
-        print("grouping",grouping)
-        histo_grouped = group(histo,"process","process_grp",grouping)
+        # Rebin if continous variable
+        if var_name not in ["njets","nbtagsl","nleps"]:
+            histo = histo[..., ::hist.rebin(2)] # Rebin according to https://github.com/CoffeaTeam/coffea/discussions/705
 
-        for cat_name in histo_grouped.axes["category"]:
+        # Loop over categories and make plots for each
+        for cat_name in histo.axes["category"]:
             print(cat_name)
-            histo_cat = histo_grouped[{"category":cat_name}]
-            histo_cat.plot1d(overlay="process_grp")
+            if cat_name != "4l_of_cr": continue
 
-            fig = make_single_fig(histo_cat,overlay_name="process_grp")
+            histo_cat = histo[{"category":cat_name}]
+            #histo_cat.plot1d(overlay="process_grp")
+
+            # Group the mc samples
+            grouping_mc = sample_dict
+            histo_grouped_mc = group(histo_cat,"process","process_grp",grouping_mc)
+
+            # Group the data samples
+            grouping_data = {'data': ["UL16APV_data","UL16_data","UL17_data","UL18_data"]}
+            histo_grouped_data = group(histo_cat,"process","process_grp",grouping_data)
+
+            ####
+            #print(type(histo_cat.values()))
+            #print(sum(histo_cat.values()))
+            #print(sum(sum(histo_cat.values())))
+            #exit()
+            ####
+
             title = f"{cat_name}_{var_name}"
+            fig = make_cr_fig(histo_grouped_mc,histo_grouped_data,title=title,overlay_name="process_grp")
             fig.savefig(os.path.join(save_dir_path,title))
 
+            make_html(os.path.join(os.getcwd(),save_dir_path))
 
 
 
@@ -341,11 +378,12 @@ def main():
     #exit()
 
     # Wrapper around the code for getting the yields for sr and bkg samples
-    yld_dict = get_yields(histo_dict)
-    print_yields(yld_dict)
+    #yld_dict = get_yields(histo_dict)
+    #print_yields(yld_dict)
 
     # Test plotting
-    #make_plots(histo_dict)
+    make_plots(histo_dict)
+    exit()
 
     # Dump yield dict to json
     if "json" not in args.output_name: output_name = args.output_name + ".json"
