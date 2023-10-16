@@ -12,19 +12,6 @@ import topcoffea.modules.remote_environment as remote_environment
 
 LST_OF_KNOWN_EXECUTORS = ["futures","work_queue"]
 
-WGT_VAR_LST = [
-    "nSumOfWeights_ISRUp",
-    "nSumOfWeights_ISRDown",
-    "nSumOfWeights_FSRUp",
-    "nSumOfWeights_FSRDown",
-    "nSumOfWeights_renormUp",
-    "nSumOfWeights_renormDown",
-    "nSumOfWeights_factUp",
-    "nSumOfWeights_factDown",
-    "nSumOfWeights_renormfactUp",
-    "nSumOfWeights_renormfactDown",
-]
-
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='You can customize your run')
@@ -183,14 +170,14 @@ if __name__ == '__main__':
         nevts_total += samplesdict[sname]['nEvents']
         samplesdict[sname]['nGenEvents'] = int(samplesdict[sname]['nGenEvents'])
         samplesdict[sname]['nSumOfWeights'] = float(samplesdict[sname]['nSumOfWeights'])
-        if not samplesdict[sname]["isData"]:
-            for wgt_var in WGT_VAR_LST:
-                # Check that MC samples have all needed weight sums (only needed if doing systs)
-                if do_systs:
-                    if (wgt_var not in samplesdict[sname]):
-                        raise Exception(f"Missing weight variation \"{wgt_var}\".")
-                    else:
-                        samplesdict[sname][wgt_var] = float(samplesdict[sname][wgt_var])
+#        if not samplesdict[sname]["isData"]:
+#            for wgt_var in WGT_VAR_LST:
+#                # Check that MC samples have all needed weight sums (only needed if doing systs)
+#                if do_systs:
+#                    if (wgt_var not in samplesdict[sname]):
+#                        raise Exception(f"Missing weight variation \"{wgt_var}\".")
+#                    else:
+#                        samplesdict[sname][wgt_var] = float(samplesdict[sname][wgt_var])
         # Print file info
         print('>> '+sname)
         print('   - isData?      : %s'   %('YES' if samplesdict[sname]['isData'] else 'NO'))
@@ -202,10 +189,10 @@ if __name__ == '__main__':
         print('   - nEvents      : %i'   %samplesdict[sname]['nEvents'])
         print('   - nGenEvents   : %i'   %samplesdict[sname]['nGenEvents'])
         print('   - SumWeights   : %i'   %samplesdict[sname]['nSumOfWeights'])
-        if not samplesdict[sname]["isData"]:
-            for wgt_var in WGT_VAR_LST:
-                if wgt_var in samplesdict[sname]:
-                    print(f'   - {wgt_var}: {samplesdict[sname][wgt_var]}')
+#        if not samplesdict[sname]["isData"]:
+#            for wgt_var in WGT_VAR_LST:
+#                if wgt_var in samplesdict[sname]:
+#                    print(f'   - {wgt_var}: {samplesdict[sname][wgt_var]}')
         print('   - Prefix       : %s'   %samplesdict[sname]['redirector'])
         print('   - nFiles       : %i'   %len(samplesdict[sname]['files']))
         for fname in samplesdict[sname]['files']: print('     %s'%fname)
