@@ -17,6 +17,14 @@ import topcoffea.modules.MakeLatexTable as mlt
 # Reads the histograms and dumps out the yields for each group of processes
 # Example usage: python get_yld_check.py -f histos/tmp_histo.pkl.gz
 
+# Colors in VVV observation
+#ZZ    = (240, 155, 205)  #F09B9B
+#ttZ   = (0, 208, 145) #00D091
+#WZ    = (163, 155, 47) #A39B2F
+#tWZ   = (205, 240, 155) #CDF09B
+#Other = (205, 205, 205) #CDCDCD
+CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#CDCDCD"]
+
 EWK_PFMET = {'WWZ': {'4l_wwz_sf_A': (2.4805652549148363, 0.008789550103292692), '4l_wwz_sf_B': (1.8165616188380227, 0.00747052524914959), '4l_wwz_sf_C': (0.5534816082181351, 0.004188046949095953), '4l_wwz_of_1': (0.6708585904361826, 0.004534885362190564), '4l_wwz_of_2': (0.7723650003790681, 0.004866945190715124), '4l_wwz_of_3': (1.5525118519453827, 0.006911280413392028), '4l_wwz_of_4': (5.351180291743731, 0.01289547612370954)}, 'ZH': {'4l_wwz_sf_A': (1.0238004361544881, 0.008788955035482712), '4l_wwz_sf_B': (1.3359813175648014, 0.00934077047862732), '4l_wwz_sf_C': (0.6501900931434648, 0.005294535535514352), '4l_wwz_of_1': (3.083909928617686, 0.012228834559895143), '4l_wwz_of_2': (1.3766249652217084, 0.008169022817831762), '4l_wwz_of_3': (0.3649182918288716, 0.004309977848419291), '4l_wwz_of_4': (0.15344176035887358, 0.0034426940282646663)}, 'ZZ': {'4l_wwz_sf_A': (1.4521438367992232, 0.029205042479336828), '4l_wwz_sf_B': (4.677904277159541, 0.05234694277251101), '4l_wwz_sf_C': (3.389974884881667, 0.04426395340496686), '4l_wwz_of_1': (0.7480083064656355, 0.021154910976938047), '4l_wwz_of_2': (0.9564218484774756, 0.023975422645129762), '4l_wwz_of_3': (0.623115328970016, 0.0195838118311669), '4l_wwz_of_4': (0.503428151627304, 0.017427271906628516)}, 'ttZ': {'4l_wwz_sf_A': (1.5473141528200358, 0.0715998885477053), '4l_wwz_sf_B': (1.0910299081588164, 0.06124966375859094), '4l_wwz_sf_C': (0.24564968887716532, 0.030378417285157187), '4l_wwz_of_1': (0.3568343404913321, 0.0331584923690703), '4l_wwz_of_2': (0.4411137462593615, 0.03545671638186383), '4l_wwz_of_3': (0.9048907430842519, 0.05501831019250101), '4l_wwz_of_4': (2.784085821127519, 0.09804881816154837)}, 'other': {'4l_wwz_sf_A': (1.1430392182664946, 0.4580699456518573), '4l_wwz_sf_B': (2.022533335839398, 0.5401745037312242), '4l_wwz_sf_C': (0.585361891426146, 0.2581708633603538), '4l_wwz_of_1': (3.3825075863860548, 0.7125001691912998), '4l_wwz_of_2': (1.7277471584966406, 0.47367528844190904), '4l_wwz_of_3': (0.12254117743577808, 0.26617433325376494), '4l_wwz_of_4': (1.343750176136382, 0.29745430223262964)}}
 EWK_PUPPIMET = {'WWZ': {'4l_wwz_sf_A': (2.424348248217939, 0.008680002565746428), '4l_wwz_sf_C': (0.4677769291865843, 0.003835822331958304), '4l_wwz_of_1': (0.6708247330916493, 0.004530849496833588), '4l_wwz_of_2': (0.7673509698361158, 0.004852220739912817), '4l_wwz_sf_B': (1.8689647813753254, 0.007584448169001832), '4l_wwz_of_3': (1.5385571659608104, 0.006873341626007332), '4l_wwz_of_4': (5.351180291743731, 0.01289547612370954)}, 'ZH': {'4l_wwz_sf_A': (0.9588826269718993, 0.008562801130365305), '4l_wwz_sf_C': (0.5165593981819256, 0.0048819432342064), '4l_wwz_of_1': (3.0776154328386838, 0.012188943059530692), '4l_wwz_of_2': (1.3634339364716652, 0.008187905808049156), '4l_wwz_sf_B': (1.3810158226897329, 0.00942694896955524), '4l_wwz_of_3': (0.35068535435402737, 0.004283041214261076), '4l_wwz_of_4': (0.15344176035887358, 0.0034426940282646663)}, 'ZZ': {'4l_wwz_sf_A': (1.3188915546124917, 0.027709709326434746), '4l_wwz_sf_C': (1.8970280267531052, 0.03264529465008086), '4l_wwz_of_1': (0.6225106355814205, 0.019125182061863494), '4l_wwz_of_2': (0.6200819078767381, 0.01915663487648714), '4l_wwz_sf_B': (3.5339360351426876, 0.04509486030995772), '4l_wwz_of_3': (0.389804485719651, 0.015214380361572485), '4l_wwz_of_4': (0.503428151627304, 0.017427271906628516)}, 'ttZ': {'4l_wwz_sf_A': (1.46149617806077, 0.07070952619060875), '4l_wwz_sf_C': (0.24784770980477333, 0.030016927771481437), '4l_wwz_of_1': (0.35825034615118057, 0.03331835991644278), '4l_wwz_of_2': (0.4247714438242838, 0.03477282822737832), '4l_wwz_sf_B': (1.142400507000275, 0.06225512607803385), '4l_wwz_of_3': (0.9275160977849737, 0.05490768287045149), '4l_wwz_of_4': (2.784085821127519, 0.09804881816154837)}, 'other': {'4l_wwz_sf_A': (0.6555535732768476, 0.4433544142855943), '4l_wwz_sf_C': (0.4607994193211198, 0.23877620130436167), '4l_wwz_of_1': (3.6120765920495614, 0.7101441628058969), '4l_wwz_of_2': (1.3026276694145054, 0.4530368022583915), '4l_wwz_sf_B': (2.212222555070184, 0.5652786715257617), '4l_wwz_of_3': (0.21378649363759905, 0.2694498342344747), '4l_wwz_of_4': (1.343750176136382, 0.29745430223262964)}}
 
@@ -282,10 +290,12 @@ def print_counts(counts_dict):
 # This should maybe be in a different script
 ################### Hist manipulation and plotting ###################
 
+
 # Get the list of categories on the sparese axis
 def get_axis_cats(histo,axis_name):
     process_list = [x for x in histo.axes[axis_name]]
     return process_list
+
 
 # Regroup categories (e.g. processes)
 def group(h, oldname, newname, grouping):
@@ -313,8 +323,9 @@ def group(h, oldname, newname, grouping):
 
     return hnew
 
-# Takes a hist with one sparse axis and one dense axis, overlays everything on the sparse axis
-def make_cr_fig(histo_mc,histo_data,title,overlay_name,unit_norm_bool=False):
+
+# Takes a mc hist and data hist and plots both
+def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
     #print("\nPlotting values:",histo.values())
     fig, ax = plt.subplots(1, 1, figsize=(7,7))
 
@@ -322,7 +333,8 @@ def make_cr_fig(histo_mc,histo_data,title,overlay_name,unit_norm_bool=False):
     histo_mc.plot1d(
         stack=True,
         histtype="fill",
-        color=["red","yellow","blue","green","orange","grey"],
+        #color=["red","yellow","blue","green","orange","grey"],
+        color=CLR_LST,
         yerr=True,
     )
     # Plot the data
@@ -337,7 +349,34 @@ def make_cr_fig(histo_mc,histo_data,title,overlay_name,unit_norm_bool=False):
     plt.legend()
     return fig
 
+# Plots a hist
+def make_single_fig(histo_mc,title,unit_norm_bool=False):
+    #print("\nPlotting values:",histo.values())
+    fig, ax = plt.subplots(1, 1, figsize=(7,7))
 
+    # Guard against accidently looking at data before unblind
+    proc_lst = get_axis_cats(histo_mc,"process_grp")
+    for proc_name in proc_lst:
+        if "data" in proc_name:
+            raise Exception(f"CAUTION: Are you sure you want to look at this data in {proc_name}?")
+
+    # Plot the mc
+    histo_mc.plot1d(
+        stack=True,
+        histtype="fill",
+        #color=["red","yellow","blue","green","orange","grey"],
+        color=CLR_LST,
+        yerr=True,
+    )
+
+    plt.title(title)
+    ax.autoscale(axis='y')
+    plt.legend()
+    return fig
+
+
+
+# Main function for making CR plots
 def make_plots(histo_dict):
 
     save_dir_path = "plots"
@@ -353,7 +392,7 @@ def make_plots(histo_dict):
 
         # Loop over categories and make plots for each
         for cat_name in histo.axes["category"]:
-            if cat_name != "4l_of_cr": continue
+            #if cat_name not in ["4l_of_cr", "4l_sf_cr"]: continue
             print(cat_name)
 
             histo_cat = histo[{"category":cat_name}]
@@ -384,11 +423,19 @@ def make_plots(histo_dict):
             #exit()
             ####
 
+            # Make figure
             title = f"{cat_name}_{var_name}"
-            fig = make_cr_fig(histo_grouped_mc,histo_grouped_data,title=title,overlay_name="process_grp")
-            fig.savefig(os.path.join(save_dir_path,title))
+            if "cr" in title:
+                fig = make_cr_fig(histo_grouped_mc,histo_grouped_data,title=title)
+            else:
+                fig = make_single_fig(histo_grouped_mc,title=title)
 
-            make_html(os.path.join(os.getcwd(),save_dir_path))
+            # Save
+            save_dir_path_cat = os.path.join(save_dir_path,cat_name)
+            if not os.path.exists(save_dir_path_cat): os.mkdir(save_dir_path_cat)
+            fig.savefig(os.path.join(save_dir_path_cat,title))
+
+            make_html(os.path.join(os.getcwd(),save_dir_path_cat))
 
 
 
