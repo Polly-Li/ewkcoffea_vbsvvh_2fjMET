@@ -6,6 +6,8 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
+import hist
+
 from topcoffea.scripts.make_html import make_html
 
 from topcoffea.modules import utils
@@ -86,6 +88,14 @@ sample_dict_base = {
     "tWZ" : ["tWll"],
 
     "other" : [
+
+        ##"WWZJetsTo4L2Nu",
+        ##"GluGluZH","qqToZHToZTo2L",
+        ##"ZZTo4l", "ggToZZTo2e2mu", "ggToZZTo2e2tau", "ggToZZTo2mu2tau", "ggToZZTo4e", "ggToZZTo4mu", "ggToZZTo4tau",
+        ###"TTZToLL_M_1to10","TTZToLLNuNu_M_10","TTZToQQ",
+        ##"tWll",
+
+
         ##"DYJetsToLL_M_10to50_MLM",
         "DYJetsToLL_M_50_MLM",
         "SSWW",
@@ -269,18 +279,36 @@ def print_counts(counts_dict):
     )
 
 
-# DRAFTING
-################### Plotting ###################
+# This should maybe be in a different script
+################### Hist manipulation and plotting ###################
 
-import hist
+# Get the list of categories on the sparese axis
+def get_axis_cats(histo,axis_name):
+    process_list = [x for x in histo.axes[axis_name]]
+    return process_list
 
+# Regroup categories (e.g. processes)
 def group(h, oldname, newname, grouping):
+
+    # Build up a grouping dict that drops any proc that is not in our h
+    grouping_slim = {}
+    proc_lst = get_axis_cats(h,"process")
+    for grouping_name in grouping.keys():
+        for proc in grouping[grouping_name]:
+            if proc in proc_lst:
+                if grouping_name not in grouping_slim:
+                    grouping_slim[grouping_name] = []
+                grouping_slim[grouping_name].append(proc)
+            else:
+                print(f"WARNING: process {proc} not in this hist")
+
+    # From Nick: https://github.com/CoffeaTeam/coffea/discussions/705#discussioncomment-4604211
     hnew = hist.Hist(
-        hist.axis.StrCategory(grouping, name=newname),
+        hist.axis.StrCategory(grouping_slim, name=newname),
         *(ax for ax in h.axes if ax.name != oldname),
         storage=h._storage_type,
     )
-    for i, indices in enumerate(grouping.values()):
+    for i, indices in enumerate(grouping_slim.values()):
         hnew.view(flow=True)[i] = h[{oldname: indices}][{oldname: sum}].view(flow=True)
 
     return hnew
@@ -299,14 +327,10 @@ def make_cr_fig(histo_mc,histo_data,title,overlay_name,unit_norm_bool=False):
     )
     # Plot the data
     histo_data.plot1d(
-        #overlay=overlay_name,
         stack=False,
         histtype="errorbar",
         color="k",
     )
-
-    #print(histo_mc)
-    #histo_data.plot_ratio(histo_mc.sum("process_grp"),ax)
 
     plt.title(title)
     ax.autoscale(axis='y')
@@ -319,8 +343,8 @@ def make_plots(histo_dict):
     save_dir_path = "plots"
 
     for var_name in histo_dict.keys():
-        print("\n",var_name)
-        if var_name not in ["met","njets","nleps","nbtagsl"]: continue
+        print(f"\n{var_name}")
+        if "counts" in var_name: continue
         histo = histo_dict[var_name]
 
         # Rebin if continous variable
@@ -329,8 +353,8 @@ def make_plots(histo_dict):
 
         # Loop over categories and make plots for each
         for cat_name in histo.axes["category"]:
-            print(cat_name)
             if cat_name != "4l_of_cr": continue
+            print(cat_name)
 
             histo_cat = histo[{"category":cat_name}]
             #histo_cat.plot1d(overlay="process_grp")
@@ -344,9 +368,19 @@ def make_plots(histo_dict):
             histo_grouped_data = group(histo_cat,"process","process_grp",grouping_data)
 
             ####
-            #print(type(histo_cat.values()))
-            #print(sum(histo_cat.values()))
-            #print(sum(sum(histo_cat.values())))
+            #if var_name == "nleps":
+            #    print("mc\n",histo_grouped_mc)
+            #    print("data\n",histo_grouped_data)
+            #    print("val mc\n",histo_grouped_mc.values(flow=True))
+            #    print("val data\n",histo_grouped_data.values(flow=True))
+            #    print("var mc\n",np.sqrt(histo_grouped_mc.variances()))
+            #    print("var data\n",np.sqrt(histo_grouped_data.variances()))
+            #continue
+
+            #print("\Yields")
+            #print(type(histo_cat.values(flow=True)))
+            #print(sum(histo_cat.values(flow=True)))
+            #print(sum(sum(histo_cat.values(flow=True))))
             #exit()
             ####
 
