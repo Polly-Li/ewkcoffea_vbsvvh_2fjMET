@@ -5,8 +5,10 @@ import gzip
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import copy
 
 import hist
+from hist import axis
 
 from topcoffea.scripts.make_html import make_html
 
@@ -100,7 +102,7 @@ sample_dict_base = {
         ##"WWZJetsTo4L2Nu",
         ##"GluGluZH","qqToZHToZTo2L",
         ##"ZZTo4l", "ggToZZTo2e2mu", "ggToZZTo2e2tau", "ggToZZTo2mu2tau", "ggToZZTo4e", "ggToZZTo4mu", "ggToZZTo4tau",
-        ###"TTZToLL_M_1to10","TTZToLLNuNu_M_10","TTZToQQ",
+        ##"TTZToLL_M_1to10","TTZToLLNuNu_M_10","TTZToQQ",
         ##"tWll",
 
 
@@ -324,30 +326,77 @@ def group(h, oldname, newname, grouping):
     return hnew
 
 
+# Returns a hist of the histo_num/histo_den ratio (the input hists should only have one category)
+def get_ratio(histo_num,histo_den):
+
+    num_arr = histo_num.values(flow=True)
+    den_arr   = histo_den.values(flow=True)
+    num_err_arr = np.sqrt(histo_num.variances(flow=True))
+    den_err_arr   = np.sqrt(histo_den.variances(flow=True))
+
+    ratio_arr = num_arr/den_arr
+    ratio_err_arr = ratio_arr * np.sqrt( (num_err_arr/num_arr)**2.0 + (den_err_arr/den_arr)**2.0 )
+    ratio_var_arr = ratio_err_arr*ratio_err_arr
+
+    # Create the hist
+    ratio_val_var_arr = np.stack((ratio_arr,ratio_var_arr),axis=-1)
+    histo_ratio = hist.Hist(copy.deepcopy(histo_num.axes[0]), storage="weight")
+    histo_ratio[...] = ratio_val_var_arr
+
+    return histo_ratio
+
+
 # Takes a mc hist and data hist and plots both
 def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
-    #print("\nPlotting values:",histo.values())
-    fig, ax = plt.subplots(1, 1, figsize=(7,7))
+
+    # Create the figure
+    fig, (ax, rax) = plt.subplots(
+        nrows=2,
+        ncols=1,
+        figsize=(7,7),
+        gridspec_kw={"height_ratios": (3, 1)},
+        sharex=True
+    )
+    fig.subplots_adjust(hspace=.07)
 
     # Plot the mc
     histo_mc.plot1d(
         stack=True,
         histtype="fill",
-        #color=["red","yellow","blue","green","orange","grey"],
         color=CLR_LST,
         yerr=True,
+        ax=ax,
     )
     # Plot the data
     histo_data.plot1d(
         stack=False,
         histtype="errorbar",
         color="k",
+        ax=ax,
     )
 
-    plt.title(title)
+    # Get the ratio and plot it
+    histo_mc_sum = histo_mc[{"process_grp":sum}]
+    histo_data_sum = histo_data[{"process_grp":sum}]
+    histo_ratio = get_ratio(histo_data_sum,histo_mc_sum)
+    histo_ratio.plot1d(
+        stack=False,
+        histtype="errorbar",
+        color="k",
+        ax=rax,
+    )
+
+    # Scale the y axis and labels
+    ax.legend()
+    ax.set_title(title)
     ax.autoscale(axis='y')
-    plt.legend()
+    ax.set_xlabel(None)
+    rax.set_ylabel('Ratio')
+    rax.set_ylim(0.0,2.0)
+    rax.axhline(1.0,linestyle="-",color="k",linewidth=1)
+
     return fig
+
 
 # Plots a hist
 def make_single_fig(histo_mc,title,unit_norm_bool=False):
@@ -384,6 +433,7 @@ def make_plots(histo_dict):
     for var_name in histo_dict.keys():
         print(f"\n{var_name}")
         if "counts" in var_name: continue
+        #if var_name != "nleps": continue # TMP
         histo = histo_dict[var_name]
 
         # Rebin if continous variable
@@ -392,7 +442,7 @@ def make_plots(histo_dict):
 
         # Loop over categories and make plots for each
         for cat_name in histo.axes["category"]:
-            #if cat_name not in ["4l_of_cr", "4l_sf_cr"]: continue
+            #if cat_name not in ["cr_4l_of"]: continue # TMP
             print(cat_name)
 
             histo_cat = histo[{"category":cat_name}]
@@ -406,8 +456,9 @@ def make_plots(histo_dict):
             grouping_data = {'data': ["UL16APV_data","UL16_data","UL17_data","UL18_data"]}
             histo_grouped_data = group(histo_cat,"process","process_grp",grouping_data)
 
-            ####
-            #if var_name == "nleps":
+            #####
+            ##if cat_name == "cr_4l_sf" and var_name == "nleps":
+            #if cat_name == "cr_4l_of" and var_name == "nleps":
             #    print("mc\n",histo_grouped_mc)
             #    print("data\n",histo_grouped_data)
             #    print("val mc\n",histo_grouped_mc.values(flow=True))
@@ -415,7 +466,6 @@ def make_plots(histo_dict):
             #    print("var mc\n",np.sqrt(histo_grouped_mc.variances()))
             #    print("var data\n",np.sqrt(histo_grouped_data.variances()))
             #continue
-
             #print("\Yields")
             #print(type(histo_cat.values(flow=True)))
             #print(sum(histo_cat.values(flow=True)))
