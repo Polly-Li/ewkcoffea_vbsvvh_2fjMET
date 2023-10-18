@@ -12,31 +12,31 @@
             19064.0,
             null
         ],
-        "4l_wwz_sf_A_counts": [
+        "sr_4l_sf_A_counts": [
             928.0,
             null
         ],
-        "4l_wwz_sf_B_counts": [
+        "sr_4l_sf_B_counts": [
             754.0,
             null
         ],
-        "4l_wwz_sf_C_counts": [
+        "sr_4l_sf_C_counts": [
             235.0,
             null
         ],
-        "4l_wwz_of_1_counts": [
+        "sr_4l_of_1_counts": [
             250.0,
             null
         ],
-        "4l_wwz_of_2_counts": [
+        "sr_4l_of_2_counts": [
             301.0,
             null
         ],
-        "4l_wwz_of_3_counts": [
+        "sr_4l_of_3_counts": [
             620.0,
             null
         ],
-        "4l_wwz_of_4_counts": [
+        "sr_4l_of_4_counts": [
             2033.0,
             null
         ],
@@ -48,31 +48,39 @@
             9865.0,
             null
         ],
-        "4l_wwz_sf_A": [
+        "cr_4l_of_counts": [
+            115.0,
+            null
+        ],
+        "cr_4l_sf_counts": [
+            424.0,
+            null
+        ],
+        "sr_4l_sf_A": [
             0.7015306415269151,
             null
         ],
-        "4l_wwz_sf_B": [
+        "sr_4l_sf_B": [
             0.5889393039979041,
             null
         ],
-        "4l_wwz_sf_C": [
+        "sr_4l_sf_C": [
             0.1792800528346561,
             null
         ],
-        "4l_wwz_of_1": [
+        "sr_4l_of_1": [
             0.19573570985812694,
             null
         ],
-        "4l_wwz_of_2": [
+        "sr_4l_of_2": [
             0.24856702977558598,
             null
         ],
-        "4l_wwz_of_3": [
+        "sr_4l_of_3": [
             0.49020536185707897,
             null
         ],
-        "4l_wwz_of_4": [
+        "sr_4l_of_4": [
             1.6135204755119048,
             null
         ],
@@ -82,6 +90,14 @@
         ],
         "4l_presel": [
             7.726364016125444,
+            null
+        ],
+        "cr_4l_of": [
+            0.09960002935258672,
+            null
+        ],
+        "cr_4l_sf": [
+            0.3343096637399867,
             null
         ]
     }
