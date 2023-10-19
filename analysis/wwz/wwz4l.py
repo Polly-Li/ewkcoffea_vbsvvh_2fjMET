@@ -33,11 +33,11 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Create the dense axes for the histograms
         self._dense_axes_dict = {
-            "met"   : axis.Regular(50, 0, 500, name="met",  label="met"),
-            "ptl4"  : axis.Regular(50, 0, 500, name="ptl4", label="ptl4"),
-            "mll_01": axis.Regular(50, 0, 500, name="mll_01",  label="mll_l0_l1"),
-            "l0pt"  : axis.Regular(50, 0, 500, name="l0pt", label="l0pt"),
-            "j0pt"  : axis.Regular(50, 0, 500, name="j0pt", label="j0pt"),
+            "met"   : axis.Regular(180, 0, 500, name="met",  label="met"),
+            "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
+            "mll_01": axis.Regular(180, 0, 200, name="mll_01",  label="mll_l0_l1"),
+            "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
+            "j0pt"  : axis.Regular(180, 0, 500, name="j0pt", label="j0pt"),
 
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),

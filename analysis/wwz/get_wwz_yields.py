@@ -326,32 +326,6 @@ def group(h, oldname, newname, grouping):
     return hnew
 
 
-# Returns a hist of the histo_num/histo_den ratio (the input hists should only have one category)
-def get_ratio(histo_num,histo_den):
-
-    #data = 16 +- sqrt(16)
-    #mc   = 8 +- 4
-    #band  = 8/8  +- (4/8)
-    #point = (16 +- sqrt(16))/8  = 2 +- 0.5
-
-    num_arr = histo_num.values(flow=True)
-    den_arr = histo_den.values(flow=True)
-    num_err_arr = np.sqrt(histo_num.variances(flow=True))
-    den_err_arr = np.sqrt(histo_den.variances(flow=True))
-
-    ratio_arr = num_arr/den_arr
-    #ratio_err_arr = ratio_arr * np.sqrt( (num_err_arr/num_arr)**2.0 + (den_err_arr/den_arr)**2.0 )
-    ratio_err_arr = num_err_arr/den_arr # Only keeping data err
-    ratio_var_arr = ratio_err_arr*ratio_err_arr
-
-    # Create the hist
-    ratio_val_var_arr = np.stack((ratio_arr,ratio_var_arr),axis=-1)
-    histo_ratio = hist.Hist(copy.deepcopy(histo_num.axes[0]), storage="weight")
-    histo_ratio[...] = ratio_val_var_arr
-
-    return histo_ratio
-
-
 # Takes a mc hist and data hist and plots both
 def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
 
@@ -384,20 +358,10 @@ def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
         flow=None,
     )
 
-    # Get the ratio and plot it
+    ### Get the err and ratios and plot them by hand ###
     histo_mc_sum = histo_mc[{"process_grp":sum}]
     histo_data_sum = histo_data[{"process_grp":sum}]
-    histo_ratio = get_ratio(histo_data_sum,histo_mc_sum)
-    histo_ratio.plot1d(
-        stack=False,
-        #histtype="errorbar",
-        #color="k",
-        color="white",
-        ax=rax,
-        flow=None,
-    )
 
-    # Plot mc stat err by hand
     mc_arr = histo_mc_sum.values()
     mc_err_arr = np.sqrt(histo_mc_sum.variances())
     data_arr = histo_data_sum.values()
@@ -414,8 +378,8 @@ def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
     bin_edges_arr = histo_mc_sum.axes[0].edges
     bin_centers_arr = histo_mc_sum.axes[0].centers
 
-    ax.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', label='Syst err', hatch='////')
-    rax.fill_between(bin_edges_arr,err_ratio_m,err_ratio_p,step='post', facecolor='none', edgecolor='gray', label='Syst err', hatch='///')
+    ax.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', alpha=0.5, linewidth=0.0, label='MC stat', hatch='/////')
+    rax.fill_between(bin_edges_arr,err_ratio_m,err_ratio_p,step='post', facecolor='none',edgecolor='gray', label='MC stat', linewidth=0.0, hatch='/////',alpha=0.5)
     rax.scatter(bin_centers_arr,data_arr/mc_arr,facecolor='black',edgecolor='black',marker="o")
     rax.vlines(bin_centers_arr,data_ratio_err_p,data_ratio_err_m,color='k')
 
@@ -471,7 +435,7 @@ def make_plots(histo_dict):
 
         # Rebin if continous variable
         if var_name not in ["njets","nbtagsl","nleps"]:
-            histo = histo[..., ::hist.rebin(2)] # Rebin according to https://github.com/CoffeaTeam/coffea/discussions/705
+            histo = histo[..., ::hist.rebin(4)] # Rebin according to https://github.com/CoffeaTeam/coffea/discussions/705
 
         # Loop over categories and make plots for each
         for cat_name in histo.axes["category"]:
