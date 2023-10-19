@@ -289,7 +289,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             w_candidates_mll = (leps_not_z_candidate_ptordered[:,0:1]+leps_not_z_candidate_ptordered[:,1:2]).mass       # Will need to know mass of the leps from the W
 
             # Make masks for the SF regions
-            w_candidates_mll_far_from_z = ak.fill_none(ak.any((abs(w_candidates_mll - 91.2) > 10.0),axis=1),False) # Will enforce this for SF in the PackedSelection
+            w_candidates_mll_far_from_z = ak.fill_none(ak.any((abs(w_candidates_mll - get_ec_param("zmass")) > 10.0),axis=1),False) # Will enforce this for SF in the PackedSelection
             ptl4 = (l0+l1+l2+l3).pt
             sf_A = (met.pt > 120.0)
             sf_B = ((met.pt > 65.0) & (met.pt < 120.0) & (ptl4 > 70.0))
@@ -413,8 +413,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                     #if dense_axis_name == "njets":
                     #    print("STARTPRINT")
                     #    for i,j in enumerate(w):
-                    #        #print("PRINTTAG",i,dense_axis_name,year,sr_cat,event[i],run[i],luminosityBlock[i],w[i])
-                    #        out_str = f"PRINTTAG {i} {dense_axis_name} {year} {sr_cat} {event[i]} {run[i]} {luminosityBlock[i]} {w[i]} {met.pt[i]} {j0.pt[i]}"
+                    #        out_str = f"PRINTTAG {i} {dense_axis_name} {year} {sr_cat} {event[i]} {run[i]} {luminosityBlock[i]} {w[i]}"
                     #        print(out_str,file=sys.stderr,flush=True)
                     #    print("ENDPRINT")
                     #    print("ENDPRINT")
