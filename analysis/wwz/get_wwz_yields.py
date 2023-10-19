@@ -311,8 +311,8 @@ def group(h, oldname, newname, grouping):
                 if grouping_name not in grouping_slim:
                     grouping_slim[grouping_name] = []
                 grouping_slim[grouping_name].append(proc)
-            else:
-                print(f"WARNING: process {proc} not in this hist")
+            #else:
+            #    print(f"WARNING: process {proc} not in this hist")
 
     # From Nick: https://github.com/CoffeaTeam/coffea/discussions/705#discussioncomment-4604211
     hnew = hist.Hist(
@@ -329,13 +329,19 @@ def group(h, oldname, newname, grouping):
 # Returns a hist of the histo_num/histo_den ratio (the input hists should only have one category)
 def get_ratio(histo_num,histo_den):
 
+    #data = 16 +- sqrt(16)
+    #mc   = 8 +- 4
+    #band  = 8/8  +- (4/8)
+    #point = (16 +- sqrt(16))/8  = 2 +- 0.5
+
     num_arr = histo_num.values(flow=True)
-    den_arr   = histo_den.values(flow=True)
+    den_arr = histo_den.values(flow=True)
     num_err_arr = np.sqrt(histo_num.variances(flow=True))
-    den_err_arr   = np.sqrt(histo_den.variances(flow=True))
+    den_err_arr = np.sqrt(histo_den.variances(flow=True))
 
     ratio_arr = num_arr/den_arr
-    ratio_err_arr = ratio_arr * np.sqrt( (num_err_arr/num_arr)**2.0 + (den_err_arr/den_arr)**2.0 )
+    #ratio_err_arr = ratio_arr * np.sqrt( (num_err_arr/num_arr)**2.0 + (den_err_arr/den_arr)**2.0 )
+    ratio_err_arr = num_err_arr/den_arr # Only keeping data err
     ratio_var_arr = ratio_err_arr*ratio_err_arr
 
     # Create the hist
@@ -364,8 +370,8 @@ def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
         stack=True,
         histtype="fill",
         color=CLR_LST,
-        yerr=True,
         ax=ax,
+        flow=None,
     )
     # Plot the data
     histo_data.plot1d(
@@ -373,6 +379,9 @@ def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
         histtype="errorbar",
         color="k",
         ax=ax,
+        w2=histo_data.variances(),
+        w2method="sqrt",
+        flow=None,
     )
 
     # Get the ratio and plot it
@@ -381,10 +390,34 @@ def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
     histo_ratio = get_ratio(histo_data_sum,histo_mc_sum)
     histo_ratio.plot1d(
         stack=False,
-        histtype="errorbar",
-        color="k",
+        #histtype="errorbar",
+        #color="k",
+        color="white",
         ax=rax,
+        flow=None,
     )
+
+    # Plot mc stat err by hand
+    mc_arr = histo_mc_sum.values()
+    mc_err_arr = np.sqrt(histo_mc_sum.variances())
+    data_arr = histo_data_sum.values()
+    data_err_arr = np.sqrt(histo_data_sum.variances())
+
+    err_p = np.append(mc_arr + mc_err_arr, 0)
+    err_m = np.append(mc_arr - mc_err_arr, 0)
+    err_ratio_p = np.append(1+mc_err_arr/mc_arr,1)
+    err_ratio_m = np.append(1-mc_err_arr/mc_arr,1)
+
+    data_ratio_err_p = (data_arr + data_err_arr)/mc_arr
+    data_ratio_err_m = (data_arr - data_err_arr)/mc_arr
+
+    bin_edges_arr = histo_mc_sum.axes[0].edges
+    bin_centers_arr = histo_mc_sum.axes[0].centers
+
+    ax.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', label='Syst err', hatch='////')
+    rax.fill_between(bin_edges_arr,err_ratio_m,err_ratio_p,step='post', facecolor='none', edgecolor='gray', label='Syst err', hatch='///')
+    rax.scatter(bin_centers_arr,data_arr/mc_arr,facecolor='black',edgecolor='black',marker="o")
+    rax.vlines(bin_centers_arr,data_ratio_err_p,data_ratio_err_m,color='k')
 
     # Scale the y axis and labels
     ax.legend()
@@ -433,7 +466,7 @@ def make_plots(histo_dict):
     for var_name in histo_dict.keys():
         print(f"\n{var_name}")
         if "counts" in var_name: continue
-        #if var_name != "nleps": continue # TMP
+        #if var_name != "njets": continue # TMP
         histo = histo_dict[var_name]
 
         # Rebin if continous variable
@@ -442,7 +475,7 @@ def make_plots(histo_dict):
 
         # Loop over categories and make plots for each
         for cat_name in histo.axes["category"]:
-            #if cat_name not in ["cr_4l_of"]: continue # TMP
+            if cat_name not in ["cr_4l_sf","cr_4l_of"]: continue # TMP
             print(cat_name)
 
             histo_cat = histo[{"category":cat_name}]
@@ -483,7 +516,8 @@ def make_plots(histo_dict):
             # Save
             save_dir_path_cat = os.path.join(save_dir_path,cat_name)
             if not os.path.exists(save_dir_path_cat): os.mkdir(save_dir_path_cat)
-            fig.savefig(os.path.join(save_dir_path_cat,title))
+            fig.savefig(os.path.join(save_dir_path_cat,title+".pdf"))
+            fig.savefig(os.path.join(save_dir_path_cat,title+".png"))
 
             make_html(os.path.join(os.getcwd(),save_dir_path_cat))
 
