@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#import sys
 import coffea
 import numpy as np
 import awkward as ak
@@ -32,12 +33,16 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Create the dense axes for the histograms
         self._dense_axes_dict = {
-            "met"   : axis.Regular(50, 0, 500, name="met",   label="met"),
-            "ptl4"  : axis.Regular(50, 0, 500, name="ptl4",   label="ptl4"),
+            "met"   : axis.Regular(180, 0, 500, name="met",  label="met"),
+            "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
+            "mll_01": axis.Regular(180, 0, 200, name="mll_01",  label="mll_l0_l1"),
+            "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
+            "j0pt"  : axis.Regular(180, 0, 500, name="j0pt", label="j0pt"),
 
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
             "nbtagsl" : axis.Regular(4, 0, 4, name="nbtagsl", label="Loose btag multiplicity"),
+
             "njets_counts"   : axis.Regular(30, 0, 30, name="njets_counts",   label="Jet multiplicity counts"),
             "nleps_counts"   : axis.Regular(30, 0, 30, name="nleps_counts",   label="Lep multiplicity counts"),
             "nbtagsl_counts" : axis.Regular(30, 0, 30, name="nbtagsl_counts", label="Loose btag multiplicity counts"),
@@ -237,12 +242,14 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             if btagger == "btag":
                 isBtagJetsLoose = (goodJets.btagDeepFlavB > btagwpl)
+                isBtagJetsMedium = (goodJets.btagDeepFlavB > btagwpm)
             if btagger == "btagcsv":
                 isBtagJetsLoose = (goodJets.btagDeepB > btagwpl)
+                isBtagJetsMedium = (goodJets.btagDeepB > btagwpm)
+
             isNotBtagJetsLoose = np.invert(isBtagJetsLoose)
             nbtagsl = ak.num(goodJets[isBtagJetsLoose])
 
-            isBtagJetsMedium = (goodJets.btagDeepFlavB > btagwpm)
             isNotBtagJetsMedium = np.invert(isBtagJetsMedium)
             nbtagsm = ak.num(goodJets[isBtagJetsMedium])
 
@@ -271,6 +278,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             bmask_atleast2med = (nbtagsm>=2) # Used for 3l SR
             bmask_atmost2med  = (nbtagsm< 3) # Used to make 2lss mutually exclusive from tttt enriched
             bmask_atleast3med = (nbtagsm>=3) # Used for tttt enriched
+            bmask_atleast1med = (nbtagsm>=1)
 
 
             ######### WWZ event selection stuff #########
@@ -281,7 +289,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             w_candidates_mll = (leps_not_z_candidate_ptordered[:,0:1]+leps_not_z_candidate_ptordered[:,1:2]).mass       # Will need to know mass of the leps from the W
 
             # Make masks for the SF regions
-            w_candidates_mll_far_from_z = ak.fill_none(ak.any((abs(w_candidates_mll - 91.2) > 10.0),axis=1),False) # Will enforce this for SF in the PackedSelection
+            w_candidates_mll_far_from_z = ak.fill_none(ak.any((abs(w_candidates_mll - get_ec_param("zmass")) > 10.0),axis=1),False) # Will enforce this for SF in the PackedSelection
             ptl4 = (l0+l1+l2+l3).pt
             sf_A = (met.pt > 120.0)
             sf_B = ((met.pt > 65.0) & (met.pt < 120.0) & (ptl4 > 70.0))
@@ -312,23 +320,33 @@ class AnalysisProcessor(processor.ProcessorABC):
             zeroj = (njets==0)
 
             # For WWZ selection
-            selections.add("4l_wwz_sf_A", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_A))
-            selections.add("4l_wwz_sf_B", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_B))
-            selections.add("4l_wwz_sf_C", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_C))
-            selections.add("4l_wwz_of_1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_1 & mt2_mask))
-            selections.add("4l_wwz_of_2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_2 & mt2_mask))
-            selections.add("4l_wwz_of_3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_3 & mt2_mask))
-            selections.add("4l_wwz_of_4", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_4))
+            selections.add("sr_4l_sf_A", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_A))
+            selections.add("sr_4l_sf_B", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_B))
+            selections.add("sr_4l_sf_C", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_C))
+            selections.add("sr_4l_of_1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_1 & mt2_mask))
+            selections.add("sr_4l_of_2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_2 & mt2_mask))
+            selections.add("sr_4l_of_3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_3 & mt2_mask))
+            selections.add("sr_4l_of_4", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_4))
 
             selections.add("all_events", (events.is4lWWZ | (~events.is4lWWZ))) # All events.. this logic is a bit roundabout to just get an array of True
             selections.add("4l_presel", (events.is4lWWZ)) # This matches the VVV looper selection (object selection and event selection)
 
-            sr_cat_dict = {
-                "lep_chan_lst" : ["4l_wwz_sf_A","4l_wwz_sf_B","4l_wwz_sf_C","4l_wwz_of_1","4l_wwz_of_2","4l_wwz_of_3","4l_wwz_of_4","all_events","4l_presel"],
-                #"lep_chan_lst" : ["4l_wwz_sf_A","4l_wwz_sf_B","4l_wwz_sf_C","4l_wwz_of_1","4l_wwz_of_2","4l_wwz_of_3","4l_wwz_of_4"],
+            # CRs
+            selections.add("cr_4l_of", (pass_trg & events.is4lWWZ & bmask_atleast1med & events.wwz_presel_of))
+            selections.add("cr_4l_sf", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
+
+            cat_dict = {
+                "lep_chan_lst" : [
+                    "sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4","all_events","4l_presel",
+                    "cr_4l_of","cr_4l_sf",
+                ],
             }
 
+            ######### Get variables #########
 
+            l0pt = l0.pt
+            j0pt = ak.flatten(j0.pt) # Flatten to go from [[j0pt],[j0pt],...] -> [j0pt,j0pt,...]
+            mll_01 = (l0+l1).mass
 
             ######### Fill histos #########
 
@@ -337,17 +355,26 @@ class AnalysisProcessor(processor.ProcessorABC):
             dense_variables_dict = {
                 "met" : met.pt,
                 "ptl4" : ptl4,
+                "mll_01" : mll_01,
+                "l0pt" : l0pt,
+                "j0pt" : j0pt,
                 "nleps" : nleps,
                 "njets" : njets,
                 "nbtagsl" : nbtagsl,
+
                 "nleps_counts" : nleps,
                 "njets_counts" : njets,
                 "nbtagsl_counts" : nbtagsl,
             }
 
-            # List the hists that are only defined for sr bins
-            analysis_var_only = ["ptl4"]
-            analysis_cats = ["4l_wwz_sf_A","4l_wwz_sf_B","4l_wwz_sf_C","4l_wwz_of_1","4l_wwz_of_2","4l_wwz_of_3","4l_wwz_of_4"]
+            # List the hists that are only defined for some categories
+            analysis_cats = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
+            exclude_var_dict = {
+                "ptl4" : ["all_events"],
+                "j0pt" : ["all_events", "4l_presel", "cr_4l_sf"] + analysis_cats,
+                "l0pt" : ["all_events"],
+                "mll_01"  : ["all_events"],
+            }
 
 
             # Loop over the hists we want to fill
@@ -369,15 +396,31 @@ class AnalysisProcessor(processor.ProcessorABC):
                 else: weights = weights_obj_base.partial_weight(include=["norm"])
 
                 # Loop over categories
-                for sr_cat in sr_cat_dict["lep_chan_lst"]:
+                for sr_cat in cat_dict["lep_chan_lst"]:
 
                     # Skip filling if this variable is not relevant for this selection
-                    if (dense_axis_name in analysis_var_only) and (sr_cat not in analysis_cats): continue
+                    if (dense_axis_name in exclude_var_dict) and (sr_cat in exclude_var_dict[dense_axis_name]): continue
 
                     # Make the cuts mask
                     cuts_lst = [sr_cat]
                     if isData: cuts_lst.append("is_good_lumi") # Apply golden json requirements if this is data
                     all_cuts_mask = selections.all(*cuts_lst)
+
+                    #run = events.run[all_cuts_mask]
+                    #luminosityBlock = events.luminosityBlock[all_cuts_mask]
+                    #event = events.event[all_cuts_mask]
+                    #w = weights[all_cuts_mask]
+                    #if dense_axis_name == "njets":
+                    #    print("STARTPRINT")
+                    #    for i,j in enumerate(w):
+                    #        out_str = f"PRINTTAG {i} {dense_axis_name} {year} {sr_cat} {event[i]} {run[i]} {luminosityBlock[i]} {w[i]}"
+                    #        print(out_str,file=sys.stderr,flush=True)
+                    #    print("ENDPRINT")
+                    #    print("ENDPRINT")
+                    #print("\ndense_axis_name",dense_axis_name)
+                    #print("sr_cat",sr_cat)
+                    #print("dense_axis_vals[all_cuts_mask]",dense_axis_vals[all_cuts_mask])
+                    #print("this")
 
                     # Fill the histos
                     axes_fill_info_dict = {

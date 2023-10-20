@@ -195,7 +195,7 @@ def add4lmask_wwz(events, year, isData, sample_name):
     nlep_4 = (ak.num(leps) == 4)
 
     # Check if the leading lep associated with Z has pt>25
-    on_z = ak.fill_none(tc_es.get_Z_peak_mask(leps_padded[:,0:4],pt_window=10.0,zmass=91.1876),False)
+    on_z = ak.fill_none(tc_es.get_Z_peak_mask(leps_padded[:,0:4],pt_window=10.0,zmass=get_ec_param("zmass")),False)
 
     # Remove low mass resonances
     cleanup = (events.min_mll_afos > 12)
@@ -234,7 +234,7 @@ def get_z_candidate_mask(lep_collection):
     ll_pairs_idx = ak.argcombinations(lep_collection, 2, fields=["l0","l1"])
 
     # Check each pair to see how far it is from the Z
-    dist_from_z_all_pairs = abs((ll_pairs.l0+ll_pairs.l1).mass - 91.2)
+    dist_from_z_all_pairs = abs((ll_pairs.l0+ll_pairs.l1).mass - get_ec_param("zmass"))
 
     # Mask out the pairs that are not SFOS (so that we don't include them when finding the one that's closest to Z)
     # And then of the SFOS pairs, get the index of the one that's cosest to the Z
@@ -285,7 +285,7 @@ def attach_wwz_preselection_mask(events,lep_collection):
 
     # Build an event level mask that checks if the z candidates are close enough to the z
     z_mass = (leps_z_candidate[:,0:1]+leps_z_candidate[:,1:2]).mass
-    z_mass_mask = (abs((leps_z_candidate[:,0:1]+leps_z_candidate[:,1:2]).mass-91.2) < 10.0)
+    z_mass_mask = (abs((leps_z_candidate[:,0:1]+leps_z_candidate[:,1:2]).mass - get_ec_param("zmass")) < 10.0)
     z_mass_mask = ak.fill_none(ak.any(z_mass_mask,axis=1),False) # Make sure None entries are false
 
     # Build an event level mask to check the iso and sip3d for leps from Z and W
