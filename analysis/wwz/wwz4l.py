@@ -34,7 +34,9 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Create the dense axes for the histograms
         self._dense_axes_dict = {
             "met"   : axis.Regular(180, 0, 500, name="met",  label="met"),
+            "metphi": axis.Regular(180, -4, 4, name="metphi", label="met phi"),
             "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
+            "scalarptsum_lep" : axis.Regular(180, 0, 500, name="scalarptsum_lep", label="S_T"),
             "mll_01": axis.Regular(180, 0, 200, name="mll_01",  label="mll_l0_l1"),
             "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
             "j0pt"  : axis.Regular(180, 0, 500, name="j0pt", label="j0pt"),
@@ -347,6 +349,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             l0pt = l0.pt
             j0pt = ak.flatten(j0.pt) # Flatten to go from [[j0pt],[j0pt],...] -> [j0pt,j0pt,...]
             mll_01 = (l0+l1).mass
+            scalarptsum_lep = l0.pt + l1.pt + l2.pt + l3.pt
 
             ######### Fill histos #########
 
@@ -354,10 +357,13 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             dense_variables_dict = {
                 "met" : met.pt,
+                "metphi" : met.phi,
                 "ptl4" : ptl4,
+                "scalarptsum_lep" : scalarptsum_lep,
                 "mll_01" : mll_01,
                 "l0pt" : l0pt,
                 "j0pt" : j0pt,
+
                 "nleps" : nleps,
                 "njets" : njets,
                 "nbtagsl" : nbtagsl,
@@ -373,7 +379,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "ptl4" : ["all_events"],
                 "j0pt" : ["all_events", "4l_presel", "cr_4l_sf"] + analysis_cats,
                 "l0pt" : ["all_events"],
-                "mll_01"  : ["all_events"],
+                "mll_01" : ["all_events"],
+                "scalarptsum_lep" : ["all_events"],
             }
 
 
