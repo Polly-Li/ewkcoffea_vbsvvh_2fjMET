@@ -225,8 +225,8 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
             # Loose DeepJet WP
-            #btagger = "btag" # For deep flavor WPs
-            btagger = "btagcsv" # For deep CSV WPs
+            btagger = "btag" # For deep flavor WPs
+            #btagger = "btagcsv" # For deep CSV WPs
             if year == "2017":
                 btagwpl = get_tc_param(f"{btagger}_wp_loose_UL17")
                 btagwpm = get_tc_param(f"{btagger}_wp_medium_UL17")
