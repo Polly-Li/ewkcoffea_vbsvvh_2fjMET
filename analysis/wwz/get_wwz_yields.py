@@ -378,7 +378,7 @@ def group(h, oldname, newname, grouping):
     hnew = hist.Hist(
         hist.axis.StrCategory(grouping_slim, name=newname),
         *(ax for ax in h.axes if ax.name != oldname),
-        storage=h._storage_type,
+        storage=h.storage_type(),
     )
     for i, indices in enumerate(grouping_slim.values()):
         hnew.view(flow=True)[i] = h[{oldname: indices}][{oldname: sum}].view(flow=True)
