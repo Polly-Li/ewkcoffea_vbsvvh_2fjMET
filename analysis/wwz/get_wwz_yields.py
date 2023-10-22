@@ -6,6 +6,7 @@ import os
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+import copy
 
 import hist
 
@@ -342,6 +343,20 @@ def get_axis_cats(histo,axis_name):
     return process_list
 
 
+# Merges the last bin (overflow) into the second to last bin, zeros the content of the last bin, returns a new hist
+def merge_overflow(hin):
+    hout = copy.deepcopy(hin)
+    for cat_idx,arr in enumerate(hout.values(flow=True)):
+        hout.values(flow=True)[cat_idx][-2] += hout.values(flow=True)[cat_idx][-1]
+        hout.values(flow=True)[cat_idx][-1] = 0
+    return hout
+
+
+# Rebin according to https://github.com/CoffeaTeam/coffea/discussions/705
+def rebin(histo,factor):
+    histo = histo[..., ::hist.rebin(factor)]
+
+
 # Regroup categories (e.g. processes)
 def group(h, oldname, newname, grouping):
 
@@ -464,7 +479,6 @@ def make_single_fig(histo_mc,title,unit_norm_bool=False):
     return fig
 
 
-
 # Main function for making CR plots
 def make_plots(histo_dict):
 
@@ -478,7 +492,7 @@ def make_plots(histo_dict):
 
         # Rebin if continous variable
         if var_name not in ["njets","nbtagsl","nleps"]:
-            histo = histo[..., ::hist.rebin(4)] # Rebin according to https://github.com/CoffeaTeam/coffea/discussions/705
+            rebin(histo,6)
 
         # Loop over categories and make plots for each
         for cat_name in histo.axes["category"]:
@@ -486,7 +500,6 @@ def make_plots(histo_dict):
             print(cat_name)
 
             histo_cat = histo[{"category":cat_name}]
-            #histo_cat.plot1d(overlay="process_grp")
 
             # Group the mc samples
             grouping_mc = sample_dict
@@ -497,7 +510,6 @@ def make_plots(histo_dict):
             histo_grouped_data = group(histo_cat,"process","process_grp",grouping_data)
 
             #####
-            ##if cat_name == "cr_4l_sf" and var_name == "nleps":
             #if cat_name == "cr_4l_of" and var_name == "nleps":
             #    print("mc\n",histo_grouped_mc)
             #    print("data\n",histo_grouped_data)
@@ -512,6 +524,9 @@ def make_plots(histo_dict):
             #print(sum(sum(histo_cat.values(flow=True))))
             #exit()
             ####
+
+            #histo_grouped_data = merge_overflow(histo_grouped_data)
+            #histo_grouped_mc = merge_overflow(histo_grouped_mc)
 
             # Make figure
             title = f"{cat_name}_{var_name}"
@@ -550,15 +565,13 @@ def main():
     #exit()
 
     # Wrapper around the code for getting the yields for sr and bkg samples
-    yld_dict = get_yields(histo_dict)
-    put_s_over_root_b(yld_dict)
-    #print(yld_dict)
-    #exit()
-    print_yields(yld_dict)
+    #yld_dict = get_yields(histo_dict)
+    #put_s_over_root_b(yld_dict)
+    #print_yields(yld_dict)
 
     # Test plotting
-    #make_plots(histo_dict)
-    #exit()
+    make_plots(histo_dict)
+    exit()
 
     # Dump yield dict to json
     if "json" not in args.output_name: output_name = args.output_name + ".json"
