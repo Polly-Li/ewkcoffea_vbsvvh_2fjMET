@@ -354,7 +354,7 @@ def merge_overflow(hin):
 
 # Rebin according to https://github.com/CoffeaTeam/coffea/discussions/705
 def rebin(histo,factor):
-    histo = histo[..., ::hist.rebin(factor)]
+    return histo[..., ::hist.rebin(factor)]
 
 
 # Regroup categories (e.g. processes)
@@ -403,7 +403,6 @@ def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
         histtype="fill",
         color=CLR_LST,
         ax=ax,
-        flow=None,
     )
     # Plot the data
     histo_data.plot1d(
@@ -413,7 +412,6 @@ def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
         ax=ax,
         w2=histo_data.variances(),
         w2method="sqrt",
-        flow=None,
     )
 
     ### Get the err and ratios and plot them by hand ###
@@ -442,13 +440,15 @@ def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
     rax.vlines(bin_centers_arr,data_ratio_err_p,data_ratio_err_m,color='k')
 
     # Scale the y axis and labels
-    ax.legend()
+    ax.legend(fontsize="12")
     ax.set_title(title)
     ax.autoscale(axis='y')
     ax.set_xlabel(None)
     rax.set_ylabel('Ratio')
     rax.set_ylim(0.0,2.0)
     rax.axhline(1.0,linestyle="-",color="k",linewidth=1)
+    ax.tick_params(axis='y', labelsize=16)
+    rax.tick_params(axis='x', labelsize=16)
 
     return fig
 
@@ -492,7 +492,7 @@ def make_plots(histo_dict):
 
         # Rebin if continous variable
         if var_name not in ["njets","nbtagsl","nleps"]:
-            rebin(histo,6)
+            histo = rebin(histo,6)
 
         # Loop over categories and make plots for each
         for cat_name in histo.axes["category"]:
@@ -525,8 +525,9 @@ def make_plots(histo_dict):
             #exit()
             ####
 
-            #histo_grouped_data = merge_overflow(histo_grouped_data)
-            #histo_grouped_mc = merge_overflow(histo_grouped_mc)
+            # Merge overflow into last bin (so it shows up in the plot)
+            histo_grouped_data = merge_overflow(histo_grouped_data)
+            histo_grouped_mc = merge_overflow(histo_grouped_mc)
 
             # Make figure
             title = f"{cat_name}_{var_name}"
