@@ -349,6 +349,8 @@ def merge_overflow(hin):
     for cat_idx,arr in enumerate(hout.values(flow=True)):
         hout.values(flow=True)[cat_idx][-2] += hout.values(flow=True)[cat_idx][-1]
         hout.values(flow=True)[cat_idx][-1] = 0
+        hout.variances(flow=True)[cat_idx][-2] += hout.variances(flow=True)[cat_idx][-1]
+        hout.variances(flow=True)[cat_idx][-1] = 0
     return hout
 
 
@@ -413,6 +415,8 @@ def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
         w2=histo_data.variances(),
         w2method="sqrt",
     )
+    # Plot a dummy hist on rax to get the label to show up
+    histo_data.plot1d(alpha=0, ax=rax)
 
     ### Get the err and ratios and plot them by hand ###
     histo_mc_sum = histo_mc[{"process_grp":sum}]
@@ -528,6 +532,7 @@ def make_plots(histo_dict):
             # Merge overflow into last bin (so it shows up in the plot)
             histo_grouped_data = merge_overflow(histo_grouped_data)
             histo_grouped_mc = merge_overflow(histo_grouped_mc)
+
 
             # Make figure
             title = f"{cat_name}_{var_name}"
