@@ -571,13 +571,13 @@ def main():
     #exit()
 
     # Wrapper around the code for getting the yields for sr and bkg samples
-    #yld_dict = get_yields(histo_dict)
-    #put_s_over_root_b(yld_dict)
-    #print_yields(yld_dict)
+    yld_dict = get_yields(histo_dict)
+    put_s_over_root_b(yld_dict)
+    print_yields(yld_dict)
 
     # Test plotting
-    make_plots(histo_dict)
-    exit()
+    #make_plots(histo_dict)
+    #exit()
 
     # Dump yield dict to json
     if "json" not in args.output_name: output_name = args.output_name + ".json"
