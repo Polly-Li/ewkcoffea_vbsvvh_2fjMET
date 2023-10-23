@@ -304,10 +304,10 @@ class AnalysisProcessor(processor.ProcessorABC):
             of_4 = ak.fill_none(ak.any((w_candidates_mll > 100.0),axis=1),False)
 
             # Mask for mt2 cut
-            w_lep0 = leps_not_z_candidate_ptordered[:,0:1]
-            w_lep1 = leps_not_z_candidate_ptordered[:,1:2]
+            w_lep0 = leps_not_z_candidate_ptordered[:,0]
+            w_lep1 = leps_not_z_candidate_ptordered[:,1]
             mt2_val = es_ec.get_mt2(w_lep0,w_lep1,met)
-            mt2_mask = ak.fill_none(ak.any((mt2_val>25.0),axis=1),False)
+            mt2_mask = ak.fill_none(mt2_val>25.0,False)
 
 
 
