@@ -34,7 +34,9 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Create the dense axes for the histograms
         self._dense_axes_dict = {
             "met"   : axis.Regular(180, 0, 500, name="met",  label="met"),
+            "metphi": axis.Regular(180, -4, 4, name="metphi", label="met phi"),
             "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
+            "scalarptsum_lep" : axis.Regular(180, 0, 500, name="scalarptsum_lep", label="S_T"),
             "mll_01": axis.Regular(180, 0, 200, name="mll_01",  label="mll_l0_l1"),
             "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
             "j0pt"  : axis.Regular(180, 0, 500, name="j0pt", label="j0pt"),
@@ -223,8 +225,8 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
             # Loose DeepJet WP
-            #btagger = "btag" # For deep flavor WPs
-            btagger = "btagcsv" # For deep CSV WPs
+            btagger = "btag" # For deep flavor WPs
+            #btagger = "btagcsv" # For deep CSV WPs
             if year == "2017":
                 btagwpl = get_tc_param(f"{btagger}_wp_loose_UL17")
                 btagwpm = get_tc_param(f"{btagger}_wp_medium_UL17")
@@ -302,10 +304,10 @@ class AnalysisProcessor(processor.ProcessorABC):
             of_4 = ak.fill_none(ak.any((w_candidates_mll > 100.0),axis=1),False)
 
             # Mask for mt2 cut
-            w_lep0 = leps_not_z_candidate_ptordered[:,0:1]
-            w_lep1 = leps_not_z_candidate_ptordered[:,1:2]
+            w_lep0 = leps_not_z_candidate_ptordered[:,0]
+            w_lep1 = leps_not_z_candidate_ptordered[:,1]
             mt2_val = es_ec.get_mt2(w_lep0,w_lep1,met)
-            mt2_mask = ak.fill_none(ak.any((mt2_val>25.0),axis=1),False)
+            mt2_mask = ak.fill_none(mt2_val>25.0,False)
 
 
 
@@ -347,6 +349,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             l0pt = l0.pt
             j0pt = ak.flatten(j0.pt) # Flatten to go from [[j0pt],[j0pt],...] -> [j0pt,j0pt,...]
             mll_01 = (l0+l1).mass
+            scalarptsum_lep = l0.pt + l1.pt + l2.pt + l3.pt
 
             ######### Fill histos #########
 
@@ -354,10 +357,13 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             dense_variables_dict = {
                 "met" : met.pt,
+                "metphi" : met.phi,
                 "ptl4" : ptl4,
+                "scalarptsum_lep" : scalarptsum_lep,
                 "mll_01" : mll_01,
                 "l0pt" : l0pt,
                 "j0pt" : j0pt,
+
                 "nleps" : nleps,
                 "njets" : njets,
                 "nbtagsl" : nbtagsl,
@@ -373,7 +379,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "ptl4" : ["all_events"],
                 "j0pt" : ["all_events", "4l_presel", "cr_4l_sf"] + analysis_cats,
                 "l0pt" : ["all_events"],
-                "mll_01"  : ["all_events"],
+                "mll_01" : ["all_events"],
+                "scalarptsum_lep" : ["all_events"],
             }
 
 
