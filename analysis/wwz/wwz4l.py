@@ -33,6 +33,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Create the dense axes for the histograms
         self._dense_axes_dict = {
+            "mt2"   : axis.Regular(180, 0, 140, name="mt2",  label="mt2"),
             "met"   : axis.Regular(180, 0, 500, name="met",  label="met"),
             "metphi": axis.Regular(180, -4, 4, name="metphi", label="met phi"),
             "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
@@ -40,6 +41,21 @@ class AnalysisProcessor(processor.ProcessorABC):
             "mll_01": axis.Regular(180, 0, 200, name="mll_01",  label="mll_l0_l1"),
             "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
             "j0pt"  : axis.Regular(180, 0, 500, name="j0pt", label="j0pt"),
+
+            "w_lep0_pt"  : axis.Regular(180, 0, 300, name="w_lep0_pt", label="Leading W lep pt"),
+            "w_lep1_pt"  : axis.Regular(180, 0, 300, name="w_lep1_pt", label="Subleading W lep pt"),
+            "z_lep0_pt"  : axis.Regular(180, 0, 300, name="z_lep0_pt", label="Leading Z lep pt"),
+            "z_lep1_pt"  : axis.Regular(180, 0, 300, name="z_lep1_pt", label="Subleading Z lep pt"),
+            "w_lep0_eta" : axis.Regular(180, -3, 3, name="w_lep0_eta", label="Leading W lep eta"),
+            "w_lep1_eta" : axis.Regular(180, -3, 3, name="w_lep1_eta", label="Subleading W lep eta"),
+            "z_lep0_eta" : axis.Regular(180, -3, 3, name="z_lep0_eta", label="Leading Z lep eta"),
+            "z_lep1_eta" : axis.Regular(180, -3, 3, name="z_lep1_eta", label="Subleading Z lep eta"),
+            "w_lep0_phi" : axis.Regular(180, -4, 4, name="w_lep0_phi", label="Leading W lep phi"),
+            "w_lep1_phi" : axis.Regular(180, -4, 4, name="w_lep1_phi", label="Subleading W lep phi"),
+            "z_lep0_phi" : axis.Regular(180, -4, 4, name="z_lep0_phi", label="Leading Z lep phi"),
+            "z_lep1_phi" : axis.Regular(180, -4, 4, name="z_lep1_phi", label="Subleading Z lep phi"),
+            "mll_wl0_wl1" : axis.Regular(180, 0, 200, name="mll_wl0_wl1", label="mll(Z lep0, Z lep1)"),
+            "mll_zl0_zl1" : axis.Regular(180, 0, 200, name="mll_zl0_zl1", label="mll(W lep0, W lep1)"),
 
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
@@ -286,26 +302,27 @@ class AnalysisProcessor(processor.ProcessorABC):
             ######### WWZ event selection stuff #########
 
             # Get some preliminary things we'll need
-            es_ec.attach_wwz_preselection_mask(events,l_wwz_t_padded[:,0:4])                                              # Attach preselection sf and of flags to the events
-            leps_from_z_candidate_ptordered, leps_not_z_candidate_ptordered = es_ec.get_wwz_candidates(l_wwz_t_padded[:,0:4]) # Get a hold of the leptons from the Z and from the W
-            w_candidates_mll = (leps_not_z_candidate_ptordered[:,0:1]+leps_not_z_candidate_ptordered[:,1:2]).mass       # Will need to know mass of the leps from the W
+            es_ec.attach_wwz_preselection_mask(events,l_wwz_t_padded[:,0:4]) # Attach preselection sf and of flags to the events
+            leps_from_z_candidate_ptordered, leps_not_z_candidate_ptordered = es_ec.get_wwz_candidates(l_wwz_t_padded[:,0:4]) # Get ahold of the leptons from the Z and from the W
+
+            w_lep0 = leps_not_z_candidate_ptordered[:,0]
+            w_lep1 = leps_not_z_candidate_ptordered[:,1]
+            mll_wl0_wl1 = (w_lep0 + w_lep1).mass
 
             # Make masks for the SF regions
-            w_candidates_mll_far_from_z = ak.fill_none(ak.any((abs(w_candidates_mll - get_ec_param("zmass")) > 10.0),axis=1),False) # Will enforce this for SF in the PackedSelection
+            w_candidates_mll_far_from_z = ak.fill_none(abs(mll_wl0_wl1 - get_ec_param("zmass")) > 10.0,False) # Will enforce this for SF in the PackedSelection
             ptl4 = (l0+l1+l2+l3).pt
             sf_A = (met.pt > 120.0)
             sf_B = ((met.pt > 65.0) & (met.pt < 120.0) & (ptl4 > 70.0))
             sf_C = ((met.pt > 65.0) & (met.pt < 120.0) & (ptl4 > 40.0) & (ptl4 < 70.0))
 
             # Make masks for the OF regions
-            of_1 = ak.fill_none(ak.any((w_candidates_mll > 0.0) & (w_candidates_mll < 40.0),axis=1),False)
-            of_2 = ak.fill_none(ak.any((w_candidates_mll > 40.0) & (w_candidates_mll < 60.0),axis=1),False)
-            of_3 = ak.fill_none(ak.any((w_candidates_mll > 60.0) & (w_candidates_mll < 100.0),axis=1),False)
-            of_4 = ak.fill_none(ak.any((w_candidates_mll > 100.0),axis=1),False)
+            of_1 = ak.fill_none((mll_wl0_wl1 > 0.0) & (mll_wl0_wl1 < 40.0),False)
+            of_2 = ak.fill_none((mll_wl0_wl1 > 40.0) & (mll_wl0_wl1 < 60.0),False)
+            of_3 = ak.fill_none((mll_wl0_wl1 > 60.0) & (mll_wl0_wl1 < 100.0),False)
+            of_4 = ak.fill_none((mll_wl0_wl1 > 100.0),False)
 
             # Mask for mt2 cut
-            w_lep0 = leps_not_z_candidate_ptordered[:,0]
-            w_lep1 = leps_not_z_candidate_ptordered[:,1]
             mt2_val = es_ec.get_mt2(w_lep0,w_lep1,met)
             mt2_mask = ak.fill_none(mt2_val>25.0,False)
 
@@ -351,11 +368,18 @@ class AnalysisProcessor(processor.ProcessorABC):
             mll_01 = (l0+l1).mass
             scalarptsum_lep = l0.pt + l1.pt + l2.pt + l3.pt
 
+            # Get lep from Z
+            z_lep0 = leps_from_z_candidate_ptordered[:,0]
+            z_lep1 = leps_from_z_candidate_ptordered[:,1]
+
+            mll_zl0_zl1 = (z_lep0 + z_lep1).mass
+
             ######### Fill histos #########
 
             hout = {}
 
             dense_variables_dict = {
+                "mt2" : mt2_val,
                 "met" : met.pt,
                 "metphi" : met.phi,
                 "ptl4" : ptl4,
@@ -363,6 +387,19 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mll_01" : mll_01,
                 "l0pt" : l0pt,
                 "j0pt" : j0pt,
+
+                "z_lep0_pt" : z_lep0.pt,
+                "z_lep1_pt" : z_lep1.pt,
+                "w_lep0_pt" : w_lep0.pt,
+                "w_lep1_pt" : w_lep1.pt,
+                "z_lep0_eta" : z_lep0.eta,
+                "z_lep1_eta" : z_lep1.eta,
+                "w_lep0_eta" : w_lep0.eta,
+                "w_lep1_eta" : w_lep1.eta,
+                "z_lep0_phi" : z_lep0.phi,
+                "z_lep1_phi" : z_lep1.phi,
+                "w_lep0_phi" : w_lep0.phi,
+                "w_lep1_phi" : w_lep1.phi,
 
                 "nleps" : nleps,
                 "njets" : njets,
@@ -376,11 +413,26 @@ class AnalysisProcessor(processor.ProcessorABC):
             # List the hists that are only defined for some categories
             analysis_cats = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
             exclude_var_dict = {
+                "mt2" : ["all_events"],
                 "ptl4" : ["all_events"],
                 "j0pt" : ["all_events", "4l_presel", "cr_4l_sf"] + analysis_cats,
                 "l0pt" : ["all_events"],
                 "mll_01" : ["all_events"],
                 "scalarptsum_lep" : ["all_events"],
+                "w_lep0_pt"  : ["all_events"],
+                "w_lep1_pt"  : ["all_events"],
+                "z_lep0_pt"  : ["all_events"],
+                "z_lep1_pt"  : ["all_events"],
+                "w_lep0_eta" : ["all_events"],
+                "w_lep1_eta" : ["all_events"],
+                "z_lep0_eta" : ["all_events"],
+                "z_lep1_eta" : ["all_events"],
+                "w_lep0_phi" : ["all_events"],
+                "w_lep1_phi" : ["all_events"],
+                "z_lep0_phi" : ["all_events"],
+                "z_lep1_phi" : ["all_events"],
+                "mll_wl0_wl1" : ["all_events"],
+                "mll_zl0_zl1" : ["all_events"],
             }
 
 
