@@ -54,8 +54,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             "w_lep1_phi" : axis.Regular(180, -4, 4, name="w_lep1_phi", label="Subleading W lep phi"),
             "z_lep0_phi" : axis.Regular(180, -4, 4, name="z_lep0_phi", label="Leading Z lep phi"),
             "z_lep1_phi" : axis.Regular(180, -4, 4, name="z_lep1_phi", label="Subleading Z lep phi"),
-            "mll_wl0_wl1" : axis.Regular(180, 0, 200, name="mll_wl0_wl1", label="mll(Z lep0, Z lep1)"),
-            "mll_zl0_zl1" : axis.Regular(180, 0, 200, name="mll_zl0_zl1", label="mll(W lep0, W lep1)"),
+            "mll_wl0_wl1" : axis.Regular(180, 0, 200, name="mll_wl0_wl1", label="mll(W lep0, W lep1)"),
+            "mll_zl0_zl1" : axis.Regular(180, 0, 200, name="mll_zl0_zl1", label="mll(Z lep0, Z lep1)"),
 
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
@@ -400,6 +400,9 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "z_lep1_phi" : z_lep1.phi,
                 "w_lep0_phi" : w_lep0.phi,
                 "w_lep1_phi" : w_lep1.phi,
+
+                "mll_wl0_wl1" : mll_wl0_wl1,
+                "mll_zl0_zl1" : mll_zl0_zl1,
 
                 "nleps" : nleps,
                 "njets" : njets,
