@@ -59,11 +59,18 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             "pt_zl0_zl1" : axis.Regular(180, 0, 300, name="pt_zl0_zl1", label="pt(Zl0 + Zl1)"),
             "pt_wl0_wl1" : axis.Regular(180, 0, 300, name="pt_wl0_wl1", label="pt(Wl0 + Wl1)"),
-            "dr_zl0_zl1" : axis.Regular(180, -4, 4, name="dr_zl0_zl1", label="dr(Zl0,Zl1)"),
-            "dr_wl0_wl1" : axis.Regular(180, -4, 4, name="dr_wl0_wl1", label="dr(Wl0,Wl1)"),
-            "dphi_zl0_zl1" : axis.Regular(180, -4, 4, name="dphi_zl0_zl1", label="dphi(Zl0,Zl1)"),
-            "dphi_wl0_wl1" : axis.Regular(180, -4, 4, name="dphi_wl0_wl1", label="dphi(Wl0,Wl1)"),
-            "dphi_z_ww"    : axis.Regular(180, -4, 4, name="dphi_z_ww", label="dphi((Zl0+Zl1),(Wl0+Wl1+met))"),
+            "dr_zl0_zl1" : axis.Regular(180, 0, 5, name="dr_zl0_zl1", label="dr(Zl0,Zl1)"),
+            "dr_wl0_wl1" : axis.Regular(180, 0, 5, name="dr_wl0_wl1", label="dr(Wl0,Wl1)"),
+            "dphi_zl0_zl1" : axis.Regular(180, -8, 8, name="dphi_zl0_zl1", label="dphi(Zl0,Zl1)"),
+            "dphi_wl0_wl1" : axis.Regular(180, -8, 8, name="dphi_wl0_wl1", label="dphi(Wl0,Wl1)"),
+            "dphi_z_ww"    : axis.Regular(180, -8, 8, name="dphi_z_ww", label="dphi((Zl0+Zl1),(Wl0+Wl1+met))"),
+
+            "absdphi_min_afas" : axis.Regular(180, 0, 4, name="absdphi_min_afas",  label="min(abs(delta phi of all pairs))"),
+            "absdphi_min_afos" : axis.Regular(180, 0, 4, name="absdphi_min_afos",  label="min(abs(delta phi of OS pairs))"),
+            "absdphi_min_sfos" : axis.Regular(180, 0, 4, name="absdphi_min_sfos",  label="min(abs(delta phi of SFOS pairs))"),
+            "mll_min_afas" : axis.Regular(180, 0, 150, name="mll_min_afas",  label="min mll of all pairs"),
+            "mll_min_afos" : axis.Regular(180, 0, 150, name="mll_min_afos",  label="min mll of OF pairs"),
+            "mll_min_sfos" : axis.Regular(180, 0, 150, name="mll_min_sfos",  label="min mll of SFOF pairs"),
 
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
@@ -187,10 +194,18 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # For WWZ: Compute pair invariant masses
         llpairs_wwz = ak.combinations(l_wwz_t, 2, fields=["l0","l1"])
-        os_pairs_mask = (llpairs_wwz.l0.pdgId*llpairs_wwz.l1.pdgId < 0)
-        ll_mass_pairs = (llpairs_wwz.l0+llpairs_wwz.l1).mass
-        ll_mass_pairs_os = ll_mass_pairs[os_pairs_mask]
-        events["min_mll_afos"] = ak.min(ll_mass_pairs_os,axis=-1) # For WWZ
+        os_pairs_mask = (llpairs_wwz.l0.pdgId*llpairs_wwz.l1.pdgId < 0)   # Maks for opposite-sign pairs
+        sfos_pairs_mask = (llpairs_wwz.l0.pdgId == -llpairs_wwz.l1.pdgId) # Mask for same-flavor-opposite-sign pairs
+        ll_absdphi_pairs = abs(llpairs_wwz.l0.phi - llpairs_wwz.l1.phi) # The abs(delta phi) for each ll pair
+        ll_mass_pairs = (llpairs_wwz.l0+llpairs_wwz.l1).mass            # The mll for each ll pair
+        absdphi_min_afas = ak.min(ll_absdphi_pairs,axis=-1)
+        absdphi_min_afos = ak.min(ll_absdphi_pairs[os_pairs_mask],axis=-1)
+        absdphi_min_sfos = ak.min(ll_absdphi_pairs[sfos_pairs_mask],axis=-1)
+        mll_min_afas = ak.min(ll_mass_pairs,axis=-1)
+        mll_min_afos = ak.min(ll_mass_pairs[os_pairs_mask],axis=-1)
+        mll_min_sfos = ak.min(ll_mass_pairs[sfos_pairs_mask],axis=-1)
+        events["min_mll_afos"] = mll_min_afos # Attach this one to the event info since we need it for selection
+
 
         # For WWZ
         l_wwz_t_padded = ak.pad_none(l_wwz_t, 4)
@@ -438,6 +453,13 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "nleps_counts" : nleps,
                 "njets_counts" : njets,
                 "nbtagsl_counts" : nbtagsl,
+
+                "absdphi_min_afas" : absdphi_min_afas,
+                "absdphi_min_afos" : absdphi_min_afos,
+                "absdphi_min_sfos" : absdphi_min_sfos,
+                "mll_min_afas" : mll_min_afas,
+                "mll_min_afos" : mll_min_afos,
+                "mll_min_sfos" : mll_min_sfos,
             }
 
             # List the hists that are only defined for some categories
@@ -471,6 +493,13 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "dphi_zl0_zl1" : ["all_events"],
                 "dphi_wl0_wl1" : ["all_events"],
                 "dphi_z_ww" : ["all_events"],
+
+                "absdphi_min_afas" : ["all_events"],
+                "absdphi_min_afos" : ["all_events"],
+                "absdphi_min_sfos" : ["all_events"],
+                "mll_min_afas" : ["all_events"],
+                "mll_min_afos" : ["all_events"],
+                "mll_min_sfos" : ["all_events"],
             }
 
 
