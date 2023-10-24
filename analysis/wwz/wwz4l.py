@@ -33,7 +33,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Create the dense axes for the histograms
         self._dense_axes_dict = {
-            "mt2"   : axis.Regular(180, 0, 140, name="mt2",  label="mt2"),
+            "mt2"   : axis.Regular(180, -90, 90, name="mt2",  label="mt2"),
             "met"   : axis.Regular(180, 0, 500, name="met",  label="met"),
             "metphi": axis.Regular(180, -4, 4, name="metphi", label="met phi"),
             "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
@@ -56,6 +56,14 @@ class AnalysisProcessor(processor.ProcessorABC):
             "z_lep1_phi" : axis.Regular(180, -4, 4, name="z_lep1_phi", label="Subleading Z lep phi"),
             "mll_wl0_wl1" : axis.Regular(180, 0, 200, name="mll_wl0_wl1", label="mll(W lep0, W lep1)"),
             "mll_zl0_zl1" : axis.Regular(180, 0, 200, name="mll_zl0_zl1", label="mll(Z lep0, Z lep1)"),
+
+            "pt_zl0_zl1" : axis.Regular(180, 0, 300, name="pt_zl0_zl1", label="pt(Zl0 + Zl1)"),
+            "pt_wl0_wl1" : axis.Regular(180, 0, 300, name="pt_wl0_wl1", label="pt(Wl0 + Wl1)"),
+            "dr_zl0_zl1" : axis.Regular(180, -4, 4, name="dr_zl0_zl1", label="dr(Zl0,Zl1)"),
+            "dr_wl0_wl1" : axis.Regular(180, -4, 4, name="dr_wl0_wl1", label="dr(Wl0,Wl1)"),
+            "dphi_zl0_zl1" : axis.Regular(180, -4, 4, name="dphi_zl0_zl1", label="dphi(Zl0,Zl1)"),
+            "dphi_wl0_wl1" : axis.Regular(180, -4, 4, name="dphi_wl0_wl1", label="dphi(Wl0,Wl1)"),
+            "dphi_z_ww"    : axis.Regular(180, -4, 4, name="dphi_z_ww", label="dphi((Zl0+Zl1),(Wl0+Wl1+met))"),
 
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
@@ -374,6 +382,17 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             mll_zl0_zl1 = (z_lep0 + z_lep1).mass
 
+            pt_zl0_zl1 = (z_lep0 + z_lep1).pt
+            pt_wl0_wl1 = (w_lep0 + w_lep1).pt
+
+            dr_zl0_zl1 = z_lep0.delta_r(z_lep1)
+            dr_wl0_wl1 = w_lep0.delta_r(w_lep1)
+
+            dphi_zl0_zl1 = z_lep0.phi - z_lep1.phi
+            dphi_wl0_wl1 = w_lep0.phi - w_lep1.phi
+            dphi_z_ww = (z_lep0 + z_lep1).phi - (w_lep0 + w_lep1 + met).phi
+
+
             ######### Fill histos #########
 
             hout = {}
@@ -403,6 +422,14 @@ class AnalysisProcessor(processor.ProcessorABC):
 
                 "mll_wl0_wl1" : mll_wl0_wl1,
                 "mll_zl0_zl1" : mll_zl0_zl1,
+
+                "pt_zl0_zl1" : pt_zl0_zl1,
+                "pt_wl0_wl1" : pt_wl0_wl1,
+                "dr_zl0_zl1" : dr_zl0_zl1,
+                "dr_wl0_wl1" : dr_wl0_wl1,
+                "dphi_zl0_zl1" : dphi_zl0_zl1,
+                "dphi_wl0_wl1" : dphi_wl0_wl1,
+                "dphi_z_ww" : dphi_z_ww,
 
                 "nleps" : nleps,
                 "njets" : njets,
@@ -436,6 +463,14 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "z_lep1_phi" : ["all_events"],
                 "mll_wl0_wl1" : ["all_events"],
                 "mll_zl0_zl1" : ["all_events"],
+
+                "pt_zl0_zl1" : ["all_events"],
+                "pt_wl0_wl1" : ["all_events"],
+                "dr_zl0_zl1" : ["all_events"],
+                "dr_wl0_wl1" : ["all_events"],
+                "dphi_zl0_zl1" : ["all_events"],
+                "dphi_wl0_wl1" : ["all_events"],
+                "dphi_z_ww" : ["all_events"],
             }
 
 
