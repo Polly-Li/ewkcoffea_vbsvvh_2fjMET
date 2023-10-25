@@ -364,7 +364,8 @@ def group(h, oldname, newname, grouping):
 
     # Build up a grouping dict that drops any proc that is not in our h
     grouping_slim = {}
-    proc_lst = get_axis_cats(h,"process")
+    #proc_lst = get_axis_cats(h,"process")
+    proc_lst = get_axis_cats(h,oldname)
     for grouping_name in grouping.keys():
         for proc in grouping[grouping_name]:
             if proc in proc_lst:
@@ -387,7 +388,7 @@ def group(h, oldname, newname, grouping):
 
 
 # Takes a mc hist and data hist and plots both
-def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
+def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False):
 
     # Create the figure
     fig, (ax, rax) = plt.subplots(
@@ -407,41 +408,44 @@ def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
         ax=ax,
     )
     # Plot the data
-    histo_data.plot1d(
-        stack=False,
-        histtype="errorbar",
-        color="k",
-        ax=ax,
-        w2=histo_data.variances(),
-        w2method="sqrt",
-    )
+    if histo_data is not None:
+        histo_data.plot1d(
+            stack=False,
+            histtype="errorbar",
+            color="k",
+            ax=ax,
+            w2=histo_data.variances(),
+            w2method="sqrt",
+        )
     # Plot a dummy hist on rax to get the label to show up
-    histo_data.plot1d(alpha=0, ax=rax)
+    histo_mc.plot1d(alpha=0, ax=rax)
 
-    ### Get the err and ratios and plot them by hand ###
+    ### Get the errs on MC and plot them by hand ###
     histo_mc_sum = histo_mc[{"process_grp":sum}]
-    histo_data_sum = histo_data[{"process_grp":sum}]
-
     mc_arr = histo_mc_sum.values()
     mc_err_arr = np.sqrt(histo_mc_sum.variances())
-    data_arr = histo_data_sum.values()
-    data_err_arr = np.sqrt(histo_data_sum.variances())
-
     err_p = np.append(mc_arr + mc_err_arr, 0)
     err_m = np.append(mc_arr - mc_err_arr, 0)
-    err_ratio_p = np.append(1+mc_err_arr/mc_arr,1)
-    err_ratio_m = np.append(1-mc_err_arr/mc_arr,1)
-
-    data_ratio_err_p = (data_arr + data_err_arr)/mc_arr
-    data_ratio_err_m = (data_arr - data_err_arr)/mc_arr
-
     bin_edges_arr = histo_mc_sum.axes[0].edges
     bin_centers_arr = histo_mc_sum.axes[0].centers
-
     ax.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', alpha=0.5, linewidth=0.0, label='MC stat', hatch='/////')
-    rax.fill_between(bin_edges_arr,err_ratio_m,err_ratio_p,step='post', facecolor='none',edgecolor='gray', label='MC stat', linewidth=0.0, hatch='/////',alpha=0.5)
-    rax.scatter(bin_centers_arr,data_arr/mc_arr,facecolor='black',edgecolor='black',marker="o")
-    rax.vlines(bin_centers_arr,data_ratio_err_p,data_ratio_err_m,color='k')
+
+    ### Get the errs on data and ratios and plot them by hand ###
+    if histo_data is not None:
+        histo_data_sum = histo_data[{"process_grp":sum}]
+
+        data_arr = histo_data_sum.values()
+        data_err_arr = np.sqrt(histo_data_sum.variances())
+
+        err_ratio_p = np.append(1+mc_err_arr/mc_arr,1)
+        err_ratio_m = np.append(1-mc_err_arr/mc_arr,1)
+
+        data_ratio_err_p = (data_arr + data_err_arr)/mc_arr
+        data_ratio_err_m = (data_arr - data_err_arr)/mc_arr
+
+        rax.fill_between(bin_edges_arr,err_ratio_m,err_ratio_p,step='post', facecolor='none',edgecolor='gray', label='MC stat', linewidth=0.0, hatch='/////',alpha=0.5)
+        rax.scatter(bin_centers_arr,data_arr/mc_arr,facecolor='black',edgecolor='black',marker="o")
+        rax.vlines(bin_centers_arr,data_ratio_err_p,data_ratio_err_m,color='k')
 
     # Scale the y axis and labels
     ax.legend(fontsize="12")
@@ -453,6 +457,7 @@ def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
     rax.axhline(1.0,linestyle="-",color="k",linewidth=1)
     ax.tick_params(axis='y', labelsize=16)
     rax.tick_params(axis='x', labelsize=16)
+    #ax.set_yscale('log')
 
     return fig
 
@@ -498,9 +503,13 @@ def make_plots(histo_dict):
         if var_name not in ["njets","nbtagsl","nleps"]:
             histo = rebin(histo,6)
 
+        # Group SR procs together
+        #grouping_sr_procs = {"sr_4l_sf":["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C"],"sr_4l_of":["sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]}
+        #histo = group(histo,"category","category",grouping_sr_procs)
+
         # Loop over categories and make plots for each
         for cat_name in histo.axes["category"]:
-            if cat_name not in ["cr_4l_sf","cr_4l_of"]: continue # TMP
+            #if cat_name not in ["cr_4l_sf","cr_4l_of"]: continue # TMP
             print(cat_name)
 
             histo_cat = histo[{"category":cat_name}]
@@ -519,8 +528,8 @@ def make_plots(histo_dict):
             #    print("data\n",histo_grouped_data)
             #    print("val mc\n",histo_grouped_mc.values(flow=True))
             #    print("val data\n",histo_grouped_data.values(flow=True))
-            #    print("var mc\n",np.sqrt(histo_grouped_mc.variances()))
-            #    print("var data\n",np.sqrt(histo_grouped_data.variances()))
+            #    print("var mc\n",(histo_grouped_mc.variances(flow=True)))
+            #    print("var data\n",(histo_grouped_data.variances(flow=True)))
             #continue
             #print("\Yields")
             #print(type(histo_cat.values(flow=True)))
@@ -539,7 +548,7 @@ def make_plots(histo_dict):
             if "cr" in title:
                 fig = make_cr_fig(histo_grouped_mc,histo_grouped_data,title=title)
             else:
-                fig = make_single_fig(histo_grouped_mc,title=title)
+                fig = make_cr_fig(histo_grouped_mc,title=title)
 
             # Save
             save_dir_path_cat = os.path.join(save_dir_path,cat_name)
