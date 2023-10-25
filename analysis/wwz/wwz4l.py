@@ -33,7 +33,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Create the dense axes for the histograms
         self._dense_axes_dict = {
-            "mt2"   : axis.Regular(180, -90, 90, name="mt2",  label="mt2"),
+            "mt2"   : axis.Regular(180, 0, 100, name="mt2",  label="mt2"),
             "met"   : axis.Regular(180, 0, 500, name="met",  label="met"),
             "metphi": axis.Regular(180, -4, 4, name="metphi", label="met phi"),
             "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
@@ -61,9 +61,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             "pt_wl0_wl1" : axis.Regular(180, 0, 300, name="pt_wl0_wl1", label="pt(Wl0 + Wl1)"),
             "dr_zl0_zl1" : axis.Regular(180, 0, 5, name="dr_zl0_zl1", label="dr(Zl0,Zl1)"),
             "dr_wl0_wl1" : axis.Regular(180, 0, 5, name="dr_wl0_wl1", label="dr(Wl0,Wl1)"),
-            "dphi_zl0_zl1" : axis.Regular(180, -8, 8, name="dphi_zl0_zl1", label="dphi(Zl0,Zl1)"),
-            "dphi_wl0_wl1" : axis.Regular(180, -8, 8, name="dphi_wl0_wl1", label="dphi(Wl0,Wl1)"),
-            "dphi_z_ww"    : axis.Regular(180, -8, 8, name="dphi_z_ww", label="dphi((Zl0+Zl1),(Wl0+Wl1+met))"),
+            "absdphi_zl0_zl1" : axis.Regular(180, 0, 4, name="absdphi_zl0_zl1", label="abs dphi(Zl0,Zl1)"),
+            "absdphi_wl0_wl1" : axis.Regular(180, 0, 4, name="absdphi_wl0_wl1", label="abs dphi(Wl0,Wl1)"),
+            "absdphi_z_ww"    : axis.Regular(180, 0, 4, name="absdphi_z_ww", label="abs dphi((Zl0+Zl1),(Wl0+Wl1+met))"),
 
             "absdphi_min_afas" : axis.Regular(180, 0, 4, name="absdphi_min_afas",  label="min(abs(delta phi of all pairs))"),
             "absdphi_min_afos" : axis.Regular(180, 0, 4, name="absdphi_min_afos",  label="min(abs(delta phi of OS pairs))"),
@@ -71,6 +71,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             "mll_min_afas" : axis.Regular(180, 0, 150, name="mll_min_afas",  label="min mll of all pairs"),
             "mll_min_afos" : axis.Regular(180, 0, 150, name="mll_min_afos",  label="min mll of OF pairs"),
             "mll_min_sfos" : axis.Regular(180, 0, 150, name="mll_min_sfos",  label="min mll of SFOF pairs"),
+
+            "mlb_min" : axis.Regular(180, 0, 300, name="mlb_min",  label="min mass(b+l)"),
+            "mlb_max" : axis.Regular(180, 0, 500, name="mlb_max",  label="max mass(b+l)"),
 
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
@@ -196,7 +199,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         llpairs_wwz = ak.combinations(l_wwz_t, 2, fields=["l0","l1"])
         os_pairs_mask = (llpairs_wwz.l0.pdgId*llpairs_wwz.l1.pdgId < 0)   # Maks for opposite-sign pairs
         sfos_pairs_mask = (llpairs_wwz.l0.pdgId == -llpairs_wwz.l1.pdgId) # Mask for same-flavor-opposite-sign pairs
-        ll_absdphi_pairs = abs(llpairs_wwz.l0.phi - llpairs_wwz.l1.phi) # The abs(delta phi) for each ll pair
+        ll_absdphi_pairs = abs(llpairs_wwz.l0.delta_phi(llpairs_wwz.l1))
         ll_mass_pairs = (llpairs_wwz.l0+llpairs_wwz.l1).mass            # The mll for each ll pair
         absdphi_min_afas = ak.min(ll_absdphi_pairs,axis=-1)
         absdphi_min_afos = ak.min(ll_absdphi_pairs[os_pairs_mask],axis=-1)
@@ -205,7 +208,6 @@ class AnalysisProcessor(processor.ProcessorABC):
         mll_min_afos = ak.min(ll_mass_pairs[os_pairs_mask],axis=-1)
         mll_min_sfos = ak.min(ll_mass_pairs[sfos_pairs_mask],axis=-1)
         events["min_mll_afos"] = mll_min_afos # Attach this one to the event info since we need it for selection
-
 
         # For WWZ
         l_wwz_t_padded = ak.pad_none(l_wwz_t, 4)
@@ -293,7 +295,6 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             isNotBtagJetsMedium = np.invert(isBtagJetsMedium)
             nbtagsm = ak.num(goodJets[isBtagJetsMedium])
-
 
             #################### Add variables into event object so that they persist ####################
 
@@ -403,9 +404,15 @@ class AnalysisProcessor(processor.ProcessorABC):
             dr_zl0_zl1 = z_lep0.delta_r(z_lep1)
             dr_wl0_wl1 = w_lep0.delta_r(w_lep1)
 
-            dphi_zl0_zl1 = z_lep0.phi - z_lep1.phi
-            dphi_wl0_wl1 = w_lep0.phi - w_lep1.phi
-            dphi_z_ww = (z_lep0 + z_lep1).phi - (w_lep0 + w_lep1 + met).phi
+            absdphi_zl0_zl1 = abs(z_lep0.delta_phi(z_lep1))
+            absdphi_wl0_wl1 = abs(w_lep0.delta_phi(w_lep1))
+            absdphi_z_ww = abs((z_lep0 + z_lep1).delta_phi(w_lep0 + w_lep1 + met))
+
+            # lb pairs (i.e. always one lep, one bjet)
+            bjets = goodJets[isBtagJetsLoose]
+            lb_pairs = ak.cartesian({"l":l_wwz_t,"j":bjets})
+            mlb_min = ak.min((lb_pairs["l"] + lb_pairs["j"]).mass,axis=-1)
+            mlb_max = ak.max((lb_pairs["l"] + lb_pairs["j"]).mass,axis=-1)
 
 
             ######### Fill histos #########
@@ -442,9 +449,9 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "pt_wl0_wl1" : pt_wl0_wl1,
                 "dr_zl0_zl1" : dr_zl0_zl1,
                 "dr_wl0_wl1" : dr_wl0_wl1,
-                "dphi_zl0_zl1" : dphi_zl0_zl1,
-                "dphi_wl0_wl1" : dphi_wl0_wl1,
-                "dphi_z_ww" : dphi_z_ww,
+                "absdphi_zl0_zl1" : absdphi_zl0_zl1,
+                "absdphi_wl0_wl1" : absdphi_wl0_wl1,
+                "absdphi_z_ww" : absdphi_z_ww,
 
                 "nleps" : nleps,
                 "njets" : njets,
@@ -460,6 +467,9 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mll_min_afas" : mll_min_afas,
                 "mll_min_afos" : mll_min_afos,
                 "mll_min_sfos" : mll_min_sfos,
+
+                "mlb_min" : mlb_min,
+                "mlb_max" : mlb_max,
             }
 
             # List the hists that are only defined for some categories
@@ -490,9 +500,9 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "pt_wl0_wl1" : ["all_events"],
                 "dr_zl0_zl1" : ["all_events"],
                 "dr_wl0_wl1" : ["all_events"],
-                "dphi_zl0_zl1" : ["all_events"],
-                "dphi_wl0_wl1" : ["all_events"],
-                "dphi_z_ww" : ["all_events"],
+                "absdphi_zl0_zl1" : ["all_events"],
+                "absdphi_wl0_wl1" : ["all_events"],
+                "absdphi_z_ww" : ["all_events"],
 
                 "absdphi_min_afas" : ["all_events"],
                 "absdphi_min_afos" : ["all_events"],
@@ -500,6 +510,9 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mll_min_afas" : ["all_events"],
                 "mll_min_afos" : ["all_events"],
                 "mll_min_sfos" : ["all_events"],
+
+                "mlb_min" : ["all_events","4l_presel", "cr_4l_sf"] + analysis_cats,
+                "mlb_max" : ["all_events","4l_presel", "cr_4l_sf"] + analysis_cats,
             }
 
 
