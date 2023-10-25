@@ -332,10 +332,15 @@ def get_mt2(w_lep0,w_lep1,met):
     w_lep1_boosted = w_lep1.boost(beta_from_miss)
     misspart_boosted = misspart.boost(beta_from_miss)
 
+    # Directly plug in e mass since its sometimes negative in naod
+    mass_l0 = ak.where(abs(w_lep0.pdgId)==11,0.000511,w_lep0.mass)
+    mass_l1 = ak.where(abs(w_lep1.pdgId)==11,0.000511,w_lep1.mass)
+
+
     # Get the mt2 variable, use the mt2 package: https://pypi.org/project/mt2/
     mt2_var = mt2(
-        w_lep0.mass, w_lep0_boosted.px, w_lep0_boosted.py,
-        w_lep1.mass, w_lep1_boosted.px, w_lep1_boosted.py,
+        mass_l0, w_lep0_boosted.px, w_lep0_boosted.py,
+        mass_l1, w_lep1_boosted.px, w_lep1_boosted.py,
         misspart_boosted.px, misspart_boosted.py,
         np.zeros_like(met.pt), np.zeros_like(met.pt),
     )
