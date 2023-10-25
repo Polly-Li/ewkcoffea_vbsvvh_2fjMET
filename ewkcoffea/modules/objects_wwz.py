@@ -85,7 +85,7 @@ def get_topmva_score_ele(events, year):
     xgb.set_config(verbosity = 0)
     bst = xgb.Booster()
     bst.load_model(model_fpath)
-    score = bst.predict(in_vals)
+    score = bst.predict(in_vals).reshape(-1)
 
     # Restore the shape (i.e. unflatten)
     counts = ak.num(ele.pt)
@@ -133,7 +133,7 @@ def get_topmva_score_mu(events, year):
     xgb.set_config(verbosity = 0)
     bst = xgb.Booster()
     bst.load_model(model_fpath)
-    score = bst.predict(in_vals)
+    score = bst.predict(in_vals).reshape(-1)
 
     # Restore the shape (i.e. unflatten)
     counts = ak.num(mu.pt)
