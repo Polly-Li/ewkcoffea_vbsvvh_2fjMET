@@ -13,7 +13,7 @@ import topcoffea.modules.remote_environment as remote_environment
 
 import wwz4l
 
-LST_OF_KNOWN_EXECUTORS = ["futures","work_queue"]
+LST_OF_KNOWN_EXECUTORS = ["futures","work_queue","iterative"]
 
 WGT_VAR_LST = [
     "nSumOfWeights_ISRUp",
@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='You can customize your run')
     parser.add_argument('jsonFiles'        , nargs='?', default='', help = 'Json file(s) containing files and metadata')
-    parser.add_argument('--executor','-x'  , default='work_queue', help = 'Which executor to use')
+    parser.add_argument('--executor','-x'  , default='work_queue', help = 'Which executor to use', choices=LST_OF_KNOWN_EXECUTORS)
     parser.add_argument('--prefix', '-r'   , nargs='?', default='', help = 'Prefix or redirector to look for the files')
     parser.add_argument('--test','-t'       , action='store_true'  , help = 'To perform a test, run over a few events in a couple of chunks')
     parser.add_argument('--pretend'        , action='store_true', help = 'Read json files but, not execute the analysis')
@@ -74,8 +74,6 @@ if __name__ == '__main__':
     wc_lst = args.wc_list if args.wc_list is not None else []
 
     # Check if we have valid options
-    if executor not in LST_OF_KNOWN_EXECUTORS:
-        raise Exception(f"The \"{executor}\" executor is not known. Please specify an executor from the known executors ({LST_OF_KNOWN_EXECUTORS}). Exiting.")
     if dotest:
         if executor == "futures":
             nchunks = 2
@@ -310,6 +308,9 @@ if __name__ == '__main__':
 
     if executor == "futures":
         exec_instance = processor.FuturesExecutor(workers=nworkers)
+        runner = processor.Runner(exec_instance, schema=NanoAODSchema, chunksize=chunksize, maxchunks=nchunks)
+    elif executor == "iterative":
+        exec_instance = processor.IterativeExecutor()
         runner = processor.Runner(exec_instance, schema=NanoAODSchema, chunksize=chunksize, maxchunks=nchunks)
     elif executor ==  "work_queue":
         executor = processor.WorkQueueExecutor(**executor_args)

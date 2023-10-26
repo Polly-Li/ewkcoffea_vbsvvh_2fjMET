@@ -260,10 +260,14 @@ def get_wwz_candidates(lep_collection):
     leps_from_z_candidate = lep_collection[z_candidate_mask]
     leps_not_z_candidate = lep_collection[~z_candidate_mask]
 
-    #leps_from_z_candidate_ptordered = leps_from_z_candidate[ak.argsort(leps_from_z_candidate.pt, axis=-1,ascending=False)]
-    #leps_not_z_candidate_ptordered = leps_not_z_candidate[ak.argsort(leps_not_z_candidate.pt, axis=-1,ascending=False)] # This fails wehn the leps_not_z_candidate.pt is None, if/when we need this to be pt ordered will need to figure out how we want to work around this
+    if ak.any(leps_from_z_candidate.pt) & ak.any(leps_not_z_candidate.pt):
+        # Temp untill the ak argsort on None issue is resolved
+        leps_from_z_candidate_ptordered = leps_from_z_candidate[ak.argsort(leps_from_z_candidate.pt, axis=-1,ascending=False)]
+        leps_not_z_candidate_ptordered = leps_not_z_candidate[ak.argsort(leps_not_z_candidate.pt, axis=-1,ascending=False)] # This fails wehn the leps_not_z_candidate.pt is None, if/when we need this to be pt ordered will need to figure out how we want to work around this
+        return [leps_from_z_candidate_ptordered,leps_not_z_candidate_ptordered]
+    else:
+        return [leps_from_z_candidate,leps_not_z_candidate]
 
-    return [leps_from_z_candidate,leps_not_z_candidate]
 
 
 # Do WWZ pre selection, construct event level mask
@@ -328,10 +332,15 @@ def get_mt2(w_lep0,w_lep1,met):
     w_lep1_boosted = w_lep1.boost(beta_from_miss)
     misspart_boosted = misspart.boost(beta_from_miss)
 
+    # Directly plug in e mass since its sometimes negative in naod
+    mass_l0 = ak.where(abs(w_lep0.pdgId)==11,0.000511,w_lep0.mass)
+    mass_l1 = ak.where(abs(w_lep1.pdgId)==11,0.000511,w_lep1.mass)
+
+
     # Get the mt2 variable, use the mt2 package: https://pypi.org/project/mt2/
     mt2_var = mt2(
-        w_lep0.mass, w_lep0_boosted.px, w_lep0_boosted.py,
-        w_lep1.mass, w_lep1_boosted.px, w_lep1_boosted.py,
+        mass_l0, w_lep0_boosted.px, w_lep0_boosted.py,
+        mass_l1, w_lep1_boosted.px, w_lep1_boosted.py,
         misspart_boosted.px, misspart_boosted.py,
         np.zeros_like(met.pt), np.zeros_like(met.pt),
     )

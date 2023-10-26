@@ -27,8 +27,8 @@ import topcoffea.modules.MakeLatexTable as mlt
 #Other = (205, 205, 205) #CDCDCD
 CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#CDCDCD"]
 
-#7ad98d5
-EWK_REF = {'WWZ': {'sr_4l_sf_A': (2.4242849899619614, 0.008680020463597452), 'sr_4l_sf_B': (2.050828817213187, 0.007941286365426964), 'sr_4l_sf_C': (0.594701078172875, 0.004324531372334359), 'all_events': (143.03255106410325, 0.06621972573333947), '4l_presel': (25.390131740285142, 0.02793500696082887), 'cr_4l_sf': (1.099154420891864, 0.005806987065182123), 'sr_4l_of_1': (0.6709899594807212, 0.004531366935275469), 'sr_4l_of_2': (0.7674646184241283, 0.004852568555205251), 'sr_4l_of_3': (1.538278290983726, 0.006872754942126762), 'sr_4l_of_4': (5.351211327137207, 0.01289551609520589), 'cr_4l_of': (0.31412254933638906, 0.003051399358542798)}, 'ZH': {'sr_4l_sf_A': (0.9588826269718993, 0.008562801130365305), 'sr_4l_sf_B': (1.5290591662496809, 0.009915184511108817), 'sr_4l_sf_C': (0.6829818391088338, 0.005461472864686166), 'all_events': (137.65612493509434, 0.09089195409138587), '4l_presel': (19.875361077707566, 0.03255127455912648), 'cr_4l_sf': (0.07069379744552862, 0.0017785467537088193), 'sr_4l_of_1': (3.0776649291565263, 0.012188953704734596), 'sr_4l_of_2': (1.3634838648740697, 0.008187925676202436), 'sr_4l_of_3': (0.35065870046946657, 0.004282999746471847), 'sr_4l_of_4': (0.15334445705866528, 0.003442573562330441), 'cr_4l_of': (0.26697188716389064, 0.004216783461442276)}, 'ZZ': {'sr_4l_sf_A': (1.3188915546124917, 0.027709709326434746), 'sr_4l_sf_B': (4.589564790327131, 0.051334985548410574), 'sr_4l_sf_C': (2.788085121097538, 0.03945147448378394), 'all_events': (20839.935963596385, 3.5284508076238685), '4l_presel': (2996.3448773944438, 1.3026525735774501), 'cr_4l_sf': (1809.4037161641972, 1.010609187977771), 'sr_4l_of_1': (0.6230402135952318, 0.01913251268840916), 'sr_4l_of_2': (0.6195523298629269, 0.019149313484256587), 'sr_4l_of_3': (0.389804485719651, 0.015214380361572485), 'sr_4l_of_4': (0.503428151627304, 0.017427271906628516), 'cr_4l_of': (0.5690950408679782, 0.018532804854137372)}, 'ttZ': {'sr_4l_sf_A': (1.4632380469702184, 0.07073097766465616), 'sr_4l_sf_B': (1.2456058174138889, 0.06511930763490584), 'sr_4l_sf_C': (0.2973263565218076, 0.03235651540657733), 'all_events': (6400.391729545197, 5.524013760526022), '4l_presel': (155.00430985842831, 0.7354360233527983), 'cr_4l_sf': (0.6504467655904591, 0.047309618956213474), 'sr_4l_of_1': (0.35825034615118057, 0.03331835991644278), 'sr_4l_of_2': (0.4247714438242838, 0.03477282822737832), 'sr_4l_of_3': (0.9259218217339367, 0.05493082335382369), 'sr_4l_of_4': (2.785680097178556, 0.09803585582198722), 'cr_4l_of': (55.61262463382445, 0.4411700479312359)}, 'tWZ': {'sr_4l_sf_A': (0.4517017470789142, 0.01738180013665498), 'sr_4l_sf_B': (0.42845417943317443, 0.016933980145656828), 'sr_4l_sf_C': (0.1038940001744777, 0.00839185864022349), 'all_events': (457.53748542949324, 0.5535594488742449), '4l_presel': (21.40333431190811, 0.11971397281075295), 'cr_4l_sf': (0.2044043393107131, 0.011675895183228412), 'sr_4l_of_1': (0.14237167895771563, 0.009755355520882436), 'sr_4l_of_2': (0.16259158292086795, 0.010390841060134557), 'sr_4l_of_3': (0.2754841863643378, 0.013584184758869055), 'sr_4l_of_4': (0.9119344529462978, 0.024725680873858506), 'cr_4l_of': (6.6433630282990634, 0.06668917741944116)}, 'other': {'sr_4l_sf_A': (0.7716581597924232, 0.2312639955738936), 'sr_4l_sf_B': (1.1314077151473612, 0.38018104654891954), 'sr_4l_sf_C': (0.36015862389467657, 0.18350490893232696), 'all_events': (2676923.753788651, 2177.829454889236), '4l_presel': (52.9465736518614, 2.5140479882052373), 'cr_4l_sf': (12.130903454846703, 0.7388418925835935), 'sr_4l_of_1': (0.7967714633559808, 0.26061527782483923), 'sr_4l_of_2': (0.1370740740094334, 0.12366394284843292), 'sr_4l_of_3': (0.17122043680865318, 0.225799520923806), 'sr_4l_of_4': (1.396175786969252, 0.2706284118286445), 'cr_4l_of': (2.322214526706375, 0.23042204650019732)}, '$S/\\sqrt{B}$': {'sr_4l_sf_A': [1.6904242563854188, None], 'sr_4l_sf_B': [1.3164349201271868, None], 'sr_4l_sf_C': [0.678174872143654, None], 'sr_4l_of_1': [2.7050531360896706, None], 'sr_4l_of_2': [1.8381249239564001, None], 'sr_4l_of_3': [1.4228575364170486, None], 'sr_4l_of_4': [2.326677270959722, None]}, '$S/\\sqrt{S+B}$': {'sr_4l_sf_A': [1.2446314148200222, None], 'sr_4l_sf_B': [1.080609413155987, None], 'sr_4l_sf_C': [0.5815376339963901, None], 'sr_4l_of_1': [1.5744136197796181, None], 'sr_4l_of_2': [1.1431400111439176, None], 'sr_4l_of_3': [0.9885295897591657, None], 'sr_4l_of_4': [1.6520610073253268, None]}, 'Sig': {'sr_4l_sf_A': [3.3831676169338607, None], 'sr_4l_sf_B': [3.579887983462868, None], 'sr_4l_sf_C': [1.2776829172817088, None], 'sr_4l_of_1': [3.7486548886372475, None], 'sr_4l_of_2': [2.130948483298198, None], 'sr_4l_of_3': [1.8889369914531926, None], 'sr_4l_of_4': [5.5045557841958725, None]}, 'Bkg': {'sr_4l_sf_A': [4.005489508454048, None], 'sr_4l_sf_B': [7.3950325023215555, None], 'sr_4l_sf_C': [3.5494641016885, None], 'sr_4l_of_1': [1.9204337020601088, None], 'sr_4l_of_2': [1.343989430617512, None], 'sr_4l_of_3': [1.7624309306265786, None], 'sr_4l_of_4': [5.59721848872141, None]}, 'Zmetric': {'sr_4l_sf_A': [1.5104707144249265, None], 'sr_4l_sf_B': [1.2272383360663486, None], 'sr_4l_sf_C': [0.6425990612445452, None], 'sr_4l_of_1': [2.185408387410404, None], 'sr_4l_of_2': [1.5297150084811517, None], 'sr_4l_of_3': [1.2415698916807365, None], 'sr_4l_of_4': [2.0485749296655884, None]}}
+#f303abb
+EWK_REF = {'WWZ': {'sr_4l_sf_A': (2.248077894200833, 0.008356887900028736), 'sr_4l_sf_B': (1.9092815210624394, 0.0076604307766386034), 'sr_4l_sf_C': (0.5507712043909123, 0.004158433973102092), 'sr_4l_of_1': (0.6239818002213724, 0.004367491375600947), 'sr_4l_of_2': (0.7141527369931282, 0.004685804848413748), 'sr_4l_of_3': (1.433722815978399, 0.006633467314852928), 'sr_4l_of_4': (4.9765614088337315, 0.012434105056347348), 'all_events': (143.03255106410325, 0.06621972573333901), '4l_presel': (25.390131740285142, 0.027935006960828946), 'cr_4l_of': (0.45467763889973867, 0.003688619041601364), 'cr_4l_sf': (1.0234111444715381, 0.0056041066032865225)}, 'ZH': {'sr_4l_sf_A': (0.8808398754063091, 0.008183315119750697), 'sr_4l_sf_B': (1.4252621539799293, 0.009591622240915487), 'sr_4l_sf_C': (0.6304575557069256, 0.005248900545492597), 'sr_4l_of_1': (2.8618885583600786, 0.011746159453499655), 'sr_4l_of_2': (1.2643676003663131, 0.007830100610778018), 'sr_4l_of_3': (0.32845933757653256, 0.004211379560470585), 'sr_4l_of_4': (0.14063188295949658, 0.003254882286889511), 'all_events': (137.65612493509434, 0.09089195409138591), '4l_presel': (19.875361077707566, 0.03255127455912648), 'cr_4l_of': (0.3745634370106927, 0.004910825266362168), 'cr_4l_sf': (0.06583264991149917, 0.001721442231232119)}, 'ZZ': {'sr_4l_sf_A': (1.19626292139219, 0.02635255671225019), 'sr_4l_sf_B': (4.06302963554117, 0.0484072064061236), 'sr_4l_sf_C': (2.4055145616730442, 0.036728105407724476), 'sr_4l_of_1': (0.5727219310065266, 0.01833303036813739), 'sr_4l_of_2': (0.562517372865841, 0.01824400150041214), 'sr_4l_of_3': (0.3522159432868648, 0.01446290428662107), 'sr_4l_of_4': (0.4632858518671128, 0.01671940976648722), 'all_events': (20839.935963596385, 3.5284508076238787), '4l_presel': (2996.3448773944438, 1.30265257357745), 'cr_4l_of': (0.8202006802384858, 0.022285230109117902), 'cr_4l_sf': (1683.1491276815104, 0.9747933823102441)}, 'ttZ': {'sr_4l_sf_A': (1.0880661539267749, 0.061487838616742355), 'sr_4l_sf_B': (0.9408668631222099, 0.055421815101919916), 'sr_4l_sf_C': (0.23643477854784578, 0.028831465995237344), 'sr_4l_of_1': (0.26424446457531303, 0.027872369167180076), 'sr_4l_of_2': (0.2673212867230177, 0.0287057168946335), 'sr_4l_of_3': (0.7172879233257845, 0.04581019242996458), 'sr_4l_of_4': (2.0460971421562135, 0.0831325583461516), 'all_events': (6400.391729545197, 5.524013760526012), '4l_presel': (155.00430985842831, 0.735436023352798), 'cr_4l_of': (58.69226784154307, 0.4534277451200942), 'cr_4l_sf': (0.4853159709600732, 0.04021033112162022)}, 'tWZ': {'sr_4l_sf_A': (0.3471746818977408, 0.015240760391803007), 'sr_4l_sf_B': (0.311000743182376, 0.014440510942444753), 'sr_4l_sf_C': (0.08661178010515869, 0.007642970915514243), 'sr_4l_of_1': (0.1106245769187808, 0.008607028292374249), 'sr_4l_of_2': (0.12694021221250296, 0.009157548303152886), 'sr_4l_of_3': (0.21680891863070428, 0.012050015469807407), 'sr_4l_of_4': (0.7259955864865333, 0.022056413718964097), 'all_events': (457.53748542949324, 0.5535594488742449), '4l_presel': (21.40333431190811, 0.11971397281075291), 'cr_4l_of': (7.203838749264833, 0.06944165652499233), 'cr_4l_sf': (0.1605230116401799, 0.010342360895006718)}, 'other': {'sr_4l_sf_A': (0.6415139838354662, 0.20189232553220066), 'sr_4l_sf_B': (1.228122082655318, 0.37931943188323064), 'sr_4l_sf_C': (0.3666284556966275, 0.186784518924625), 'sr_4l_of_1': (0.6906138394260779, 0.25272547622068714), 'sr_4l_of_2': (0.1325544456485659, 0.12057559170557362), 'sr_4l_of_3': (0.08836240391246974, 0.1843592588174136), 'sr_4l_of_4': (1.3523445471655577, 0.2714217795041188), 'all_events': (2676923.753788651, 2177.829454889236), '4l_presel': (52.9465736518614, 2.5140479882052373), 'cr_4l_of': (2.3255568619351834, 0.2304910831012081), 'cr_4l_sf': (11.619387141661718, 0.7341400279219354)}, '$S/\\sqrt{B}$': {'sr_4l_sf_A': [1.7294976252152816, None], 'sr_4l_sf_B': [1.3036088753027868, None], 'sr_4l_sf_C': [0.6714139887147356, None], 'sr_4l_of_1': [2.7234984522148564, None], 'sr_4l_of_2': [1.8956585995614936, None], 'sr_4l_of_3': [1.5029715209596433, None], 'sr_4l_of_4': [2.3890939134622236, None]}, '$S/\\sqrt{S+B}$': {'sr_4l_sf_A': [1.236626367090044, None], 'sr_4l_sf_B': [1.060990525966462, None], 'sr_4l_sf_C': [0.5712075260687947, None], 'sr_4l_of_1': [1.5399388843353916, None], 'sr_4l_of_2': [1.1295961393615663, None], 'sr_4l_of_3': [0.9949549440590747, None], 'sr_4l_of_4': [1.6426155209771396, None]}, 'Sig': {'sr_4l_sf_A': [3.128917769607142, None], 'sr_4l_sf_B': [3.3345436750423687, None], 'sr_4l_sf_C': [1.181228760097838, None], 'sr_4l_of_1': [3.485870358581451, None], 'sr_4l_of_2': [1.9785203373594413, None], 'sr_4l_of_3': [1.7621821535549316, None], 'sr_4l_of_4': [5.117193291793228, None]}, 'Bkg': {'sr_4l_sf_A': [3.273017741052172, None], 'sr_4l_sf_B': [6.543019324501074, None], 'sr_4l_sf_C': [3.095189576022676, None], 'sr_4l_of_1': [1.6382048119266983, None], 'sr_4l_of_2': [1.0893333174499276, None], 'sr_4l_of_3': [1.3746751891558233, None], 'sr_4l_of_4': [4.587723127675417, None]}, 'Zmetric': {'sr_4l_sf_A': [1.5271304041317981, None], 'sr_4l_sf_B': [1.211362434502514, None], 'sr_4l_sf_C': [0.6343417608521935, None], 'sr_4l_of_1': [2.171342366726005, None], 'sr_4l_of_2': [1.5478844248069015, None], 'sr_4l_of_3': [1.285097369234633, None], 'sr_4l_of_4': [2.0756701298826195, None]}}
 
 SOVERROOTB = "$S/\sqrt{B}$"
 SOVERROOTSPLUSB = "$S/\sqrt{S+B}$"
@@ -283,8 +283,8 @@ def print_yields(yld_dict,print_fom=True):
 
     #tag1 = "ewkcoffea"
     #tag2 = "VVVNanoLooper"
-    tag1 = "btagDeepFlav 0l"
-    tag2 = "btagCSV 0l"
+    tag1 = "new"
+    tag2 = "btagDeepFlav 0l" # Hard coded ref
 
     #yld_dict_comp = utils.put_none_errs(KEEGAN_YIELDS)
     yld_dict_comp = EWK_REF
@@ -364,7 +364,8 @@ def group(h, oldname, newname, grouping):
 
     # Build up a grouping dict that drops any proc that is not in our h
     grouping_slim = {}
-    proc_lst = get_axis_cats(h,"process")
+    #proc_lst = get_axis_cats(h,"process")
+    proc_lst = get_axis_cats(h,oldname)
     for grouping_name in grouping.keys():
         for proc in grouping[grouping_name]:
             if proc in proc_lst:
@@ -387,7 +388,7 @@ def group(h, oldname, newname, grouping):
 
 
 # Takes a mc hist and data hist and plots both
-def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
+def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False):
 
     # Create the figure
     fig, (ax, rax) = plt.subplots(
@@ -407,41 +408,44 @@ def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
         ax=ax,
     )
     # Plot the data
-    histo_data.plot1d(
-        stack=False,
-        histtype="errorbar",
-        color="k",
-        ax=ax,
-        w2=histo_data.variances(),
-        w2method="sqrt",
-    )
+    if histo_data is not None:
+        histo_data.plot1d(
+            stack=False,
+            histtype="errorbar",
+            color="k",
+            ax=ax,
+            w2=histo_data.variances(),
+            w2method="sqrt",
+        )
     # Plot a dummy hist on rax to get the label to show up
-    histo_data.plot1d(alpha=0, ax=rax)
+    histo_mc.plot1d(alpha=0, ax=rax)
 
-    ### Get the err and ratios and plot them by hand ###
+    ### Get the errs on MC and plot them by hand ###
     histo_mc_sum = histo_mc[{"process_grp":sum}]
-    histo_data_sum = histo_data[{"process_grp":sum}]
-
     mc_arr = histo_mc_sum.values()
     mc_err_arr = np.sqrt(histo_mc_sum.variances())
-    data_arr = histo_data_sum.values()
-    data_err_arr = np.sqrt(histo_data_sum.variances())
-
     err_p = np.append(mc_arr + mc_err_arr, 0)
     err_m = np.append(mc_arr - mc_err_arr, 0)
-    err_ratio_p = np.append(1+mc_err_arr/mc_arr,1)
-    err_ratio_m = np.append(1-mc_err_arr/mc_arr,1)
-
-    data_ratio_err_p = (data_arr + data_err_arr)/mc_arr
-    data_ratio_err_m = (data_arr - data_err_arr)/mc_arr
-
     bin_edges_arr = histo_mc_sum.axes[0].edges
     bin_centers_arr = histo_mc_sum.axes[0].centers
-
     ax.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', alpha=0.5, linewidth=0.0, label='MC stat', hatch='/////')
-    rax.fill_between(bin_edges_arr,err_ratio_m,err_ratio_p,step='post', facecolor='none',edgecolor='gray', label='MC stat', linewidth=0.0, hatch='/////',alpha=0.5)
-    rax.scatter(bin_centers_arr,data_arr/mc_arr,facecolor='black',edgecolor='black',marker="o")
-    rax.vlines(bin_centers_arr,data_ratio_err_p,data_ratio_err_m,color='k')
+
+    ### Get the errs on data and ratios and plot them by hand ###
+    if histo_data is not None:
+        histo_data_sum = histo_data[{"process_grp":sum}]
+
+        data_arr = histo_data_sum.values()
+        data_err_arr = np.sqrt(histo_data_sum.variances())
+
+        err_ratio_p = np.append(1+mc_err_arr/mc_arr,1)
+        err_ratio_m = np.append(1-mc_err_arr/mc_arr,1)
+
+        data_ratio_err_p = (data_arr + data_err_arr)/mc_arr
+        data_ratio_err_m = (data_arr - data_err_arr)/mc_arr
+
+        rax.fill_between(bin_edges_arr,err_ratio_m,err_ratio_p,step='post', facecolor='none',edgecolor='gray', label='MC stat', linewidth=0.0, hatch='/////',alpha=0.5)
+        rax.scatter(bin_centers_arr,data_arr/mc_arr,facecolor='black',edgecolor='black',marker="o")
+        rax.vlines(bin_centers_arr,data_ratio_err_p,data_ratio_err_m,color='k')
 
     # Scale the y axis and labels
     ax.legend(fontsize="12")
@@ -453,6 +457,7 @@ def make_cr_fig(histo_mc,histo_data,title,unit_norm_bool=False):
     rax.axhline(1.0,linestyle="-",color="k",linewidth=1)
     ax.tick_params(axis='y', labelsize=16)
     rax.tick_params(axis='x', labelsize=16)
+    #ax.set_yscale('log')
 
     return fig
 
@@ -498,9 +503,13 @@ def make_plots(histo_dict):
         if var_name not in ["njets","nbtagsl","nleps"]:
             histo = rebin(histo,6)
 
+        # Group SR procs together
+        #grouping_sr_procs = {"sr_4l_sf":["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C"],"sr_4l_of":["sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]}
+        #histo = group(histo,"category","category",grouping_sr_procs)
+
         # Loop over categories and make plots for each
         for cat_name in histo.axes["category"]:
-            if cat_name not in ["cr_4l_sf","cr_4l_of"]: continue # TMP
+            #if cat_name not in ["cr_4l_sf","cr_4l_of"]: continue # TMP
             print(cat_name)
 
             histo_cat = histo[{"category":cat_name}]
@@ -519,8 +528,8 @@ def make_plots(histo_dict):
             #    print("data\n",histo_grouped_data)
             #    print("val mc\n",histo_grouped_mc.values(flow=True))
             #    print("val data\n",histo_grouped_data.values(flow=True))
-            #    print("var mc\n",np.sqrt(histo_grouped_mc.variances()))
-            #    print("var data\n",np.sqrt(histo_grouped_data.variances()))
+            #    print("var mc\n",(histo_grouped_mc.variances(flow=True)))
+            #    print("var data\n",(histo_grouped_data.variances(flow=True)))
             #continue
             #print("\Yields")
             #print(type(histo_cat.values(flow=True)))
@@ -539,7 +548,7 @@ def make_plots(histo_dict):
             if "cr" in title:
                 fig = make_cr_fig(histo_grouped_mc,histo_grouped_data,title=title)
             else:
-                fig = make_single_fig(histo_grouped_mc,title=title)
+                fig = make_cr_fig(histo_grouped_mc,title=title)
 
             # Save
             save_dir_path_cat = os.path.join(save_dir_path,cat_name)
