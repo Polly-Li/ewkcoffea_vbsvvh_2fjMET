@@ -374,13 +374,18 @@ class AnalysisProcessor(processor.ProcessorABC):
             selections.add("all_events", (events.is4lWWZ | (~events.is4lWWZ))) # All events.. this logic is a bit roundabout to just get an array of True
             selections.add("4l_presel", (events.is4lWWZ)) # This matches the VVV looper selection (object selection and event selection)
 
+            selections.add("sr_4l_sf_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 65.0)))
+            selections.add("sr_4l_of_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of))
+
             # CRs
             selections.add("cr_4l_of", (pass_trg & events.is4lWWZ & bmask_atleast1med & events.wwz_presel_of))
             selections.add("cr_4l_sf", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
 
             cat_dict = {
                 "lep_chan_lst" : [
-                    "sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4","all_events","4l_presel",
+                    "sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4",
+                    "sr_4l_sf_presel", "sr_4l_of_presel",
+                    "all_events","4l_presel",
                     "cr_4l_of","cr_4l_sf",
                 ],
             }
@@ -477,7 +482,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             exclude_var_dict = {
                 "mt2" : ["all_events"],
                 "ptl4" : ["all_events"],
-                "j0pt" : ["all_events", "4l_presel", "cr_4l_sf"] + analysis_cats,
+                "j0pt" : ["all_events", "4l_presel", "sr_4l_sf_presel", "sr_4l_of_presel", "cr_4l_sf"] + analysis_cats,
                 "l0pt" : ["all_events"],
                 "mll_01" : ["all_events"],
                 "scalarptsum_lep" : ["all_events"],
@@ -511,8 +516,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mll_min_afos" : ["all_events"],
                 "mll_min_sfos" : ["all_events"],
 
-                "mlb_min" : ["all_events","4l_presel", "cr_4l_sf"] + analysis_cats,
-                "mlb_max" : ["all_events","4l_presel", "cr_4l_sf"] + analysis_cats,
+                "mlb_min" : ["all_events","4l_presel", "sr_4l_sf_presel", "sr_4l_of_presel", "cr_4l_sf"] + analysis_cats,
+                "mlb_max" : ["all_events","4l_presel", "sr_4l_sf_presel", "sr_4l_of_presel", "cr_4l_sf"] + analysis_cats,
             }
 
 
