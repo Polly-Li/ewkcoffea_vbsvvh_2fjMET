@@ -3,6 +3,7 @@
 import coffea
 import numpy as np
 import awkward as ak
+import copy
 np.seterr(divide='ignore', invalid='ignore', over='ignore')
 from coffea import processor
 import hist
@@ -17,6 +18,7 @@ import topcoffea.modules.object_selection as os_tc
 from ewkcoffea.modules.paths import ewkcoffea_path as ewkcoffea_path
 import ewkcoffea.modules.selection_wwz as es_ec
 import ewkcoffea.modules.objects_wwz as os_ec
+import ewkcoffea.modules.corrections as cor_ec
 
 from topcoffea.modules.get_param_from_jsons import GetParam
 get_tc_param = GetParam(topcoffea_path("params/params.json"))
@@ -192,6 +194,11 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Get tight leptons for WWZ selection
         ele_wwz_t = ele[ele.is_tight_lep_for_wwz]
         mu_wwz_t = mu[mu.is_tight_lep_for_wwz]
+
+        # Attach the lepton SFs to the electron and muons collections
+        cor_ec.AttachElectronSF(ele_wwz_t,year=year)
+        cor_ec.AttachMuonSF(mu_wwz_t,year=year)
+
         l_wwz_t = ak.with_name(ak.concatenate([ele_wwz_t,mu_wwz_t],axis=1),'PtEtaPhiMCandidate')
         l_wwz_t = l_wwz_t[ak.argsort(l_wwz_t.pt, axis=-1,ascending=False)] # Sort by pt
 
@@ -218,6 +225,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         nleps = ak.num(l_wwz_t)
 
+
         ######### Systematics ###########
 
 
@@ -241,6 +249,8 @@ class AnalysisProcessor(processor.ProcessorABC):
         for syst_var in syst_var_list:
             # Make a copy of the base weights object, so that each time through the loop we do not double count systs
             # In this loop over systs that impact kinematics, we will add to the weights objects the SFs that depend on the object kinematics
+            weights_obj_base_for_kinematic_syst = copy.deepcopy(weights_obj_base)
+
 
             #################### Jets ####################
 
@@ -303,6 +313,10 @@ class AnalysisProcessor(processor.ProcessorABC):
             events["l_wwz_t"] = l_wwz_t
 
             es_ec.add4lmask_wwz(events, year, isData, histAxisName)
+
+            ######### Apply SFs #########
+            weights_obj_base_for_kinematic_syst.add("lepSF_muon", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
+            weights_obj_base_for_kinematic_syst.add("lepSF_elec", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
 
 
             ######### Masks we need for the selection ##########
@@ -537,7 +551,8 @@ class AnalysisProcessor(processor.ProcessorABC):
 
                 # Decide if we are filling this hist with weight or raw event counts
                 if dense_axis_name.endswith("_counts"): weights = events.nom
-                else: weights = weights_obj_base.partial_weight(include=["norm"])
+                #else: weights = weights_obj_base_for_kinematic_syst.partial_weight(include=["norm"])
+                else: weights = weights_obj_base_for_kinematic_syst.weight(None)
 
                 # Loop over categories
                 for sr_cat in cat_dict["lep_chan_lst"]:
