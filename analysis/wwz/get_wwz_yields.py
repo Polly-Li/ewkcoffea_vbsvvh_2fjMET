@@ -204,7 +204,7 @@ def get_yields(histos_dict,raw_counts=False,quiet=False):
         yld_dict[proc_name] = {}
         for cat_name in histos_dict[dense_axis].axes["category"]:
             val = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name]}].values(flow=True)))
-            var = np.sqrt(sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name]}].variances(flow=True))))
+            var = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name]}].variances(flow=True)))
             yld_dict[proc_name][cat_name] = (val,var)
 
     # Print to screen
@@ -218,23 +218,25 @@ def get_yields(histos_dict,raw_counts=False,quiet=False):
     return yld_dict
 
 
-# Gets the S/sqrt(B) and puts it into the dict
+# Gets the process sums for S and B and gets metrics e.g. S/sqrt(B) and puts it into the dict
 # Hard coded for the summed values (e.g. looking for "ZH" not "GluGluZH","qqToZHToZTo2L")
-def put_s_over_root_b(yld_dict):
+def put_proc_row_sums(yld_dict):
     sig_lst = ["WWZ","ZH"]
     bkg_lst = ["ZZ","ttZ","tWZ","other"]
-    sig_sum = {"sr_4l_sf_A":0, "sr_4l_sf_B":0, "sr_4l_sf_C":0, "sr_4l_of_1":0, "sr_4l_of_2":0, "sr_4l_of_3":0, "sr_4l_of_4":0}
-    bkg_sum = {"sr_4l_sf_A":0, "sr_4l_sf_B":0, "sr_4l_sf_C":0, "sr_4l_of_1":0, "sr_4l_of_2":0, "sr_4l_of_3":0, "sr_4l_of_4":0}
+    sig_sum = {"sr_4l_sf_A":[0,0], "sr_4l_sf_B":[0,0], "sr_4l_sf_C":[0,0], "sr_4l_of_1":[0,0], "sr_4l_of_2":[0,0], "sr_4l_of_3":[0,0], "sr_4l_of_4":[0,0]}
+    bkg_sum = {"sr_4l_sf_A":[0,0], "sr_4l_sf_B":[0,0], "sr_4l_sf_C":[0,0], "sr_4l_of_1":[0,0], "sr_4l_of_2":[0,0], "sr_4l_of_3":[0,0], "sr_4l_of_4":[0,0]}
     for proc in yld_dict.keys():
         print(proc)
         for cat in yld_dict[proc].keys():
             if cat not in sig_sum: continue
-            val,err = yld_dict[proc][cat]
+            val,var = yld_dict[proc][cat]
             print("   ",cat,val)
             if proc in sig_lst:
-                sig_sum[cat] += val
+                sig_sum[cat][0] += val
+                sig_sum[cat][1] += var
             if proc in bkg_lst:
-                bkg_sum[cat] += val
+                bkg_sum[cat][0] += val
+                bkg_sum[cat][1] += var
 
     yld_dict[SOVERROOTB] = {}
     yld_dict[SOVERROOTSPLUSB] = {}
@@ -242,13 +244,74 @@ def put_s_over_root_b(yld_dict):
     yld_dict["Bkg"] = {}
     yld_dict["Zmetric"] = {}
     for cat in sig_sum.keys():
-        s = sig_sum[cat]
-        b = bkg_sum[cat]
+        s = sig_sum[cat][0]
+        b = bkg_sum[cat][0]
+        s_var = sig_sum[cat][1]
+        b_var = bkg_sum[cat][1]
         yld_dict[SOVERROOTB][cat]      = [s/math.sqrt(b) , None]
         yld_dict[SOVERROOTSPLUSB][cat] = [s/math.sqrt(s+b) , None]
-        yld_dict["Sig"][cat] = [s, None]
-        yld_dict["Bkg"][cat] = [b, None]
         yld_dict["Zmetric"][cat] = [math.sqrt(2 * ((s + b) * math.log(1 + s / b) - s)), None] # Eq 18 https://cds.cern.ch/record/2203244/files/1087459_109-114.pdf
+        yld_dict["Sig"][cat] = [s, s_var]
+        yld_dict["Bkg"][cat] = [b, b_var]
+
+# Gets the sums of categoreis (assumed to be columns in the input dict) and puts them into the dict
+# Special handling for rows that are metrics (e.g. s/sqrt(b)), sums these in quadrature
+def put_cat_col_sums(yld_dict,metrics_names_lst=["Zmetric",SOVERROOTB,SOVERROOTSPLUSB]):
+
+    print("in",yld_dict)
+
+    # Hard coded names we expect the columns to be
+    sr_sf_lst = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C"]
+    sr_of_lst = ["sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
+    sr_lst = sr_sf_lst + sr_of_lst
+
+    # Loop over rows (processes) and sum columns together, fill the result into new_dict
+    new_dict = {}
+    for proc in yld_dict:
+        sr_sf_val = 0
+        sr_sf_var = 0
+        sr_of_val = 0
+        sr_of_var = 0
+        sr_val = 0
+        sr_var = 0
+        for cat in yld_dict[proc]:
+            val = yld_dict[proc][cat][0]
+            var = yld_dict[proc][cat][1]
+            if cat in sr_sf_lst:
+                if proc in metrics_names_lst:
+                    sr_sf_val += val*val
+                else:
+                    sr_sf_val += val
+                    sr_sf_var += var
+            if cat in sr_of_lst:
+                if proc in metrics_names_lst:
+                    sr_of_val += val*val
+                else:
+                    sr_of_val += val
+                    sr_of_var += var
+            if cat in sr_lst:
+                if proc in metrics_names_lst:
+                    sr_val += val*val
+                else:
+                    sr_val += val
+                    sr_var += var
+
+        # Fill our new_dict with what we've computed
+        new_dict[proc] = {}
+        if proc in metrics_names_lst:
+            new_dict[proc]["sr_sf_all"] = [np.sqrt(sr_sf_val),None]
+            new_dict[proc]["sr_of_all"] = [np.sqrt(sr_of_val),None]
+            new_dict[proc]["sr_all"]    = [np.sqrt(sr_val),None]
+        else:
+            new_dict[proc]["sr_sf_all"] = [sr_sf_val, sr_sf_var]
+            new_dict[proc]["sr_of_all"] = [sr_of_val, sr_of_var]
+            new_dict[proc]["sr_all"]    = [sr_val, sr_var]
+
+    # Put the columns into the yld_dict
+    for proc in new_dict:
+        yld_dict[proc]["sr_sf_all"] = new_dict[proc]["sr_sf_all"]
+        yld_dict[proc]["sr_of_all"] = new_dict[proc]["sr_of_all"]
+        yld_dict[proc]["sr_all"] = new_dict[proc]["sr_all"]
 
 
 # Print yields
@@ -582,7 +645,8 @@ def main():
     # Wrapper around the code for getting the yields for sr and bkg samples
     if args.get_yields:
         yld_dict = get_yields(histo_dict)
-        put_s_over_root_b(yld_dict)
+        put_proc_row_sums(yld_dict)
+        put_cat_col_sums(yld_dict)
         print_yields(yld_dict)
 
         # Dump yield dict to json
