@@ -313,7 +313,20 @@ def put_cat_col_sums(yld_dict,metrics_names_lst=["Zmetric",SOVERROOTB,SOVERROOTS
 
 
 # Print yields
-def print_yields(yld_dict,print_fom=True):
+def print_yields(yld_dict_in,print_fom=True):
+
+    # Get err from var
+    def get_err_from_var(in_dict):
+        out_dict = {}
+        for proc in in_dict:
+            out_dict[proc] = {}
+            for cat in in_dict[proc]:
+                if in_dict[proc][cat][1] is None: var = None
+                else: var = np.sqrt(in_dict[proc][cat][1])
+                out_dict[proc][cat] = [in_dict[proc][cat][0],var]
+        return out_dict
+
+    yld_dict = get_err_from_var(yld_dict_in)
 
     # Dump the yields to dict for latex table
     yld_dict_for_printing = {}
@@ -347,7 +360,7 @@ def print_yields(yld_dict,print_fom=True):
     tag2 = "noSF " # Hard coded ref
 
     #yld_dict_comp = utils.put_none_errs(KEEGAN_YIELDS)
-    yld_dict_comp = EWK_REF
+    yld_dict_comp = get_err_from_var(EWK_REF)
 
     yld_dict_1 = yld_dict_for_printing
     yld_dict_2 = yld_dict_comp
@@ -357,12 +370,13 @@ def print_yields(yld_dict,print_fom=True):
 
     procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
     hlines = [1,2,6,7]
+    #vlines = "cccc|c|cccc|c|c" # Not impliemnted in MLT
 
     mlt.print_begin()
-    mlt.print_latex_yield_table(yld_dict_1,key_order=procs_to_print,subkey_order=cats_to_print,tag=tag1,hz_line_lst=hlines)
-    mlt.print_latex_yield_table(yld_dict_2,key_order=procs_to_print,subkey_order=cats_to_print,tag=tag2,hz_line_lst=hlines)
-    mlt.print_latex_yield_table(pdiff_dict,key_order=procs_to_print,subkey_order=cats_to_print,tag=f"Percent diff between {tag1} and {tag2}",hz_line_lst=hlines)
-    mlt.print_latex_yield_table(diff_dict, key_order=procs_to_print,subkey_order=cats_to_print,tag=f"Diff between {tag1} and {tag2}",hz_line_lst=hlines)
+    mlt.print_latex_yield_table(yld_dict_1,key_order=procs_to_print,subkey_order=cats_to_print,tag=tag1,hz_line_lst=hlines,print_errs=True,small=True)
+    mlt.print_latex_yield_table(yld_dict_2,key_order=procs_to_print,subkey_order=cats_to_print,tag=tag2,hz_line_lst=hlines,print_errs=True,small=True)
+    mlt.print_latex_yield_table(pdiff_dict,key_order=procs_to_print,subkey_order=cats_to_print,tag=f"Percent diff between {tag1} and {tag2}",hz_line_lst=hlines,small=True)
+    mlt.print_latex_yield_table(diff_dict, key_order=procs_to_print,subkey_order=cats_to_print,tag=f"Diff between {tag1} and {tag2}",hz_line_lst=hlines,small=True)
     mlt.print_end()
 
 
