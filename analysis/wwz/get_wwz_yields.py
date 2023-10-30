@@ -107,7 +107,6 @@ sample_dict_base = {
         ##"TTZToLL_M_1to10","TTZToLLNuNu_M_10","TTZToQQ",
         ##"tWll",
 
-
         ##"DYJetsToLL_M_10to50_MLM",
         "DYJetsToLL_M_50_MLM",
         "SSWW",
@@ -130,46 +129,46 @@ sample_dict_base = {
         "WZZ",
         "ZZZ",
     ],
+}
 
-    ## Indiviudally
-    #"WWZJetsTo4L2Nu":            ["WWZJetsTo4L2Nu"],
-    #"GluGluZH":                  ["GluGluZH"],
-    #"qqToZHToZTo2L":             ["qqToZHToZTo2L"],
-    #"ZZTo4l":                    ["ZZTo4l"],
-    #"ggToZZTo2e2mu":             ["ggToZZTo2e2mu"],
-    #"ggToZZTo2e2tau":            ["ggToZZTo2e2tau"],
-    #"ggToZZTo2mu2tau":           ["ggToZZTo2mu2tau"],
-    #"ggToZZTo4e":                ["ggToZZTo4e"],
-    #"ggToZZTo4mu":               ["ggToZZTo4mu"],
-    #"ggToZZTo4tau":              ["ggToZZTo4tau"],
-    #"TTZToLL_M_1to10":           ["TTZToLL_M_1to10"],
-    #"TTZToLLNuNu_M_10":          ["TTZToLLNuNu_M_10"],
-    #"TTZToQQ":                   ["TTZToQQ"],
-    #"tWll" :                     ["tWll"],
+# Processes indiviudally
+sample_dict_base_indiv = {
+    "WWZJetsTo4L2Nu":            ["WWZJetsTo4L2Nu"],
+    "GluGluZH":                  ["GluGluZH"],
+    "qqToZHToZTo2L":             ["qqToZHToZTo2L"],
+    "ZZTo4l":                    ["ZZTo4l"],
+    "ggToZZTo2e2mu":             ["ggToZZTo2e2mu"],
+    "ggToZZTo2e2tau":            ["ggToZZTo2e2tau"],
+    "ggToZZTo2mu2tau":           ["ggToZZTo2mu2tau"],
+    "ggToZZTo4e":                ["ggToZZTo4e"],
+    "ggToZZTo4mu":               ["ggToZZTo4mu"],
+    "ggToZZTo4tau":              ["ggToZZTo4tau"],
+    "TTZToLL_M_1to10":           ["TTZToLL_M_1to10"],
+    "TTZToLLNuNu_M_10":          ["TTZToLLNuNu_M_10"],
+    "TTZToQQ":                   ["TTZToQQ"],
+    "tWll" :                     ["tWll"],
 
-    ###"DYJetsToLL_M_10to50_MLM": ["DYJetsToLL_M_10to50_MLM"],
-    #"DYJetsToLL_M_50_MLM":       ["DYJetsToLL_M_50_MLM"],
-    #"SSWW":                      ["SSWW"],
-    #"ST_antitop_t-channel":      ["ST_antitop_t-channel"],
-    #"ST_top_s-channel":          ["ST_top_s-channel"],
-    #"ST_top_t-channel":          ["ST_top_t-channel"],
-    #"tbarW_noFullHad":           ["tbarW_noFullHad"],
-    #"ttHnobb":                   ["ttHnobb"],
-    #"TTTo2L2Nu":                 ["TTTo2L2Nu"],
-    #"TTWJetsToLNu":              ["TTWJetsToLNu"],
-    #"TTWJetsToQQ":               ["TTWJetsToQQ"],
-    #"tW_noFullHad":              ["tW_noFullHad"],
-    #"tZq":                       ["tZq"],
-    #"VHnobb":                    ["VHnobb"],
-    ###"WJetsToLNu":              ["WJetsToLNu"],
-    #"WWTo2L2Nu":                 ["WWTo2L2Nu"],
-    #"WZTo3LNu":                  ["WZTo3LNu"],
+    ##"DYJetsToLL_M_10to50_MLM": ["DYJetsToLL_M_10to50_MLM"],
+    "DYJetsToLL_M_50_MLM":       ["DYJetsToLL_M_50_MLM"],
+    "SSWW":                      ["SSWW"],
+    "ST_antitop_t-channel":      ["ST_antitop_t-channel"],
+    "ST_top_s-channel":          ["ST_top_s-channel"],
+    "ST_top_t-channel":          ["ST_top_t-channel"],
+    "tbarW_noFullHad":           ["tbarW_noFullHad"],
+    "ttHnobb":                   ["ttHnobb"],
+    "TTTo2L2Nu":                 ["TTTo2L2Nu"],
+    "TTWJetsToLNu":              ["TTWJetsToLNu"],
+    "TTWJetsToQQ":               ["TTWJetsToQQ"],
+    "tW_noFullHad":              ["tW_noFullHad"],
+    "tZq":                       ["tZq"],
+    "VHnobb":                    ["VHnobb"],
+    ##"WJetsToLNu":              ["WJetsToLNu"],
+    "WWTo2L2Nu":                 ["WWTo2L2Nu"],
+    "WZTo3LNu":                  ["WZTo3LNu"],
 
-    #"WWW" : ["WWW"],
-    #"WZZ" : ["WZZ"],
-    #"ZZZ" : ["ZZZ"],
-
-
+    "WWW" : ["WWW"],
+    "WZZ" : ["WZZ"],
+    "ZZZ" : ["ZZZ"],
 }
 
 
@@ -283,8 +282,8 @@ def print_yields(yld_dict,print_fom=True):
 
     #tag1 = "ewkcoffea"
     #tag2 = "VVVNanoLooper"
-    tag1 = "new"
-    tag2 = "btagDeepFlav 0l" # Hard coded ref
+    tag1 = "lepRecoSFlepTightSF"
+    tag2 = "noSF " # Hard coded ref
 
     #yld_dict_comp = utils.put_none_errs(KEEGAN_YIELDS)
     yld_dict_comp = EWK_REF
@@ -489,9 +488,7 @@ def make_single_fig(histo_mc,title,unit_norm_bool=False):
 
 
 # Main function for making CR plots
-def make_plots(histo_dict):
-
-    save_dir_path = "plots"
+def make_plots(histo_dict,save_dir_path):
 
     for var_name in histo_dict.keys():
         print(f"\n{var_name}")
@@ -509,7 +506,7 @@ def make_plots(histo_dict):
 
         # Loop over categories and make plots for each
         for cat_name in histo.axes["category"]:
-            #if cat_name not in ["cr_4l_sf","cr_4l_of"]: continue # TMP
+            if cat_name not in ["cr_4l_sf","cr_4l_of"]: continue # TMP
             print(cat_name)
 
             histo_cat = histo[{"category":cat_name}]
@@ -568,7 +565,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("pkl_file_path", help = "The path to the pkl file")
     parser.add_argument("-o", "--output-path", default=".", help = "The path the output files should be saved to")
-    parser.add_argument("-n", "--output-name", default="wwz_yields", help = "A name for the output directory")
+    parser.add_argument('-y', "--get-yields", action='store_true', help = "Get yields from the pkl file")
+    parser.add_argument('-p', "--make-plots", action='store_true', help = "Make plots from the pkl file")
     args = parser.parse_args()
 
     # Get the counts from the input hiso
@@ -579,20 +577,24 @@ def main():
     #print_counts(counts_dict)
     #exit()
 
+    out_path = "plots" # Could make this an argument
+
     # Wrapper around the code for getting the yields for sr and bkg samples
-    yld_dict = get_yields(histo_dict)
-    put_s_over_root_b(yld_dict)
-    print_yields(yld_dict)
+    if args.get_yields:
+        yld_dict = get_yields(histo_dict)
+        put_s_over_root_b(yld_dict)
+        print_yields(yld_dict)
 
-    # Test plotting
-    #make_plots(histo_dict)
-    #exit()
+        # Dump yield dict to json
+        json_name = "process_yields.json" # Could be an argument
+        json_name = os.path.join(out_path,json_name)
+        with open(json_name,"w") as out_file: json.dump(yld_dict, out_file, indent=4)
+        print(f"\nSaved json file: {json_name}\n")
 
-    # Dump yield dict to json
-    if "json" not in args.output_name: output_name = args.output_name + ".json"
-    else: output_name = args.output_name
-    with open(output_name,"w") as out_file: json.dump(yld_dict, out_file, indent=4)
-    print(f"\nSaved json file: {output_name}\n")
+    # Make plots
+    if args.make_plots:
+        make_plots(histo_dict,save_dir_path=out_path)
+
 
 
 
