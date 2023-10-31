@@ -40,6 +40,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             "metphi": axis.Regular(180, -4, 4, name="metphi", label="met phi"),
             "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
             "scalarptsum_lep" : axis.Regular(180, 0, 500, name="scalarptsum_lep", label="S_T"),
+            "scalarptsum_lepmet" : axis.Regular(180, 0, 600, name="scalarptsum_lepmet", label="S_T + metpt"),
+            "scalarptsum_lepmetjet" : axis.Regular(180, 0, 600, name="scalarptsum_lepmetjet", label="S_T + metpt + H_T"),
             "mll_01": axis.Regular(180, 0, 200, name="mll_01",  label="mll_l0_l1"),
             "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
             "j0pt"  : axis.Regular(180, 0, 500, name="j0pt", label="j0pt"),
@@ -63,9 +65,14 @@ class AnalysisProcessor(processor.ProcessorABC):
             "pt_wl0_wl1" : axis.Regular(180, 0, 300, name="pt_wl0_wl1", label="pt(Wl0 + Wl1)"),
             "dr_zl0_zl1" : axis.Regular(180, 0, 5, name="dr_zl0_zl1", label="dr(Zl0,Zl1)"),
             "dr_wl0_wl1" : axis.Regular(180, 0, 5, name="dr_wl0_wl1", label="dr(Wl0,Wl1)"),
+            "dr_wleps_zleps" : axis.Regular(180, 0, 5, name="dr_wleps_zleps", label="dr((Wl0+Wl1),(Zl0,Zl1))"),
+
             "absdphi_zl0_zl1" : axis.Regular(180, 0, 4, name="absdphi_zl0_zl1", label="abs dphi(Zl0,Zl1)"),
             "absdphi_wl0_wl1" : axis.Regular(180, 0, 4, name="absdphi_wl0_wl1", label="abs dphi(Wl0,Wl1)"),
             "absdphi_z_ww"    : axis.Regular(180, 0, 4, name="absdphi_z_ww", label="abs dphi((Zl0+Zl1),(Wl0+Wl1+met))"),
+            "dphi_4l_met"    : axis.Regular(180, -4, 4, name="dphi_4l_met", label="dphi((Zl0+Zl1+Wl0+Wl1),met)"),
+            "dphi_zleps_met" : axis.Regular(180, -4, 4, name="dphi_zleps_met", label="dphi((Zl0+Zl1),met)"),
+            "dphi_wleps_met" : axis.Regular(180, -4, 4, name="dphi_wleps_met", label="dphi((Wl0+Wl1),met)"),
 
             "absdphi_min_afas" : axis.Regular(180, 0, 4, name="absdphi_min_afas",  label="min(abs(delta phi of all pairs))"),
             "absdphi_min_afos" : axis.Regular(180, 0, 4, name="absdphi_min_afos",  label="min(abs(delta phi of OS pairs))"),
@@ -412,6 +419,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             j0pt = ak.flatten(j0.pt) # Flatten to go from [[j0pt],[j0pt],...] -> [j0pt,j0pt,...]
             mll_01 = (l0+l1).mass
             scalarptsum_lep = l0.pt + l1.pt + l2.pt + l3.pt
+            scalarptsum_lepmet = l0.pt + l1.pt + l2.pt + l3.pt + met.pt
+            scalarptsum_lepmetjet = l0.pt + l1.pt + l2.pt + l3.pt + met.pt + ak.sum(goodJets.pt,axis=-1)
 
             # Get lep from Z
             z_lep0 = leps_from_z_candidate_ptordered[:,0]
@@ -424,16 +433,23 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             dr_zl0_zl1 = z_lep0.delta_r(z_lep1)
             dr_wl0_wl1 = w_lep0.delta_r(w_lep1)
+            dr_wleps_zleps = (w_lep0 + w_lep1).delta_r(z_lep0 + z_lep1)
 
             absdphi_zl0_zl1 = abs(z_lep0.delta_phi(z_lep1))
             absdphi_wl0_wl1 = abs(w_lep0.delta_phi(w_lep1))
             absdphi_z_ww = abs((z_lep0 + z_lep1).delta_phi(w_lep0 + w_lep1 + met))
+            dphi_4l_met = (z_lep0 + z_lep1 + w_lep0 + w_lep1).delta_phi(met)
+            dphi_wleps_met = (w_lep0 + w_lep1).delta_phi(met)
+            dphi_zleps_met = (z_lep0 + z_lep1).delta_phi(met)
 
             # lb pairs (i.e. always one lep, one bjet)
             bjets = goodJets[isBtagJetsLoose]
             lb_pairs = ak.cartesian({"l":l_wwz_t,"j":bjets})
             mlb_min = ak.min((lb_pairs["l"] + lb_pairs["j"]).mass,axis=-1)
             mlb_max = ak.max((lb_pairs["l"] + lb_pairs["j"]).mass,axis=-1)
+
+            # BDT values
+            #x = es_ec.eval_sig_bdt(events,"of")
 
 
             ######### Fill histos #########
@@ -446,6 +462,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "metphi" : met.phi,
                 "ptl4" : ptl4,
                 "scalarptsum_lep" : scalarptsum_lep,
+                "scalarptsum_lepmet" : scalarptsum_lepmet,
+                "scalarptsum_lepmetjet" : scalarptsum_lepmetjet,
                 "mll_01" : mll_01,
                 "l0pt" : l0pt,
                 "j0pt" : j0pt,
@@ -470,9 +488,13 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "pt_wl0_wl1" : pt_wl0_wl1,
                 "dr_zl0_zl1" : dr_zl0_zl1,
                 "dr_wl0_wl1" : dr_wl0_wl1,
+                "dr_wleps_zleps" : dr_wleps_zleps,
                 "absdphi_zl0_zl1" : absdphi_zl0_zl1,
                 "absdphi_wl0_wl1" : absdphi_wl0_wl1,
                 "absdphi_z_ww" : absdphi_z_ww,
+                "dphi_4l_met" : dphi_4l_met,
+                "dphi_zleps_met" : dphi_zleps_met,
+                "dphi_wleps_met" : dphi_wleps_met,
 
                 "nleps" : nleps,
                 "njets" : njets,
@@ -502,6 +524,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "l0pt" : ["all_events"],
                 "mll_01" : ["all_events"],
                 "scalarptsum_lep" : ["all_events"],
+                "scalarptsum_lepmet" : ["all_events"],
+                "scalarptsum_lepmetjet" : ["all_events"],
                 "w_lep0_pt"  : ["all_events"],
                 "w_lep1_pt"  : ["all_events"],
                 "z_lep0_pt"  : ["all_events"],
@@ -521,9 +545,13 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "pt_wl0_wl1" : ["all_events"],
                 "dr_zl0_zl1" : ["all_events"],
                 "dr_wl0_wl1" : ["all_events"],
+                "dr_wleps_zleps" : ["all_events"],
                 "absdphi_zl0_zl1" : ["all_events"],
                 "absdphi_wl0_wl1" : ["all_events"],
                 "absdphi_z_ww" : ["all_events"],
+                "dphi_4l_met" : ["all_events"],
+                "dphi_zleps_met" : ["all_events"],
+                "dphi_wleps_met" : ["all_events"],
 
                 "absdphi_min_afas" : ["all_events"],
                 "absdphi_min_afos" : ["all_events"],
