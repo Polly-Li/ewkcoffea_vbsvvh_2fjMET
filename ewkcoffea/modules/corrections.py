@@ -68,7 +68,7 @@ def AttachMuonSF(muons, year):
     tight_sf  = SFevaluator[f'MuonTightSF_{year}'](eta,pt)
     #tight_err = SFevaluator[f'MuonTightSF_{year}_er'](eta,pt)
 
-    muons['sf_nom_3l_muon'] = reco_sf * tight_sf
+    muons['sf_nom_3l_muon'] = tight_sf
     muons['sf_hi_3l_muon']  = (reco_sf + reco_err) # * (tight_sf + tight_err)
     muons['sf_lo_3l_muon']  = (reco_sf - reco_err) # * (tight_sf - tight_err)
     muons['sf_nom_3l_elec'] = ak.ones_like(reco_sf)
@@ -101,7 +101,7 @@ def AttachElectronSF(electrons, year):
     tight_sf  = SFevaluator[f'EleTightSF_{year}'](eta,pt)
     #tight_err = SFevaluator[f'EleTightSF_{year}_er'](eta,pt)
 
-    electrons['sf_nom_3l_elec'] = reco_sf * tight_sf
+    electrons['sf_nom_3l_elec'] = tight_sf
     electrons['sf_hi_3l_elec']  = (reco_sf + reco_err) # * (tight_sf + tight_err)
     electrons['sf_lo_3l_elec']  = (reco_sf - reco_err) # * (tight_sf + tight_err)
     electrons['sf_nom_3l_muon'] = ak.ones_like(reco_sf)
