@@ -460,23 +460,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             mlb_min = ak.min((lb_pairs["l"] + lb_pairs["j"]).mass,axis=-1)
             mlb_max = ak.max((lb_pairs["l"] + lb_pairs["j"]).mass,axis=-1)
 
-            # BDT values
-            #print("mll_wl0_wl1",mll_wl0_wl1 )
-            #print("dphi_4l_met", dphi_4l_met)
-            #print("dphi_zleps_met", dphi_zleps_met)
-            #print("dphi_wleps_met", dphi_wleps_met)
-            #print("dr_wl0_wl1", dr_wl0_wl1)
-            #print("dr_zl0_zl1", dr_zl0_zl1)
-            #print("dr_wleps_zleps", dr_wleps_zleps)
-            #print("met.pt", met.pt)
-            #print("mt2_val", mt2_val)
-            #print("ptl4", ptl4)
-            #print("scalarptsum_lepmet", scalarptsum_lepmet)
-            #print("scalarptsum_lepmetjet", scalarptsum_lepmetjet)
-            #print("z_lep0_pt", z_lep0.pt)
-            #print("z_lep1_pt", z_lep1.pt)
-            #print("w_lep0_pt", w_lep0.pt)
-            #print("w_lep1_pt", w_lep1.pt)
+            # Get BDT values
             bdt_vars = [
                 ak.fill_none(mll_wl0_wl1,-9999),
                 ak.fill_none(dphi_4l_met,-9999),
@@ -494,28 +478,12 @@ class AnalysisProcessor(processor.ProcessorABC):
                 ak.fill_none(z_lep1.pt,-9999),
                 ak.fill_none(w_lep0.pt,-9999),
                 ak.fill_none(w_lep1.pt,-9999),
-                #mll_wl0_wl1,
-                #dphi_4l_met,
-                #dphi_zleps_met,
-                #dphi_wleps_met,
-                #dr_wl0_wl1,
-                #dr_zl0_zl1,
-                #dr_wleps_zleps,
-                #met.pt,
-                #mt2_val,
-                #ptl4,
-                #scalarptsum_lepmet,
-                #scalarptsum_lepmetjet,
-                #z_lep0.pt,
-                #z_lep1.pt,
-                #w_lep0.pt,
-                #w_lep1.pt,
             ]
 
-            bdt_of_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path(f"data/wwz_zh_bdt/of_WWZ.json"))
-            bdt_sf_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path(f"data/wwz_zh_bdt/sf_WWZ.json"))
-            bdt_of_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path(f"data/wwz_zh_bdt/of_ZH.json"))
-            bdt_sf_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path(f"data/wwz_zh_bdt/sf_ZH.json"))
+            bdt_of_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path("data/wwz_zh_bdt/of_WWZ.json"))
+            bdt_sf_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path("data/wwz_zh_bdt/sf_WWZ.json"))
+            bdt_of_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path("data/wwz_zh_bdt/of_ZH.json"))
+            bdt_sf_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path("data/wwz_zh_bdt/sf_ZH.json"))
             bdt_of_wwz = (1.0+math.e**(-bdt_of_wwz_raw))**(-1)
             bdt_sf_wwz = (1.0+math.e**(-bdt_sf_wwz_raw))**(-1)
             bdt_of_zh  = (1.0+math.e**(-bdt_of_zh_raw))**(-1)
