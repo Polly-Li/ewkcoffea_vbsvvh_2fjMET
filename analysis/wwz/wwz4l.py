@@ -24,6 +24,23 @@ from topcoffea.modules.get_param_from_jsons import GetParam
 get_tc_param = GetParam(topcoffea_path("params/params.json"))
 get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
 
+import xgboost as xgb
+
+
+# Evaluate the BDTs from Keegan
+def eval_sig_bdt(events,in_vals,model_fpath):
+
+    in_vals = np.array(in_vals)
+    in_vals = np.transpose(in_vals)
+    in_vals = xgb.DMatrix(in_vals) # The format xgb expects
+
+    # Load model and evaluate
+    xgb.set_config(verbosity = 0)
+    bst = xgb.Booster()
+    bst.load_model(model_fpath)
+    score = bst.predict(in_vals)
+    return score
+
 
 class AnalysisProcessor(processor.ProcessorABC):
 
@@ -91,6 +108,12 @@ class AnalysisProcessor(processor.ProcessorABC):
             "njets_counts"   : axis.Regular(30, 0, 30, name="njets_counts",   label="Jet multiplicity counts"),
             "nleps_counts"   : axis.Regular(30, 0, 30, name="nleps_counts",   label="Lep multiplicity counts"),
             "nbtagsl_counts" : axis.Regular(30, 0, 30, name="nbtagsl_counts", label="Loose btag multiplicity counts"),
+
+            "bdt_of_wwz": axis.Regular(180, -3, 3, name="bdt_of_wwz", label="Score bdt_of_wwz"),
+            "bdt_sf_wwz": axis.Regular(180, -3, 3, name="bdt_sf_wwz", label="Score bdt_sf_wwz"),
+            "bdt_of_zh" : axis.Regular(180, -3, 3, name="bdt_of_zh", label="Score bdt_of_zh"),
+            "bdt_sf_zh" : axis.Regular(180, -3, 3, name="bdt_sf_zh", label="Score bdt_sf_zh"),
+
         }
 
         # Set the list of hists to fill
@@ -449,7 +472,61 @@ class AnalysisProcessor(processor.ProcessorABC):
             mlb_max = ak.max((lb_pairs["l"] + lb_pairs["j"]).mass,axis=-1)
 
             # BDT values
-            #x = es_ec.eval_sig_bdt(events,"of")
+            #print("mll_wl0_wl1",mll_wl0_wl1 )
+            #print("dphi_4l_met", dphi_4l_met)
+            #print("dphi_zleps_met", dphi_zleps_met)
+            #print("dphi_wleps_met", dphi_wleps_met)
+            #print("dr_wl0_wl1", dr_wl0_wl1)
+            #print("dr_zl0_zl1", dr_zl0_zl1)
+            #print("dr_wleps_zleps", dr_wleps_zleps)
+            #print("met.pt", met.pt)
+            #print("mt2_val", mt2_val)
+            #print("ptl4", ptl4)
+            #print("scalarptsum_lepmet", scalarptsum_lepmet)
+            #print("scalarptsum_lepmetjet", scalarptsum_lepmetjet)
+            #print("z_lep0_pt", z_lep0.pt)
+            #print("z_lep1_pt", z_lep1.pt)
+            #print("w_lep0_pt", w_lep0.pt)
+            #print("w_lep1_pt", w_lep1.pt)
+            bdt_vars = [
+                ak.fill_none(mll_wl0_wl1,-9999),
+                ak.fill_none(dphi_4l_met,-9999),
+                ak.fill_none(dphi_zleps_met,-9999),
+                ak.fill_none(dphi_wleps_met,-9999),
+                ak.fill_none(dr_wl0_wl1,-9999),
+                ak.fill_none(dr_zl0_zl1,-9999),
+                ak.fill_none(dr_wleps_zleps,-9999),
+                ak.fill_none(met.pt,-9999),
+                ak.fill_none(mt2_val,-9999),
+                ak.fill_none(ptl4,-9999),
+                ak.fill_none(scalarptsum_lepmet,-9999),
+                ak.fill_none(scalarptsum_lepmetjet,-9999),
+                ak.fill_none(z_lep0.pt,-9999),
+                ak.fill_none(z_lep1.pt,-9999),
+                ak.fill_none(w_lep0.pt,-9999),
+                ak.fill_none(w_lep1.pt,-9999),
+                #mll_wl0_wl1,
+                #dphi_4l_met,
+                #dphi_zleps_met,
+                #dphi_wleps_met,
+                #dr_wl0_wl1,
+                #dr_zl0_zl1,
+                #dr_wleps_zleps,
+                #met.pt,
+                #mt2_val,
+                #ptl4,
+                #scalarptsum_lepmet,
+                #scalarptsum_lepmetjet,
+                #z_lep0.pt,
+                #z_lep1.pt,
+                #w_lep0.pt,
+                #w_lep1.pt,
+            ]
+
+            bdt_of_wwz = eval_sig_bdt(events,bdt_vars,ewkcoffea_path(f"data/wwz_zh_bdt/of_WWZ.json"))
+            bdt_sf_wwz = eval_sig_bdt(events,bdt_vars,ewkcoffea_path(f"data/wwz_zh_bdt/sf_WWZ.json"))
+            bdt_of_zh = eval_sig_bdt(events,bdt_vars,ewkcoffea_path(f"data/wwz_zh_bdt/of_ZH.json"))
+            bdt_sf_zh = eval_sig_bdt(events,bdt_vars,ewkcoffea_path(f"data/wwz_zh_bdt/sf_ZH.json"))
 
 
             ######### Fill histos #########
@@ -513,6 +590,11 @@ class AnalysisProcessor(processor.ProcessorABC):
 
                 "mlb_min" : mlb_min,
                 "mlb_max" : mlb_max,
+
+                "bdt_of_wwz": bdt_of_wwz,
+                "bdt_sf_wwz": bdt_sf_wwz,
+                "bdt_of_zh" : bdt_of_zh,
+                "bdt_sf_zh" : bdt_sf_zh,
             }
 
             # List the hists that are only defined for some categories
@@ -562,6 +644,11 @@ class AnalysisProcessor(processor.ProcessorABC):
 
                 "mlb_min" : ["all_events","4l_presel", "sr_4l_sf_presel", "sr_4l_of_presel", "cr_4l_sf"] + analysis_cats,
                 "mlb_max" : ["all_events","4l_presel", "sr_4l_sf_presel", "sr_4l_of_presel", "cr_4l_sf"] + analysis_cats,
+
+                "bdt_of_wwz": ["all_events"],
+                "bdt_sf_wwz": ["all_events"],
+                "bdt_of_zh" : ["all_events"],
+                "bdt_sf_zh" : ["all_events"],
             }
 
 
