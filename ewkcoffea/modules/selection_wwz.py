@@ -1,6 +1,8 @@
 import numpy as np
 import awkward as ak
+import xgboost as xgb
 from mt2 import mt2
+
 from coffea.nanoevents.methods import vector
 
 import topcoffea.modules.event_selection as tc_es
@@ -354,3 +356,18 @@ def get_mt2(w_lep0,w_lep1,met):
     )
 
     return mt2_var
+
+
+# Evaluate the BDTs from Keegan
+def eval_sig_bdt(events,in_vals,model_fpath):
+
+    in_vals = np.array(in_vals)
+    in_vals = np.transpose(in_vals)
+    in_vals = xgb.DMatrix(in_vals) # The format xgb expects
+
+    # Load model and evaluate
+    xgb.set_config(verbosity = 0)
+    bst = xgb.Booster()
+    bst.load_model(model_fpath)
+    score = bst.predict(in_vals)
+    return score

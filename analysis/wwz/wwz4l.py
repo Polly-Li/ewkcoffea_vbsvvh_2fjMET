@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 #import sys
+import math
 import coffea
 import numpy as np
 import awkward as ak
@@ -23,23 +24,6 @@ import ewkcoffea.modules.corrections as cor_ec
 from topcoffea.modules.get_param_from_jsons import GetParam
 get_tc_param = GetParam(topcoffea_path("params/params.json"))
 get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
-
-import xgboost as xgb
-
-
-# Evaluate the BDTs from Keegan
-def eval_sig_bdt(events,in_vals,model_fpath):
-
-    in_vals = np.array(in_vals)
-    in_vals = np.transpose(in_vals)
-    in_vals = xgb.DMatrix(in_vals) # The format xgb expects
-
-    # Load model and evaluate
-    xgb.set_config(verbosity = 0)
-    bst = xgb.Booster()
-    bst.load_model(model_fpath)
-    score = bst.predict(in_vals)
-    return score
 
 
 class AnalysisProcessor(processor.ProcessorABC):
@@ -109,10 +93,15 @@ class AnalysisProcessor(processor.ProcessorABC):
             "nleps_counts"   : axis.Regular(30, 0, 30, name="nleps_counts",   label="Lep multiplicity counts"),
             "nbtagsl_counts" : axis.Regular(30, 0, 30, name="nbtagsl_counts", label="Loose btag multiplicity counts"),
 
-            "bdt_of_wwz": axis.Regular(180, -3, 3, name="bdt_of_wwz", label="Score bdt_of_wwz"),
-            "bdt_sf_wwz": axis.Regular(180, -3, 3, name="bdt_sf_wwz", label="Score bdt_sf_wwz"),
-            "bdt_of_zh" : axis.Regular(180, -3, 3, name="bdt_of_zh", label="Score bdt_of_zh"),
-            "bdt_sf_zh" : axis.Regular(180, -3, 3, name="bdt_sf_zh", label="Score bdt_sf_zh"),
+            "bdt_of_wwz_raw": axis.Regular(180, -3.5, 3.5, name="bdt_of_wwz_raw", label="Raw score bdt_of_wwz"),
+            "bdt_sf_wwz_raw": axis.Regular(180, -3.5, 3.5, name="bdt_sf_wwz_raw", label="Raw score bdt_sf_wwz"),
+            "bdt_of_zh_raw" : axis.Regular(180, -3.5, 3.5, name="bdt_of_zh_raw", label="Raw score bdt_of_zh"),
+            "bdt_sf_zh_raw" : axis.Regular(180, -3.5, 3.5, name="bdt_sf_zh_raw", label="Raw score bdt_sf_zh"),
+
+            "bdt_of_wwz": axis.Regular(180, 0, 1, name="bdt_of_wwz", label="Score bdt_of_wwz"),
+            "bdt_sf_wwz": axis.Regular(180, 0, 1, name="bdt_sf_wwz", label="Score bdt_sf_wwz"),
+            "bdt_of_zh" : axis.Regular(180, 0, 1, name="bdt_of_zh", label="Score bdt_of_zh"),
+            "bdt_sf_zh" : axis.Regular(180, 0, 1, name="bdt_sf_zh", label="Score bdt_sf_zh"),
 
         }
 
@@ -523,10 +512,14 @@ class AnalysisProcessor(processor.ProcessorABC):
                 #w_lep1.pt,
             ]
 
-            bdt_of_wwz = eval_sig_bdt(events,bdt_vars,ewkcoffea_path(f"data/wwz_zh_bdt/of_WWZ.json"))
-            bdt_sf_wwz = eval_sig_bdt(events,bdt_vars,ewkcoffea_path(f"data/wwz_zh_bdt/sf_WWZ.json"))
-            bdt_of_zh = eval_sig_bdt(events,bdt_vars,ewkcoffea_path(f"data/wwz_zh_bdt/of_ZH.json"))
-            bdt_sf_zh = eval_sig_bdt(events,bdt_vars,ewkcoffea_path(f"data/wwz_zh_bdt/sf_ZH.json"))
+            bdt_of_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path(f"data/wwz_zh_bdt/of_WWZ.json"))
+            bdt_sf_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path(f"data/wwz_zh_bdt/sf_WWZ.json"))
+            bdt_of_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path(f"data/wwz_zh_bdt/of_ZH.json"))
+            bdt_sf_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path(f"data/wwz_zh_bdt/sf_ZH.json"))
+            bdt_of_wwz = (1.0+math.e**(-bdt_of_wwz_raw))**(-1)
+            bdt_sf_wwz = (1.0+math.e**(-bdt_sf_wwz_raw))**(-1)
+            bdt_of_zh  = (1.0+math.e**(-bdt_of_zh_raw))**(-1)
+            bdt_sf_zh  = (1.0+math.e**(-bdt_sf_zh_raw))**(-1)
 
 
             ######### Fill histos #########
@@ -591,6 +584,10 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mlb_min" : mlb_min,
                 "mlb_max" : mlb_max,
 
+                "bdt_of_wwz_raw": bdt_of_wwz_raw,
+                "bdt_sf_wwz_raw": bdt_sf_wwz_raw,
+                "bdt_of_zh_raw" : bdt_of_zh_raw,
+                "bdt_sf_zh_raw" : bdt_sf_zh_raw,
                 "bdt_of_wwz": bdt_of_wwz,
                 "bdt_sf_wwz": bdt_sf_wwz,
                 "bdt_of_zh" : bdt_of_zh,
@@ -645,6 +642,10 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mlb_min" : ["all_events","4l_presel", "sr_4l_sf_presel", "sr_4l_of_presel", "cr_4l_sf"] + analysis_cats,
                 "mlb_max" : ["all_events","4l_presel", "sr_4l_sf_presel", "sr_4l_of_presel", "cr_4l_sf"] + analysis_cats,
 
+                "bdt_of_wwz_raw": ["all_events"],
+                "bdt_sf_wwz_raw": ["all_events"],
+                "bdt_of_zh_raw" : ["all_events"],
+                "bdt_sf_zh_raw" : ["all_events"],
                 "bdt_of_wwz": ["all_events"],
                 "bdt_sf_wwz": ["all_events"],
                 "bdt_of_zh" : ["all_events"],

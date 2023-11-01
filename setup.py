@@ -11,6 +11,7 @@ setuptools.setup(
             "params/*",
             "data/topmva_lep_sf/*root",
             "data/topmva_lep_sf/*json",
+            "data/wwz_zh_bdt/*json",
         ],
     }
 )
