@@ -9,6 +9,7 @@ from topcoffea.modules.paths import topcoffea_path
 
 extLepSF = lookup_tools.extractor()
 
+# TODO: Remove all reco SFs, they are folded into Kirill's tight SFs
 # Muon: reco
 extLepSF.add_weight_sets(["MuonRecoSF_2018 NUM_TrackerMuons_DEN_genTracks/abseta_pt_value %s" % topcoffea_path('data/leptonSF/muon/Efficiency_muon_generalTracks_Run2018_UL_trackerMuon.json')])
 extLepSF.add_weight_sets(["MuonRecoSF_2018_er NUM_TrackerMuons_DEN_genTracks/abseta_pt_error %s" % topcoffea_path('data/leptonSF/muon/Efficiency_muon_generalTracks_Run2018_UL_trackerMuon.json')])
@@ -19,6 +20,7 @@ extLepSF.add_weight_sets(["MuonRecoSF_2016_er NUM_TrackerMuons_DEN_genTracks/abs
 extLepSF.add_weight_sets(["MuonRecoSF_2016APV NUM_TrackerMuons_DEN_genTracks/abseta_pt_value %s" % topcoffea_path('data/leptonSF/muon/Efficiency_muon_generalTracks_Run2016preVFP_UL_trackerMuon.json')])
 extLepSF.add_weight_sets(["MuonRecoSF_2016APV_er NUM_TrackerMuons_DEN_genTracks/abseta_pt_error %s" % topcoffea_path('data/leptonSF/muon/Efficiency_muon_generalTracks_Run2016preVFP_UL_trackerMuon.json')])
 
+# TODO: Remove all reco SFs, they are folded into Kirill's tight SFs
 # Elec: reco
 extLepSF.add_weight_sets(["ElecRecoSFAb_2018 EGamma_SF2D %s" % topcoffea_path('data/leptonSF/elec/egammaEffi2018_ptAbove20_EGM2D.root')])
 extLepSF.add_weight_sets(["ElecRecoSFAb_2018_er EGamma_SF2D_error %s" % topcoffea_path('data/leptonSF/elec/egammaEffi2018_ptAbove20_EGM2D.root')])
@@ -62,15 +64,15 @@ def AttachMuonSF(muons, year):
     eta = np.abs(muons.eta)
     pt = muons.pt
     if year not in ['2016','2016APV','2017','2018']: raise Exception(f"Error: Unknown year \"{year}\".")
-    reco_sf  = np.where(pt < 20,SFevaluator['MuonRecoSF_{year}'.format(year=year)](eta,pt),1) # sf=1 when pt>20 becuase there is no reco SF available
-    reco_err = np.where(pt < 20,SFevaluator['MuonRecoSF_{year}_er'.format(year=year)](eta,pt),0) # sf error =0 when pt>20 becuase there is no reco SF available
+    reco_sf  = np.where(pt < 20,SFevaluator['MuonRecoSF_{year}'.format(year=year)](eta,pt),1) # sf=1 when pt>20 becuase there is no reco SF available TODO: Remove all reco SFs, they are folded into Kirill's tight SFs
+    reco_err = np.where(pt < 20,SFevaluator['MuonRecoSF_{year}_er'.format(year=year)](eta,pt),0) # sf error =0 when pt>20 becuase there is no reco SF available TODO: Remove all reco SFs, they are folded into Kirill's tight SFs
 
     tight_sf  = SFevaluator[f'MuonTightSF_{year}'](eta,pt)
     #tight_err = SFevaluator[f'MuonTightSF_{year}_er'](eta,pt)
 
     muons['sf_nom_3l_muon'] = tight_sf
-    muons['sf_hi_3l_muon']  = (reco_sf + reco_err) # * (tight_sf + tight_err)
-    muons['sf_lo_3l_muon']  = (reco_sf - reco_err) # * (tight_sf - tight_err)
+    muons['sf_hi_3l_muon']  = (reco_sf + reco_err) # * (tight_sf + tight_err) # TODO: Remove all reco SFs, they are folded into Kirill's tight SFs
+    muons['sf_lo_3l_muon']  = (reco_sf - reco_err) # * (tight_sf - tight_err) # TODO: Remove all reco SFs, they are folded into Kirill's tight SFs
     muons['sf_nom_3l_elec'] = ak.ones_like(reco_sf)
     muons['sf_hi_3l_elec']  = ak.ones_like(reco_sf)
     muons['sf_lo_3l_elec']  = ak.ones_like(reco_sf)
@@ -102,8 +104,8 @@ def AttachElectronSF(electrons, year):
     #tight_err = SFevaluator[f'EleTightSF_{year}_er'](eta,pt)
 
     electrons['sf_nom_3l_elec'] = tight_sf
-    electrons['sf_hi_3l_elec']  = (reco_sf + reco_err) # * (tight_sf + tight_err)
-    electrons['sf_lo_3l_elec']  = (reco_sf - reco_err) # * (tight_sf + tight_err)
+    electrons['sf_hi_3l_elec']  = (reco_sf + reco_err) # * (tight_sf + tight_err) # TODO: Remove all reco SFs, they are folded into Kirill's tight SFs
+    electrons['sf_lo_3l_elec']  = (reco_sf - reco_err) # * (tight_sf + tight_err) # TODO: Remove all reco SFs, they are folded into Kirill's tight SFs
     electrons['sf_nom_3l_muon'] = ak.ones_like(reco_sf)
     electrons['sf_hi_3l_muon']  = ak.ones_like(reco_sf)
     electrons['sf_lo_3l_muon']  = ak.ones_like(reco_sf)
