@@ -376,10 +376,10 @@ class AnalysisProcessor(processor.ProcessorABC):
             sf_C = ak.fill_none((met.pt >= 65.0) & (met.pt < 120.0) & (ptl4 >= 40.0) & (ptl4 < 70.0),False)
 
             # Make masks for the OF regions
-            of_1 = ak.fill_none(ak.any((w_candidates_mll >= 0.0) & (w_candidates_mll < 40.0),axis=1),False)
-            of_2 = ak.fill_none(ak.any((w_candidates_mll >= 40.0) & (w_candidates_mll < 60.0),axis=1),False)
-            of_3 = ak.fill_none(ak.any((w_candidates_mll >= 60.0) & (w_candidates_mll < 100.0),axis=1),False)
-            of_4 = ak.fill_none(ak.any((w_candidates_mll >= 100.0),axis=1),False)
+            of_1 = ak.fill_none((mll_wl0_wl1 >= 0.0)  & (mll_wl0_wl1 < 40.0),False)
+            of_2 = ak.fill_none((mll_wl0_wl1 >= 40.0) & (mll_wl0_wl1 < 60.0),False)
+            of_3 = ak.fill_none((mll_wl0_wl1 >= 60.0) & (mll_wl0_wl1 < 100.0),False)
+            of_4 = ak.fill_none((mll_wl0_wl1 >= 100.0),False)
 
             # Mask for mt2 cut
             mt2_val = es_ec.get_mt2(w_lep0,w_lep1,met)
