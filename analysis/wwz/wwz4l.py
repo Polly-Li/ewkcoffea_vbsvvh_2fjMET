@@ -371,15 +371,15 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Make masks for the SF regions
             w_candidates_mll_far_from_z = ak.fill_none(abs(mll_wl0_wl1 - get_ec_param("zmass")) > 10.0,False) # Will enforce this for SF in the PackedSelection
             ptl4 = (l0+l1+l2+l3).pt
-            sf_A = (met.pt > 120.0)
-            sf_B = ((met.pt > 65.0) & (met.pt < 120.0) & (ptl4 > 70.0))
-            sf_C = ((met.pt > 65.0) & (met.pt < 120.0) & (ptl4 > 40.0) & (ptl4 < 70.0))
+            sf_A = ak.fill_none(met.pt >= 120.0,False) # This should never be None, but just keep syntax same as other categories
+            sf_B = ak.fill_none((met.pt >= 65.0) & (met.pt < 120.0) & (ptl4 >= 70.0),False)
+            sf_C = ak.fill_none((met.pt >= 65.0) & (met.pt < 120.0) & (ptl4 >= 40.0) & (ptl4 < 70.0),False)
 
             # Make masks for the OF regions
-            of_1 = ak.fill_none((mll_wl0_wl1 > 0.0) & (mll_wl0_wl1 < 40.0),False)
-            of_2 = ak.fill_none((mll_wl0_wl1 > 40.0) & (mll_wl0_wl1 < 60.0),False)
-            of_3 = ak.fill_none((mll_wl0_wl1 > 60.0) & (mll_wl0_wl1 < 100.0),False)
-            of_4 = ak.fill_none((mll_wl0_wl1 > 100.0),False)
+            of_1 = ak.fill_none(ak.any((w_candidates_mll >= 0.0) & (w_candidates_mll < 40.0),axis=1),False)
+            of_2 = ak.fill_none(ak.any((w_candidates_mll >= 40.0) & (w_candidates_mll < 60.0),axis=1),False)
+            of_3 = ak.fill_none(ak.any((w_candidates_mll >= 60.0) & (w_candidates_mll < 100.0),axis=1),False)
+            of_4 = ak.fill_none(ak.any((w_candidates_mll >= 100.0),axis=1),False)
 
             # Mask for mt2 cut
             mt2_val = es_ec.get_mt2(w_lep0,w_lep1,met)
