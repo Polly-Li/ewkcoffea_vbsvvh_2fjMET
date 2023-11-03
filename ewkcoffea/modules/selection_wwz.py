@@ -1,6 +1,8 @@
 import numpy as np
 import awkward as ak
+import xgboost as xgb
 from mt2 import mt2
+
 from coffea.nanoevents.methods import vector
 
 import topcoffea.modules.event_selection as tc_es
@@ -218,6 +220,14 @@ def add4lmask_wwz(events, year, isData, sample_name):
     #prompt_mask = ( lep1_match_prompt & lep2_match_prompt & lep3_match_prompt & lep4_match_prompt)
     #mask = (mask & prompt_mask)
 
+    # SFs:
+    events['sf_4l_muon'] = leps_padded[:,0].sf_nom_3l_muon*leps_padded[:,1].sf_nom_3l_muon*leps_padded[:,2].sf_nom_3l_muon*leps_padded[:,3].sf_nom_3l_muon
+    events['sf_4l_elec'] = leps_padded[:,0].sf_nom_3l_elec*leps_padded[:,1].sf_nom_3l_elec*leps_padded[:,2].sf_nom_3l_elec*leps_padded[:,3].sf_nom_3l_elec
+    events['sf_4l_hi_muon'] = leps_padded[:,0].sf_hi_3l_muon*leps_padded[:,1].sf_hi_3l_muon*leps_padded[:,2].sf_hi_3l_muon*leps_padded[:,3].sf_hi_3l_muon
+    events['sf_4l_hi_elec'] = leps_padded[:,0].sf_hi_3l_elec*leps_padded[:,1].sf_hi_3l_elec*leps_padded[:,2].sf_hi_3l_elec*leps_padded[:,3].sf_hi_3l_elec
+    events['sf_4l_lo_muon'] = leps_padded[:,0].sf_lo_3l_muon*leps_padded[:,1].sf_lo_3l_muon*leps_padded[:,2].sf_lo_3l_muon*leps_padded[:,3].sf_lo_3l_muon
+    events['sf_4l_lo_elec'] = leps_padded[:,0].sf_lo_3l_elec*leps_padded[:,1].sf_lo_3l_elec*leps_padded[:,2].sf_lo_3l_elec*leps_padded[:,3].sf_lo_3l_elec
+
     events['is4lWWZ'] = ak.fill_none(mask,False)
 
 
@@ -346,3 +356,18 @@ def get_mt2(w_lep0,w_lep1,met):
     )
 
     return mt2_var
+
+
+# Evaluate the BDTs from Keegan
+def eval_sig_bdt(events,in_vals,model_fpath):
+
+    in_vals = np.array(in_vals)
+    in_vals = np.transpose(in_vals)
+    in_vals = xgb.DMatrix(in_vals) # The format xgb expects
+
+    # Load model and evaluate
+    xgb.set_config(verbosity = 0)
+    bst = xgb.Booster()
+    bst.load_model(model_fpath)
+    score = bst.predict(in_vals)
+    return score
