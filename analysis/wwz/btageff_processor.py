@@ -10,7 +10,6 @@ from coffea import processor
 import hist
 from hist import axis
 from coffea.analysis_tools import PackedSelection
-from coffea.lumi_tools import LumiMask
 
 from topcoffea.modules.paths import topcoffea_path
 import topcoffea.modules.event_selection as es_tc
@@ -116,6 +115,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         events["l_wwz_t"] = l_wwz_t
         es_ec.add4lmask_wwz(events, year, isData, histAxisName)
 
+
         #################### Jets ####################
 
         # Clean with dr for now
@@ -127,14 +127,8 @@ class AnalysisProcessor(processor.ProcessorABC):
         cleanedJets["is_good"] = os_tc.is_tight_jet(getattr(cleanedJets, jetptname), cleanedJets.eta, cleanedJets.jetId, pt_cut=20., eta_cut=get_ec_param("wwz_eta_j_cut"), id_cut=get_ec_param("wwz_jet_id_cut"))
         goodJets = cleanedJets[cleanedJets.is_good]
 
-        # Count jets
-        njets = ak.num(goodJets)
-        ht = ak.sum(goodJets.pt,axis=-1)
-        j0 = goodJets[ak.argmax(goodJets.pt,axis=-1,keepdims=True)]
-
-        # Loose DeepJet WP
+        # B tagging
         btagger = "btag" # For deep flavor WPs
-        #btagger = "btagcsv" # For deep CSV WPs
         if year == "2017":
             btagwpl = get_tc_param(f"{btagger}_wp_loose_UL17")
             btagwpm = get_tc_param(f"{btagger}_wp_medium_UL17")
@@ -153,10 +147,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         if btagger == "btag":
             isBtagJetsLoose = (goodJets.btagDeepFlavB > btagwpl)
             isBtagJetsMedium = (goodJets.btagDeepFlavB > btagwpm)
-        if btagger == "btagcsv":
-            isBtagJetsLoose = (goodJets.btagDeepB > btagwpl)
-            isBtagJetsMedium = (goodJets.btagDeepB > btagwpm)
-
+        else: Exception("Unknown b tagger")
         nbtagsl = ak.num(goodJets[isBtagJetsLoose])
 
 
@@ -169,13 +160,10 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Get some preliminary things we'll need
         es_ec.attach_wwz_preselection_mask(events,l_wwz_t_padded[:,0:4]) # Attach preselection sf and of flags to the events
         leps_from_z_candidate_ptordered, leps_not_z_candidate_ptordered = es_ec.get_wwz_candidates(l_wwz_t_padded[:,0:4]) # Get ahold of the leptons from the Z and from the W
-
         w_lep0 = leps_not_z_candidate_ptordered[:,0]
         w_lep1 = leps_not_z_candidate_ptordered[:,1]
         mll_wl0_wl1 = (w_lep0 + w_lep1).mass
-
         w_candidates_mll_far_from_z = ak.fill_none(abs(mll_wl0_wl1 - get_ec_param("zmass")) > 10.0,False) # Will enforce this for SF in the PackedSelection
-
         bmask_exactly0loose = (nbtagsl==0)
 
         selections = PackedSelection(dtype='uint64')
@@ -184,41 +172,47 @@ class AnalysisProcessor(processor.ProcessorABC):
         selections.add("sr_4l_sf_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 65.0)))
         selections.add("sr_4l_of_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of))
 
-        selection_mask = selections.all("sr_4l_sf_presel") | selections.all("sr_4l_of_presel")
-
 
         ######### Fill histos #########
 
         hout = self._histo_dict
-
         dense_axis_name = "ptabseta"
 
         # Get flat jets for all selected events (lose event level info, we no longer care about event level info)
         #all_cuts_mask = selections.all("sr_4l_sf_presel") | selections.all("sr_4l_of_presel")
         all_cuts_mask = selections.all("all_events")
         jets_sel = ak.flatten(goodJets[all_cuts_mask])
-        weights = ak.ones_like(jets_sel.pt)
-
         pt = jets_sel.pt
         abseta = abs(jets_sel.eta)
+        weights = ak.ones_like(jets_sel.pt)
 
-        flav_l_mask = np.abs(jets_sel.hadronFlavour) <= 3
-        flav_c_mask = np.abs(jets_sel.hadronFlavour) == 4
-        flav_b_mask = np.abs(jets_sel.hadronFlavour) == 5
-        tag_a_mask = jets_sel.btagDeepFlavB > -999
-        tag_l_mask = jets_sel.btagDeepFlavB > btagwpl
-        tag_m_mask = jets_sel.btagDeepFlavB > btagwpm
+        # Loop over these masks to fill histo categories
+        flav_mask_dict = {
+            "flav_l_mask" : np.abs(jets_sel.hadronFlavour) <= 3,
+            "flav_c_mask" : np.abs(jets_sel.hadronFlavour) == 4,
+            "flav_b_mask" : np.abs(jets_sel.hadronFlavour) == 5,
+        }
+        tag_mask_dict = {
+            "tag_a_mask" : jets_sel.btagDeepFlavB > -9999,
+            "tag_l_mask" : jets_sel.btagDeepFlavB > btagwpl,
+            "tag_m_mask" : jets_sel.btagDeepFlavB > btagwpm,
+        }
 
         # Fill the histos
-        axes_fill_info_dict = {
-            "process"  : histAxisName,
-            "flavor"   : "light",
-            "tag"      : "medium",
-            "weight"   : weights[tag_l_mask],
-            "pt"       : pt[tag_l_mask],
-            "abseta"   : abseta[tag_l_mask],
-        }
-        hout[dense_axis_name].fill(**axes_fill_info_dict)
+        for flav_mask_name in flav_mask_dict:
+            for tag_mask_name in tag_mask_dict:
+
+                mask = flav_mask_dict[flav_mask_name] & tag_mask_dict[tag_mask_name]
+
+                axes_fill_info_dict = {
+                    "process"  : histAxisName,
+                    "flavor"   : flav_mask_name,
+                    "tag"      : tag_mask_name,
+                    "weight"   : weights[mask],
+                    "pt"       : pt[mask],
+                    "abseta"   : abseta[mask],
+                }
+                hout[dense_axis_name].fill(**axes_fill_info_dict)
 
         return hout
 
