@@ -40,10 +40,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 hist.axis.StrCategory([], growth=True, name="process", label="process"),
                 hist.axis.StrCategory([], growth=True, name="flavor", label="flavor"),
                 hist.axis.StrCategory([], growth=True, name="tag", label="tag"),
-                #axis.Regular([0, 20, 30, 60, 120], name="pt",  label="pt"),
-                #axis.Regular([0, 1, 1.8, 2.4], name="eta",  label="eta"),
-                axis.Regular(10,0,1, name="pt",  label="pt"),
-                axis.Regular(10,0,1, name="abseta",  label="eta"),
+                axis.Variable([0, 20, 30, 60, 120], name="pt",  label="pt"),
+                axis.Variable([0, 1, 1.8, 2.4], name="abseta",  label="abseta"),
                 storage="weight", # Keeps track of sumw2
                 name="Counts",
             )
@@ -234,55 +232,46 @@ class AnalysisProcessor(processor.ProcessorABC):
         bmask_atleast1loose = (nbtagsl>=1)
 
         selections = PackedSelection(dtype='uint64')
-
-        zeroj = (njets==0)
-
         selections.add("all_events", (events.is4lWWZ | (~events.is4lWWZ))) # All events.. this logic is a bit roundabout to just get an array of True
         selections.add("4l_presel", (events.is4lWWZ)) # This matches the VVV looper selection (object selection and event selection)
-
         selections.add("sr_4l_sf_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 65.0)))
         selections.add("sr_4l_of_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of))
 
-        # CRs
-        selections.add("cr_4l_of", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of))
-        selections.add("cr_4l_sf", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
-
-        cat_dict = {
-            "lep_chan_lst" : [
-                "sr_4l_sf_presel", "sr_4l_of_presel",
-                "all_events","4l_presel",
-                "cr_4l_of","cr_4l_sf",
-            ],
-        }
-
+        selection_mask = selections.all("sr_4l_sf_presel") | selections.all("sr_4l_of_presel")
 
 
         ######### Fill histos #########
 
         hout = self._histo_dict
 
-        weights = ak.ones_like(ak.flatten(goodJets.pt))
-
         dense_axis_name = "ptabseta"
 
-        # Loop over categories
-        for sr_cat in cat_dict["lep_chan_lst"]:
+        # Get flat jets for all selected events (lose event level info, we no longer care about event level info)
+        #all_cuts_mask = selections.all("sr_4l_sf_presel") | selections.all("sr_4l_of_presel")
+        all_cuts_mask = selections.all("all_events")
+        jets_sel = ak.flatten(goodJets[all_cuts_mask])
+        weights = ak.ones_like(jets_sel.pt)
 
-            # Make the cuts mask
-            cuts_lst = [sr_cat]
-            all_cuts_mask = selections.all(*cuts_lst)
+        pt = jets_sel.pt
+        abseta = abs(jets_sel.eta)
 
-            pass
-            # Fill the histos
-            axes_fill_info_dict = {
-                "weight"   : weights,
-                "process"  : histAxisName,
-                "flavor"   : "light",
-                "tag"      : "medium",
-                "pt"       : ak.flatten(goodJets.pt),
-                "abseta"   : ak.flatten(abs(goodJets.eta)),
-            }
-            hout[dense_axis_name].fill(**axes_fill_info_dict)
+        flav_l_mask = np.abs(jets_sel.hadronFlavour) <= 3
+        flav_c_mask = np.abs(jets_sel.hadronFlavour) == 4
+        flav_b_mask = np.abs(jets_sel.hadronFlavour) == 5
+        tag_a_mask = jets_sel.btagDeepFlavB > -999
+        tag_l_mask = jets_sel.btagDeepFlavB > btagwpl
+        tag_m_mask = jets_sel.btagDeepFlavB > btagwpm
+
+        # Fill the histos
+        axes_fill_info_dict = {
+            "process"  : histAxisName,
+            "flavor"   : "light",
+            "tag"      : "medium",
+            "weight"   : weights[tag_l_mask],
+            "pt"       : pt[tag_l_mask],
+            "abseta"   : abseta[tag_l_mask],
+        }
+        hout[dense_axis_name].fill(**axes_fill_info_dict)
 
         return hout
 
