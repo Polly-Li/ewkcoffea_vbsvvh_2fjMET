@@ -75,10 +75,6 @@ class AnalysisProcessor(processor.ProcessorABC):
         tau  = events.Tau
         jets = events.Jet
 
-        # An array of lenght events that is just 1 for each event
-        # Probably there's a better way to do this, but we use this method elsewhere so I guess why not..
-        events.nom = ak.ones_like(met.pt)
-
 
         ################### Lepton selection ####################
 
@@ -117,25 +113,8 @@ class AnalysisProcessor(processor.ProcessorABC):
         l2 = l_wwz_t_padded[:,2]
         l3 = l_wwz_t_padded[:,3]
 
-        nleps = ak.num(l_wwz_t)
-
-
-        ######### Systematics ###########
-
-        # These weights can go outside of the outside sys loop since they do not depend on pt of mu or jets
-        # We only calculate these values if not isData
-        weights_obj_base = coffea.analysis_tools.Weights(len(events),storeIndividual=True)
-        if not isData:
-            genw = events["genWeight"]
-
-            # Normalize by (xsec/sow)*genw where genw is 1 for EFT samples
-            # Note that for theory systs, will need to multiply by sow/sow_wgtUP to get (xsec/sow_wgtUp)*genw and same for Down
-            lumi = 1000.0*get_tc_param(f"lumi_{year}")
-            weights_obj_base.add("norm",(xsec/sow)*genw*lumi)
-
-        # We do not have systematics yet
-        syst_var_list = ['nominal']
-
+        events["l_wwz_t"] = l_wwz_t
+        es_ec.add4lmask_wwz(events, year, isData, histAxisName)
 
         #################### Jets ####################
 
@@ -178,27 +157,14 @@ class AnalysisProcessor(processor.ProcessorABC):
             isBtagJetsLoose = (goodJets.btagDeepB > btagwpl)
             isBtagJetsMedium = (goodJets.btagDeepB > btagwpm)
 
-        isNotBtagJetsLoose = np.invert(isBtagJetsLoose)
         nbtagsl = ak.num(goodJets[isBtagJetsLoose])
 
-        isNotBtagJetsMedium = np.invert(isBtagJetsMedium)
-        nbtagsm = ak.num(goodJets[isBtagJetsMedium])
 
-        #################### Add variables into event object so that they persist ####################
-
-        # Put njets and l_fo_conept_sorted into events
-        events["njets"] = njets
-        events["l_wwz_t"] = l_wwz_t
-
-        es_ec.add4lmask_wwz(events, year, isData, histAxisName)
-
-        ######### Masks we need for the selection ##########
+        ######### Masks we need for the event selection ##########
 
         # Pass trigger mask
         pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict)
         pass_trg = (pass_trg & es_ec.trg_matching(events,year))
-
-        ######### WWZ event selection stuff #########
 
         # Get some preliminary things we'll need
         es_ec.attach_wwz_preselection_mask(events,l_wwz_t_padded[:,0:4]) # Attach preselection sf and of flags to the events
@@ -208,28 +174,9 @@ class AnalysisProcessor(processor.ProcessorABC):
         w_lep1 = leps_not_z_candidate_ptordered[:,1]
         mll_wl0_wl1 = (w_lep0 + w_lep1).mass
 
-        # Make masks for the SF regions
         w_candidates_mll_far_from_z = ak.fill_none(abs(mll_wl0_wl1 - get_ec_param("zmass")) > 10.0,False) # Will enforce this for SF in the PackedSelection
-        ptl4 = (l0+l1+l2+l3).pt
-        sf_A = ak.fill_none(met.pt >= 120.0,False) # This should never be None, but just keep syntax same as other categories
-        sf_B = ak.fill_none((met.pt >= 65.0) & (met.pt < 120.0) & (ptl4 >= 70.0),False)
-        sf_C = ak.fill_none((met.pt >= 65.0) & (met.pt < 120.0) & (ptl4 >= 40.0) & (ptl4 < 70.0),False)
 
-        # Make masks for the OF regions
-        of_1 = ak.fill_none((mll_wl0_wl1 >= 0.0)  & (mll_wl0_wl1 < 40.0),False)
-        of_2 = ak.fill_none((mll_wl0_wl1 >= 40.0) & (mll_wl0_wl1 < 60.0),False)
-        of_3 = ak.fill_none((mll_wl0_wl1 >= 60.0) & (mll_wl0_wl1 < 100.0),False)
-        of_4 = ak.fill_none((mll_wl0_wl1 >= 100.0),False)
-
-        # Mask for mt2 cut
-        mt2_val = es_ec.get_mt2(w_lep0,w_lep1,met)
-        mt2_mask = ak.fill_none(mt2_val>25.0,False)
-
-
-        ######### Store boolean masks with PackedSelection ##########
-
-        bmask_exactly0loose = (nbtagsl==0) # Used for 4l WWZ SR
-        bmask_atleast1loose = (nbtagsl>=1)
+        bmask_exactly0loose = (nbtagsl==0)
 
         selections = PackedSelection(dtype='uint64')
         selections.add("all_events", (events.is4lWWZ | (~events.is4lWWZ))) # All events.. this logic is a bit roundabout to just get an array of True
