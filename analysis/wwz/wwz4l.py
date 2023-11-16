@@ -340,12 +340,12 @@ class AnalysisProcessor(processor.ProcessorABC):
                 weights_obj_base_for_kinematic_syst.add("lepSF_elec", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
 
                 ## Btag SF following 1a) in https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagSFMethods
-                bJetSF   = cor_ec.GetBTagSF(goodJets, year, 'LOOSE')
-                bJetEff  = cor_ec.GetBtagEff(goodJets, year, 'loose')
-                bJetEff_data   = bJetEff*bJetSF
-                pMC     = ak.prod(bJetEff[isBtagJetsLoose], axis=-1) * ak.prod((1-bJetEff[isNotBtagJetsLoose]), axis=-1)
-                pMC     = ak.where(pMC==0,1,pMC) # removeing zeroes from denominator...
-                pData   = ak.prod(bJetEff_data[isBtagJetsLoose], axis=-1) * ak.prod((1-bJetEff_data[isNotBtagJetsLoose]), axis=-1)
+                #bJetSF   = cor_ec.GetBTagSF(goodJets, year, 'LOOSE')
+                #bJetEff  = cor_ec.GetBtagEff(goodJets, year, 'loose')
+                #bJetEff_data   = bJetEff*bJetSF
+                #pMC     = ak.prod(bJetEff[isBtagJetsLoose], axis=-1) * ak.prod((1-bJetEff[isNotBtagJetsLoose]), axis=-1)
+                #pMC     = ak.where(pMC==0,1,pMC) # removeing zeroes from denominator...
+                #pData   = ak.prod(bJetEff_data[isBtagJetsLoose], axis=-1) * ak.prod((1-bJetEff_data[isNotBtagJetsLoose]), axis=-1)
                 #weights_obj_base_for_kinematic_syst.add("btagSF", pData/pMC)
 
             ######### Masks we need for the selection ##########
