@@ -88,6 +88,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
             "nbtagsl" : axis.Regular(4, 0, 4, name="nbtagsl", label="Loose btag multiplicity"),
+            "nbtagsm" : axis.Regular(4, 0, 4, name="nbtagsm", label="Medium btag multiplicity"),
 
             "njets_counts"   : axis.Regular(30, 0, 30, name="njets_counts",   label="Jet multiplicity counts"),
             "nleps_counts"   : axis.Regular(30, 0, 30, name="nleps_counts",   label="Lep multiplicity counts"),
@@ -97,11 +98,10 @@ class AnalysisProcessor(processor.ProcessorABC):
             "bdt_sf_wwz_raw": axis.Regular(180, -3.5, 3.5, name="bdt_sf_wwz_raw", label="Raw score bdt_sf_wwz"),
             "bdt_of_zh_raw" : axis.Regular(180, -3.5, 3.5, name="bdt_of_zh_raw", label="Raw score bdt_of_zh"),
             "bdt_sf_zh_raw" : axis.Regular(180, -3.5, 3.5, name="bdt_sf_zh_raw", label="Raw score bdt_sf_zh"),
-
-            "bdt_of_wwz": axis.Regular(180, 0, 1, name="bdt_of_wwz", label="Score bdt_of_wwz"),
-            "bdt_sf_wwz": axis.Regular(180, 0, 1, name="bdt_sf_wwz", label="Score bdt_sf_wwz"),
-            "bdt_of_zh" : axis.Regular(180, 0, 1, name="bdt_of_zh", label="Score bdt_of_zh"),
-            "bdt_sf_zh" : axis.Regular(180, 0, 1, name="bdt_sf_zh", label="Score bdt_sf_zh"),
+            "bdt_of_wwz": axis.Regular(180, -1, 1, name="bdt_of_wwz", label="Score bdt_of_wwz"),
+            "bdt_sf_wwz": axis.Regular(180, -1, 1, name="bdt_sf_wwz", label="Score bdt_sf_wwz"),
+            "bdt_of_zh" : axis.Regular(180, -1, 1, name="bdt_of_zh", label="Score bdt_of_zh"),
+            "bdt_sf_zh" : axis.Regular(180, -1, 1, name="bdt_sf_zh", label="Score bdt_sf_zh"),
 
         }
 
@@ -339,6 +339,14 @@ class AnalysisProcessor(processor.ProcessorABC):
                 weights_obj_base_for_kinematic_syst.add("lepSF_muon", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
                 weights_obj_base_for_kinematic_syst.add("lepSF_elec", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
 
+                ## Btag SF following 1a) in https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagSFMethods
+                bJetSF   = cor_ec.GetBTagSF(goodJets, year, 'LOOSE')
+                bJetEff  = cor_ec.GetBtagEff(goodJets, year, 'loose')
+                bJetEff_data   = bJetEff*bJetSF
+                pMC     = ak.prod(bJetEff[isBtagJetsLoose], axis=-1) * ak.prod((1-bJetEff[isNotBtagJetsLoose]), axis=-1)
+                pMC     = ak.where(pMC==0,1,pMC) # removeing zeroes from denominator...
+                pData   = ak.prod(bJetEff_data[isBtagJetsLoose], axis=-1) * ak.prod((1-bJetEff_data[isNotBtagJetsLoose]), axis=-1)
+                #weights_obj_base_for_kinematic_syst.add("btagSF", pData/pMC)
 
             ######### Masks we need for the selection ##########
 
@@ -356,6 +364,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             bmask_atmost2med  = (nbtagsm< 3) # Used to make 2lss mutually exclusive from tttt enriched
             bmask_atleast3med = (nbtagsm>=3) # Used for tttt enriched
             bmask_atleast1med = (nbtagsm>=1)
+            bmask_atleast1loose = (nbtagsl>=1)
 
 
             ######### WWZ event selection stuff #########
@@ -413,7 +422,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             selections.add("sr_4l_of_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of))
 
             # CRs
-            selections.add("cr_4l_of", (pass_trg & events.is4lWWZ & bmask_atleast1med & events.wwz_presel_of))
+            selections.add("cr_4l_of", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of))
             selections.add("cr_4l_sf", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
 
             cat_dict = {
@@ -484,10 +493,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             bdt_sf_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path("data/wwz_zh_bdt/sf_WWZ.json"))
             bdt_of_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path("data/wwz_zh_bdt/of_ZH.json"))
             bdt_sf_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path("data/wwz_zh_bdt/sf_ZH.json"))
-            bdt_of_wwz = (1.0+math.e**(-bdt_of_wwz_raw))**(-1)
-            bdt_sf_wwz = (1.0+math.e**(-bdt_sf_wwz_raw))**(-1)
-            bdt_of_zh  = (1.0+math.e**(-bdt_of_zh_raw))**(-1)
-            bdt_sf_zh  = (1.0+math.e**(-bdt_sf_zh_raw))**(-1)
+            # Match TMVA's scaling https://root.cern.ch/doc/v606/MethodBDT_8cxx_source.html
+            bdt_of_wwz = (2.0*((1.0+math.e**(-2*bdt_of_wwz_raw))**(-1))) - 1.0
+            bdt_sf_wwz = (2.0*((1.0+math.e**(-2*bdt_sf_wwz_raw))**(-1))) - 1.0
+            bdt_of_zh  = (2.0*((1.0+math.e**(-2*bdt_of_zh_raw))**(-1))) - 1.0
+            bdt_sf_zh  = (2.0*((1.0+math.e**(-2*bdt_sf_zh_raw))**(-1))) - 1.0
 
 
             ######### Fill histos #########
@@ -537,6 +547,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "nleps" : nleps,
                 "njets" : njets,
                 "nbtagsl" : nbtagsl,
+                "nbtagsm" : nbtagsm,
 
                 "nleps_counts" : nleps,
                 "njets_counts" : njets,
