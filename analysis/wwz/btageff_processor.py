@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 #import sys
-import math
-import coffea
 import numpy as np
 import awkward as ak
-import copy
 np.seterr(divide='ignore', invalid='ignore', over='ignore')
 from coffea import processor
 import hist
@@ -39,9 +36,9 @@ class AnalysisProcessor(processor.ProcessorABC):
                 hist.axis.StrCategory([], growth=True, name="process", label="process"),
                 hist.axis.StrCategory([], growth=True, name="flavor", label="flavor"),
                 hist.axis.StrCategory([], growth=True, name="tag", label="tag"),
-                axis.Variable([0, 20, 30, 60, 120], name="pt",  label="pt"),
+                axis.Variable([20, 30, 60, 120], name="pt",  label="pt"),
                 axis.Variable([0, 1, 1.8, 2.4], name="abseta",  label="abseta"),
-                storage="weight", # Keeps track of sumw2
+                storage="double", # Keeps track of sumw2
                 name="Counts",
             )
         }
@@ -169,8 +166,10 @@ class AnalysisProcessor(processor.ProcessorABC):
         selections = PackedSelection(dtype='uint64')
         selections.add("all_events", (events.is4lWWZ | (~events.is4lWWZ))) # All events.. this logic is a bit roundabout to just get an array of True
         selections.add("4l_presel", (events.is4lWWZ)) # This matches the VVV looper selection (object selection and event selection)
-        selections.add("sr_4l_sf_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 65.0)))
-        selections.add("sr_4l_of_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of))
+        #selections.add("sr_4l_sf_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 65.0)))
+        #selections.add("sr_4l_of_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of))
+        selections.add("sr_4l_sf_presel", (pass_trg & events.is4lWWZ & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 65.0)))
+        selections.add("sr_4l_of_presel", (pass_trg & events.is4lWWZ & events.wwz_presel_of))
 
 
         ######### Fill histos #########
@@ -188,14 +187,14 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Loop over these masks to fill histo categories
         flav_mask_dict = {
-            "flav_l_mask" : np.abs(jets_sel.hadronFlavour) <= 3,
-            "flav_c_mask" : np.abs(jets_sel.hadronFlavour) == 4,
-            "flav_b_mask" : np.abs(jets_sel.hadronFlavour) == 5,
+            "flav_l" : np.abs(jets_sel.hadronFlavour) <= 3,
+            "flav_c" : np.abs(jets_sel.hadronFlavour) == 4,
+            "flav_b" : np.abs(jets_sel.hadronFlavour) == 5,
         }
         tag_mask_dict = {
-            "tag_a_mask" : jets_sel.btagDeepFlavB > -9999,
-            "tag_l_mask" : jets_sel.btagDeepFlavB > btagwpl,
-            "tag_m_mask" : jets_sel.btagDeepFlavB > btagwpm,
+            "tag_a" : jets_sel.btagDeepFlavB > -9999,
+            "tag_l" : jets_sel.btagDeepFlavB > btagwpl,
+            "tag_m" : jets_sel.btagDeepFlavB > btagwpm,
         }
 
         # Fill the histos
