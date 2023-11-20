@@ -1,4 +1,6 @@
 import numpy as np
+import pickle
+import gzip
 import awkward as ak
 
 from coffea import lookup_tools
@@ -109,3 +111,38 @@ def AttachElectronSF(electrons, year):
     electrons['sf_nom_3l_muon'] = ak.ones_like(reco_sf)
     electrons['sf_hi_3l_muon']  = ak.ones_like(reco_sf)
     electrons['sf_lo_3l_muon']  = ak.ones_like(reco_sf)
+
+
+# Evaluate the btag eff
+def btag_eff_eval(jets,wp,year):
+
+    # Get the right process name for the given year and read in the histo
+    pname_base = "TTZToLLNuNu_M_10"
+    if year == "2016APV":
+        pname = f"UL16APV_{pname_base}"
+    elif year == "2016":
+        pname = f"UL16_{pname_base}"
+    elif year == "2017":
+        pname = f"UL17_{pname_base}"
+    elif year == "2018":
+        pname = f"UL18_{pname_base}"
+    else:
+        raise Exception(f"Not a known year: {year}")
+
+    pkl_file_path = ewkcoffea_path("data/btag_eff/nov19_ttZ_btageff_newmethod_sr_sel_01.pkl.gz")
+    histo = pickle.load(gzip.open(pkl_file_path))["ptabseta"]
+    histo_proc = histo[{"process":pname}]
+
+    # Make sure wp is known
+    if (wp != "L") and (wp != "M"):
+        raise Exception(f"Not a known WP: {wp}")
+
+    # Create lookup object and evaluate eff
+    h_eff = histo_proc[{"tag":"tag_l"}] / histo_proc[{"tag":"tag_a"}] # TODO remake histos with "L" and "M" as axis names to make it easier
+    vals = h_eff.values(flow=True)[1:,1:-1,:-1] # Pt (drop underflow), eta (drop under and over flow), flav (drop overflow, there is not underflow)
+    h_eff_lookup = lookup_tools.dense_lookup.dense_lookup(vals, [ax.edges for ax in h_eff.axes])
+    eff = h_eff_lookup(jets.pt,abs(jets.eta),jets.hadronFlavour)
+
+    return eff
+
+
