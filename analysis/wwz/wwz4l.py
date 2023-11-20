@@ -343,7 +343,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
                 ## Btag SF following 1a) in https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagSFMethods
                 #bJetSF   = cor_ec.GetBTagSF(goodJets, year, 'LOOSE')
-                bJetEff  = cor_ec.GetBtagEff(goodJets, year, 'loose') # Need for now
+                ###bJetEff  = cor_ec.GetBtagEff(goodJets, year, 'loose') # Need for now
                 #bJetEff_data   = bJetEff*bJetSF
                 #pMC     = ak.prod(bJetEff[isBtagJetsLoose], axis=-1) * ak.prod((1-bJetEff[isNotBtagJetsLoose]), axis=-1)
                 #pMC     = ak.where(pMC==0,1,pMC) # removeing zeroes from denominator...
@@ -361,14 +361,15 @@ class AnalysisProcessor(processor.ProcessorABC):
                 btag_sf_light = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl","central")
                 btag_sf_bc    = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb","central")
 
-                btag_eff_light = bJetEff[goodJets.hadronFlavour==0] # Will replace with our new eff
-                btag_eff_bc    = bJetEff[goodJets.hadronFlavour>0]  # Will replace with our new eff
+                #btag_eff_light = bJetEff[goodJets.hadronFlavour==0] # Will replace with our new eff
+                #btag_eff_bc    = bJetEff[goodJets.hadronFlavour>0]  # Will replace with our new eff
+                btag_eff_light = cor_ec.btag_eff_eval(jets_light,"L",year)
+                btag_eff_bc = cor_ec.btag_eff_eval(jets_bc,"L",year)
 
                 wgt_light = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light, jets_light.btagDeepFlavB>btagwpl)
                 wgt_bc    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc,    jets_bc.btagDeepFlavB>btagwpl)
 
                 weights_obj_base_for_kinematic_syst.add("btagSF", wgt_light*wgt_bc)
-
 
 
             ######### Masks we need for the selection ##########

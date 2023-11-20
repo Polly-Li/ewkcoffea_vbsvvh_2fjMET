@@ -129,7 +129,7 @@ def btag_eff_eval(jets,wp,year):
     else:
         raise Exception(f"Not a known year: {year}")
 
-    pkl_file_path = ewkcoffea_path("data/btag_eff/nov19_ttZ_btageff_newmethod_sr_sel_01.pkl.gz")
+    pkl_file_path = ewkcoffea_path("data/btag_eff/btag_eff_ttZ_srpresel.pkl.gz")
     histo = pickle.load(gzip.open(pkl_file_path))["ptabseta"]
     histo_proc = histo[{"process":pname}]
 
@@ -138,7 +138,7 @@ def btag_eff_eval(jets,wp,year):
         raise Exception(f"Not a known WP: {wp}")
 
     # Create lookup object and evaluate eff
-    h_eff = histo_proc[{"tag":"tag_l"}] / histo_proc[{"tag":"tag_a"}] # TODO remake histos with "L" and "M" as axis names to make it easier
+    h_eff = histo_proc[{"tag":wp}] / histo_proc[{"tag":"all"}]
     vals = h_eff.values(flow=True)[1:,1:-1,:-1] # Pt (drop underflow), eta (drop under and over flow), flav (drop overflow, there is not underflow)
     h_eff_lookup = lookup_tools.dense_lookup.dense_lookup(vals, [ax.edges for ax in h_eff.axes])
     eff = h_eff_lookup(jets.pt,abs(jets.eta),jets.hadronFlavour)

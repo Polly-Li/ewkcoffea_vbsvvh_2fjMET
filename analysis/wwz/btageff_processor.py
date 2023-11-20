@@ -34,10 +34,10 @@ class AnalysisProcessor(processor.ProcessorABC):
         self._histo_dict = {
             "ptabseta": hist.Hist(
                 hist.axis.StrCategory([], growth=True, name="process", label="process"),
-                hist.axis.StrCategory([], growth=True, name="flavor", label="flavor"),
                 hist.axis.StrCategory([], growth=True, name="tag", label="tag"),
                 axis.Variable([20, 30, 60, 120], name="pt",  label="pt"),
                 axis.Variable([0, 1, 1.8, 2.4], name="abseta",  label="abseta"),
+                axis.IntCategory([0, 1, 2, 3, 4, 5], name="flavor"),
                 storage="double", # Keeps track of sumw2
                 name="Counts",
             )
@@ -178,40 +178,34 @@ class AnalysisProcessor(processor.ProcessorABC):
         dense_axis_name = "ptabseta"
 
         # Get flat jets for all selected events (lose event level info, we no longer care about event level info)
-        #all_cuts_mask = selections.all("sr_4l_sf_presel") | selections.all("sr_4l_of_presel")
-        all_cuts_mask = selections.all("all_events")
+        #all_cuts_mask = selections.all("all_events") # Just for cross checks
+        all_cuts_mask = selections.all("sr_4l_sf_presel") | selections.all("sr_4l_of_presel")
         jets_sel = ak.flatten(goodJets[all_cuts_mask])
         pt = jets_sel.pt
         abseta = abs(jets_sel.eta)
+        flav = jets_sel.hadronFlavour
         weights = ak.ones_like(jets_sel.pt)
 
-        # Loop over these masks to fill histo categories
-        flav_mask_dict = {
-            "flav_l" : np.abs(jets_sel.hadronFlavour) <= 3,
-            "flav_c" : np.abs(jets_sel.hadronFlavour) == 4,
-            "flav_b" : np.abs(jets_sel.hadronFlavour) == 5,
-        }
         tag_mask_dict = {
-            "tag_a" : jets_sel.btagDeepFlavB > -9999,
-            "tag_l" : jets_sel.btagDeepFlavB > btagwpl,
-            "tag_m" : jets_sel.btagDeepFlavB > btagwpm,
+            "all" : jets_sel.btagDeepFlavB > -9999,
+            "L"   : jets_sel.btagDeepFlavB > btagwpl,
+            "M"   : jets_sel.btagDeepFlavB > btagwpm,
         }
 
         # Fill the histos
-        for flav_mask_name in flav_mask_dict:
-            for tag_mask_name in tag_mask_dict:
+        for tag_mask_name in tag_mask_dict:
 
-                mask = flav_mask_dict[flav_mask_name] & tag_mask_dict[tag_mask_name]
+            mask = tag_mask_dict[tag_mask_name]
 
-                axes_fill_info_dict = {
-                    "process"  : histAxisName,
-                    "flavor"   : flav_mask_name,
-                    "tag"      : tag_mask_name,
-                    "weight"   : weights[mask],
-                    "pt"       : pt[mask],
-                    "abseta"   : abseta[mask],
-                }
-                hout[dense_axis_name].fill(**axes_fill_info_dict)
+            axes_fill_info_dict = {
+                "process"  : histAxisName,
+                "tag"      : tag_mask_name,
+                "weight"   : weights[mask],
+                "pt"       : pt[mask],
+                "abseta"   : abseta[mask],
+                "flavor"   : flav[mask],
+            }
+            hout[dense_axis_name].fill(**axes_fill_info_dict)
 
         return hout
 
