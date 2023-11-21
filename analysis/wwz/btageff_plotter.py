@@ -1,13 +1,9 @@
 import pickle
 import gzip
 import argparse
-import copy
 import matplotlib.pyplot as plt
 
 from coffea import lookup_tools
-import numpy as np
-
-import ewkcoffea.modules.corrections as cor_ec
 
 # This script is an example of how to dump some info from the btag eff histos (does not actually currently make a plot)
 # Example usage:
