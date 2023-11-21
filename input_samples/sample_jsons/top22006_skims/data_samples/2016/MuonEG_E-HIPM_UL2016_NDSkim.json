@@ -6,9 +6,9 @@
   "options": "",
   "WCnames": [],
   "files": [
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/MuonEG_E_HIPM_UL2016/output_688.root",
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/MuonEG_E_HIPM_UL2016/output_705.root",
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/MuonEG_E_HIPM_UL2016/output_724.root"
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/MuonEG_E_HIPM_UL2016/output_688.root",
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/MuonEG_E_HIPM_UL2016/output_705.root",
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/MuonEG_E_HIPM_UL2016/output_724.root"
   ],
   "nEvents": 22519303,
   "nGenEvents": 22519303,

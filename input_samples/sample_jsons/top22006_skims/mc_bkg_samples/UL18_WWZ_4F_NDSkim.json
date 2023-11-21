@@ -6,11 +6,11 @@
   "options": "",
   "WCnames": [],
   "files": [
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_WWZ_4F/output_159.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_WWZ_4F/output_160.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_WWZ_4F/output_163.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_WWZ_4F/output_166.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_WWZ_4F/output_167.root"
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_WWZ_4F/output_159.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_WWZ_4F/output_160.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_WWZ_4F/output_163.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_WWZ_4F/output_166.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_WWZ_4F/output_167.root"
   ],
   "nEvents": 10209999,
   "nGenEvents": 10209999,

@@ -6,9 +6,9 @@
   "options": "",
   "WCnames": [],
   "files": [
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p6/jsons_for_lo_ttgamma/v1/UL16APV_TTGamma_SingleLept/output_138.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p6/jsons_for_lo_ttgamma/v1/UL16APV_TTGamma_SingleLept/output_145.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p6/jsons_for_lo_ttgamma/v1/UL16APV_TTGamma_SingleLept/output_148.root"
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p6/jsons_for_lo_ttgamma/v1/UL16APV_TTGamma_SingleLept/output_138.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p6/jsons_for_lo_ttgamma/v1/UL16APV_TTGamma_SingleLept/output_145.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p6/jsons_for_lo_ttgamma/v1/UL16APV_TTGamma_SingleLept/output_148.root"
   ],
   "nEvents": 8272000,
   "nGenEvents": 8272000,

@@ -6,8 +6,8 @@
   "options": "",
   "WCnames": [],
   "files": [
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/MuonEG_C_HIPM_UL2016/output_734.root",
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/MuonEG_C_HIPM_UL2016/output_761.root"
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/MuonEG_C_HIPM_UL2016/output_734.root",
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/MuonEG_C_HIPM_UL2016/output_761.root"
   ],
   "nEvents": 15405678,
   "nGenEvents": 15405678,

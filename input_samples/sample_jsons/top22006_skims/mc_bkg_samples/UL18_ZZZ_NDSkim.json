@@ -6,12 +6,12 @@
   "options": "",
   "WCnames": [],
   "files": [
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_ZZZ/output_158.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_ZZZ/output_161.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_ZZZ/output_164.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_ZZZ/output_168.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_ZZZ/output_169.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_ZZZ/output_170.root"
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_ZZZ/output_158.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_ZZZ/output_161.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_ZZZ/output_164.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_ZZZ/output_168.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_ZZZ/output_169.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p5/fix_ext_stats_jsons/v1/UL18_ZZZ/output_170.root"
   ],
   "nEvents": 10139000,
   "nGenEvents": 10139000,

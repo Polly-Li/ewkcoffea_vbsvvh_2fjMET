@@ -6,14 +6,14 @@
   "options": "",
   "WCnames": [],
   "files": [
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/DoubleMuon_F_HIPM_UL2016/output_128.root",
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/DoubleMuon_F_HIPM_UL2016/output_334.root",
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/DoubleMuon_F_HIPM_UL2016/output_642.root",
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/DoubleMuon_F_HIPM_UL2016/output_644.root",
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/DoubleMuon_F_HIPM_UL2016/output_779.root",
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/DoubleMuon_F_HIPM_UL2016/output_795.root",
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/DoubleMuon_F_HIPM_UL2016/output_796.root",
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/DoubleMuon_F_HIPM_UL2016/output_797.root"
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/DoubleMuon_F_HIPM_UL2016/output_128.root",
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/DoubleMuon_F_HIPM_UL2016/output_334.root",
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/DoubleMuon_F_HIPM_UL2016/output_642.root",
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/DoubleMuon_F_HIPM_UL2016/output_644.root",
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/DoubleMuon_F_HIPM_UL2016/output_779.root",
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/DoubleMuon_F_HIPM_UL2016/output_795.root",
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/DoubleMuon_F_HIPM_UL2016/output_796.root",
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/DoubleMuon_F_HIPM_UL2016/output_797.root"
   ],
   "nEvents": 17900759,
   "nGenEvents": 17900759,

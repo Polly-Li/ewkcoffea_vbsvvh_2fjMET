@@ -6,13 +6,13 @@
   "options": "",
   "WCnames": [],
   "files": [
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p1/FullRun2/v2/UL17_WWTo2L2Nu/output_1990.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p1/FullRun2/v2/UL17_WWTo2L2Nu/output_2330.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p1/FullRun2/v2/UL17_WWTo2L2Nu/output_254.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p1/FullRun2/v2/UL17_WWTo2L2Nu/output_3526.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p1/FullRun2/v2/UL17_WWTo2L2Nu/output_3583.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p1/FullRun2/v2/UL17_WWTo2L2Nu/output_3719.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p1/FullRun2/v2/UL17_WWTo2L2Nu/output_3781.root"
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p1/FullRun2/v2/UL17_WWTo2L2Nu/output_1990.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p1/FullRun2/v2/UL17_WWTo2L2Nu/output_2330.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p1/FullRun2/v2/UL17_WWTo2L2Nu/output_254.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p1/FullRun2/v2/UL17_WWTo2L2Nu/output_3526.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p1/FullRun2/v2/UL17_WWTo2L2Nu/output_3583.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p1/FullRun2/v2/UL17_WWTo2L2Nu/output_3719.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p1/FullRun2/v2/UL17_WWTo2L2Nu/output_3781.root"
   ],
   "nEvents": 7098000,
   "nGenEvents": 7098000,

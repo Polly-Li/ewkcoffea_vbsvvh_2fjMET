@@ -6,10 +6,10 @@
   "options": "",
   "WCnames": [],
   "files": [
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p9/GluGluToContinToZZ/v1/UL16_GluGluToContinToZZTo4e/output_199.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p9/GluGluToContinToZZ/v1/UL16_GluGluToContinToZZTo4e/output_426.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p9/GluGluToContinToZZ/v1/UL16_GluGluToContinToZZTo4e/output_447.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p9/GluGluToContinToZZ/v1/UL16_GluGluToContinToZZTo4e/output_448.root"
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p9/GluGluToContinToZZ/v1/UL16_GluGluToContinToZZTo4e/output_199.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p9/GluGluToContinToZZ/v1/UL16_GluGluToContinToZZTo4e/output_426.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p9/GluGluToContinToZZ/v1/UL16_GluGluToContinToZZTo4e/output_447.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p9/GluGluToContinToZZ/v1/UL16_GluGluToContinToZZTo4e/output_448.root"
   ],
   "nEvents": 992608,
   "nGenEvents": 992608,

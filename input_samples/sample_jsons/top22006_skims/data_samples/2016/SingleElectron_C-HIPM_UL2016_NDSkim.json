@@ -6,11 +6,11 @@
   "options": "",
   "WCnames": [],
   "files": [
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/SingleElectron_C_HIPM_UL2016/output_695.root",
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/SingleElectron_C_HIPM_UL2016/output_718.root",
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/SingleElectron_C_HIPM_UL2016/output_750.root",
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/SingleElectron_C_HIPM_UL2016/output_756.root",
-    "/store/user/awightma/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/SingleElectron_C_HIPM_UL2016/output_765.root"
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/SingleElectron_C_HIPM_UL2016/output_695.root",
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/SingleElectron_C_HIPM_UL2016/output_718.root",
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/SingleElectron_C_HIPM_UL2016/output_750.root",
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/SingleElectron_C_HIPM_UL2016/output_756.root",
+    "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/2016APV/v1/SingleElectron_C_HIPM_UL2016/output_765.root"
   ],
   "nEvents": 97259854,
   "nGenEvents": 97259854,

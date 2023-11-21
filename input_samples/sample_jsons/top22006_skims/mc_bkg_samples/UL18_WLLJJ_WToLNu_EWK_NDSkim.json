@@ -6,10 +6,10 @@
   "options": "",
   "WCnames": [],
   "files": [
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p8/WZ_lowMassTTZ/v1/UL18_WLLJJ_WToLNu_EWK/output_174.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p8/WZ_lowMassTTZ/v1/UL18_WLLJJ_WToLNu_EWK/output_178.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p8/WZ_lowMassTTZ/v1/UL18_WLLJJ_WToLNu_EWK/output_183.root",
-    "/store/user/awightma/skims/mc/new-lepMVA-v2/central_bkgd_p8/WZ_lowMassTTZ/v1/UL18_WLLJJ_WToLNu_EWK/output_184.root"
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p8/WZ_lowMassTTZ/v1/UL18_WLLJJ_WToLNu_EWK/output_174.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p8/WZ_lowMassTTZ/v1/UL18_WLLJJ_WToLNu_EWK/output_178.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p8/WZ_lowMassTTZ/v1/UL18_WLLJJ_WToLNu_EWK/output_183.root",
+    "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p8/WZ_lowMassTTZ/v1/UL18_WLLJJ_WToLNu_EWK/output_184.root"
   ],
   "nEvents": 999000,
   "nGenEvents": 999000,
