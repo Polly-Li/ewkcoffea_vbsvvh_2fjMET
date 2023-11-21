@@ -31,6 +31,7 @@ data_UL16APV = {
     "DoubleMuon_Run2016C-HIPM_UL2016"      : { "histAxisName" : "UL16APV_data" , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleMuon_Run2016C-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep"      , "xsecName" : "data" , } ,
     "DoubleMuon_Run2016D-HIPM_UL2016"      : { "histAxisName" : "UL16APV_data" , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleMuon_Run2016D-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep"      , "xsecName" : "data" , } ,
     "DoubleMuon_Run2016E-HIPM_UL2016"      : { "histAxisName" : "UL16APV_data" , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleMuon_Run2016E-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep"      , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016F-HIPM_UL2016"      : { "histAxisName" : "UL16APV_data" , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleMuon_Run2016F-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep"      , "xsecName" : "data" , } ,
 }
 
 data_UL16 = {
