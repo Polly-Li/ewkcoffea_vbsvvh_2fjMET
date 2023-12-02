@@ -44,8 +44,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
             "scalarptsum_lep" : axis.Regular(180, 0, 500, name="scalarptsum_lep", label="S_T"),
             "scalarptsum_lepmet" : axis.Regular(180, 0, 600, name="scalarptsum_lepmet", label="S_T + metpt"),
-            "scalarptsum_lepmetjet" : axis.Regular(180, 0, 600, name="scalarptsum_lepmetjet", label="S_T + metpt + H_T"),
+            "scalarptsum_lepmetjet" : axis.Regular(180, 0, 1100, name="scalarptsum_lepmetjet", label="S_T + metpt + H_T"),
             "mll_01": axis.Regular(180, 0, 200, name="mll_01",  label="mll_l0_l1"),
+            "mllll": axis.Regular(180, 0, 600, name="mllll",  label="mllll"),
             "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
             "j0pt"  : axis.Regular(180, 0, 500, name="j0pt", label="j0pt"),
 
@@ -89,7 +90,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
-            "nbtagsl" : axis.Regular(4, 0, 4, name="nbtagsl", label="Loose btag multiplicity"),
+            "nbtagsl" : axis.Regular(6, 0, 6, name="nbtagsl", label="Loose btag multiplicity"),
             "nbtagsm" : axis.Regular(4, 0, 4, name="nbtagsm", label="Medium btag multiplicity"),
 
             "njets_counts"   : axis.Regular(30, 0, 30, name="njets_counts",   label="Jet multiplicity counts"),
@@ -199,9 +200,57 @@ class AnalysisProcessor(processor.ProcessorABC):
             raise ValueError(f"Error: Unknown year \"{year}\".")
         lumi_mask = LumiMask(golden_json_path)(events.run,events.luminosityBlock)
 
+        #########################################################
+        ### START top22006 lep obj sel ###
+        #import topeft.modules.object_selection as te_os
+        #from topeft.modules.corrections import AttachMuonSF, AttachElectronSF
+
+        #ele["idEmu"] = te_os.ttH_idEmu_cuts_E3(ele.hoe, ele.eta, ele.deltaEtaSC, ele.eInvMinusPInv, ele.sieie)
+        #ele["conept"] = te_os.coneptElec(ele.pt, ele.mvaTTHUL, ele.jetRelIso)
+        #mu["conept"] = te_os.coneptMuon(mu.pt, mu.mvaTTHUL, mu.jetRelIso, mu.mediumId)
+        #ele["btagDeepFlavB"] = ak.fill_none(ele.matched_jet.btagDeepFlavB, -99)
+        #mu["btagDeepFlavB"] = ak.fill_none(mu.matched_jet.btagDeepFlavB, -99)
+        #if not isData:
+        #    ele["gen_pdgId"] = ak.fill_none(ele.matched_gen.pdgId, 0)
+        #    mu["gen_pdgId"] = ak.fill_none(mu.matched_gen.pdgId, 0)
+
+        #ele["isPres"] = te_os.isPresElec(ele.pt, ele.eta, ele.dxy, ele.dz, ele.miniPFRelIso_all, ele.sip3d, getattr(ele,"mvaFall17V2noIso_WPL"))
+        #ele["isLooseE"] = te_os.isLooseElec(ele.miniPFRelIso_all,ele.sip3d,ele.lostHits)
+        #ele["isFO"] = te_os.isFOElec(ele.pt, ele.conept, ele.btagDeepFlavB, ele.idEmu, ele.convVeto, ele.lostHits, ele.mvaTTHUL, ele.jetRelIso, ele.mvaFall17V2noIso_WP90, year)
+        #ele["isTightLep"] = te_os.tightSelElec(ele.isFO, ele.mvaTTHUL)
+
+        #mu["isPres"] = te_os.isPresMuon(mu.dxy, mu.dz, mu.sip3d, mu.eta, mu.pt, mu.miniPFRelIso_all)
+        #mu["isLooseM"] = te_os.isLooseMuon(mu.miniPFRelIso_all,mu.sip3d,mu.looseId)
+        #mu["isFO"] = te_os.isFOMuon(mu.pt, mu.conept, mu.btagDeepFlavB, mu.mvaTTHUL, mu.jetRelIso, year)
+        #mu["isTightLep"]= te_os.tightSelMuon(mu.isFO, mu.mediumId, mu.mvaTTHUL)
+
+        #m_loose = mu[mu.isPres & mu.isLooseM]
+        #e_loose = ele[ele.isPres & ele.isLooseE]
+        #l_loose = ak.with_name(ak.concatenate([e_loose, m_loose], axis=1), 'PtEtaPhiMCandidate')
+
+        ## Build FO collection
+        #m_fo = mu[mu.isPres & mu.isLooseM & mu.isFO]
+        #e_fo = ele[ele.isPres & ele.isLooseE & ele.isFO]
+
+        ## Attach the lepton SFs to the electron and muons collections
+        #AttachElectronSF(e_fo,year=year)
+        #AttachMuonSF(m_fo,year=year)
+
+        ## Attach per lepton fake rates
+        #m_fo['convVeto'] = ak.ones_like(m_fo.charge)
+        #m_fo['lostHits'] = ak.zeros_like(m_fo.charge)
+        #l_fo = ak.with_name(ak.concatenate([e_fo, m_fo], axis=1), 'PtEtaPhiMCandidate')
+        #l_fo_conept_sorted = l_fo[ak.argsort(l_fo.conept, axis=-1,ascending=False)]
+
+        #l_wwz_t = l_fo_conept_sorted[l_fo_conept_sorted.isTightLep]
+        #l_wwz_t = l_wwz_t[ak.argsort(l_wwz_t.pt, axis=-1,ascending=False)] # Sort by pt
+
+        ### END top22006 obj sel ###
+        ########################################################
 
         ################### Lepton selection ####################
 
+        #'''
         # Do the object selection for the WWZ eleectrons
         ele_presl_mask = os_ec.is_presel_wwz_ele(ele,tight=True)
         ele["topmva"] = os_ec.get_topmva_score_ele(events, year)
@@ -222,6 +271,8 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         l_wwz_t = ak.with_name(ak.concatenate([ele_wwz_t,mu_wwz_t],axis=1),'PtEtaPhiMCandidate')
         l_wwz_t = l_wwz_t[ak.argsort(l_wwz_t.pt, axis=-1,ascending=False)] # Sort by pt
+
+        #'''
 
         # For WWZ: Compute pair invariant masses
         llpairs_wwz = ak.combinations(l_wwz_t, 2, fields=["l0","l1"])
@@ -258,10 +309,17 @@ class AnalysisProcessor(processor.ProcessorABC):
         if not isData:
             genw = events["genWeight"]
 
+            # If it's an EFT sample, just take SM piece
+            sm_wgt = 1.0
+            eft_coeffs = ak.to_numpy(events["EFTfitCoefficients"]) if hasattr(events, "EFTfitCoefficients") else None
+            if eft_coeffs is not None:
+                sm_wgt = eft_coeffs[:,0]
+
             # Normalize by (xsec/sow)*genw where genw is 1 for EFT samples
             # Note that for theory systs, will need to multiply by sow/sow_wgtUP to get (xsec/sow_wgtUp)*genw and same for Down
             lumi = 1000.0*get_tc_param(f"lumi_{year}")
-            weights_obj_base.add("norm",(xsec/sow)*genw*lumi)
+            weights_obj_base.add("norm",(xsec/sow)*genw*lumi*sm_wgt)
+
 
         # We do not have systematics yet
         syst_var_list = ['nominal']
@@ -341,6 +399,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 weights_obj_base_for_kinematic_syst.add("lepSF_muon", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
                 weights_obj_base_for_kinematic_syst.add("lepSF_elec", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
 
+                ### OLD implimentation from TOP-22-006
                 ## Btag SF following 1a) in https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagSFMethods
                 #bJetSF   = cor_ec.GetBTagSF(goodJets, year, 'LOOSE')
                 ###bJetEff  = cor_ec.GetBtagEff(goodJets, year, 'loose') # Need for now
@@ -349,7 +408,6 @@ class AnalysisProcessor(processor.ProcessorABC):
                 #pMC     = ak.where(pMC==0,1,pMC) # removeing zeroes from denominator...
                 #pData   = ak.prod(bJetEff_data[isBtagJetsLoose], axis=-1) * ak.prod((1-bJetEff_data[isNotBtagJetsLoose]), axis=-1)
                 #weights_obj_base_for_kinematic_syst.add("btagSF", pData/pMC)
-
 
                 ### Evaluate btag weights ###
                 jets_light = goodJets[goodJets.hadronFlavour==0]
@@ -361,8 +419,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 btag_sf_light = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl","central")
                 btag_sf_bc    = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb","central")
 
-                #btag_eff_light = bJetEff[goodJets.hadronFlavour==0] # Will replace with our new eff
-                #btag_eff_bc    = bJetEff[goodJets.hadronFlavour>0]  # Will replace with our new eff
+                #btag_eff_light = bJetEff[goodJets.hadronFlavour==0] # OLD eff, Will replace with our new eff
+                #btag_eff_bc    = bJetEff[goodJets.hadronFlavour>0]  # OLD eff, Will replace with our new eff
                 btag_eff_light = cor_ec.btag_eff_eval(jets_light,"L",year)
                 btag_eff_bc = cor_ec.btag_eff_eval(jets_bc,"L",year)
 
@@ -389,6 +447,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             bmask_atleast3med = (nbtagsm>=3) # Used for tttt enriched
             bmask_atleast1med = (nbtagsm>=1)
             bmask_atleast1loose = (nbtagsl>=1)
+            bmask_atleast2loose = (nbtagsl>=2)
 
 
             ######### WWZ event selection stuff #########
@@ -446,7 +505,10 @@ class AnalysisProcessor(processor.ProcessorABC):
             selections.add("sr_4l_of_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of))
 
             # CRs
-            selections.add("cr_4l_of", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of))
+            selections.add("cr_4l_of",                 (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of)) # NOTE should rename this to cr_4l_btag_of
+            selections.add("cr_4l_btag_sf",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf))
+            selections.add("cr_4l_btag_sf_offZ",       (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z))
+            selections.add("cr_4l_btag_sf_offZ_met80", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0)))
             selections.add("cr_4l_sf", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
 
             cat_dict = {
@@ -454,7 +516,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4",
                     "sr_4l_sf_presel", "sr_4l_of_presel",
                     "all_events","4l_presel",
-                    "cr_4l_of","cr_4l_sf",
+                    #"cr_4l_of","cr_4l_sf", "cr_4l_btag_sf", "cr_4l_btag_sf_offZ", "cr_4l_btag_sf_offZ_met80",
                 ],
             }
 
@@ -463,6 +525,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             l0pt = l0.pt
             j0pt = ak.flatten(j0.pt) # Flatten to go from [[j0pt],[j0pt],...] -> [j0pt,j0pt,...]
             mll_01 = (l0+l1).mass
+            mllll = (l0+l1+l2+l3).mass
             scalarptsum_lep = l0.pt + l1.pt + l2.pt + l3.pt
             scalarptsum_lepmet = l0.pt + l1.pt + l2.pt + l3.pt + met.pt
             scalarptsum_lepmetjet = l0.pt + l1.pt + l2.pt + l3.pt + met.pt + ak.sum(goodJets.pt,axis=-1)
@@ -537,6 +600,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "scalarptsum_lepmet" : scalarptsum_lepmet,
                 "scalarptsum_lepmetjet" : scalarptsum_lepmetjet,
                 "mll_01" : mll_01,
+                "mllll" : mllll,
                 "l0pt" : l0pt,
                 "j0pt" : j0pt,
 
@@ -605,6 +669,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "j0pt" : ["all_events", "4l_presel", "sr_4l_sf_presel", "sr_4l_of_presel", "cr_4l_sf"] + analysis_cats,
                 "l0pt" : ["all_events"],
                 "mll_01" : ["all_events"],
+                "mllll" : ["all_events"],
                 "scalarptsum_lep" : ["all_events"],
                 "scalarptsum_lepmet" : ["all_events"],
                 "scalarptsum_lepmetjet" : ["all_events"],
