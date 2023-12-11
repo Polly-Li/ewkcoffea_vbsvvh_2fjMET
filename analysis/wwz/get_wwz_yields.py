@@ -249,7 +249,7 @@ def create_data_sample_dict(year):
 ################### Getting and printing yields ###################
 
 # Get the yields in the SR
-def get_yields(histos_dict,sample_dict,raw_counts=False,quiet=False):
+def get_yields(histos_dict,sample_dict,raw_counts=False,quiet=False,blind=True):
 
     yld_dict = {}
 
@@ -259,9 +259,13 @@ def get_yields(histos_dict,sample_dict,raw_counts=False,quiet=False):
     for proc_name in sample_dict.keys():
         yld_dict[proc_name] = {}
         for cat_name in histos_dict[dense_axis].axes["category"]:
-            val = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name]}].values(flow=True)))
-            var = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name]}].variances(flow=True)))
-            yld_dict[proc_name][cat_name] = [val,var]
+            if blind and (("data" in proc_name) and (not cat_name.startswith("cr_"))):
+                # If this is data and we're not in a CR category, put placeholder numbers for now
+                yld_dict[proc_name][cat_name] = [-999,-999]
+            else:
+                val = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name]}].values(flow=True)))
+                var = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name]}].variances(flow=True)))
+                yld_dict[proc_name][cat_name] = [val,var]
 
     # Print to screen
     if not quiet:
@@ -776,14 +780,9 @@ def main():
 
     # Wrapper around the code for getting the TFs and background estimation factors
     if args.get_backgrounds:
+        yld_dict_data = get_yields(histo_dict,sample_dict_data,quiet=True,blind=True)
         yld_dict_mc   = get_yields(histo_dict,sample_dict_mc)
-        yld_dict_data = get_yields(histo_dict,sample_dict_data,quiet=True)
         put_cat_col_sums(yld_dict_mc)
-        # We are still blind, so overwrite all data that's not in cr
-        for cat in yld_dict_data["data"]:
-            if not cat.startswith("cr_"):
-                yld_dict_data["data"][cat][0] = -999
-                yld_dict_data["data"][cat][1] = -999
         do_background_estimation(yld_dict_mc,yld_dict_data)
 
 
