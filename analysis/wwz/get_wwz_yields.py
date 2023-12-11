@@ -239,7 +239,7 @@ def create_data_sample_dict(year):
         grouping_data = {'data': ["UL16APV_data","UL16_data","UL17_data","UL18_data"]}
         #grouping_data = {'data': ["dataUL16APV","dataUL16","dataUL17","dataUL18"]} # TOP22006 format
     else:
-        grouping_data = {'data': ["{year}_data"]}
+        grouping_data = {'data': [f"{year}_data"]}
         #grouping_data = {'data': [f"data{year}"]} # TOP22006 format
     return grouping_data
 
@@ -261,7 +261,7 @@ def get_yields(histos_dict,sample_dict,raw_counts=False,quiet=False):
         for cat_name in histos_dict[dense_axis].axes["category"]:
             val = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name]}].values(flow=True)))
             var = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name]}].variances(flow=True)))
-            yld_dict[proc_name][cat_name] = (val,var)
+            yld_dict[proc_name][cat_name] = [val,var]
 
     # Print to screen
     if not quiet:
@@ -615,7 +615,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
         #if var_name != "njets": continue # TMP
         if var_name == "nbtagsm": continue # TMP
         #if var_name not in BDT_INPUT_LST and "bdt" not in var_name: continue # TMP
-        if var_name not in TMP_LST: continue # TMP
+        #if var_name not in TMP_LST: continue # TMP
         histo = histo_dict[var_name]
 
         # Rebin if continous variable
@@ -640,15 +640,18 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
             histo_grouped_data = group(histo_cat,"process","process_grp",grouping_data)
 
             #######
-            #if (cat_name == "cr_4l_sf" or cat_name == "cr_4l_of") and var_name == "nleps":
-            #    print("mc\n",histo_grouped_mc)
-            #    print("data\n",histo_grouped_data)
-            #    print("val mc\n",histo_grouped_mc.values(flow=True))
-            #    print("val data\n",histo_grouped_data.values(flow=True))
+            ###if (cat_name == "cr_4l_sf" or cat_name == "cr_4l_of") and var_name == "nleps":
+            #if (cat_name == "cr_4l_btag_sf_offZ_met80") and var_name == "nleps":
+            #if ("met80" in cat_name and ("ee" in cat_name or "mm" in cat_name)) and var_name == "nleps":
+            #if ("ee" in cat_name or "mm" in cat_name) or ("cutflow" in cat_name and var_name == "nleps"):
+            #    #print("mc\n",histo_grouped_mc)
+            #    #print("data\n",histo_grouped_data)
+            #    #print("val mc\n",histo_grouped_mc.values(flow=True))
+            #    #print("val data\n",histo_grouped_data.values(flow=True))
             #    ##print("var mc\n",(histo_grouped_mc.variances(flow=True)))
             #    ##print("var data\n",(histo_grouped_data.variances(flow=True)))
-            #    #print("val mc\n",sum(histo_grouped_mc.values(flow=True)))
-            #    #print("val data\n",sum(histo_grouped_data.values(flow=True)))
+            #    print("val mc\n",sum(histo_grouped_mc.values(flow=True)))
+            #    print("val data\n",sum(histo_grouped_data.values(flow=True)))
             #    #print("var mc\n",(histo_grouped_mc.variances(flow=True)))
             #    #print("var data\n",(histo_grouped_data.variances(flow=True)))
             #continue
@@ -679,6 +682,69 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
             make_html(os.path.join(os.getcwd(),save_dir_path_cat))
 
 
+def get_background_estimation(yld_dict_mc,yld_dict_data,bkg_proc,cr_name,sr_name):
+    print(yld_dict_mc.keys())
+
+    # Get ttZ background estimation
+    #bkg_proc = "ttZ"
+    #cr_name = "cr_4l_of"
+    #sr_name = "sr_of_all"
+
+    # Get the sum of all other contributions
+    bkg_all_but_bkg_of_interest = [0,0]
+    for proc in yld_dict_mc.keys():
+        if proc != bkg_proc:
+            bkg_all_but_bkg_of_interest[0] += yld_dict_mc[proc][cr_name][0]
+            bkg_all_but_bkg_of_interest[1] += yld_dict_mc[proc][cr_name][1]
+
+    def make_tf_dict(n_cr,m_cr,m_sr):
+        tf  = m_sr/m_cr
+        nsf = n_cr/m_cr
+        out_dict = {
+            "n_sr_est" : n_cr*tf,
+            "m_sr"     : m_sr,
+            "n_cr"     : n_cr,
+            "m_cr"     : m_cr,
+            "tf"       : tf,
+            "nsf"      : nsf,
+        }
+        return out_dict
+
+    tf_dict = make_tf_dict(
+        n_cr = yld_dict_data["data"][cr_name][0] - bkg_all_but_bkg_of_interest[0],
+        m_cr = yld_dict_mc[bkg_proc][cr_name][0],
+        m_sr = yld_dict_mc[bkg_proc][sr_name][0],
+    )
+
+    return tf_dict
+
+def do_background_estimation(yld_dict_mc,yld_dict_data):
+
+    tf_of_dict = get_background_estimation(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_of","sr_of_all")
+    tf_sf_dict = get_background_estimation(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_sf_offZ_met80","sr_sf_all")
+
+    kname_dict = {
+        "n_sr_est" : "$N_{SR \\rm \\; est} = TF \\cdot N_{CR}$",
+        "m_sr" :  "$MC_{SR}$",
+        "n_cr" : "$N_{CR}$",
+        "m_cr" : "$MC_{CR}$",
+        "tf" :  "TF",
+        "nsf" : "NSF",
+    }
+    print("tf_of_dict",tf_of_dict)
+    print("tf_sf_dict",tf_sf_dict)
+    for kname in kname_dict.keys(): tf_of_dict[kname_dict[kname]] = tf_of_dict.pop(kname)
+    for kname in kname_dict.keys(): tf_sf_dict[kname_dict[kname]] = tf_sf_dict.pop(kname)
+    print_dict = {"SR_OF":tf_of_dict, "SR_SF":tf_sf_dict}
+    print(print_dict)
+    mlt.print_latex_yield_table(
+        utils.put_none_errs(print_dict),
+        tag="NSFs and TFs for ttZ estimation",
+        print_begin_info=True,
+        print_end_info=True,
+        print_errs=False, # If you want to turn this on, figure out where/when you want to sqrt the var
+    )
+
 
 ################### Main ###################
 
@@ -690,6 +756,7 @@ def main():
     parser.add_argument("-o", "--output-path", default=".", help = "The path the output files should be saved to")
     parser.add_argument('-y', "--get-yields", action='store_true', help = "Get yields from the pkl file")
     parser.add_argument('-p', "--make-plots", action='store_true', help = "Make plots from the pkl file")
+    parser.add_argument('-b', "--get-backgrounds", action='store_true', help = "Get background estimations")
     parser.add_argument('-u', "--ul-year", default='all', help = "Which year to process", choices=["all","UL16APV","UL16","UL17","UL18"])
     args = parser.parse_args()
 
@@ -705,6 +772,21 @@ def main():
     #exit()
 
     out_path = "plots" # Could make this an argument
+
+
+    # Wrapper around the code for getting the TFs and background estimation factors
+    if args.get_backgrounds:
+        yld_dict_mc   = get_yields(histo_dict,sample_dict_mc)
+        yld_dict_data = get_yields(histo_dict,sample_dict_data,quiet=True)
+        put_cat_col_sums(yld_dict_mc)
+        # We are still blind, so overwrite all data that's not in cr
+        for cat in yld_dict_data["data"]:
+            if not cat.startswith("cr_"):
+                yld_dict_data["data"][cat][0] = -999
+                yld_dict_data["data"][cat][1] = -999
+        do_background_estimation(yld_dict_mc,yld_dict_data)
+
+
 
     # Wrapper around the code for getting the yields for sr and bkg samples
     if args.get_yields:
