@@ -686,67 +686,60 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
             make_html(os.path.join(os.getcwd(),save_dir_path_cat))
 
 
-def get_background_estimation(yld_dict_mc,yld_dict_data,bkg_proc,cr_name,sr_name):
-    print(yld_dict_mc.keys())
 
-    # Get ttZ background estimation
-    #bkg_proc = "ttZ"
-    #cr_name = "cr_4l_of"
-    #sr_name = "sr_of_all"
 
-    # Get the sum of all other contributions
-    bkg_all_but_bkg_of_interest = [0,0]
-    for proc in yld_dict_mc.keys():
-        if proc != bkg_proc:
-            bkg_all_but_bkg_of_interest[0] += yld_dict_mc[proc][cr_name][0]
-            bkg_all_but_bkg_of_interest[1] += yld_dict_mc[proc][cr_name][1]
+# Wrapper around the background estimation of TFs and yields
+def do_background_estimation(yld_dict_mc,yld_dict_data):
 
-    def make_tf_dict(n_cr,m_cr,m_sr):
-        tf  = m_sr/m_cr
-        nsf = n_cr/m_cr
+    # Map between short name and name to display in table
+    kname_dict = {
+        "n_sr_est" : "$N_{SR \\rm \\; est} = TF \\cdot N_{CR}$",
+        "m_sr"     :  "$MC_{SR}$",
+        "n_cr"     : "$N_{CR}$",
+        "m_cr"     : "$MC_{CR}$",
+        "tf"       :  "TF",
+        "nsf"      : "NSF",
+    }
+
+    # Function for getting a dict with NSF and TF etc
+    def get_background_dict(yld_dict_mc,yld_dict_data,bkg_proc,cr_name,sr_name):
+
+        # Get the sum of all other contributions
+        bkg_all_but_bkg_of_interest = [0,0]
+        for proc in yld_dict_mc.keys():
+            if proc != bkg_proc:
+                bkg_all_but_bkg_of_interest[0] += yld_dict_mc[proc][cr_name][0]
+                bkg_all_but_bkg_of_interest[1] += yld_dict_mc[proc][cr_name][1]
+
+        n_cr = yld_dict_data["data"][cr_name][0] - bkg_all_but_bkg_of_interest[0]
+        m_cr = yld_dict_mc[bkg_proc][cr_name][0]
+        m_sr = yld_dict_mc[bkg_proc][sr_name][0]
+
         out_dict = {
-            "n_sr_est" : n_cr*tf,
+            "n_sr_est" : n_cr*(m_sr/m_cr),
             "m_sr"     : m_sr,
             "n_cr"     : n_cr,
             "m_cr"     : m_cr,
-            "tf"       : tf,
-            "nsf"      : nsf,
+            "tf"       : m_sr/m_cr,
+            "nsf"      : n_cr/m_cr,
         }
         return out_dict
 
-    tf_dict = make_tf_dict(
-        n_cr = yld_dict_data["data"][cr_name][0] - bkg_all_but_bkg_of_interest[0],
-        m_cr = yld_dict_mc[bkg_proc][cr_name][0],
-        m_sr = yld_dict_mc[bkg_proc][sr_name][0],
-    )
-
-    return tf_dict
-
-def do_background_estimation(yld_dict_mc,yld_dict_data):
-
-    tf_of_dict = get_background_estimation(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_of","sr_of_all")
-    tf_sf_dict = get_background_estimation(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_sf_offZ_met80","sr_sf_all")
-
-    kname_dict = {
-        "n_sr_est" : "$N_{SR \\rm \\; est} = TF \\cdot N_{CR}$",
-        "m_sr" :  "$MC_{SR}$",
-        "n_cr" : "$N_{CR}$",
-        "m_cr" : "$MC_{CR}$",
-        "tf" :  "TF",
-        "nsf" : "NSF",
-    }
+    # Do the ttZ estimation
+    tf_of_dict = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_of","sr_of_all")
+    tf_sf_dict = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_sf_offZ_met80","sr_sf_all")
     print("tf_of_dict",tf_of_dict)
     print("tf_sf_dict",tf_sf_dict)
-    for kname in kname_dict.keys(): tf_of_dict[kname_dict[kname]] = tf_of_dict.pop(kname)
-    for kname in kname_dict.keys(): tf_sf_dict[kname_dict[kname]] = tf_sf_dict.pop(kname)
+
+    # Print the dicts so we can look at the values
+    for kname in kname_dict.keys(): tf_of_dict[kname_dict[kname]] = tf_of_dict.pop(kname) # Replace key names with more descriptive names for printing
+    for kname in kname_dict.keys(): tf_sf_dict[kname_dict[kname]] = tf_sf_dict.pop(kname) # Replace key names with more descriptive names for printing
     print_dict = {"SR_OF":tf_of_dict, "SR_SF":tf_sf_dict}
-    print(print_dict)
     mlt.print_latex_yield_table(
         utils.put_none_errs(print_dict),
         tag="NSFs and TFs for ttZ estimation",
         print_begin_info=True,
         print_end_info=True,
-        print_errs=False, # If you want to turn this on, figure out where/when you want to sqrt the var
     )
 
 
@@ -769,22 +762,21 @@ def main():
 
     sample_dict_mc = create_mc_sample_dict(SAMPLE_DICT_BASE,args.ul_year)
     sample_dict_data = create_data_sample_dict(args.ul_year)
+    out_path = "plots" # Could make this an argument
+
 
     # Wrapper around the code for getting the raw counts and dump to latex table
     #counts_dict = get_yields(histo_dict,sample_dict_mc,raw_counts=True)
     #print_counts(counts_dict)
     #exit()
 
-    out_path = "plots" # Could make this an argument
-
 
     # Wrapper around the code for getting the TFs and background estimation factors
     if args.get_backgrounds:
         yld_dict_data = get_yields(histo_dict,sample_dict_data,quiet=True,blind=True)
-        yld_dict_mc   = get_yields(histo_dict,sample_dict_mc)
+        yld_dict_mc   = get_yields(histo_dict,sample_dict_mc,quiet=True)
         put_cat_col_sums(yld_dict_mc)
         do_background_estimation(yld_dict_mc,yld_dict_data)
-
 
 
     # Wrapper around the code for getting the yields for sr and bkg samples
@@ -801,6 +793,7 @@ def main():
         json_name = os.path.join(out_path,json_name)
         with open(json_name,"w") as out_file: json.dump(yld_dict, out_file, indent=4)
         print(f"\nSaved json file: {json_name}\n")
+
 
     # Make plots
     if args.make_plots:
