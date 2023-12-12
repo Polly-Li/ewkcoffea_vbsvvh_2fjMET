@@ -725,21 +725,29 @@ def do_background_estimation(yld_dict_mc,yld_dict_data):
         }
         return out_dict
 
-    # Do the ttZ estimation
-    tf_of_dict = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_of","sr_of_all")
-    tf_sf_dict = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_sf_offZ_met80","sr_sf_all")
-    print("tf_of_dict",tf_of_dict)
-    print("tf_sf_dict",tf_sf_dict)
+    # Do the ttZ and ZZ estimation
+    tf_ttz_of_dict = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_of","sr_of_all")
+    tf_ttz_sf_dict = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_sf_offZ_met80","sr_sf_all")
+    tf_zz_of_dict = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ","cr_4l_sf","sr_of_all")
+    tf_zz_sf_dict = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ","cr_4l_sf","sr_sf_all")
+    print("tf_of_dict",tf_ttz_of_dict)
+    print("tf_sf_dict",tf_ttz_sf_dict)
+    print("ZZ_tf_of_dict",tf_zz_of_dict)
+    print("ZZ_tf_sf_dict",tf_zz_sf_dict)
 
     # Print the dicts so we can look at the values
-    for kname in kname_dict.keys(): tf_of_dict[kname_dict[kname]] = tf_of_dict.pop(kname) # Replace key names with more descriptive names for printing
-    for kname in kname_dict.keys(): tf_sf_dict[kname_dict[kname]] = tf_sf_dict.pop(kname) # Replace key names with more descriptive names for printing
-    print_dict = {"SR_OF":tf_of_dict, "SR_SF":tf_sf_dict}
+    # First replace key names with more descriptive names for printing
+    for kname in kname_dict.keys(): tf_ttz_of_dict[kname_dict[kname]] = tf_ttz_of_dict.pop(kname)
+    for kname in kname_dict.keys(): tf_ttz_sf_dict[kname_dict[kname]] = tf_ttz_sf_dict.pop(kname)
+    for kname in kname_dict.keys(): tf_zz_of_dict[kname_dict[kname]] = tf_zz_of_dict.pop(kname)
+    for kname in kname_dict.keys(): tf_zz_sf_dict[kname_dict[kname]] = tf_zz_sf_dict.pop(kname)
+    print_dict = {"ttZ SR_OF":tf_ttz_of_dict, "ttZ SR_SF":tf_ttz_sf_dict, "ZZ SR_OF":tf_zz_of_dict , "ZZ SR_SF":tf_zz_sf_dict}
     mlt.print_latex_yield_table(
         utils.put_none_errs(print_dict),
         tag="NSFs and TFs for ttZ estimation",
         print_begin_info=True,
         print_end_info=True,
+        roundat=3,
     )
 
 
