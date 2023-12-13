@@ -694,10 +694,10 @@ def do_background_estimation(yld_dict_mc,yld_dict_data):
     # Map between short name and name to display in table
     kname_dict = {
         "n_sr_est" : "$N_{SR \\rm \\; est} = TF \\cdot N_{CR}$",
-        "m_sr"     :  "$MC_{SR}$",
+        "m_sr"     : "$MC_{SR}$",
         "n_cr"     : "$N_{CR}$",
         "m_cr"     : "$MC_{CR}$",
-        "tf"       :  "TF",
+        "tf"       : "TF",
         "nsf"      : "NSF",
     }
 
@@ -715,13 +715,17 @@ def do_background_estimation(yld_dict_mc,yld_dict_data):
         m_cr = yld_dict_mc[bkg_proc][cr_name][0]
         m_sr = yld_dict_mc[bkg_proc][sr_name][0]
 
+        n_cr_err = np.sqrt(yld_dict_data["data"][cr_name][1] + bkg_all_but_bkg_of_interest[1])
+        m_cr_err = np.sqrt(yld_dict_mc[bkg_proc][cr_name][1])
+        m_sr_err = np.sqrt(yld_dict_mc[bkg_proc][sr_name][1])
+
         out_dict = {
-            "n_sr_est" : n_cr*(m_sr/m_cr),
-            "m_sr"     : m_sr,
-            "n_cr"     : n_cr,
-            "m_cr"     : m_cr,
-            "tf"       : m_sr/m_cr,
-            "nsf"      : n_cr/m_cr,
+            "n_sr_est" : [n_cr*(m_sr/m_cr) , (n_cr*(m_sr/m_cr))*np.sqrt((n_cr_err/n_cr)**2 + (m_sr_err/m_sr)**2 + (m_cr_err/m_cr)**2)],
+            "m_sr"     : [m_sr , m_sr_err],
+            "n_cr"     : [n_cr , n_cr_err],
+            "m_cr"     : [m_cr , m_cr_err],
+            "tf"       : [m_sr/m_cr , (m_sr/m_cr)*np.sqrt((m_sr_err/m_sr)**2+(m_cr_err/m_cr)**2)],
+            "nsf"      : [n_cr/m_cr , (n_cr/m_cr)*np.sqrt((n_cr_err/n_cr)**2+(m_cr_err/m_cr)**2)],
         }
         return out_dict
 
@@ -743,11 +747,12 @@ def do_background_estimation(yld_dict_mc,yld_dict_data):
     for kname in kname_dict.keys(): tf_zz_sf_dict[kname_dict[kname]] = tf_zz_sf_dict.pop(kname)
     print_dict = {"ttZ SR_OF":tf_ttz_of_dict, "ttZ SR_SF":tf_ttz_sf_dict, "ZZ SR_OF":tf_zz_of_dict , "ZZ SR_SF":tf_zz_sf_dict}
     mlt.print_latex_yield_table(
-        utils.put_none_errs(print_dict),
-        tag="NSFs and TFs for ttZ estimation",
+        print_dict,
+        tag="NSFs and TFs for ttZ and ZZ SR estimations",
         print_begin_info=True,
         print_end_info=True,
         roundat=3,
+        print_errs=True,
     )
 
 
