@@ -315,6 +315,7 @@ def attach_wwz_preselection_mask(events,lep_collection):
     wwz_presel_mask = (os_mask & pt_mask & id_iso_mask)
 
     # Attach to the lepton objects
+    events["wwz_presel"] = (wwz_presel_mask)
     events["wwz_presel_sf"] = (wwz_presel_mask & sf_mask)
     events["wwz_presel_of"] = (wwz_presel_mask & ~sf_mask)
 
