@@ -39,7 +39,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Create the dense axes for the histograms
         self._dense_axes_dict = {
             "mt2"   : axis.Regular(180, 0, 100, name="mt2",  label="mt2"),
-            "met"   : axis.Regular(180, 0, 500, name="met",  label="met"),
+            "met"   : axis.Regular(180, 0, 300, name="met",  label="met"),
             "metphi": axis.Regular(180, -4, 4, name="metphi", label="met phi"),
             "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
             "scalarptsum_lep" : axis.Regular(180, 0, 500, name="scalarptsum_lep", label="S_T"),
@@ -505,10 +505,15 @@ class AnalysisProcessor(processor.ProcessorABC):
             selections.add("sr_4l_of_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of))
 
             # CRs
+            ww_ee = ((abs(w_lep0.pdgId) == 11) & (abs(w_lep1.pdgId) == 11))
+            ww_mm = ((abs(w_lep0.pdgId) == 13) & (abs(w_lep1.pdgId) == 13))
+            ww_em = ((abs(w_lep0.pdgId) == 11) & (abs(w_lep1.pdgId) == 13))
+            ww_me = ((abs(w_lep0.pdgId) == 13) & (abs(w_lep1.pdgId) == 11))
             selections.add("cr_4l_of",                 (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of)) # NOTE should rename this to cr_4l_btag_of
             selections.add("cr_4l_btag_sf",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf))
             selections.add("cr_4l_btag_sf_offZ",       (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z))
             selections.add("cr_4l_btag_sf_offZ_met80", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0)))
+
             selections.add("cr_4l_sf", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
 
             cat_dict = {
