@@ -28,6 +28,12 @@ import topcoffea.modules.MakeLatexTable as mlt
 CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#CDCDCD"]
 #CLR_LST = ["#F09B9B","#00D091","#CDF09B"]
 
+# Names of the cut-based and BDT SRs
+SR_SF_CB = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C"]
+SR_OF_CB = ["sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
+SR_SF_BDT = ["sr_4l_bdt_sf_wwz_sr1", "sr_4l_bdt_sf_wwz_sr2", "sr_4l_bdt_sf_wwz_sr3", "sr_4l_bdt_sf_wwz_sr4", "sr_4l_bdt_sf_zh_sr1", "sr_4l_bdt_sf_zh_sr2", ] #"sr_4l_bdt_sf_zh_sr3",]
+SR_OF_BDT = ["sr_4l_bdt_of_wwz_sr1", "sr_4l_bdt_of_wwz_sr2", "sr_4l_bdt_of_wwz_sr3", "sr_4l_bdt_of_wwz_sr4", "sr_4l_bdt_of_zh_sr1", "sr_4l_bdt_of_zh_sr2", "sr_4l_bdt_of_zh_sr3", "sr_4l_bdt_of_zh_sr4",]
+
 BDT_INPUT_LST = [
     "mll_wl0_wl1",
     "dphi_4l_met",
@@ -309,11 +315,11 @@ def put_proc_row_sums(yld_dict,sr_cat_lst):
                 bkg_sum[cat][1] += var
 
     # Finding metrics, and putting sums and metrics into the yld dict
-    yld_dict[SOVERROOTB] = {}
-    yld_dict[SOVERROOTSPLUSB] = {}
-    yld_dict["Sig"] = {}
-    yld_dict["Bkg"] = {}
-    yld_dict["Zmetric"] = {}
+    if SOVERROOTB not in yld_dict:      yld_dict[SOVERROOTB] = {}
+    if SOVERROOTSPLUSB not in yld_dict: yld_dict[SOVERROOTSPLUSB] = {}
+    if "Sig" not in yld_dict: yld_dict["Sig"] = {}
+    if "Bkg" not in yld_dict: yld_dict["Bkg"] = {}
+    if "Zmetric" not in yld_dict: yld_dict["Zmetric"] = {}
     for cat in sig_sum.keys():
         s = sig_sum[cat][0]
         b = bkg_sum[cat][0]
@@ -327,7 +333,7 @@ def put_proc_row_sums(yld_dict,sr_cat_lst):
 
 # Gets the sums of categoreis (assumed to be columns in the input dict) and puts them into the dict
 # Special handling for rows that are metrics (e.g. s/sqrt(b)), sums these in quadrature
-def put_cat_col_sums(yld_dict,sr_sf_lst,sr_of_lst,metrics_names_lst=["Zmetric",SOVERROOTB,SOVERROOTSPLUSB]):
+def put_cat_col_sums(yld_dict,sr_sf_lst,sr_of_lst,metrics_names_lst=["Zmetric",SOVERROOTB,SOVERROOTSPLUSB],tag=""):
 
     # The full SR list should be the sf and of together
     sr_lst = sr_sf_lst + sr_of_lst
@@ -376,13 +382,13 @@ def put_cat_col_sums(yld_dict,sr_sf_lst,sr_of_lst,metrics_names_lst=["Zmetric",S
 
     # Put the columns into the yld_dict
     for proc in new_dict:
-        yld_dict[proc]["sr_sf_all"] = new_dict[proc]["sr_sf_all"]
-        yld_dict[proc]["sr_of_all"] = new_dict[proc]["sr_of_all"]
-        yld_dict[proc]["sr_all"] = new_dict[proc]["sr_all"]
+        yld_dict[proc][f"sr_sf_all{tag}"] = new_dict[proc]["sr_sf_all"]
+        yld_dict[proc][f"sr_of_all{tag}"] = new_dict[proc]["sr_of_all"]
+        yld_dict[proc][f"sr_all{tag}"] = new_dict[proc]["sr_all"]
 
 
 # Print yields
-def print_yields(yld_dict_in,cats_to_print,print_fom=True,hlines=[]):
+def print_yields(yld_dict_in,cats_to_print,procs_to_print,print_fom=True,hlines=[]):
 
     # Get err from var
     def get_err_from_var(in_dict):
@@ -397,18 +403,9 @@ def print_yields(yld_dict_in,cats_to_print,print_fom=True,hlines=[]):
 
     yld_dict = get_err_from_var(yld_dict_in)
 
-    # Dump the yields to dict for latex table
-    yld_dict_for_printing = {}
-    for proc in yld_dict.keys():
-        yld_dict_for_printing[proc] = {}
-        for cat in yld_dict[proc].keys():
-            if cat not in cats_to_print: continue
-            yld_dict_for_printing[proc][cat] = yld_dict[proc][cat]
-
-
     # Print the yields directly
     mlt.print_latex_yield_table(
-        yld_dict_for_printing,
+        yld_dict,
         tag="All yields",
         key_order=SAMPLE_DICT_BASE.keys(),
         subkey_order=cats_to_print,
@@ -419,8 +416,7 @@ def print_yields(yld_dict_in,cats_to_print,print_fom=True,hlines=[]):
     )
     #exit()
 
-
-    # Compare with other yields, print comparison
+    ### Compare with other yields, print comparison ###
 
     #tag1 = "ewkcoffea"
     #tag2 = "VVVNanoLooper"
@@ -430,19 +426,13 @@ def print_yields(yld_dict_in,cats_to_print,print_fom=True,hlines=[]):
     #yld_dict_comp = utils.put_none_errs(KEEGAN_YIELDS)
     yld_dict_comp = get_err_from_var(EWK_REF)
 
-    yld_dict_1 = yld_dict_for_printing
-    yld_dict_2 = yld_dict_comp
+    yld_dict_1 = copy.deepcopy(yld_dict)
+    yld_dict_2 = copy.deepcopy(yld_dict_comp)
 
     pdiff_dict = utils.get_diff_between_nested_dicts(yld_dict_1,yld_dict_2,difftype="percent_diff",inpercent=True)
     diff_dict  = utils.get_diff_between_nested_dicts(yld_dict_1,yld_dict_2,difftype="absolute_diff")
 
-    procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
-
     mlt.print_begin()
-    #mlt.print_latex_yield_table(yld_dict_1,key_order=procs_to_print,subkey_order=cats_to_print,tag=tag1,hz_line_lst=hlines,print_errs=True,size="tiny")
-    #mlt.print_latex_yield_table(yld_dict_2,key_order=procs_to_print,subkey_order=cats_to_print,tag=tag2,hz_line_lst=hlines,print_errs=True,size="tiny")
-    #mlt.print_latex_yield_table(pdiff_dict,key_order=procs_to_print,subkey_order=cats_to_print,tag=f"Percent diff between {tag1} and {tag2}",hz_line_lst=hlines,size="tiny")
-    #mlt.print_latex_yield_table(diff_dict, key_order=procs_to_print,subkey_order=cats_to_print,tag=f"Diff between {tag1} and {tag2}",hz_line_lst=hlines,size="tiny")
     mlt.print_latex_yield_table(yld_dict_1,key_order=procs_to_print,subkey_order=cats_to_print,tag=tag1,hz_line_lst=hlines,print_errs=True,size="tiny",column_variable="keys")
     mlt.print_latex_yield_table(yld_dict_2,key_order=procs_to_print,subkey_order=cats_to_print,tag=tag2,hz_line_lst=hlines,print_errs=True,size="tiny",column_variable="keys")
     mlt.print_latex_yield_table(pdiff_dict,key_order=procs_to_print,subkey_order=cats_to_print,tag=f"Percent diff between {tag1} and {tag2}",hz_line_lst=hlines,size="tiny",column_variable="keys")
@@ -766,6 +756,22 @@ def do_background_estimation(yld_dict_mc,yld_dict_data):
     )
 
 
+# Convenience function around getting a dict with all yields (with column and row sums included) for cut-based and BDT SRs
+# There are hard-coded aspects to this function (i.e. what we call the SR categories)
+# Note at this point we are only getting MC here no data
+def get_yld_dict(histo_dict,sample_dict_mc):
+
+    yld_dict = get_yields(histo_dict,sample_dict_mc)
+
+    put_proc_row_sums(yld_dict, SR_SF_CB+SR_OF_CB)
+    put_cat_col_sums(yld_dict, sr_sf_lst=SR_SF_CB, sr_of_lst=SR_OF_CB, tag="_cutbased")
+
+    put_proc_row_sums(yld_dict, SR_SF_BDT+SR_OF_BDT)
+    put_cat_col_sums(yld_dict, sr_sf_lst=SR_SF_BDT, sr_of_lst=SR_OF_BDT, tag="_bdt")
+
+    return yld_dict
+
+
 ################### Main ###################
 
 def main():
@@ -793,21 +799,9 @@ def main():
     #print_counts(counts_dict)
     #exit()
 
-    # Useful to have on hand the list of SRs
-    bdt_sel = 1
-    if bdt_sel: # If we are looking at BDT based
-        sr_sf = ["sr_4l_bdt_sf_wwz_sr1", "sr_4l_bdt_sf_wwz_sr2", "sr_4l_bdt_sf_wwz_sr3", "sr_4l_bdt_sf_wwz_sr4", "sr_4l_bdt_sf_zh_sr1", "sr_4l_bdt_sf_zh_sr2", ] #"sr_4l_bdt_sf_zh_sr3",]
-        sr_of = ["sr_4l_bdt_of_wwz_sr1", "sr_4l_bdt_of_wwz_sr2", "sr_4l_bdt_of_wwz_sr3", "sr_4l_bdt_of_wwz_sr4", "sr_4l_bdt_of_zh_sr1", "sr_4l_bdt_of_zh_sr2", "sr_4l_bdt_of_zh_sr3", "sr_4l_bdt_of_zh_sr4",]
-        hlines = [5,6,14,15]
-    else: # Regular cut based
-        sr_sf = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C"]
-        sr_of = ["sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
-        hlines = [2,3,7,8]
-    sr_cats_to_print = sr_sf + ["sr_sf_all"] + sr_of + ["sr_of_all","sr_all"]
-    sr_all = sr_sf+sr_of
-
 
     # Wrapper around the code for getting the TFs and background estimation factors
+    # TODO: Use the get_yld_dict wrapper here too
     if args.get_backgrounds:
         yld_dict_data = get_yields(histo_dict,sample_dict_data,quiet=True,blind=True)
         yld_dict_mc   = get_yields(histo_dict,sample_dict_mc,quiet=True)
@@ -817,12 +811,19 @@ def main():
 
     # Wrapper around the code for getting the yields for sr and bkg samples
     if args.get_yields:
-        yld_dict = get_yields(histo_dict,sample_dict_mc)
-        put_proc_row_sums(yld_dict, sr_all)
-        put_cat_col_sums(yld_dict, sr_sf_lst=sr_sf,sr_of_lst=sr_of)
+        yld_dict = get_yld_dict(histo_dict,sample_dict_mc)
         #print(yld_dict)
         #exit()
-        print_yields(yld_dict,sr_cats_to_print,hlines=hlines)
+
+        hlines = [5,6,14,15]
+        sr_cats_to_print = SR_SF_BDT + ["sr_sf_all_bdt"] + SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"]
+        procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
+        print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
+
+        #hlines = [2,3,7,8]
+        #sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
+        #procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
+        #print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
 
         # Dump yield dict to json
         json_name = "process_yields.json" # Could be an argument
