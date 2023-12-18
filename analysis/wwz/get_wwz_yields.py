@@ -729,23 +729,30 @@ def do_background_estimation(yld_dict_mc,yld_dict_data):
         }
         return out_dict
 
-    # Do the ttZ and ZZ estimation
-    tf_ttz_of_dict = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_of","sr_of_all")
-    tf_ttz_sf_dict = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_sf_offZ_met80","sr_sf_all")
-    tf_zz_of_dict = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ","cr_4l_sf","sr_of_all")
-    tf_zz_sf_dict = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ","cr_4l_sf","sr_sf_all")
-    print("tf_of_dict",tf_ttz_of_dict)
-    print("tf_sf_dict",tf_ttz_sf_dict)
-    print("ZZ_tf_of_dict",tf_zz_of_dict)
-    print("ZZ_tf_sf_dict",tf_zz_sf_dict)
+    print_dict = {}
+
+    # Do the ttZ and ZZ estimation for cut-based SRs
+    print_dict["ttZ SR_OF"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_of","sr_of_all")
+    print_dict["ttZ SR_SF"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_sf_offZ_met80","sr_sf_all")
+    print_dict["ZZ SR_OF"]  = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ","cr_4l_sf","sr_of_all")
+    print_dict["ZZ SR_SF"]  = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ","cr_4l_sf","sr_sf_all")
+
+    # Do the ttZ and ZZ estimation for BDT SRs
+    for bdt_sr in SR_OF_BDT:
+        print_dict[f"ttZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_of",bdt_sr)
+        print_dict[f"ZZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ","cr_4l_sf",bdt_sr)
+    for bdt_sr in SR_SF_BDT:
+        print_dict[f"ttZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_sf_offZ_met80",bdt_sr)
+        print_dict[f"ZZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ", "cr_4l_sf",bdt_sr)
+
+    for k in print_dict:
+        print(k,"\n",print_dict[k])
 
     # Print the dicts so we can look at the values
     # First replace key names with more descriptive names for printing
-    for kname in kname_dict.keys(): tf_ttz_of_dict[kname_dict[kname]] = tf_ttz_of_dict.pop(kname)
-    for kname in kname_dict.keys(): tf_ttz_sf_dict[kname_dict[kname]] = tf_ttz_sf_dict.pop(kname)
-    for kname in kname_dict.keys(): tf_zz_of_dict[kname_dict[kname]] = tf_zz_of_dict.pop(kname)
-    for kname in kname_dict.keys(): tf_zz_sf_dict[kname_dict[kname]] = tf_zz_sf_dict.pop(kname)
-    print_dict = {"ttZ SR_OF":tf_ttz_of_dict, "ttZ SR_SF":tf_ttz_sf_dict, "ZZ SR_OF":tf_zz_of_dict , "ZZ SR_SF":tf_zz_sf_dict}
+    for tf_dict_name in print_dict.keys():
+        for kname in kname_dict.keys():
+            print_dict[tf_dict_name][kname_dict[kname]] = print_dict[tf_dict_name].pop(kname)
     mlt.print_latex_yield_table(
         print_dict,
         tag="NSFs and TFs for ttZ and ZZ SR estimations",
@@ -786,11 +793,10 @@ def main():
 
 
     # Wrapper around the code for getting the TFs and background estimation factors
-    # TODO: Use the get_yld_dict wrapper here too
     if args.get_backgrounds:
         yld_dict_data = get_yields(histo_dict,sample_dict_data,quiet=True,blind=True)
         yld_dict_mc   = get_yields(histo_dict,sample_dict_mc,quiet=True)
-        put_cat_col_sums(yld_dict_mc, sr_sf_lst=sr_sf,sr_of_lst=sr_of)
+        put_cat_col_sums(yld_dict_mc, sr_sf_lst=SR_SF_CB, sr_of_lst=SR_OF_CB)
         do_background_estimation(yld_dict_mc,yld_dict_data)
 
 
@@ -807,16 +813,16 @@ def main():
         #exit()
 
         # Dump latex table for cut based
-        hlines = [2,3,7,8]
-        sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
-        procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
-        print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
-
-        # Dump latex table for BDT
-        #hlines = [5,6,14,15]
-        #sr_cats_to_print = SR_SF_BDT + ["sr_sf_all_bdt"] + SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"]
+        #hlines = [2,3,7,8]
+        #sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
         #procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
         #print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
+
+        # Dump latex table for BDT
+        hlines = [5,6,14,15]
+        sr_cats_to_print = SR_SF_BDT + ["sr_sf_all_bdt"] + SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"]
+        procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
+        print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
 
         # Dump yield dict to json
         json_name = "process_yields.json" # Could be an argument
