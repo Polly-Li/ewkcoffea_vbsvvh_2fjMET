@@ -7,7 +7,8 @@ import hist
 from hist import axis
 from coffea.analysis_tools import PackedSelection
 from coffea.lumi_tools import LumiMask
-
+import csv
+import pandas as pd
 from topcoffea.modules.paths import topcoffea_path
 import topcoffea.modules.event_selection as es_tc
 import topcoffea.modules.object_selection as os_tc
@@ -19,11 +20,10 @@ import ewkcoffea.modules.objects_Run3_2Lep as objRun3_2Lep
 from topcoffea.modules.get_param_from_jsons import GetParam
 get_tc_param = GetParam(topcoffea_path("params/params.json"))
 get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
-get_PU_param = GetParam(ewkcoffea_path("params/PU.json"))
 
+##################################################################
+#################################################################
 
-def map_npvs(npvs):
-    return ak.Array([get_PU_param(str(min(npv, 70))) for npv in pv.npvs])
 
 class AnalysisProcessor(processor.ProcessorABC):
 
@@ -41,9 +41,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             "eta0": axis.Regular(180, -2.4, 2.4, name="eta0", label="Leading Lep eta for sf Channel"),
             "eta1": axis.Regular(180, -2.4, 2.4, name="eta1", label="SubLeading Lep eta for sf Channel"),
             "nleps": axis.Regular(20, 0, 20, name="nleps",   label="Lep multiplicity"),
-            "njets": axis.Regular(20, 0, 20, name="njets",   label="Jet multiplicity"),
-            "nBjets_loose": axis.Regular(20, 0, 20, name="nBjets_loose",   label="Loose B Jet multiplicity"),
-            "nBjets_medium": axis.Regular(20, 0, 20, name="nBjets_medium",   label="Medium B Jet multiplicity"),
+            "njets": axis.Regular(15, 0, 15, name="njets",   label="Jet multiplicity"),
+            "nBjets_loose": axis.Regular(15, 0, 15, name="nBjets_loose",   label="Loose B Jet multiplicity"),
+            "nBjets_medium": axis.Regular(15, 0, 15, name="nBjets_medium",   label="Medium B Jet multiplicity"),
             "pt_mu": axis.Regular(180,0, 160, name="pt_mu", label="Muon pt in OF Channel"),
             "pt_e": axis.Regular(180,0, 160, name="pt_e", label="Electron pt in OF Channel"),
             "pt_jet0": axis.Regular(180,0, 160, name="pt_jet0", label="Leading Jet pt in OF Channel"),
@@ -74,8 +74,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             "phi_1": axis.Regular(180, -3.1416, 3.1416, name="phi_1", label="phi for subleading sf lep"),
 #            "nPU": axis.Regular(100, 0, 100, name="nPU",   label="nPU"),
 #            "nTrueInt": axis.Regular(100, 0, 100, name="nTrueInt",   label="nTrueInt"),
-            "npvs": axis.Regular(71, 0, 70, name="npvs",   label="npvs"),
-            "npvsGood": axis.Regular(71, 0, 70, name="npvsGood",   label="npvsGood"),
+            "npvs": axis.Regular(70, 0.5, 70.5, name="npvs",   label="NPVS"),
+            "npvsGood": axis.Regular(70, 0.5, 70.5, name="npvsGood",   label="NPVS Good"),
         }
         
         # Set the list of hists to fill
@@ -156,10 +156,13 @@ class AnalysisProcessor(processor.ProcessorABC):
             sow_factDown       = -1
             sow_renormfactUp   = -1
             sow_renormfactDown = -1
-
-        datasets = ["SingleMuon", "SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG", "Muon"]
+        datasets = ["EGamma", "MuonEG", "Muon"]
         for d in datasets:
-            if d in dataset: dataset = dataset.split('_')[0]
+            if d in dataset:
+                if d == "Muon" and "MuonEG" in dataset:
+                    continue  # Skip MuonEG when the dataset is Muon
+                dataset = d
+
 
         # Initialize objects
         met  = events.MET
@@ -168,8 +171,8 @@ class AnalysisProcessor(processor.ProcessorABC):
         mu   = events.Muon
         tau  = events.Tau
         jets = events.Jet
-#        if not isData:
-#            pileup = events.Pileup
+        if not isData:
+            pileup = events.Pileup
 
         # An array of lenght events that is just 1 for each event
         # Probably there's a better way to do this, but we use this method elsewhere so I guess why not..
@@ -182,7 +185,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             golden_json_path = topcoffea_path("data/goldenJsons/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt")
         elif year == "2018":
             golden_json_path = topcoffea_path("data/goldenJsons/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt")
-        elif year == "2022":
+        elif year == "2022" or year == "2022EE":
             golden_json_path = topcoffea_path("data/goldenJsons/Cert_Collisions2022_355100_362760_Golden.txt")
         else:
             raise ValueError(f"Error: Unknown year \"{year}\".")
@@ -255,19 +258,31 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Do the object selection for the Run3  muons
         ######### Systematics ###########
 
-
         # These weights can go outside of the outside sys loop since they do not depend on pt of mu or jets
         # We only calculate these values if not isData
 
         weights_obj_base = coffea.analysis_tools.Weights(len(events),storeIndividual=True)
         if not isData:
-            #-----------------------------PU Stuff----------------------------------------
-
-            #pu = ak.Array([get_PU_param(str(min(npv, 70))) for npv in pv.npvs])
-            #------------------------------------------------------------------------------
+            ######Pileup Start########
+            npu = pileup.nTrueInt
+            pu_weights = []
+            if year == "2022":
+                df = pd.read_csv('PU_Files/PU_Weights_2022EE/puWeights.csv')
+                for value in npu:
+                    npu_value = min(value, 80)
+                    ratio = df[df['npu'] == npu_value]['ratio'].iloc[0]
+                    pu_weights.append(ratio)
+            if year == "2022EE":
+                df = pd.read_csv('PU_Files/PU_Weights_2022EE/puWeights.csv')
+                for value in npu:
+                    value = int(value)
+                    npu_value = min(value, 80)
+                    ratio = df[df['npu'] == npu_value]['ratio'].iloc[0]
+                    pu_weights.append(ratio)
+            #####Pileup End###########
             genw = events["genWeight"]
             lumi = 1000.0*get_tc_param(f"lumi_{year}")
-            weights_obj_base.add("norm",(xsec/sow)*genw*lumi)
+            weights_obj_base.add("norm",((xsec/sow)*genw*lumi*pu_weights))
 
         # We do not have systematics yet
         syst_var_list = ['nominal']
@@ -438,9 +453,6 @@ class AnalysisProcessor(processor.ProcessorABC):
             for sr_cat_name, sr_cat_lst in sr_cat_dict.items():
                 for sr_name in sr_cat_lst:
                     hist_dict = dense_variables_dict[sr_name]
-#                    if not isData:
-#                        hist_dict['nPU'] = pileup.nPU
-#                        hist_dict['nTrueInt'] = pileup.nTrueInt
                     for dense_axis_name, dense_axis_vals in hist_dict.items():
                         hist_name = sr_name + "_"+ dense_axis_name
                         hout[hist_name] = hist.Hist(
@@ -449,13 +461,17 @@ class AnalysisProcessor(processor.ProcessorABC):
                         )
 
                         # Decide if we are filling this hist with weight or raw event counts
-                        if dense_axis_name.endswith("_counts"): weights = events.nom
-                        else: weights = weights_obj_base.partial_weight(include=["norm"])
+                        #if dense_axis_name.endswith("_counts"): weights = events.nom
+                        weights = weights_obj_base.partial_weight(include=["norm"])
     
                         # Make the cuts mask
                         cuts_lst = [sr_name]
                         if isData: cuts_lst.append("is_good_lumi") # Apply golden json requirements if this is data
                         all_cuts_mask = selections.all(*cuts_lst)
+                        
+#                        if 12 in (pv.npvs[all_cuts_mask]):
+#                            print(pv.npvs[all_cuts_mask])
+                        
                         # Fill the histos
                         axes_fill_info_dict = {
                             dense_axis_name : dense_axis_vals[all_cuts_mask],

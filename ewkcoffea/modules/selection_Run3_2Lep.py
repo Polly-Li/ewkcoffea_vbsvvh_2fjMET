@@ -63,11 +63,11 @@ exclude_dict = {
     },
 }
 
-
+ 
 #------------------------------------------------------------------------------------------------------------------------------
 # Apply trigger matching requirements to make sure pt is above online thresholds
 def trg_matching(events,year):
-
+    if year == "2022EE": year = "2022"
     # Initialize return array to be True array with same shape as events
     ret_arr = ak.zeros_like(np.array(events.event), dtype=bool)
 
@@ -120,7 +120,7 @@ def add2lmask_Run3_2Lep(events, year, isData):
 
 
 #------------------------------------------------------------------------------------------------------------------------------
-# Jet Selection
+# nJet Selection
 def addjetmask_Run3_2Lep(events, year, isData):
 
     jets = events.jets_Run3_2Lep
@@ -129,6 +129,17 @@ def addjetmask_Run3_2Lep(events, year, isData):
 
     mask = njet_2
     events['has2jets'] = ak.fill_none(mask,False)
+#------------------------------------------------------------------------------------------------------------------------------
+# Leading and Subleading Jet Selection
+def addjetispresent_Run3_2Lep(jet0, jet1, jets_Run3_2Lep):
+
+    njet_1 = (ak.num(jets_Run3_2Lep) >= 1)
+    njet_2 = (ak.num(jets_Run3_2Lep) >= 2)
+
+    mask1 = njet_1
+    mask2 = njet_2
+    jet0['has1jet'] = ak.fill_none(mask1,False)
+    jet1['has2jet'] = ak.fill_none(mask2,False)
 #------------------------------------------------------------------------------------------------------------------------------
 # Met Mask
 def addmetmask_Run3_2Lep(events, year, isData):
@@ -161,7 +172,7 @@ def attach_Run3_2Lep_preselection_mask(events,lep_collection):
     mumu_mask = ak.fill_none(mumu_mask,False) # Replace the None with False in the mask just to make it easier to think about
 
     # mLL masks
-    z_mass_mask = ak.any((abs(((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) - 91.2) < 10.0),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
+    z_mass_mask = ak.any((abs(((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) - 91.2) < 20.0),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
     z_mass_mask = ak.fill_none(z_mass_mask,False) # Replace the None with False in the mask just to make it easier to think about
 
     of_mass_mask = ak.any((((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) > 20.0),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
