@@ -1,18 +1,18 @@
 {
-  "xsec": 1.0,
-  "year": "2016APV",
-  "treeName": "Events",
-  "histAxisName": "dataUL16APV",
-  "options": "",
-  "WCnames": [],
-  "files": [
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleMuon_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep/output_1.root",
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleMuon_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep/output_3.root",
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleMuon_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep/output_2.root"
-  ],
-  "nEvents": 2189,
-  "nGenEvents": 2189,
-  "nSumOfWeights": 2189,
-  "isData": true,
-  "path": "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleMuon_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep"
+    "xsec": 1.0,
+    "year": "2016APV",
+    "treeName": "Events",
+    "histAxisName": "UL16APV_data",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleMuon_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep/output_1.root",
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleMuon_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep/output_3.root",
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleMuon_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep/output_2.root"
+    ],
+    "nEvents": 2189,
+    "nGenEvents": 2189,
+    "nSumOfWeights": 2189,
+    "isData": true,
+    "path": "/store/user/kdownham/skimOutput/3LepTau_4Lep/DoubleMuon_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep"
 }

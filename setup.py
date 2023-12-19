@@ -9,7 +9,10 @@ setuptools.setup(
     package_data={
         "ewkcoffea" : [
             "params/*",
+            "data/topmva_lep_sf/*root",
+            "data/topmva_lep_sf/*json",
+            "data/wwz_zh_bdt/*json",
+            "data/btag_eff/*.pkl.gz",
         ],
     }
 )
-

@@ -1,7 +1,10 @@
 #!/usr/bin/env python
+#import sys
+import math
 import coffea
 import numpy as np
 import awkward as ak
+import copy
 np.seterr(divide='ignore', invalid='ignore', over='ignore')
 from coffea import processor
 import hist
@@ -12,14 +15,17 @@ from coffea.lumi_tools import LumiMask
 from topcoffea.modules.paths import topcoffea_path
 import topcoffea.modules.event_selection as es_tc
 import topcoffea.modules.object_selection as os_tc
+import topcoffea.modules.corrections as cor_tc
 
 from ewkcoffea.modules.paths import ewkcoffea_path as ewkcoffea_path
 import ewkcoffea.modules.selection_wwz as es_ec
 import ewkcoffea.modules.objects_wwz as os_ec
+import ewkcoffea.modules.corrections as cor_ec
 
 from topcoffea.modules.get_param_from_jsons import GetParam
 get_tc_param = GetParam(topcoffea_path("params/params.json"))
 get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
+
 
 
 class AnalysisProcessor(processor.ProcessorABC):
@@ -32,15 +38,74 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Create the dense axes for the histograms
         self._dense_axes_dict = {
-            "met"   : axis.Regular(50, 0, 500, name="met",   label="met"),
-            "ptl4"  : axis.Regular(50, 0, 500, name="ptl4",   label="ptl4"),
+            "mt2"   : axis.Regular(180, 0, 100, name="mt2",  label="mt2"),
+            "met"   : axis.Regular(180, 0, 300, name="met",  label="met"),
+            "metphi": axis.Regular(180, -4, 4, name="metphi", label="met phi"),
+            "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
+            "scalarptsum_lep" : axis.Regular(180, 0, 500, name="scalarptsum_lep", label="S_T"),
+            "scalarptsum_lepmet" : axis.Regular(180, 0, 600, name="scalarptsum_lepmet", label="S_T + metpt"),
+            "scalarptsum_lepmetjet" : axis.Regular(180, 0, 1100, name="scalarptsum_lepmetjet", label="S_T + metpt + H_T"),
+            "mll_01": axis.Regular(180, 0, 200, name="mll_01",  label="mll_l0_l1"),
+            "mllll": axis.Regular(180, 0, 600, name="mllll",  label="mllll"),
+            "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
+            "j0pt"  : axis.Regular(180, 0, 500, name="j0pt", label="j0pt"),
+
+            "w_lep0_pt"  : axis.Regular(180, 0, 300, name="w_lep0_pt", label="Leading W lep pt"),
+            "w_lep1_pt"  : axis.Regular(180, 0, 300, name="w_lep1_pt", label="Subleading W lep pt"),
+            "z_lep0_pt"  : axis.Regular(180, 0, 300, name="z_lep0_pt", label="Leading Z lep pt"),
+            "z_lep1_pt"  : axis.Regular(180, 0, 300, name="z_lep1_pt", label="Subleading Z lep pt"),
+            "w_lep0_eta" : axis.Regular(180, -3, 3, name="w_lep0_eta", label="Leading W lep eta"),
+            "w_lep1_eta" : axis.Regular(180, -3, 3, name="w_lep1_eta", label="Subleading W lep eta"),
+            "z_lep0_eta" : axis.Regular(180, -3, 3, name="z_lep0_eta", label="Leading Z lep eta"),
+            "z_lep1_eta" : axis.Regular(180, -3, 3, name="z_lep1_eta", label="Subleading Z lep eta"),
+            "w_lep0_phi" : axis.Regular(180, -4, 4, name="w_lep0_phi", label="Leading W lep phi"),
+            "w_lep1_phi" : axis.Regular(180, -4, 4, name="w_lep1_phi", label="Subleading W lep phi"),
+            "z_lep0_phi" : axis.Regular(180, -4, 4, name="z_lep0_phi", label="Leading Z lep phi"),
+            "z_lep1_phi" : axis.Regular(180, -4, 4, name="z_lep1_phi", label="Subleading Z lep phi"),
+            "mll_wl0_wl1" : axis.Regular(180, 0, 200, name="mll_wl0_wl1", label="mll(W lep0, W lep1)"),
+            "mll_zl0_zl1" : axis.Regular(180, 0, 200, name="mll_zl0_zl1", label="mll(Z lep0, Z lep1)"),
+
+            "pt_zl0_zl1" : axis.Regular(180, 0, 300, name="pt_zl0_zl1", label="pt(Zl0 + Zl1)"),
+            "pt_wl0_wl1" : axis.Regular(180, 0, 300, name="pt_wl0_wl1", label="pt(Wl0 + Wl1)"),
+            "dr_zl0_zl1" : axis.Regular(180, 0, 5, name="dr_zl0_zl1", label="dr(Zl0,Zl1)"),
+            "dr_wl0_wl1" : axis.Regular(180, 0, 5, name="dr_wl0_wl1", label="dr(Wl0,Wl1)"),
+            "dr_wleps_zleps" : axis.Regular(180, 0, 5, name="dr_wleps_zleps", label="dr((Wl0+Wl1),(Zl0,Zl1))"),
+
+            "absdphi_zl0_zl1" : axis.Regular(180, 0, 4, name="absdphi_zl0_zl1", label="abs dphi(Zl0,Zl1)"),
+            "absdphi_wl0_wl1" : axis.Regular(180, 0, 4, name="absdphi_wl0_wl1", label="abs dphi(Wl0,Wl1)"),
+            "absdphi_z_ww"    : axis.Regular(180, 0, 4, name="absdphi_z_ww", label="abs dphi((Zl0+Zl1),(Wl0+Wl1+met))"),
+            "dphi_4l_met"    : axis.Regular(180, -4, 4, name="dphi_4l_met", label="dphi((Zl0+Zl1+Wl0+Wl1),met)"),
+            "dphi_zleps_met" : axis.Regular(180, -4, 4, name="dphi_zleps_met", label="dphi((Zl0+Zl1),met)"),
+            "dphi_wleps_met" : axis.Regular(180, -4, 4, name="dphi_wleps_met", label="dphi((Wl0+Wl1),met)"),
+
+            "absdphi_min_afas" : axis.Regular(180, 0, 4, name="absdphi_min_afas",  label="min(abs(delta phi of all pairs))"),
+            "absdphi_min_afos" : axis.Regular(180, 0, 4, name="absdphi_min_afos",  label="min(abs(delta phi of OS pairs))"),
+            "absdphi_min_sfos" : axis.Regular(180, 0, 4, name="absdphi_min_sfos",  label="min(abs(delta phi of SFOS pairs))"),
+            "mll_min_afas" : axis.Regular(180, 0, 150, name="mll_min_afas",  label="min mll of all pairs"),
+            "mll_min_afos" : axis.Regular(180, 0, 150, name="mll_min_afos",  label="min mll of OF pairs"),
+            "mll_min_sfos" : axis.Regular(180, 0, 150, name="mll_min_sfos",  label="min mll of SFOF pairs"),
+
+            "mlb_min" : axis.Regular(180, 0, 300, name="mlb_min",  label="min mass(b+l)"),
+            "mlb_max" : axis.Regular(180, 0, 500, name="mlb_max",  label="max mass(b+l)"),
 
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
-            "nbtagsl" : axis.Regular(4, 0, 4, name="nbtagsl", label="Loose btag multiplicity"),
+            "nbtagsl" : axis.Regular(6, 0, 6, name="nbtagsl", label="Loose btag multiplicity"),
+            "nbtagsm" : axis.Regular(4, 0, 4, name="nbtagsm", label="Medium btag multiplicity"),
+
             "njets_counts"   : axis.Regular(30, 0, 30, name="njets_counts",   label="Jet multiplicity counts"),
             "nleps_counts"   : axis.Regular(30, 0, 30, name="nleps_counts",   label="Lep multiplicity counts"),
             "nbtagsl_counts" : axis.Regular(30, 0, 30, name="nbtagsl_counts", label="Loose btag multiplicity counts"),
+
+            "bdt_of_wwz_raw": axis.Regular(180, -3.5, 3.5, name="bdt_of_wwz_raw", label="Raw score bdt_of_wwz"),
+            "bdt_sf_wwz_raw": axis.Regular(180, -3.5, 3.5, name="bdt_sf_wwz_raw", label="Raw score bdt_sf_wwz"),
+            "bdt_of_zh_raw" : axis.Regular(180, -3.5, 3.5, name="bdt_of_zh_raw", label="Raw score bdt_of_zh"),
+            "bdt_sf_zh_raw" : axis.Regular(180, -3.5, 3.5, name="bdt_sf_zh_raw", label="Raw score bdt_sf_zh"),
+            "bdt_of_wwz": axis.Regular(180, -1, 1, name="bdt_of_wwz", label="Score bdt_of_wwz"),
+            "bdt_sf_wwz": axis.Regular(180, -1, 1, name="bdt_sf_wwz", label="Score bdt_sf_wwz"),
+            "bdt_of_zh" : axis.Regular(180, -1, 1, name="bdt_of_zh", label="Score bdt_of_zh"),
+            "bdt_sf_zh" : axis.Regular(180, -1, 1, name="bdt_sf_zh", label="Score bdt_sf_zh"),
+
         }
 
         # Set the list of hists to fill
@@ -113,8 +178,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             if d in dataset: dataset = dataset.split('_')[0]
 
         # Initialize objects
-        met  = events.MET
-        #met  = events.PuppiMET
+        #met  = events.MET
+        met  = events.PuppiMET
         ele  = events.Electron
         mu   = events.Muon
         tau  = events.Tau
@@ -135,9 +200,57 @@ class AnalysisProcessor(processor.ProcessorABC):
             raise ValueError(f"Error: Unknown year \"{year}\".")
         lumi_mask = LumiMask(golden_json_path)(events.run,events.luminosityBlock)
 
+        #########################################################
+        ### START top22006 lep obj sel ###
+        #import topeft.modules.object_selection as te_os
+        #from topeft.modules.corrections import AttachMuonSF, AttachElectronSF
+
+        #ele["idEmu"] = te_os.ttH_idEmu_cuts_E3(ele.hoe, ele.eta, ele.deltaEtaSC, ele.eInvMinusPInv, ele.sieie)
+        #ele["conept"] = te_os.coneptElec(ele.pt, ele.mvaTTHUL, ele.jetRelIso)
+        #mu["conept"] = te_os.coneptMuon(mu.pt, mu.mvaTTHUL, mu.jetRelIso, mu.mediumId)
+        #ele["btagDeepFlavB"] = ak.fill_none(ele.matched_jet.btagDeepFlavB, -99)
+        #mu["btagDeepFlavB"] = ak.fill_none(mu.matched_jet.btagDeepFlavB, -99)
+        #if not isData:
+        #    ele["gen_pdgId"] = ak.fill_none(ele.matched_gen.pdgId, 0)
+        #    mu["gen_pdgId"] = ak.fill_none(mu.matched_gen.pdgId, 0)
+
+        #ele["isPres"] = te_os.isPresElec(ele.pt, ele.eta, ele.dxy, ele.dz, ele.miniPFRelIso_all, ele.sip3d, getattr(ele,"mvaFall17V2noIso_WPL"))
+        #ele["isLooseE"] = te_os.isLooseElec(ele.miniPFRelIso_all,ele.sip3d,ele.lostHits)
+        #ele["isFO"] = te_os.isFOElec(ele.pt, ele.conept, ele.btagDeepFlavB, ele.idEmu, ele.convVeto, ele.lostHits, ele.mvaTTHUL, ele.jetRelIso, ele.mvaFall17V2noIso_WP90, year)
+        #ele["isTightLep"] = te_os.tightSelElec(ele.isFO, ele.mvaTTHUL)
+
+        #mu["isPres"] = te_os.isPresMuon(mu.dxy, mu.dz, mu.sip3d, mu.eta, mu.pt, mu.miniPFRelIso_all)
+        #mu["isLooseM"] = te_os.isLooseMuon(mu.miniPFRelIso_all,mu.sip3d,mu.looseId)
+        #mu["isFO"] = te_os.isFOMuon(mu.pt, mu.conept, mu.btagDeepFlavB, mu.mvaTTHUL, mu.jetRelIso, year)
+        #mu["isTightLep"]= te_os.tightSelMuon(mu.isFO, mu.mediumId, mu.mvaTTHUL)
+
+        #m_loose = mu[mu.isPres & mu.isLooseM]
+        #e_loose = ele[ele.isPres & ele.isLooseE]
+        #l_loose = ak.with_name(ak.concatenate([e_loose, m_loose], axis=1), 'PtEtaPhiMCandidate')
+
+        ## Build FO collection
+        #m_fo = mu[mu.isPres & mu.isLooseM & mu.isFO]
+        #e_fo = ele[ele.isPres & ele.isLooseE & ele.isFO]
+
+        ## Attach the lepton SFs to the electron and muons collections
+        #AttachElectronSF(e_fo,year=year)
+        #AttachMuonSF(m_fo,year=year)
+
+        ## Attach per lepton fake rates
+        #m_fo['convVeto'] = ak.ones_like(m_fo.charge)
+        #m_fo['lostHits'] = ak.zeros_like(m_fo.charge)
+        #l_fo = ak.with_name(ak.concatenate([e_fo, m_fo], axis=1), 'PtEtaPhiMCandidate')
+        #l_fo_conept_sorted = l_fo[ak.argsort(l_fo.conept, axis=-1,ascending=False)]
+
+        #l_wwz_t = l_fo_conept_sorted[l_fo_conept_sorted.isTightLep]
+        #l_wwz_t = l_wwz_t[ak.argsort(l_wwz_t.pt, axis=-1,ascending=False)] # Sort by pt
+
+        ### END top22006 obj sel ###
+        ########################################################
 
         ################### Lepton selection ####################
 
+        #'''
         # Do the object selection for the WWZ eleectrons
         ele_presl_mask = os_ec.is_presel_wwz_ele(ele,tight=True)
         ele["topmva"] = os_ec.get_topmva_score_ele(events, year)
@@ -151,15 +264,29 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Get tight leptons for WWZ selection
         ele_wwz_t = ele[ele.is_tight_lep_for_wwz]
         mu_wwz_t = mu[mu.is_tight_lep_for_wwz]
+
+        # Attach the lepton SFs to the electron and muons collections
+        cor_ec.AttachElectronSF(ele_wwz_t,year=year)
+        cor_ec.AttachMuonSF(mu_wwz_t,year=year)
+
         l_wwz_t = ak.with_name(ak.concatenate([ele_wwz_t,mu_wwz_t],axis=1),'PtEtaPhiMCandidate')
         l_wwz_t = l_wwz_t[ak.argsort(l_wwz_t.pt, axis=-1,ascending=False)] # Sort by pt
 
+        #'''
+
         # For WWZ: Compute pair invariant masses
         llpairs_wwz = ak.combinations(l_wwz_t, 2, fields=["l0","l1"])
-        os_pairs_mask = (llpairs_wwz.l0.pdgId*llpairs_wwz.l1.pdgId < 0)
-        ll_mass_pairs = (llpairs_wwz.l0+llpairs_wwz.l1).mass
-        ll_mass_pairs_os = ll_mass_pairs[os_pairs_mask]
-        events["min_mll_afos"] = ak.min(ll_mass_pairs_os,axis=-1) # For WWZ
+        os_pairs_mask = (llpairs_wwz.l0.pdgId*llpairs_wwz.l1.pdgId < 0)   # Maks for opposite-sign pairs
+        sfos_pairs_mask = (llpairs_wwz.l0.pdgId == -llpairs_wwz.l1.pdgId) # Mask for same-flavor-opposite-sign pairs
+        ll_absdphi_pairs = abs(llpairs_wwz.l0.delta_phi(llpairs_wwz.l1))
+        ll_mass_pairs = (llpairs_wwz.l0+llpairs_wwz.l1).mass            # The mll for each ll pair
+        absdphi_min_afas = ak.min(ll_absdphi_pairs,axis=-1)
+        absdphi_min_afos = ak.min(ll_absdphi_pairs[os_pairs_mask],axis=-1)
+        absdphi_min_sfos = ak.min(ll_absdphi_pairs[sfos_pairs_mask],axis=-1)
+        mll_min_afas = ak.min(ll_mass_pairs,axis=-1)
+        mll_min_afos = ak.min(ll_mass_pairs[os_pairs_mask],axis=-1)
+        mll_min_sfos = ak.min(ll_mass_pairs[sfos_pairs_mask],axis=-1)
+        events["min_mll_afos"] = mll_min_afos # Attach this one to the event info since we need it for selection
 
         # For WWZ
         l_wwz_t_padded = ak.pad_none(l_wwz_t, 4)
@@ -169,6 +296,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         l3 = l_wwz_t_padded[:,3]
 
         nleps = ak.num(l_wwz_t)
+
 
         ######### Systematics ###########
 
@@ -181,10 +309,17 @@ class AnalysisProcessor(processor.ProcessorABC):
         if not isData:
             genw = events["genWeight"]
 
+            # If it's an EFT sample, just take SM piece
+            sm_wgt = 1.0
+            eft_coeffs = ak.to_numpy(events["EFTfitCoefficients"]) if hasattr(events, "EFTfitCoefficients") else None
+            if eft_coeffs is not None:
+                sm_wgt = eft_coeffs[:,0]
+
             # Normalize by (xsec/sow)*genw where genw is 1 for EFT samples
             # Note that for theory systs, will need to multiply by sow/sow_wgtUP to get (xsec/sow_wgtUp)*genw and same for Down
             lumi = 1000.0*get_tc_param(f"lumi_{year}")
-            weights_obj_base.add("norm",(xsec/sow)*genw*lumi)
+            weights_obj_base.add("norm",(xsec/sow)*genw*lumi*sm_wgt)
+
 
         # We do not have systematics yet
         syst_var_list = ['nominal']
@@ -193,6 +328,8 @@ class AnalysisProcessor(processor.ProcessorABC):
         for syst_var in syst_var_list:
             # Make a copy of the base weights object, so that each time through the loop we do not double count systs
             # In this loop over systs that impact kinematics, we will add to the weights objects the SFs that depend on the object kinematics
+            weights_obj_base_for_kinematic_syst = copy.deepcopy(weights_obj_base)
+
 
             #################### Jets ####################
 
@@ -218,8 +355,8 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
             # Loose DeepJet WP
-            #btagger = "btag" # For deep flavor WPs
-            btagger = "btagcsv" # For deep CSV WPs
+            btagger = "btag" # For deep flavor WPs
+            #btagger = "btagcsv" # For deep CSV WPs
             if year == "2017":
                 btagwpl = get_tc_param(f"{btagger}_wp_loose_UL17")
                 btagwpm = get_tc_param(f"{btagger}_wp_medium_UL17")
@@ -237,15 +374,16 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             if btagger == "btag":
                 isBtagJetsLoose = (goodJets.btagDeepFlavB > btagwpl)
+                isBtagJetsMedium = (goodJets.btagDeepFlavB > btagwpm)
             if btagger == "btagcsv":
                 isBtagJetsLoose = (goodJets.btagDeepB > btagwpl)
+                isBtagJetsMedium = (goodJets.btagDeepB > btagwpm)
+
             isNotBtagJetsLoose = np.invert(isBtagJetsLoose)
             nbtagsl = ak.num(goodJets[isBtagJetsLoose])
 
-            isBtagJetsMedium = (goodJets.btagDeepFlavB > btagwpm)
             isNotBtagJetsMedium = np.invert(isBtagJetsMedium)
             nbtagsm = ak.num(goodJets[isBtagJetsMedium])
-
 
             #################### Add variables into event object so that they persist ####################
 
@@ -253,7 +391,43 @@ class AnalysisProcessor(processor.ProcessorABC):
             events["njets"] = njets
             events["l_wwz_t"] = l_wwz_t
 
-            es_ec.add4lmask_wwz(events, year, isData)
+            es_ec.add4lmask_wwz(events, year, isData, histAxisName)
+
+            ######### Apply SFs #########
+
+            if not isData:
+                weights_obj_base_for_kinematic_syst.add("lepSF_muon", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
+                weights_obj_base_for_kinematic_syst.add("lepSF_elec", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
+
+                ### OLD implimentation from TOP-22-006
+                ## Btag SF following 1a) in https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagSFMethods
+                #bJetSF   = cor_ec.GetBTagSF(goodJets, year, 'LOOSE')
+                ###bJetEff  = cor_ec.GetBtagEff(goodJets, year, 'loose') # Need for now
+                #bJetEff_data   = bJetEff*bJetSF
+                #pMC     = ak.prod(bJetEff[isBtagJetsLoose], axis=-1) * ak.prod((1-bJetEff[isNotBtagJetsLoose]), axis=-1)
+                #pMC     = ak.where(pMC==0,1,pMC) # removeing zeroes from denominator...
+                #pData   = ak.prod(bJetEff_data[isBtagJetsLoose], axis=-1) * ak.prod((1-bJetEff_data[isNotBtagJetsLoose]), axis=-1)
+                #weights_obj_base_for_kinematic_syst.add("btagSF", pData/pMC)
+
+                ### Evaluate btag weights ###
+                jets_light = goodJets[goodJets.hadronFlavour==0]
+                jets_bc    = goodJets[goodJets.hadronFlavour>0]
+
+                # Workaround to use UL16APV SFs for UL16 for light jets
+                year_light = year
+                if year == "2016": year_light = "2016APV"
+                btag_sf_light = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl","central")
+                btag_sf_bc    = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb","central")
+
+                #btag_eff_light = bJetEff[goodJets.hadronFlavour==0] # OLD eff, Will replace with our new eff
+                #btag_eff_bc    = bJetEff[goodJets.hadronFlavour>0]  # OLD eff, Will replace with our new eff
+                btag_eff_light = cor_ec.btag_eff_eval(jets_light,"L",year)
+                btag_eff_bc = cor_ec.btag_eff_eval(jets_bc,"L",year)
+
+                wgt_light = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light, jets_light.btagDeepFlavB>btagwpl)
+                wgt_bc    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc,    jets_bc.btagDeepFlavB>btagwpl)
+
+                weights_obj_base_for_kinematic_syst.add("btagSF", wgt_light*wgt_bc)
 
 
             ######### Masks we need for the selection ##########
@@ -271,33 +445,37 @@ class AnalysisProcessor(processor.ProcessorABC):
             bmask_atleast2med = (nbtagsm>=2) # Used for 3l SR
             bmask_atmost2med  = (nbtagsm< 3) # Used to make 2lss mutually exclusive from tttt enriched
             bmask_atleast3med = (nbtagsm>=3) # Used for tttt enriched
+            bmask_atleast1med = (nbtagsm>=1)
+            bmask_atleast1loose = (nbtagsl>=1)
+            bmask_atleast2loose = (nbtagsl>=2)
 
 
             ######### WWZ event selection stuff #########
 
             # Get some preliminary things we'll need
-            es_ec.attach_wwz_preselection_mask(events,l_wwz_t_padded[:,0:4])                                              # Attach preselection sf and of flags to the events
-            leps_from_z_candidate_ptordered, leps_not_z_candidate_ptordered = es_ec.get_wwz_candidates(l_wwz_t_padded[:,0:4]) # Get a hold of the leptons from the Z and from the W
-            w_candidates_mll = (leps_not_z_candidate_ptordered[:,0:1]+leps_not_z_candidate_ptordered[:,1:2]).mass       # Will need to know mass of the leps from the W
+            es_ec.attach_wwz_preselection_mask(events,l_wwz_t_padded[:,0:4]) # Attach preselection sf and of flags to the events
+            leps_from_z_candidate_ptordered, leps_not_z_candidate_ptordered = es_ec.get_wwz_candidates(l_wwz_t_padded[:,0:4]) # Get ahold of the leptons from the Z and from the W
+
+            w_lep0 = leps_not_z_candidate_ptordered[:,0]
+            w_lep1 = leps_not_z_candidate_ptordered[:,1]
+            mll_wl0_wl1 = (w_lep0 + w_lep1).mass
 
             # Make masks for the SF regions
-            w_candidates_mll_far_from_z = ak.fill_none(ak.any((abs(w_candidates_mll - 91.2) > 10.0),axis=1),False) # Will enforce this for SF in the PackedSelection
+            w_candidates_mll_far_from_z = ak.fill_none(abs(mll_wl0_wl1 - get_ec_param("zmass")) > 10.0,False) # Will enforce this for SF in the PackedSelection
             ptl4 = (l0+l1+l2+l3).pt
-            sf_A = (met.pt > 120.0)
-            sf_B = ((met.pt > 70.0) & (met.pt < 120.0) & (ptl4 > 70.0))
-            sf_C = ((met.pt > 70.0) & (met.pt < 120.0) & (ptl4 > 40.0) & (ptl4 < 70.0))
+            sf_A = ak.fill_none(met.pt >= 120.0,False) # This should never be None, but just keep syntax same as other categories
+            sf_B = ak.fill_none((met.pt >= 65.0) & (met.pt < 120.0) & (ptl4 >= 70.0),False)
+            sf_C = ak.fill_none((met.pt >= 65.0) & (met.pt < 120.0) & (ptl4 >= 40.0) & (ptl4 < 70.0),False)
 
             # Make masks for the OF regions
-            of_1 = ak.fill_none(ak.any((w_candidates_mll > 0.0) & (w_candidates_mll < 40.0),axis=1),False)
-            of_2 = ak.fill_none(ak.any((w_candidates_mll > 40.0) & (w_candidates_mll < 60.0),axis=1),False)
-            of_3 = ak.fill_none(ak.any((w_candidates_mll > 60.0) & (w_candidates_mll < 100.0),axis=1),False)
-            of_4 = ak.fill_none(ak.any((w_candidates_mll > 100.0),axis=1),False)
+            of_1 = ak.fill_none((mll_wl0_wl1 >= 0.0)  & (mll_wl0_wl1 < 40.0),False)
+            of_2 = ak.fill_none((mll_wl0_wl1 >= 40.0) & (mll_wl0_wl1 < 60.0),False)
+            of_3 = ak.fill_none((mll_wl0_wl1 >= 60.0) & (mll_wl0_wl1 < 100.0),False)
+            of_4 = ak.fill_none((mll_wl0_wl1 >= 100.0),False)
 
             # Mask for mt2 cut
-            w_lep0 = leps_not_z_candidate_ptordered[:,0:1]
-            w_lep1 = leps_not_z_candidate_ptordered[:,1:2]
             mt2_val = es_ec.get_mt2(w_lep0,w_lep1,met)
-            mt2_mask = ak.fill_none(ak.any((mt2_val>25.0),axis=1),False)
+            mt2_mask = ak.fill_none(mt2_val>25.0,False)
 
 
 
@@ -312,22 +490,105 @@ class AnalysisProcessor(processor.ProcessorABC):
             zeroj = (njets==0)
 
             # For WWZ selection
-            selections.add("4l_wwz_sf_A", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_A))
-            selections.add("4l_wwz_sf_B", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_B))
-            selections.add("4l_wwz_sf_C", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_C))
-            selections.add("4l_wwz_of_1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_1 & mt2_mask))
-            selections.add("4l_wwz_of_2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_2 & mt2_mask))
-            selections.add("4l_wwz_of_3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_3 & mt2_mask))
-            selections.add("4l_wwz_of_4", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_4))
+            selections.add("sr_4l_sf_A", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_A))
+            selections.add("sr_4l_sf_B", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_B))
+            selections.add("sr_4l_sf_C", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_C))
+            selections.add("sr_4l_of_1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_1 & mt2_mask))
+            selections.add("sr_4l_of_2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_2 & mt2_mask))
+            selections.add("sr_4l_of_3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_3 & mt2_mask))
+            selections.add("sr_4l_of_4", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_4))
 
             selections.add("all_events", (events.is4lWWZ | (~events.is4lWWZ))) # All events.. this logic is a bit roundabout to just get an array of True
             selections.add("4l_presel", (events.is4lWWZ)) # This matches the VVV looper selection (object selection and event selection)
 
-            sr_cat_dict = {
-                "lep_chan_lst" : ["4l_wwz_sf_A","4l_wwz_sf_B","4l_wwz_sf_C","4l_wwz_of_1","4l_wwz_of_2","4l_wwz_of_3","4l_wwz_of_4","all_events","4l_presel"],
-                #"lep_chan_lst" : ["4l_wwz_sf_A","4l_wwz_sf_B","4l_wwz_sf_C","4l_wwz_of_1","4l_wwz_of_2","4l_wwz_of_3","4l_wwz_of_4"],
+            selections.add("sr_4l_sf_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 65.0)))
+            selections.add("sr_4l_of_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of))
+
+            # CRs
+            ww_ee = ((abs(w_lep0.pdgId) == 11) & (abs(w_lep1.pdgId) == 11))
+            ww_mm = ((abs(w_lep0.pdgId) == 13) & (abs(w_lep1.pdgId) == 13))
+            ww_em = ((abs(w_lep0.pdgId) == 11) & (abs(w_lep1.pdgId) == 13))
+            ww_me = ((abs(w_lep0.pdgId) == 13) & (abs(w_lep1.pdgId) == 11))
+            selections.add("cr_4l_btag_of",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of))
+            selections.add("cr_4l_btag_sf",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf))
+            selections.add("cr_4l_btag_sf_offZ",       (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z))
+            selections.add("cr_4l_btag_sf_offZ_met80", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0)))
+            selections.add("cr_4l_sf", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
+
+            cat_dict = {
+                "lep_chan_lst" : [
+                    "sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4",
+                    "sr_4l_sf_presel", "sr_4l_of_presel",
+                    "all_events","4l_presel",
+                    "cr_4l_btag_of","cr_4l_sf", "cr_4l_btag_sf", "cr_4l_btag_sf_offZ", "cr_4l_btag_sf_offZ_met80",
+                ],
             }
 
+            ######### Get variables #########
+
+            l0pt = l0.pt
+            j0pt = ak.flatten(j0.pt) # Flatten to go from [[j0pt],[j0pt],...] -> [j0pt,j0pt,...]
+            mll_01 = (l0+l1).mass
+            mllll = (l0+l1+l2+l3).mass
+            scalarptsum_lep = l0.pt + l1.pt + l2.pt + l3.pt
+            scalarptsum_lepmet = l0.pt + l1.pt + l2.pt + l3.pt + met.pt
+            scalarptsum_lepmetjet = l0.pt + l1.pt + l2.pt + l3.pt + met.pt + ak.sum(goodJets.pt,axis=-1)
+
+            # Get lep from Z
+            z_lep0 = leps_from_z_candidate_ptordered[:,0]
+            z_lep1 = leps_from_z_candidate_ptordered[:,1]
+
+            mll_zl0_zl1 = (z_lep0 + z_lep1).mass
+
+            pt_zl0_zl1 = (z_lep0 + z_lep1).pt
+            pt_wl0_wl1 = (w_lep0 + w_lep1).pt
+
+            dr_zl0_zl1 = z_lep0.delta_r(z_lep1)
+            dr_wl0_wl1 = w_lep0.delta_r(w_lep1)
+            dr_wleps_zleps = (w_lep0 + w_lep1).delta_r(z_lep0 + z_lep1)
+
+            absdphi_zl0_zl1 = abs(z_lep0.delta_phi(z_lep1))
+            absdphi_wl0_wl1 = abs(w_lep0.delta_phi(w_lep1))
+            absdphi_z_ww = abs((z_lep0 + z_lep1).delta_phi(w_lep0 + w_lep1 + met))
+            dphi_4l_met = (z_lep0 + z_lep1 + w_lep0 + w_lep1).delta_phi(met)
+            dphi_wleps_met = (w_lep0 + w_lep1).delta_phi(met)
+            dphi_zleps_met = (z_lep0 + z_lep1).delta_phi(met)
+
+            # lb pairs (i.e. always one lep, one bjet)
+            bjets = goodJets[isBtagJetsLoose]
+            lb_pairs = ak.cartesian({"l":l_wwz_t,"j":bjets})
+            mlb_min = ak.min((lb_pairs["l"] + lb_pairs["j"]).mass,axis=-1)
+            mlb_max = ak.max((lb_pairs["l"] + lb_pairs["j"]).mass,axis=-1)
+
+            # Get BDT values
+            bdt_vars = [
+                ak.fill_none(mll_wl0_wl1,-9999),
+                ak.fill_none(dphi_4l_met,-9999),
+                ak.fill_none(dphi_zleps_met,-9999),
+                ak.fill_none(dphi_wleps_met,-9999),
+                ak.fill_none(dr_wl0_wl1,-9999),
+                ak.fill_none(dr_zl0_zl1,-9999),
+                ak.fill_none(dr_wleps_zleps,-9999),
+                ak.fill_none(met.pt,-9999),
+                ak.fill_none(mt2_val,-9999),
+                ak.fill_none(ptl4,-9999),
+                ak.fill_none(scalarptsum_lepmet,-9999),
+                ak.fill_none(scalarptsum_lepmetjet,-9999),
+                ak.fill_none(z_lep0.pt,-9999),
+                ak.fill_none(z_lep1.pt,-9999),
+                ak.fill_none(w_lep0.pt,-9999),
+                ak.fill_none(w_lep1.pt,-9999),
+            ]
+
+            bdt_of_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path("data/wwz_zh_bdt/of_WWZ.json"))
+            bdt_sf_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path("data/wwz_zh_bdt/sf_WWZ.json"))
+            bdt_of_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path("data/wwz_zh_bdt/of_ZH.json"))
+            bdt_sf_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path("data/wwz_zh_bdt/sf_ZH.json"))
+            # Match TMVA's scaling https://root.cern.ch/doc/v606/MethodBDT_8cxx_source.html
+            bdt_of_wwz = (2.0*((1.0+math.e**(-2*bdt_of_wwz_raw))**(-1))) - 1.0
+            bdt_sf_wwz = (2.0*((1.0+math.e**(-2*bdt_sf_wwz_raw))**(-1))) - 1.0
+            bdt_of_zh  = (2.0*((1.0+math.e**(-2*bdt_of_zh_raw))**(-1))) - 1.0
+            bdt_sf_zh  = (2.0*((1.0+math.e**(-2*bdt_sf_zh_raw))**(-1))) - 1.0
 
 
             ######### Fill histos #########
@@ -335,19 +596,133 @@ class AnalysisProcessor(processor.ProcessorABC):
             hout = {}
 
             dense_variables_dict = {
+                "mt2" : mt2_val,
                 "met" : met.pt,
+                "metphi" : met.phi,
                 "ptl4" : ptl4,
+                "scalarptsum_lep" : scalarptsum_lep,
+                "scalarptsum_lepmet" : scalarptsum_lepmet,
+                "scalarptsum_lepmetjet" : scalarptsum_lepmetjet,
+                "mll_01" : mll_01,
+                "mllll" : mllll,
+                "l0pt" : l0pt,
+                "j0pt" : j0pt,
+
+                "z_lep0_pt" : z_lep0.pt,
+                "z_lep1_pt" : z_lep1.pt,
+                "w_lep0_pt" : w_lep0.pt,
+                "w_lep1_pt" : w_lep1.pt,
+                "z_lep0_eta" : z_lep0.eta,
+                "z_lep1_eta" : z_lep1.eta,
+                "w_lep0_eta" : w_lep0.eta,
+                "w_lep1_eta" : w_lep1.eta,
+                "z_lep0_phi" : z_lep0.phi,
+                "z_lep1_phi" : z_lep1.phi,
+                "w_lep0_phi" : w_lep0.phi,
+                "w_lep1_phi" : w_lep1.phi,
+
+                "mll_wl0_wl1" : mll_wl0_wl1,
+                "mll_zl0_zl1" : mll_zl0_zl1,
+
+                "pt_zl0_zl1" : pt_zl0_zl1,
+                "pt_wl0_wl1" : pt_wl0_wl1,
+                "dr_zl0_zl1" : dr_zl0_zl1,
+                "dr_wl0_wl1" : dr_wl0_wl1,
+                "dr_wleps_zleps" : dr_wleps_zleps,
+                "absdphi_zl0_zl1" : absdphi_zl0_zl1,
+                "absdphi_wl0_wl1" : absdphi_wl0_wl1,
+                "absdphi_z_ww" : absdphi_z_ww,
+                "dphi_4l_met" : dphi_4l_met,
+                "dphi_zleps_met" : dphi_zleps_met,
+                "dphi_wleps_met" : dphi_wleps_met,
+
                 "nleps" : nleps,
                 "njets" : njets,
                 "nbtagsl" : nbtagsl,
+                "nbtagsm" : nbtagsm,
+
                 "nleps_counts" : nleps,
                 "njets_counts" : njets,
                 "nbtagsl_counts" : nbtagsl,
+
+                "absdphi_min_afas" : absdphi_min_afas,
+                "absdphi_min_afos" : absdphi_min_afos,
+                "absdphi_min_sfos" : absdphi_min_sfos,
+                "mll_min_afas" : mll_min_afas,
+                "mll_min_afos" : mll_min_afos,
+                "mll_min_sfos" : mll_min_sfos,
+
+                "mlb_min" : mlb_min,
+                "mlb_max" : mlb_max,
+
+                "bdt_of_wwz_raw": bdt_of_wwz_raw,
+                "bdt_sf_wwz_raw": bdt_sf_wwz_raw,
+                "bdt_of_zh_raw" : bdt_of_zh_raw,
+                "bdt_sf_zh_raw" : bdt_sf_zh_raw,
+                "bdt_of_wwz": bdt_of_wwz,
+                "bdt_sf_wwz": bdt_sf_wwz,
+                "bdt_of_zh" : bdt_of_zh,
+                "bdt_sf_zh" : bdt_sf_zh,
             }
 
-            # List the hists that are only defined for sr bins
-            analysis_var_only = ["ptl4"]
-            analysis_cats = ["4l_wwz_sf_A","4l_wwz_sf_B","4l_wwz_sf_C","4l_wwz_of_1","4l_wwz_of_2","4l_wwz_of_3","4l_wwz_of_4"]
+            # List the hists that are only defined for some categories
+            analysis_cats = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
+            exclude_var_dict = {
+                "mt2" : ["all_events"],
+                "ptl4" : ["all_events"],
+                "j0pt" : ["all_events", "4l_presel", "sr_4l_sf_presel", "sr_4l_of_presel", "cr_4l_sf"] + analysis_cats,
+                "l0pt" : ["all_events"],
+                "mll_01" : ["all_events"],
+                "mllll" : ["all_events"],
+                "scalarptsum_lep" : ["all_events"],
+                "scalarptsum_lepmet" : ["all_events"],
+                "scalarptsum_lepmetjet" : ["all_events"],
+                "w_lep0_pt"  : ["all_events"],
+                "w_lep1_pt"  : ["all_events"],
+                "z_lep0_pt"  : ["all_events"],
+                "z_lep1_pt"  : ["all_events"],
+                "w_lep0_eta" : ["all_events"],
+                "w_lep1_eta" : ["all_events"],
+                "z_lep0_eta" : ["all_events"],
+                "z_lep1_eta" : ["all_events"],
+                "w_lep0_phi" : ["all_events"],
+                "w_lep1_phi" : ["all_events"],
+                "z_lep0_phi" : ["all_events"],
+                "z_lep1_phi" : ["all_events"],
+                "mll_wl0_wl1" : ["all_events"],
+                "mll_zl0_zl1" : ["all_events"],
+
+                "pt_zl0_zl1" : ["all_events"],
+                "pt_wl0_wl1" : ["all_events"],
+                "dr_zl0_zl1" : ["all_events"],
+                "dr_wl0_wl1" : ["all_events"],
+                "dr_wleps_zleps" : ["all_events"],
+                "absdphi_zl0_zl1" : ["all_events"],
+                "absdphi_wl0_wl1" : ["all_events"],
+                "absdphi_z_ww" : ["all_events"],
+                "dphi_4l_met" : ["all_events"],
+                "dphi_zleps_met" : ["all_events"],
+                "dphi_wleps_met" : ["all_events"],
+
+                "absdphi_min_afas" : ["all_events"],
+                "absdphi_min_afos" : ["all_events"],
+                "absdphi_min_sfos" : ["all_events"],
+                "mll_min_afas" : ["all_events"],
+                "mll_min_afos" : ["all_events"],
+                "mll_min_sfos" : ["all_events"],
+
+                "mlb_min" : ["all_events","4l_presel", "sr_4l_sf_presel", "sr_4l_of_presel", "cr_4l_sf"] + analysis_cats,
+                "mlb_max" : ["all_events","4l_presel", "sr_4l_sf_presel", "sr_4l_of_presel", "cr_4l_sf"] + analysis_cats,
+
+                "bdt_of_wwz_raw": ["all_events"],
+                "bdt_sf_wwz_raw": ["all_events"],
+                "bdt_of_zh_raw" : ["all_events"],
+                "bdt_sf_zh_raw" : ["all_events"],
+                "bdt_of_wwz": ["all_events"],
+                "bdt_sf_wwz": ["all_events"],
+                "bdt_of_zh" : ["all_events"],
+                "bdt_sf_zh" : ["all_events"],
+            }
 
 
             # Loop over the hists we want to fill
@@ -366,18 +741,35 @@ class AnalysisProcessor(processor.ProcessorABC):
 
                 # Decide if we are filling this hist with weight or raw event counts
                 if dense_axis_name.endswith("_counts"): weights = events.nom
-                else: weights = weights_obj_base.partial_weight(include=["norm"])
+                #else: weights = weights_obj_base_for_kinematic_syst.partial_weight(include=["norm"])
+                else: weights = weights_obj_base_for_kinematic_syst.weight(None)
 
                 # Loop over categories
-                for sr_cat in sr_cat_dict["lep_chan_lst"]:
+                for sr_cat in cat_dict["lep_chan_lst"]:
 
                     # Skip filling if this variable is not relevant for this selection
-                    if (dense_axis_name in analysis_var_only) and (sr_cat not in analysis_cats): continue
+                    if (dense_axis_name in exclude_var_dict) and (sr_cat in exclude_var_dict[dense_axis_name]): continue
 
                     # Make the cuts mask
                     cuts_lst = [sr_cat]
                     if isData: cuts_lst.append("is_good_lumi") # Apply golden json requirements if this is data
                     all_cuts_mask = selections.all(*cuts_lst)
+
+                    #run = events.run[all_cuts_mask]
+                    #luminosityBlock = events.luminosityBlock[all_cuts_mask]
+                    #event = events.event[all_cuts_mask]
+                    #w = weights[all_cuts_mask]
+                    #if dense_axis_name == "njets":
+                    #    print("STARTPRINT")
+                    #    for i,j in enumerate(w):
+                    #        out_str = f"PRINTTAG {i} {dense_axis_name} {year} {sr_cat} {event[i]} {run[i]} {luminosityBlock[i]} {w[i]}"
+                    #        print(out_str,file=sys.stderr,flush=True)
+                    #    print("ENDPRINT")
+                    #    print("ENDPRINT")
+                    #print("\ndense_axis_name",dense_axis_name)
+                    #print("sr_cat",sr_cat)
+                    #print("dense_axis_vals[all_cuts_mask]",dense_axis_vals[all_cuts_mask])
+                    #print("this")
 
                     # Fill the histos
                     axes_fill_info_dict = {
