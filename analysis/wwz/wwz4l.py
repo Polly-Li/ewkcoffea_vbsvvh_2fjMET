@@ -479,50 +479,6 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
 
-            ######### Store boolean masks with PackedSelection ##########
-
-
-            selections = PackedSelection(dtype='uint64')
-
-            # Lumi mask (for data)
-            selections.add("is_good_lumi",lumi_mask)
-
-            zeroj = (njets==0)
-
-            # For WWZ selection
-            selections.add("sr_4l_sf_A", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_A))
-            selections.add("sr_4l_sf_B", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_B))
-            selections.add("sr_4l_sf_C", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_C))
-            selections.add("sr_4l_of_1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_1 & mt2_mask))
-            selections.add("sr_4l_of_2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_2 & mt2_mask))
-            selections.add("sr_4l_of_3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_3 & mt2_mask))
-            selections.add("sr_4l_of_4", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_4))
-
-            selections.add("all_events", (events.is4lWWZ | (~events.is4lWWZ))) # All events.. this logic is a bit roundabout to just get an array of True
-            selections.add("4l_presel", (events.is4lWWZ)) # This matches the VVV looper selection (object selection and event selection)
-
-            selections.add("sr_4l_sf_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 65.0)))
-            selections.add("sr_4l_of_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of))
-
-            # CRs
-            ww_ee = ((abs(w_lep0.pdgId) == 11) & (abs(w_lep1.pdgId) == 11))
-            ww_mm = ((abs(w_lep0.pdgId) == 13) & (abs(w_lep1.pdgId) == 13))
-            ww_em = ((abs(w_lep0.pdgId) == 11) & (abs(w_lep1.pdgId) == 13))
-            ww_me = ((abs(w_lep0.pdgId) == 13) & (abs(w_lep1.pdgId) == 11))
-            selections.add("cr_4l_btag_of",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of))
-            selections.add("cr_4l_btag_sf",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf))
-            selections.add("cr_4l_btag_sf_offZ",       (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z))
-            selections.add("cr_4l_btag_sf_offZ_met80", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0)))
-            selections.add("cr_4l_sf", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
-
-            cat_dict = {
-                "lep_chan_lst" : [
-                    "sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4",
-                    "sr_4l_sf_presel", "sr_4l_of_presel",
-                    "all_events","4l_presel",
-                    "cr_4l_btag_of","cr_4l_sf", "cr_4l_btag_sf", "cr_4l_btag_sf_offZ", "cr_4l_btag_sf_offZ_met80",
-                ],
-            }
 
             ######### Get variables #########
 
@@ -590,6 +546,121 @@ class AnalysisProcessor(processor.ProcessorABC):
             bdt_of_zh  = (2.0*((1.0+math.e**(-2*bdt_of_zh_raw))**(-1))) - 1.0
             bdt_sf_zh  = (2.0*((1.0+math.e**(-2*bdt_sf_zh_raw))**(-1))) - 1.0
 
+            ### BDT SRs ###
+            # SF BDT SRs
+            sf_wwz_sr1 = ( bdt_sf_wwz > 0.30 ) & (bdt_sf_zh  < -0.60)
+            sf_wwz_sr2 = ( bdt_sf_wwz > 0.80 ) & (bdt_sf_zh  > -0.60) & (bdt_sf_zh < 0.90 )
+            sf_zh_sr1  = ( bdt_sf_wwz > 0.7  ) & (bdt_sf_zh  > 0.90 )
+            sf_zh_sr2  = ( bdt_sf_wwz < 0.7  ) & (bdt_sf_wwz > 0.0  ) & (bdt_sf_zh > 0.90 )
+            sf_any     = ( sf_wwz_sr1 | sf_wwz_sr2 | sf_zh_sr1 | sf_zh_sr2)
+            sf_wwz_sr3 = ( ~sf_any & ((bdt_sf_zh > 0.5) & (bdt_sf_wwz > 0.35)))
+            sf_wwz_sr4 = ( ~(sf_any | sf_wwz_sr3) & ( (bdt_sf_zh > 0.85) & (bdt_sf_wwz > -0.5)))
+            sf_zh_sr3  = ( ~(sf_any | sf_wwz_sr3 | sf_wwz_sr4) & ( bdt_sf_wwz > 0.8 ) )
+
+            print(len(sf_zh_sr2))
+            print(len(sf_zh_sr3))
+            print(ak.any(sf_zh_sr2))
+            print(ak.any(sf_zh_sr3))
+            print(sf_zh_sr2)
+            print(sf_zh_sr3)
+            for i,x in enumerate(sf_zh_sr3):
+                print(i,x)
+                if i > 10: break
+            exit()
+
+            # OF BDT SRs
+            of_wwz_sr1 = ( (bdt_of_wwz > 0.7) & (bdt_of_zh < -0.3) )
+            of_wwz_sr2 = ( (bdt_of_wwz < 0.7) & (bdt_of_wwz > 0.4) & (bdt_of_zh < -0.6) )
+            of_zh_sr1  = ( (bdt_of_wwz > 0.5) & (bdt_of_zh > 0.7) )
+            of_zh_sr2  = ( (bdt_of_wwz < 0.5) & (bdt_of_wwz > -0.2) & (bdt_of_zh > 0.7) )
+            of_any     = ( of_wwz_sr1 | of_wwz_sr2 | of_zh_sr1 | of_zh_sr2 )
+            of_wwz_sr3 = ( ~of_any & (bdt_of_wwz > 0.0) & (bdt_of_zh < (0.8*(bdt_of_wwz-1.))) )
+            of_wwz_sr4 = ( (~of_any & ~of_wwz_sr3) & (bdt_of_wwz > 0.0) )
+            of_zh_sr3  = ( (~of_any & ~of_wwz_sr3 & ~of_wwz_sr4) & (bdt_of_zh > 0.5) )
+            of_zh_sr4  = ( (~of_any & ~of_wwz_sr3 & ~of_wwz_sr4 & ~of_zh_sr3) & (bdt_of_zh > 0.0) & (bdt_of_wwz > -0.5) )
+
+
+
+            ######### Store boolean masks with PackedSelection ##########
+
+            selections = PackedSelection(dtype='uint64')
+
+            # Lumi mask (for data)
+            selections.add("is_good_lumi",lumi_mask)
+
+            zeroj = (njets==0)
+
+            # For WWZ selection
+            selections.add("sr_4l_sf_A", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_A))
+            selections.add("sr_4l_sf_B", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_B))
+            selections.add("sr_4l_sf_C", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_C))
+            selections.add("sr_4l_of_1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_1 & mt2_mask))
+            selections.add("sr_4l_of_2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_2 & mt2_mask))
+            selections.add("sr_4l_of_3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_3 & mt2_mask))
+            selections.add("sr_4l_of_4", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_4))
+
+            selections.add("all_events", (events.is4lWWZ | (~events.is4lWWZ))) # All events.. this logic is a bit roundabout to just get an array of True
+            selections.add("4l_presel", (events.is4lWWZ)) # This matches the VVV looper selection (object selection and event selection)
+
+            selections.add("sr_4l_sf_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 65.0)))
+            selections.add("sr_4l_of_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of))
+
+            # For BDT SRs
+            selections.add("sr_4l_bdt_sf_wwz_sr1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_wwz_sr1))
+            selections.add("sr_4l_bdt_sf_wwz_sr2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_wwz_sr2))
+            selections.add("sr_4l_bdt_sf_wwz_sr3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_wwz_sr3))
+            selections.add("sr_4l_bdt_sf_wwz_sr4", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_wwz_sr4))
+            selections.add("sr_4l_bdt_sf_zh_sr1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_zh_sr1))
+            selections.add("sr_4l_bdt_sf_zh_sr2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_zh_sr2))
+            selections.add("sr_4l_bdt_sf_zh_sr3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_zh_sr3))
+
+            selections.add("sr_4l_bdt_of_wwz_sr1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_wwz_sr1))
+            selections.add("sr_4l_bdt_of_wwz_sr2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_wwz_sr2))
+            selections.add("sr_4l_bdt_of_wwz_sr3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_wwz_sr3))
+            selections.add("sr_4l_bdt_of_wwz_sr4", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_wwz_sr4))
+            selections.add("sr_4l_bdt_of_zh_sr1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_zh_sr1))
+            selections.add("sr_4l_bdt_of_zh_sr2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_zh_sr2))
+            selections.add("sr_4l_bdt_of_zh_sr3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_zh_sr3))
+            selections.add("sr_4l_bdt_of_zh_sr4", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_zh_sr4))
+
+            # CRs
+            ww_ee = ((abs(w_lep0.pdgId) == 11) & (abs(w_lep1.pdgId) == 11))
+            ww_mm = ((abs(w_lep0.pdgId) == 13) & (abs(w_lep1.pdgId) == 13))
+            ww_em = ((abs(w_lep0.pdgId) == 11) & (abs(w_lep1.pdgId) == 13))
+            ww_me = ((abs(w_lep0.pdgId) == 13) & (abs(w_lep1.pdgId) == 11))
+            selections.add("cr_4l_btag_of",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of))
+            selections.add("cr_4l_btag_sf",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf))
+            selections.add("cr_4l_btag_sf_offZ",       (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z))
+            selections.add("cr_4l_btag_sf_offZ_met80", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0)))
+            selections.add("cr_4l_sf", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
+
+            bdt_sr_names = [
+                "sr_4l_bdt_sf_wwz_sr1",
+                "sr_4l_bdt_sf_wwz_sr2",
+                "sr_4l_bdt_sf_wwz_sr3",
+                "sr_4l_bdt_sf_wwz_sr4",
+                "sr_4l_bdt_sf_zh_sr1",
+                "sr_4l_bdt_sf_zh_sr2",
+                "sr_4l_bdt_sf_zh_sr3",
+
+                "sr_4l_bdt_of_wwz_sr1",
+                "sr_4l_bdt_of_wwz_sr2",
+                "sr_4l_bdt_of_wwz_sr3",
+                "sr_4l_bdt_of_wwz_sr4",
+                "sr_4l_bdt_of_zh_sr1",
+                "sr_4l_bdt_of_zh_sr2",
+                "sr_4l_bdt_of_zh_sr3",
+                "sr_4l_bdt_of_zh_sr4",
+            ]
+
+            cat_dict = {
+                "lep_chan_lst" : [
+                    "sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4",
+                    "sr_4l_sf_presel", "sr_4l_of_presel",
+                    "all_events","4l_presel",
+                    "cr_4l_btag_of","cr_4l_sf", "cr_4l_btag_sf", "cr_4l_btag_sf_offZ", "cr_4l_btag_sf_offZ_met80",
+                ] + bdt_sr_names
+            }
 
             ######### Fill histos #########
 
@@ -666,7 +737,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             }
 
             # List the hists that are only defined for some categories
-            analysis_cats = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
+            analysis_cats = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"] + bdt_sr_names
             exclude_var_dict = {
                 "mt2" : ["all_events"],
                 "ptl4" : ["all_events"],
@@ -770,6 +841,10 @@ class AnalysisProcessor(processor.ProcessorABC):
                     #print("sr_cat",sr_cat)
                     #print("dense_axis_vals[all_cuts_mask]",dense_axis_vals[all_cuts_mask])
                     #print("this")
+
+                    #if sr_cat == "sr_4l_bdt_sf_zh_sr3":
+                    ##if sr_cat == "sr_4l_bdt_sf_zh_sr2":
+                    #    print("THIS BDT SR!!!:",dense_axis_name,weights[all_cuts_mask],histAxisName,sr_cat)
 
                     # Fill the histos
                     axes_fill_info_dict = {
