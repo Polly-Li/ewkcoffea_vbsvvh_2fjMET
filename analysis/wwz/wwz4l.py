@@ -548,25 +548,14 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             ### BDT SRs ###
             # SF BDT SRs
-            sf_wwz_sr1 = ( bdt_sf_wwz > 0.30 ) & (bdt_sf_zh  < -0.60)
-            sf_wwz_sr2 = ( bdt_sf_wwz > 0.80 ) & (bdt_sf_zh  > -0.60) & (bdt_sf_zh < 0.90 )
-            sf_zh_sr1  = ( bdt_sf_wwz > 0.7  ) & (bdt_sf_zh  > 0.90 )
-            sf_zh_sr2  = ( bdt_sf_wwz < 0.7  ) & (bdt_sf_wwz > 0.0  ) & (bdt_sf_zh > 0.90 )
+            sf_wwz_sr1 = ( (bdt_sf_wwz > 0.9) & (bdt_sf_zh  >  0.8))
+            sf_wwz_sr2 = ( (bdt_sf_wwz > 0.9) & (bdt_sf_zh  > -0.6) & (bdt_sf_zh  < 0.8))
+            sf_zh_sr1  = ( (bdt_sf_wwz < 0.9) & (bdt_sf_wwz >  0.7) & (bdt_sf_zh  > 0.85))
+            sf_zh_sr2  = ( (bdt_sf_wwz < 0.7) & (bdt_sf_wwz >  0.6) & (bdt_sf_zh  > 0.85))
             sf_any     = ( sf_wwz_sr1 | sf_wwz_sr2 | sf_zh_sr1 | sf_zh_sr2)
             sf_wwz_sr3 = ( ~sf_any & ((bdt_sf_zh > 0.5) & (bdt_sf_wwz > 0.35)))
             sf_wwz_sr4 = ( ~(sf_any | sf_wwz_sr3) & ( (bdt_sf_zh > 0.85) & (bdt_sf_wwz > -0.5)))
             sf_zh_sr3  = ( ~(sf_any | sf_wwz_sr3 | sf_wwz_sr4) & ( bdt_sf_wwz > 0.8 ) )
-
-            print(len(sf_zh_sr2))
-            print(len(sf_zh_sr3))
-            print(ak.any(sf_zh_sr2))
-            print(ak.any(sf_zh_sr3))
-            print(sf_zh_sr2)
-            print(sf_zh_sr3)
-            for i,x in enumerate(sf_zh_sr3):
-                print(i,x)
-                if i > 10: break
-            exit()
 
             # OF BDT SRs
             of_wwz_sr1 = ( (bdt_of_wwz > 0.7) & (bdt_of_zh < -0.3) )
@@ -843,8 +832,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                     #print("this")
 
                     #if sr_cat == "sr_4l_bdt_sf_zh_sr3":
-                    ##if sr_cat == "sr_4l_bdt_sf_zh_sr2":
-                    #    print("THIS BDT SR!!!:",dense_axis_name,weights[all_cuts_mask],histAxisName,sr_cat)
+                    #if sr_cat == "sr_4l_bdt_sf_zh_sr2":
+                        #print("THIS BDT SR!!!:",dense_axis_name,weights[all_cuts_mask],histAxisName,sr_cat)
 
                     # Fill the histos
                     axes_fill_info_dict = {

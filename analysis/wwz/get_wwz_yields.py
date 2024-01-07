@@ -31,7 +31,7 @@ CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#CDCDCD"]
 # Names of the cut-based and BDT SRs
 SR_SF_CB = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C"]
 SR_OF_CB = ["sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
-SR_SF_BDT = ["sr_4l_bdt_sf_wwz_sr1", "sr_4l_bdt_sf_wwz_sr2", "sr_4l_bdt_sf_wwz_sr3", "sr_4l_bdt_sf_wwz_sr4", "sr_4l_bdt_sf_zh_sr1", "sr_4l_bdt_sf_zh_sr2", ] #"sr_4l_bdt_sf_zh_sr3",]
+SR_SF_BDT = ["sr_4l_bdt_sf_wwz_sr1", "sr_4l_bdt_sf_wwz_sr2", "sr_4l_bdt_sf_wwz_sr3", "sr_4l_bdt_sf_wwz_sr4", "sr_4l_bdt_sf_zh_sr1", "sr_4l_bdt_sf_zh_sr2", "sr_4l_bdt_sf_zh_sr3"]
 SR_OF_BDT = ["sr_4l_bdt_of_wwz_sr1", "sr_4l_bdt_of_wwz_sr2", "sr_4l_bdt_of_wwz_sr3", "sr_4l_bdt_of_wwz_sr4", "sr_4l_bdt_of_zh_sr1", "sr_4l_bdt_of_zh_sr2", "sr_4l_bdt_of_zh_sr3", "sr_4l_bdt_of_zh_sr4",]
 
 BDT_INPUT_LST = [
@@ -733,8 +733,8 @@ def do_background_estimation(yld_dict_mc,yld_dict_data):
 
     # Do the ttZ and ZZ estimation for cut-based SRs
     print_dict["ttZ SR_OF"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_of","sr_of_all")
-    print_dict["ttZ SR_SF"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_sf_offZ_met80","sr_sf_all")
     print_dict["ZZ SR_OF"]  = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ","cr_4l_sf","sr_of_all")
+    print_dict["ttZ SR_SF"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_sf_offZ_met80","sr_sf_all")
     print_dict["ZZ SR_SF"]  = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ","cr_4l_sf","sr_sf_all")
 
     # Do the ttZ and ZZ estimation for BDT SRs
@@ -760,6 +760,8 @@ def do_background_estimation(yld_dict_mc,yld_dict_data):
         print_end_info=True,
         roundat=3,
         print_errs=True,
+        size="footnotesize",
+        hz_line_lst=[1,3,3,19]
     )
 
 
@@ -813,16 +815,16 @@ def main():
         #exit()
 
         # Dump latex table for cut based
-        #hlines = [2,3,7,8]
-        #sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
-        #procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
-        #print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
-
-        # Dump latex table for BDT
-        hlines = [5,6,14,15]
-        sr_cats_to_print = SR_SF_BDT + ["sr_sf_all_bdt"] + SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"]
+        hlines = [2,3,7,8]
+        sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
         procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
         print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
+
+        # Dump latex table for BDT
+        #hlines = [6,7,15,16]
+        #sr_cats_to_print = SR_SF_BDT + ["sr_sf_all_bdt"] + SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"]
+        #procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
+        #print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
 
         # Dump yield dict to json
         json_name = "process_yields.json" # Could be an argument
