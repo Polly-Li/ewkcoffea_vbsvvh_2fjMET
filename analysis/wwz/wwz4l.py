@@ -416,11 +416,10 @@ class AnalysisProcessor(processor.ProcessorABC):
                 # Workaround to use UL16APV SFs for UL16 for light jets
                 year_light = year
                 if year == "2016": year_light = "2016APV"
+
                 btag_sf_light = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl","central")
                 btag_sf_bc    = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb","central")
 
-                #btag_eff_light = bJetEff[goodJets.hadronFlavour==0] # OLD eff, Will replace with our new eff
-                #btag_eff_bc    = bJetEff[goodJets.hadronFlavour>0]  # OLD eff, Will replace with our new eff
                 btag_eff_light = cor_ec.btag_eff_eval(jets_light,"L",year)
                 btag_eff_bc = cor_ec.btag_eff_eval(jets_bc,"L",year)
 
@@ -428,6 +427,25 @@ class AnalysisProcessor(processor.ProcessorABC):
                 wgt_bc    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc,    jets_bc.btagDeepFlavB>btagwpl)
 
                 weights_obj_base_for_kinematic_syst.add("btagSF", wgt_light*wgt_bc)
+
+                btag_systs = ["btagSF_correlated","btagSF_uncorrelated_2016","btagSF_uncorrelated_2016APV","btagSF_uncorrelated_2017","btagSF_uncorrelated_2018"]
+                TMPdosys = 1
+                if TMPdosys:
+                    for btag_sys in ["correlated", "uncorrelated"]:
+                        year_tag = f"_{year}"
+                        if btag_sys == "correlated": year_tag = ""
+
+                        btag_sf_light_up   = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl",f"up_{btag_sys}")
+                        btag_sf_light_down = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl",f"down_{btag_sys}")
+                        btag_sf_bc_up      = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb",f"up_{btag_sys}")
+                        btag_sf_bc_down    = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb",f"down_{btag_sys}")
+
+                        wgt_light_up   = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light_up, jets_light.btagDeepFlavB>btagwpl)
+                        wgt_bc_up      = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_up,    jets_bc.btagDeepFlavB>btagwpl)
+                        wgt_light_down = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light_down, jets_light.btagDeepFlavB>btagwpl)
+                        wgt_bc_down    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_down,    jets_bc.btagDeepFlavB>btagwpl)
+
+                        weights_obj_base_for_kinematic_syst.add(f"btagSF_{btag_sys}{year_tag}", events.nom, wgt_light_up*wgt_bc_up, wgt_light_down*wgt_bc_down)
 
 
             ######### Masks we need for the selection ##########
