@@ -137,6 +137,8 @@ class AnalysisProcessor(processor.ProcessorABC):
     # Main function: run on a given dataset
     def process(self, events):
 
+        TMPdosys = 0 # Temporary standin flag for now (eventualy just use self._do_systematics)
+
         # Dataset parameters
         dataset = events.metadata["dataset"]
 
@@ -298,7 +300,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         nleps = ak.num(l_wwz_t)
 
 
-        ######### Systematics ###########
+        ######### Normalization and weights ###########
 
 
         # These weights can go outside of the outside sys loop since they do not depend on pt of mu or jets
@@ -321,11 +323,35 @@ class AnalysisProcessor(processor.ProcessorABC):
             weights_obj_base.add("norm",(xsec/sow)*genw*lumi*sm_wgt)
 
 
-        # We do not have systematics yet
-        syst_var_list = ['nominal']
+        # Set up the list of systematics that are handled via event weight variations
+        btag_systs = [
+            "btagSFlight_correlated",f"btagSFlight_uncorrelated_{year}",
+            "btagSFbc_correlated",   f"btagSFbc_uncorrelated_{year}",
+        ]
+        wgt_correction_syst_lst = btag_systs
 
-        # Loop over the list of systematic variations we've constructed
-        for syst_var in syst_var_list:
+        # Append "Up" and "Down" to all base syst names in a given syst list
+        def append_up_down_to_sys_base(sys_lst_in):
+            sys_lst_out = []
+            for s in sys_lst_in:
+                sys_lst_out.append(f"{s}Up")
+                sys_lst_out.append(f"{s}Down")
+            return sys_lst_out
+
+        wgt_correction_syst_lst = append_up_down_to_sys_base(wgt_correction_syst_lst)
+
+
+        ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
+
+        obj_correction_systs = [] # Will have e.g. jes etc
+
+        # If we're doing systematics and this isn't data, we will loop over the obj correction syst lst list
+        if TMPdosys and not isData: obj_corr_syst_var_list = ["nominal"] + obj_correction_systs
+        # Otherwise loop juse once, for nominal
+        else: obj_corr_syst_var_list = ['nominal']
+
+        # Loop over the list of systematic variations (that impact object kinematics) that we've constructed
+        for obj_corr_syst_var in obj_corr_syst_var_list:
             # Make a copy of the base weights object, so that each time through the loop we do not double count systs
             # In this loop over systs that impact kinematics, we will add to the weights objects the SFs that depend on the object kinematics
             weights_obj_base_for_kinematic_syst = copy.deepcopy(weights_obj_base)
@@ -428,8 +454,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
                 weights_obj_base_for_kinematic_syst.add("btagSF", wgt_light*wgt_bc)
 
-                btag_systs = ["btagSF_correlated","btagSF_uncorrelated_2016","btagSF_uncorrelated_2016APV","btagSF_uncorrelated_2017","btagSF_uncorrelated_2018"]
-                TMPdosys = 1
+                # Put the btagging up and down weight variations into the weights object
                 if TMPdosys:
                     for btag_sys in ["correlated", "uncorrelated"]:
                         year_tag = f"_{year}"
@@ -445,7 +470,9 @@ class AnalysisProcessor(processor.ProcessorABC):
                         wgt_light_down = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light_down, jets_light.btagDeepFlavB>btagwpl)
                         wgt_bc_down    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_down,    jets_bc.btagDeepFlavB>btagwpl)
 
-                        weights_obj_base_for_kinematic_syst.add(f"btagSF_{btag_sys}{year_tag}", events.nom, wgt_light_up*wgt_bc_up, wgt_light_down*wgt_bc_down)
+                        weights_obj_base_for_kinematic_syst.add(f"btagSFlight_{btag_sys}{year_tag}", events.nom, wgt_light_up*wgt_bc, wgt_light_down*wgt_bc)
+                        weights_obj_base_for_kinematic_syst.add(f"btagSFbc_{btag_sys}{year_tag}",    events.nom, wgt_light*wgt_bc_up, wgt_light*wgt_bc_down)
+
 
 
             ######### Masks we need for the selection ##########
@@ -802,6 +829,20 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "bdt_sf_zh" : ["all_events"],
             }
 
+            # Set up the list of weight fluctuations to loop over
+            # For now the syst do not depend on the category, so we can figure this out outside of the filling loop
+            wgt_var_lst = ["nominal"]
+            if TMPdosys:
+                if not isData:
+                    if (obj_corr_syst_var != "nominal"):
+                        # In this case, we are dealing with systs that change the kinematics of the objs (e.g. JES)
+                        # So we don't want to loop over up/down weight variations here
+                        wgt_var_lst = [obj_corr_syst_var]
+                    else:
+                        # Otherwise we want to loop over the up/down weight variations
+                        wgt_var_lst = wgt_var_lst + wgt_correction_syst_lst
+
+
 
             # Loop over the hists we want to fill
             for dense_axis_name, dense_axis_vals in dense_variables_dict.items():
@@ -812,56 +853,64 @@ class AnalysisProcessor(processor.ProcessorABC):
                 hout[dense_axis_name] = hist.Hist(
                     hist.axis.StrCategory([], growth=True, name="process", label="process"),
                     hist.axis.StrCategory([], growth=True, name="category", label="category"),
+                    hist.axis.StrCategory([], growth=True, name="systematic", label="systematic"),
                     self._dense_axes_dict[dense_axis_name],
                     storage="weight", # Keeps track of sumw2
                     name="Counts",
                 )
 
-                # Decide if we are filling this hist with weight or raw event counts
-                if dense_axis_name.endswith("_counts"): weights = events.nom
-                #else: weights = weights_obj_base_for_kinematic_syst.partial_weight(include=["norm"])
-                else: weights = weights_obj_base_for_kinematic_syst.weight(None)
+                # Loop over weight fluctuations
+                for wgt_fluct in wgt_var_lst:
 
-                # Loop over categories
-                for sr_cat in cat_dict["lep_chan_lst"]:
+                    # Get the appropriate weight fluctuation
+                    if (wgt_fluct == "nominal") or (wgt_fluct in obj_corr_syst_var_list):
+                        # In the case of "nominal", no weight systematic variation is used
+                        weight = weights_obj_base_for_kinematic_syst.weight(None)
+                    else:
+                        # Otherwise get the weight from the Weights object
+                        weight = weights_obj_base_for_kinematic_syst.weight(wgt_fluct)
 
-                    # Skip filling if this variable is not relevant for this selection
-                    if (dense_axis_name in exclude_var_dict) and (sr_cat in exclude_var_dict[dense_axis_name]): continue
 
-                    # Make the cuts mask
-                    cuts_lst = [sr_cat]
-                    if isData: cuts_lst.append("is_good_lumi") # Apply golden json requirements if this is data
-                    all_cuts_mask = selections.all(*cuts_lst)
+                    # Loop over categories
+                    for sr_cat in cat_dict["lep_chan_lst"]:
 
-                    #run = events.run[all_cuts_mask]
-                    #luminosityBlock = events.luminosityBlock[all_cuts_mask]
-                    #event = events.event[all_cuts_mask]
-                    #w = weights[all_cuts_mask]
-                    #if dense_axis_name == "njets":
-                    #    print("STARTPRINT")
-                    #    for i,j in enumerate(w):
-                    #        out_str = f"PRINTTAG {i} {dense_axis_name} {year} {sr_cat} {event[i]} {run[i]} {luminosityBlock[i]} {w[i]}"
-                    #        print(out_str,file=sys.stderr,flush=True)
-                    #    print("ENDPRINT")
-                    #    print("ENDPRINT")
-                    #print("\ndense_axis_name",dense_axis_name)
-                    #print("sr_cat",sr_cat)
-                    #print("dense_axis_vals[all_cuts_mask]",dense_axis_vals[all_cuts_mask])
-                    #print("this")
+                        # Skip filling if this variable is not relevant for this selection
+                        if (dense_axis_name in exclude_var_dict) and (sr_cat in exclude_var_dict[dense_axis_name]): continue
 
-                    #if sr_cat == "sr_4l_bdt_sf_zh_sr3":
-                    #if sr_cat == "sr_4l_bdt_sf_zh_sr2":
-                        #print("THIS BDT SR!!!:",dense_axis_name,weights[all_cuts_mask],histAxisName,sr_cat)
+                        # If this is a counts hist, forget the weights and just fill with unit weights
+                        if dense_axis_name.endswith("_counts"): weight = events.nom
+                        #else: weights = weights_obj_base_for_kinematic_syst.partial_weight(include=["norm"]) # For testing
+                        #else: weights = weights_obj_base_for_kinematic_syst.weight(None) # For testing
 
-                    # Fill the histos
-                    axes_fill_info_dict = {
-                        dense_axis_name : dense_axis_vals[all_cuts_mask],
-                        "weight"        : weights[all_cuts_mask],
-                        "process"       : histAxisName,
-                        "category"      : sr_cat,
-                        #"systematic"    : "nominal",
-                    }
-                    hout[dense_axis_name].fill(**axes_fill_info_dict)
+                        # Make the cuts mask
+                        cuts_lst = [sr_cat]
+                        if isData: cuts_lst.append("is_good_lumi") # Apply golden json requirements if this is data
+                        all_cuts_mask = selections.all(*cuts_lst)
+
+                        #run = events.run[all_cuts_mask]
+                        #luminosityBlock = events.luminosityBlock[all_cuts_mask]
+                        #event = events.event[all_cuts_mask]
+                        #w = weights[all_cuts_mask]
+                        #if dense_axis_name == "njets":
+                        #    print("\nSTARTPRINT")
+                        #    for i,j in enumerate(w):
+                        #        out_str = f"PRINTTAG {i} {dense_axis_name} {year} {sr_cat} {event[i]} {run[i]} {luminosityBlock[i]} {w[i]}"
+                        #        print(out_str,file=sys.stderr,flush=True)
+                        #    print("ENDPRINT\n")
+                        #print("\ndense_axis_name",dense_axis_name)
+                        #print("sr_cat",sr_cat)
+                        #print("dense_axis_vals[all_cuts_mask]",dense_axis_vals[all_cuts_mask])
+                        #print("end")
+
+                        # Fill the histos
+                        axes_fill_info_dict = {
+                            dense_axis_name : dense_axis_vals[all_cuts_mask],
+                            "weight"        : weight[all_cuts_mask],
+                            "process"       : histAxisName,
+                            "category"      : sr_cat,
+                            "systematic"    : wgt_fluct,
+                        }
+                        hout[dense_axis_name].fill(**axes_fill_info_dict)
 
         return hout
 
