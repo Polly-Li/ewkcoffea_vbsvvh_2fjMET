@@ -272,8 +272,8 @@ def get_yields(histos_dict,sample_dict,raw_counts=False,quiet=False,blind=True):
                 # If this is data and we're not in a CR category, put placeholder numbers for now
                 yld_dict[proc_name][cat_name] = [-999,-999]
             else:
-                val = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name]}].values(flow=True)))
-                var = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name]}].variances(flow=True)))
+                val = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name],"systematic":"nominal"}].values(flow=True)))
+                var = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name],"systematic":"nominal"}].variances(flow=True)))
                 yld_dict[proc_name][cat_name] = [val,var]
 
     # Print to screen
@@ -621,6 +621,9 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
         #if var_name not in BDT_INPUT_LST and "bdt" not in var_name: continue # TMP
         #if var_name not in TMP_LST: continue # TMP
         histo = histo_dict[var_name]
+
+        # Just plot nominal syst for now
+        histo = histo[{"systematic":"nominal"}]
 
         # Rebin if continous variable
         if var_name not in ["njets","nbtagsl","nleps"]:
