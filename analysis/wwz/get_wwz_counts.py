@@ -22,7 +22,7 @@ def get_counts(histos_dict):
     # Get object multiplicity counts (nleps, njets, nbtags)
     ojb_lst = ["nleps_counts","njets_counts","nbtagsl_counts"]
     for obj in ojb_lst:
-        nobjs_hist = sum(histos_dict[obj][{"category":"all_events","process":wwz_sync_sample_lst}].values(flow=True))
+        nobjs_hist = sum(histos_dict[obj][{"category":"all_events","process":wwz_sync_sample_lst,"systematic":"nominal"}].values(flow=True))
         tot_objs = 0
         for i,v in enumerate(nobjs_hist):
             # Have to adjust for the fact that first bin is underflow, second bin is 0 objects
@@ -34,13 +34,13 @@ def get_counts(histos_dict):
     # Look at the event counts in one histo (e.g. njets)
     dense_axis = "njets_counts"
     for cat_name in histos_dict[dense_axis].axes["category"]:
-        val = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":wwz_sync_sample_lst}].values(flow=True)))
+        val = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":wwz_sync_sample_lst,"systematic":"nominal"}].values(flow=True)))
         out_dict[wwz_sync_sample][cat_name+"_counts"] = (val,None) # Save err as None
 
     # Look at the yields in one histo (e.g. njets)
     dense_axis = "njets"
     for cat_name in histos_dict[dense_axis].axes["category"]:
-        val = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":wwz_sync_sample_lst}].values(flow=True)))
+        val = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":wwz_sync_sample_lst,"systematic":"nominal"}].values(flow=True)))
         out_dict[wwz_sync_sample][cat_name] = (val,None) # Save err as None
 
 
@@ -58,7 +58,6 @@ def main():
 
     # Get the counts from the input hiso
     histo_dict = pickle.load(gzip.open(args.pkl_file_path))
-
 
     counts_dict = get_counts(histo_dict)
 
