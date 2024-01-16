@@ -452,7 +452,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 wgt_light = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light, jets_light.btagDeepFlavB>btagwpl)
                 wgt_bc    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc,    jets_bc.btagDeepFlavB>btagwpl)
 
-                weights_obj_base_for_kinematic_syst.add("btagSF", wgt_light*wgt_bc)
+                wgt_btag_nom = wgt_light*wgt_bc
+                weights_obj_base_for_kinematic_syst.add("btagSF", wgt_btag_nom)
 
                 # Put the btagging up and down weight variations into the weights object
                 if TMPdosys:
@@ -470,9 +471,9 @@ class AnalysisProcessor(processor.ProcessorABC):
                         wgt_light_down = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light_down, jets_light.btagDeepFlavB>btagwpl)
                         wgt_bc_down    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_down,    jets_bc.btagDeepFlavB>btagwpl)
 
-                        weights_obj_base_for_kinematic_syst.add(f"btagSFlight_{btag_sys}{year_tag}", events.nom, wgt_light_up*wgt_bc, wgt_light_down*wgt_bc)
-                        weights_obj_base_for_kinematic_syst.add(f"btagSFbc_{btag_sys}{year_tag}",    events.nom, wgt_light*wgt_bc_up, wgt_light*wgt_bc_down)
-
+                        # Note, up and down weights scaled by 1/wgt_btag_nom so that don't double count the central btag correction (i.e. don't apply it also in the case of up and down variations)
+                        weights_obj_base_for_kinematic_syst.add(f"btagSFlight_{btag_sys}{year_tag}", events.nom, wgt_light_up*wgt_bc/wgt_btag_nom, wgt_light_down*wgt_bc/wgt_btag_nom)
+                        weights_obj_base_for_kinematic_syst.add(f"btagSFbc_{btag_sys}{year_tag}",    events.nom, wgt_light*wgt_bc_up/wgt_btag_nom, wgt_light*wgt_bc_down/wgt_btag_nom)
 
 
             ######### Masks we need for the selection ##########
