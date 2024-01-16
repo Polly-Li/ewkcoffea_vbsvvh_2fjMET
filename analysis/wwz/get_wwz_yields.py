@@ -53,7 +53,7 @@ BDT_INPUT_LST = [
     "w_lep1_pt",
 ]
 
-TMP_LST = [
+TMP_VAR_LST = [
     "j0pt",
     "njets",
     "nbtagsl",
@@ -468,6 +468,7 @@ def get_axis_cats(histo,axis_name):
 
 
 # Merges the last bin (overflow) into the second to last bin, zeros the content of the last bin, returns a new hist
+# Note assumes just one axis!
 def merge_overflow(hin):
     hout = copy.deepcopy(hin)
     for cat_idx,arr in enumerate(hout.values(flow=True)):
@@ -610,6 +611,118 @@ def make_single_fig(histo_mc,title,unit_norm_bool=False):
     return fig
 
 
+# Takes a mc hist and data hist and plots both
+def make_syst_fig(histo_mc,mc_up_arr,mc_do_arr,syst,histo_data=None,title="test",unit_norm_bool=False):
+
+    # Create the figure
+    fig, (ax, rax) = plt.subplots(
+        nrows=2,
+        ncols=1,
+        figsize=(7,7),
+        gridspec_kw={"height_ratios": (3, 1)},
+        sharex=True
+    )
+    fig.subplots_adjust(hspace=.07)
+
+    # Plot the mc
+    histo_mc.plot1d(
+        stack=True,
+        histtype="fill",
+        color=CLR_LST,
+        ax=ax,
+    )
+
+    # Plot the syst
+    histo_mc_sum = histo_mc[{"process_grp":sum}]
+    bin_edges_arr = histo_mc_sum.axes[0].edges
+    bin_centers_arr = histo_mc_sum.axes[0].centers
+    #ax.step(bin_edges_arr[:-1],mc_up_arr, color="cyan", linestyle="--", label=f'{syst} up')
+    #ax.step(bin_edges_arr[:-1],mc_do_arr, color="magenta", linestyle="--", label=f'{syst} down')
+    ax.stairs(mc_up_arr, bin_edges_arr, color="cyan", linestyle="--", label=f'{syst} up')
+    ax.stairs(mc_do_arr, bin_edges_arr, color="magenta", linestyle="--", label=f'{syst} down')
+
+    # Plot the syst on ratio plots
+    mc_arr = histo_mc_sum.values()
+    rax.scatter(bin_centers_arr,mc_up_arr/mc_arr,facecolor='cyan',edgecolor='cyan',marker="o")
+    rax.scatter(bin_centers_arr,mc_do_arr/mc_arr,facecolor='magenta',edgecolor='magenta',marker="o")
+
+    # Scale the y axis and labels
+    ax.legend(fontsize="12")
+    ax.set_title(title)
+    ax.autoscale(axis='y')
+    ax.set_xlabel(None)
+    rax.set_ylabel('Ratio')
+    rax.set_ylim(0.8,1.2)
+    rax.axhline(1.0,linestyle="-",color="k",linewidth=1)
+    ax.tick_params(axis='y', labelsize=16)
+    rax.tick_params(axis='x', labelsize=16)
+
+    return fig
+
+
+# IN PROGRESS
+# Main function for checking individual systematics
+def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
+
+    histo = histo_dict["njets"]
+
+    print("THIS",histo.axes["systematic"])
+    for i,x in enumerate(histo.axes["systematic"]):
+        print(i,x)
+
+    tmp_cat_lst = [
+        "cr_4l_sf",
+        "cr_4l_btag_sf_offZ_met80",
+        "cr_4l_btag_of",
+        "sr_4l_of_presel",
+        "sr_4l_sf_presel",
+    ]
+
+    # Get the list of systematic base names (i.e. without the up and down tags)
+    # Assumes each syst has a "systnameUp" and a "systnameDown" category on the systematic axis
+    syst_var_lst = []
+    all_syst_var_lst = histo.axes["systematic"]
+    for syst_var_name in all_syst_var_lst:
+        if syst_var_name.endswith("Up"):
+            syst_name_base = syst_var_name.replace("Up","")
+            if syst_name_base not in syst_var_lst:
+                syst_var_lst.append(syst_name_base)
+
+    histo_cat = histo[{"category":"sr_4l_sf_presel"}]
+    histo_grouped_mc = group(histo_cat,"process","process_grp",grouping_mc)
+    histo_grouped_data = group(histo_cat,"process","process_grp",grouping_data)
+
+    mc_nom   = merge_overflow(histo_grouped_mc[{"systematic":"nominal"}])
+    data_nom = merge_overflow(histo_grouped_data[{"systematic":"nominal"}])
+
+    print("\nnom_mc",mc_nom)
+    for syst in syst_var_lst:
+
+        # Skip the variations that don't apply
+        blacklist_years = ["2016APV","2016","2018"]
+        skip = False
+        for y in blacklist_years:
+            if syst.endswith(y):
+                skip = True
+        if skip: continue
+
+        mc_up     = merge_overflow(histo_grouped_mc[{"systematic":f"{syst}Up"}])
+        mc_down   = merge_overflow(histo_grouped_mc[{"systematic":f"{syst}Down"}])
+        data_up   = merge_overflow(histo_grouped_data[{"systematic":f"{syst}Up"}])
+        data_down = merge_overflow(histo_grouped_data[{"systematic":f"{syst}Down"}])
+
+        mc_up_arr = mc_up[{"process_grp":sum}].values()
+        mc_down_arr = mc_down[{"process_grp":sum}].values()
+
+        #print("\n",syst)
+        #print("nom",sum(mc_nom.values()))
+        #print("up",mc_up_arr)
+        #print("up",mc_down_arr)
+
+        fig = make_syst_fig(mc_nom,mc_up_arr,mc_down_arr,syst,title=syst)
+        fig.savefig(f"plots/tmppng_{syst}.png")
+
+
 # Main function for making CR plots
 def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
 
@@ -619,7 +732,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
         #if var_name != "njets": continue # TMP
         if var_name == "nbtagsm": continue # TMP
         #if var_name not in BDT_INPUT_LST and "bdt" not in var_name: continue # TMP
-        #if var_name not in TMP_LST: continue # TMP
+        #if var_name not in TMP_VAR_LST: continue # TMP
         histo = histo_dict[var_name]
 
         # Just plot nominal syst for now
@@ -838,7 +951,8 @@ def main():
 
     # Make plots
     if args.make_plots:
-        make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path)
+        #make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path)
+        make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path)
 
 
 
