@@ -137,7 +137,7 @@ class AnalysisProcessor(processor.ProcessorABC):
     # Main function: run on a given dataset
     def process(self, events):
 
-        TMPdosys = 0 # Temporary standin flag for now (eventualy just use self._do_systematics)
+        TMPdosys = 1 # Temporary standin flag for now (eventualy just use self._do_systematics)
 
         # Dataset parameters
         dataset = events.metadata["dataset"]
@@ -328,7 +328,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             "btagSFlight_correlated",f"btagSFlight_uncorrelated_{year}",
             "btagSFbc_correlated",   f"btagSFbc_uncorrelated_{year}",
         ]
-        wgt_correction_syst_lst = btag_systs
+        wgt_correction_syst_lst = btag_systs + ["lepSF_elec", "lepSF_muon"]
 
         # Append "Up" and "Down" to all base syst names in a given syst list
         def append_up_down_to_sys_base(sys_lst_in):
