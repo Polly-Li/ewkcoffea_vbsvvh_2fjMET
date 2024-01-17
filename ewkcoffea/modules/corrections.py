@@ -6,7 +6,6 @@ import awkward as ak
 from coffea import lookup_tools
 
 from ewkcoffea.modules.paths import ewkcoffea_path
-from topcoffea.modules.paths import topcoffea_path
 
 
 extLepSF = lookup_tools.extractor()
