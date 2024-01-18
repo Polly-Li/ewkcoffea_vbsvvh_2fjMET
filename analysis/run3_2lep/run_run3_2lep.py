@@ -333,7 +333,7 @@ if __name__ == '__main__':
         out_pkl_file_name_np = os.path.join(outpath,outname+"_np.pkl.gz")
         #ddp = DataDrivenProducer(out_pkl_file,out_pkl_file_name_np)
         print(f"Saving output in {out_pkl_file_name_np}...")
-        ddp.dumpToPickle()
+        #ddp.dumpToPickle()
         print("Done!")
         # Run the renorm fact envelope calculation
         if do_renormfact_envelope:
