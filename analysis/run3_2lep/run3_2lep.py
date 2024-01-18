@@ -7,32 +7,21 @@ import hist
 from hist import axis
 from coffea.analysis_tools import PackedSelection
 from coffea.lumi_tools import LumiMask
-import csv
 import pandas as pd
 from topcoffea.modules.paths import topcoffea_path
 import topcoffea.modules.event_selection as es_tc
-import topcoffea.modules.object_selection as os_tc
-
 from ewkcoffea.modules.paths import ewkcoffea_path as ewkcoffea_path
 import ewkcoffea.modules.selection_Run3_2Lep as selRun3_2Lep
 import ewkcoffea.modules.objects_Run3_2Lep as objRun3_2Lep
-
 from topcoffea.modules.get_param_from_jsons import GetParam
 get_tc_param = GetParam(topcoffea_path("params/params.json"))
 get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
 
-##################################################################
-#################################################################
-
-
 class AnalysisProcessor(processor.ProcessorABC):
-
     def __init__(self, samples, wc_names_lst=[], hist_lst=None, ecut_threshold=None, do_errors=False, do_systematics=False, split_by_lepton_flavor=False, skip_signal_regions=False, skip_control_regions=False, muonSyst='nominal', dtype=np.float32):
-
         self._samples = samples
         self._wc_names_lst = wc_names_lst
         self._dtype = dtype
-
         # Create the histograms
         self._dense_axes_dict = {
             "mLL": axis.Regular(180, 0, 160, name="mLL", label="mLL for sf Channel"),
@@ -72,15 +61,13 @@ class AnalysisProcessor(processor.ProcessorABC):
             "phi_e": axis.Regular(180, -3.1416, 3.1416, name="phi_e", label="phi for electron"),
             "phi_0": axis.Regular(180, -3.1416, 3.1416, name="phi_0", label="phi for leading sf lep"),
             "phi_1": axis.Regular(180, -3.1416, 3.1416, name="phi_1", label="phi for subleading sf lep"),
-#            "nPU": axis.Regular(100, 0, 100, name="nPU",   label="nPU"),
-#            "nTrueInt": axis.Regular(100, 0, 100, name="nTrueInt",   label="nTrueInt"),
             "npvs": axis.Regular(70, 0.5, 70.5, name="npvs",   label="NPVS"),
             "npvsGood": axis.Regular(70, 0.5, 70.5, name="npvsGood",   label="NPVS Good"),
         }
-        
+
         # Set the list of hists to fill
         if hist_lst is None:
-            self._hist_lst = list(self._dense_axes_dict.keys()) 
+            self._hist_lst = list(self._dense_axes_dict.keys())
         else:
             # Otherwise, just fill the specified subset of hists
             for hist_to_include in hist_lst:
@@ -90,7 +77,6 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Set the energy threshold to cut on
         self._ecut_threshold = ecut_threshold
-
 
         # Set the booleans
         self._do_errors = do_errors # Whether to calculate and store the w**2 coefficients
@@ -108,7 +94,6 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Dataset parameters
         dataset = events.metadata["dataset"]
-
         isData             = self._samples[dataset]["isData"]
         histAxisName       = self._samples[dataset]["histAxisName"]
         year               = self._samples[dataset]["year"]
@@ -163,7 +148,6 @@ class AnalysisProcessor(processor.ProcessorABC):
                     continue  # Skip MuonEG when the dataset is Muon
                 dataset = d
 
-
         # Initialize objects
         met  = events.MET
         pv  = events.PV
@@ -191,7 +175,6 @@ class AnalysisProcessor(processor.ProcessorABC):
             raise ValueError(f"Error: Unknown year \"{year}\".")
         lumi_mask = LumiMask(golden_json_path)(events.run,events.luminosityBlock)
 
-
         ################### Object Selections ####################
 
         # Get the pre-selected electrons and sort by PT
@@ -209,8 +192,8 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Create a List of Leptons from the Muons and Electrons
         l_Run3_2Lep_t = ak.with_name(ak.concatenate([ele_Run3_2Lep_t,mu_Run3_2Lep_t],axis=1),'PtEtaPhiMCandidate')
         l_Run3_2Lep_t = l_Run3_2Lep_t[ak.argsort(l_Run3_2Lep_t.pt, axis=-1,ascending=False)] # Sort by pt
-        
-        # For Run3 2Lep: Get Leading Lep, Mu, and Ele
+
+        # Get Leading Lep, Mu, and Ele
         l_Run3_2Lep_t_padded = ak.pad_none(l_Run3_2Lep_t, 2)
         mu_Run3_2Lep_t_padded = ak.pad_none(mu_Run3_2Lep_t, 1)
         ele_Run3_2Lep_t_padded = ak.pad_none(ele_Run3_2Lep_t, 1)
@@ -220,6 +203,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         nleps = ak.num(l_Run3_2Lep_t)
         mu0 = mu_Run3_2Lep_t_padded[:,0]
         ele0 = ele_Run3_2Lep_t_padded[:,0]
+
         #################### Jet selection ######################
 
         # Do the object selection for the Run3 jets
@@ -227,14 +211,11 @@ class AnalysisProcessor(processor.ProcessorABC):
         jets["cleaned_jets"] = (jets_cleaned_mask)
         jets_cleaned = jets[jets.cleaned_jets]
 
-
         jets_presl_mask = objRun3_2Lep.is_presel_Run3_2Lep_jets(jets_cleaned)
         jets_cleaned["is_jets_for_Run3_2Lep"] = (jets_presl_mask)
         jets_Run3_2Lep = jets_cleaned[jets_cleaned.is_jets_for_Run3_2Lep]
         jets_Run3_2Lep = jets_Run3_2Lep[ak.argsort(jets_Run3_2Lep.pt, axis=-1,ascending=False)] # Sort by pt
-        
         njets = ak.num(jets_Run3_2Lep)
-
 
         #Do Some B-Tagging
 
@@ -247,13 +228,11 @@ class AnalysisProcessor(processor.ProcessorABC):
         nbtagsl = ak.num(jets_Run3_2Lep[isBtagJetsLoose])
         nbtagsm = ak.num(jets_Run3_2Lep[isBtagJetsMedium])
 
-
         jets_Run3_2Lep_padded = ak.pad_none(jets_Run3_2Lep, 2)
         jet0 = jets_Run3_2Lep_padded[:,0]
         jet1 = jets_Run3_2Lep_padded[:,1]
 
         selRun3_2Lep.addjetispresent_Run3_2Lep(jet0, jet1, jets_Run3_2Lep)
-
 
         # Do the object selection for the Run3  muons
         ######### Systematics ###########
@@ -263,23 +242,23 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         weights_obj_base = coffea.analysis_tools.Weights(len(events),storeIndividual=True)
         if not isData:
-            ######Pileup Start########
             npu = pileup.nTrueInt
             pu_weights = []
             if year == "2022":
-                df = pd.read_csv('PU_Files/PU_Weights_2022EE/puWeights.csv')
+                pu_path = ewkcoffea_path("data/run3_pu/pu_2022/puWeights.csv")
+                df = pd.read_csv(pu_path)
                 for value in npu:
                     npu_value = min(value, 80)
                     ratio = df[df['npu'] == npu_value]['ratio'].iloc[0]
                     pu_weights.append(ratio)
             if year == "2022EE":
-                df = pd.read_csv('PU_Files/PU_Weights_2022EE/puWeights.csv')
+                pu_path = ewkcoffea_path("data/run3_pu/pu_2022EE/puWeights.csv")
+                df = pd.read_csv(pu_path)
                 for value in npu:
                     value = int(value)
                     npu_value = min(value, 80)
                     ratio = df[df['npu'] == npu_value]['ratio'].iloc[0]
                     pu_weights.append(ratio)
-            #####Pileup End###########
             genw = events["genWeight"]
             lumi = 1000.0*get_tc_param(f"lumi_{year}")
             weights_obj_base.add("norm",((xsec/sow)*genw*lumi*pu_weights))
@@ -296,7 +275,6 @@ class AnalysisProcessor(processor.ProcessorABC):
             selRun3_2Lep.add2lmask_Run3_2Lep(events, year, isData)
             selRun3_2Lep.addjetmask_Run3_2Lep(events, year, isData)
             selRun3_2Lep.addmetmask_Run3_2Lep(events, year, isData)
-
 
             ######### Masks we need for the selection ##########
             # Pass trigger mask
@@ -324,7 +302,6 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "lep_chan_lst" : ["2l_sf_mumu", "2l_sf_ee", "2l_of", "2l_of_btag"],
             }
 
-
             ######### Fill histos #########
             hout = {}
 
@@ -347,17 +324,10 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "dz1": l1.dz,
                     "met": met.pt,
                     "phi_met": met.phi,
-#                    "eta_jet0": jet0.eta[jet0['has1jet']],
-#                    "pt_jet0": jet0.pt[jet0['has1jet']],
-#                    "eta_jet1": eta_jet1,
-#                    "pt_jet1": pt_jet1,
-                    "phi_met": met.phi,
-#                    "phi_jet0": phi_jet0,
-#                    "phi_jet1": phi_jet1,
                     "phi_0": l0.phi,
-                    "phi_1": l1.phi, 
-                    "npvs": pv.npvs, 
-                    "npvsGood": pv.npvsGood, 
+                    "phi_1": l1.phi,
+                    "npvs": pv.npvs,
+                    "npvsGood": pv.npvsGood,
                 },
                 "2l_sf_ee" : {
                     "nleps" : nleps,
@@ -377,16 +347,10 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "dz1": l1.dz,
                     "met": met.pt,
                     "phi_met": met.phi,
-#                    "eta_jet0": eta_jet0,
-#                    "pt_jet0": pt_jet0,
-#                    "eta_jet1": eta_jet1,
-#                    "pt_jet1": pt_jet1,
-#                    "phi_jet0": phi_jet0,
-#                    "phi_jet1": phi_jet1,
                     "phi_0": l0.phi,
-                    "phi_1": l1.phi, 
-                    "npvs": pv.npvs, 
-                    "npvsGood": pv.npvsGood, 
+                    "phi_1": l1.phi,
+                    "npvs": pv.npvs,
+                    "npvsGood": pv.npvsGood,
                 },
                 "2l_of" : {
                     "nleps" : nleps,
@@ -414,8 +378,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "phi_jet1": jet1.phi,
                     "phi_mu": mu0.phi,
                     "phi_e": ele0.phi,
-                    "npvs": pv.npvs, 
-                    "npvsGood": pv.npvsGood, 
+                    "npvs": pv.npvs,
+                    "npvsGood": pv.npvsGood,
                 },
                 "2l_of_btag" : {
                     "nleps" : nleps,
@@ -437,14 +401,11 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "phi_met": met.phi,
                     "eta_jet0": jet0.eta,
                     "pt_jet0": jet0.pt,
-#                    "eta_jet1": eta_jet1,
-#                    "pt_jet1": pt_jet1,
                     "phi_jet0": jet0.phi,
-#                    "phi_jet1": phi_jet1,
                     "phi_mu": mu0.phi,
                     "phi_e": ele0.phi,
-                    "npvs": pv.npvs, 
-                    "npvsGood": pv.npvsGood, 
+                    "npvs": pv.npvs,
+                    "npvsGood": pv.npvsGood,
                 },
             }
 
@@ -463,15 +424,11 @@ class AnalysisProcessor(processor.ProcessorABC):
                         # Decide if we are filling this hist with weight or raw event counts
                         #if dense_axis_name.endswith("_counts"): weights = events.nom
                         weights = weights_obj_base.partial_weight(include=["norm"])
-    
+
                         # Make the cuts mask
                         cuts_lst = [sr_name]
                         if isData: cuts_lst.append("is_good_lumi") # Apply golden json requirements if this is data
                         all_cuts_mask = selections.all(*cuts_lst)
-                        
-#                        if 12 in (pv.npvs[all_cuts_mask]):
-#                            print(pv.npvs[all_cuts_mask])
-                        
                         # Fill the histos
                         axes_fill_info_dict = {
                             dense_axis_name : dense_axis_vals[all_cuts_mask],
@@ -484,4 +441,3 @@ class AnalysisProcessor(processor.ProcessorABC):
 
     def postprocess(self, accumulator):
         return accumulator
-

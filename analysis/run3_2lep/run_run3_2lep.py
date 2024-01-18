@@ -1,4 +1,4 @@
-import Run3_2Lep
+import run3_2lep
 import argparse
 import json
 import time
@@ -220,7 +220,7 @@ if __name__ == '__main__':
     else:
         print('No Wilson coefficients specified')
 
-    processor_instance = Run3_2Lep.AnalysisProcessor(samplesdict,wc_lst,hist_lst,ecut_threshold,do_errors,do_systs,split_lep_flavor,skip_sr,skip_cr)
+    processor_instance = run3_2lep.AnalysisProcessor(samplesdict,wc_lst,hist_lst,ecut_threshold,do_errors,do_systs,split_lep_flavor,skip_sr,skip_cr)
 
     if executor == "work_queue":
         executor_args = {
@@ -236,7 +236,7 @@ if __name__ == '__main__':
 
             #'environment_file': remote_environment.get_environment(),
             'environment_file': remote_environment.get_environment(unstaged='ignore'),
-            'extra_input_files': ["Run3_2Lep.py"],
+            'extra_input_files': ["run3_2lep.py"],
 
             'retries': 5,
 
@@ -331,13 +331,13 @@ if __name__ == '__main__':
     if do_np:
         print("\nDoing the nonprompt estimation...")
         out_pkl_file_name_np = os.path.join(outpath,outname+"_np.pkl.gz")
-        ddp = DataDrivenProducer(out_pkl_file,out_pkl_file_name_np)
+        #ddp = DataDrivenProducer(out_pkl_file,out_pkl_file_name_np)
         print(f"Saving output in {out_pkl_file_name_np}...")
         ddp.dumpToPickle()
         print("Done!")
         # Run the renorm fact envelope calculation
         if do_renormfact_envelope:
             print("\nDoing the renorm. fact. envelope calculation...")
-            dict_of_histos = utils.get_hist_from_pkl(out_pkl_file_name_np,allow_empty=False)
-            dict_of_histos_after_applying_envelope = get_renormfact_envelope(dict_of_histos)
-            utils.dump_to_pkl(out_pkl_file_name_np,dict_of_histos_after_applying_envelope)
+            #dict_of_histos = utils.get_hist_from_pkl(out_pkl_file_name_np,allow_empty=False)
+            #dict_of_histos_after_applying_envelope = get_renormfact_envelope(dict_of_histos)
+            #utils.dump_to_pkl(out_pkl_file_name_np,dict_of_histos_after_applying_envelope)

@@ -1,7 +1,4 @@
-import numpy as np
 import awkward as ak
-import xgboost as xgb
-from topcoffea.modules.paths import topcoffea_path
 from ewkcoffea.modules.paths import ewkcoffea_path
 from topcoffea.modules.get_param_from_jsons import GetParam as get_param
 get_param = get_param(ewkcoffea_path("params/params.json"))
@@ -19,7 +16,7 @@ def is_presel_Run3_2Lep_ele(ele):
         (abs(ele.dxy)                          <  get_param("Run3_2Lep_pres_e_dxy")) &
         (abs(ele.dz)                           <  get_param("Run3_2Lep_pres_e_dz")) &
         (ele.pfRelIso03_all                    <  get_param("Run3_2Lep_pres_e_pfRelIso_all")) &
-        (ele.mvaNoIso_WP90) & 
+        (ele.mvaNoIso_WP90) &
         ((abs(ele.eta) < 1.444) | (abs(ele.eta) > 1.566))
     )
     return mask
@@ -40,9 +37,6 @@ def is_presel_Run3_2Lep_mu(mu):
 # Run3 2Lep preselection for jets
 def is_presel_Run3_2Lep_jets(jets):
     mask = (
-        (jets.pt               >  get_param("Run3_2Lep_pres_jets_pt")) 
+        (jets.pt               >  get_param("Run3_2Lep_pres_jets_pt"))
     )
     return mask
-
-
-

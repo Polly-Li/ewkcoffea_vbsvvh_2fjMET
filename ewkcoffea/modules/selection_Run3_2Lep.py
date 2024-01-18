@@ -1,7 +1,7 @@
 import numpy as np
 import awkward as ak
-from mt2 import mt2
-from coffea.nanoevents.methods import vector
+
+
 
 import topcoffea.modules.event_selection as tc_es
 
@@ -63,7 +63,6 @@ exclude_dict = {
     },
 }
 
- 
 #------------------------------------------------------------------------------------------------------------------------------
 # Apply trigger matching requirements to make sure pt is above online thresholds
 def trg_matching(events,year):
@@ -110,7 +109,7 @@ def add2lmask_Run3_2Lep(events, year, isData):
 
     # Filters
     filter_flags = events.Flag
-    filters = filter_flags.goodVertices & filter_flags.globalSuperTightHalo2016Filter & filter_flags.HBHENoiseFilter & filter_flags.HBHENoiseIsoFilter & filter_flags.EcalDeadCellTriggerPrimitiveFilter & filter_flags.BadPFMuonFilter & filter_flags.ecalBadCalibFilter 
+    filters = filter_flags.goodVertices & filter_flags.globalSuperTightHalo2016Filter & filter_flags.HBHENoiseFilter & filter_flags.HBHENoiseIsoFilter & filter_flags.EcalDeadCellTriggerPrimitiveFilter & filter_flags.BadPFMuonFilter & filter_flags.ecalBadCalibFilter
 
     # Lep multiplicity
     nlep_2 = (ak.num(leps) == 2)

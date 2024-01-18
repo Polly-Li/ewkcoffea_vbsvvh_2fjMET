@@ -3,7 +3,6 @@ import argparse
 import gzip
 import sys
 import pickle
-import ROOT as rt
 
 parser = argparse.ArgumentParser(description='You can customize your run')
 parser.add_argument('--prefix', '-r'     , nargs='?', default='', help = 'Prefix to look for the files')
@@ -19,7 +18,6 @@ if len(outname) == 0:
     outname = [item.replace('.pkl.gz', '') for item in pickleFiles]
 print(outname)
 
-
 #Do some basic input checks
 print("Input Filie(s): ",pickleFiles)
 if prefix != '':
@@ -29,7 +27,6 @@ if (len(pickleFiles) < 1):
     sys.exit()
 if len(pickleFiles) != len(outname):
     print("ERROR: Input and Output File lengths do not match!")
-
 
 #Create the file path(s)
 file_path = [prefix + item for item in pickleFiles]
@@ -44,5 +41,4 @@ for i in range(len(pickleFiles)):
     with uproot.recreate(f"{outname[i]}.root") as root_file:
         for hist_name in hist_lst:
             pickle_hist = data[hist_name]
-            root_file[f"{hist_name}"] = pickle_hist 
-
+            root_file[f"{hist_name}"] = pickle_hist
