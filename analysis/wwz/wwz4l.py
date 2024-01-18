@@ -27,7 +27,6 @@ get_tc_param = GetParam(topcoffea_path("params/params.json"))
 get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
 
 
-
 class AnalysisProcessor(processor.ProcessorABC):
 
     def __init__(self, samples, wc_names_lst=[], hist_lst=None, ecut_threshold=None, do_errors=False, do_systematics=False, split_by_lepton_flavor=False, skip_signal_regions=False, skip_control_regions=False, muonSyst='nominal', dtype=np.float32):
@@ -328,8 +327,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             "btagSFlight_correlated",f"btagSFlight_uncorrelated_{year}",
             "btagSFbc_correlated",   f"btagSFbc_uncorrelated_{year}",
         ]
-        wgt_correction_syst_lst = btag_systs + ["lepSF_elec", "lepSF_muon"]
-
+        wgt_correction_syst_lst = btag_systs + ["lepSF_elec", "lepSF_muon", "PreFiring", "PU"]
         # Append "Up" and "Down" to all base syst names in a given syst list
         def append_up_down_to_sys_base(sys_lst_in):
             sys_lst_out = []
@@ -340,6 +338,9 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         wgt_correction_syst_lst = append_up_down_to_sys_base(wgt_correction_syst_lst)
 
+        if not isData:
+            weights_obj_base.add('PreFiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
+            weights_obj_base.add('PU', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
 
@@ -422,8 +423,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             ######### Apply SFs #########
 
             if not isData:
+
+                # Does this have to come after jet stuff? TODO
                 weights_obj_base_for_kinematic_syst.add("lepSF_muon", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
                 weights_obj_base_for_kinematic_syst.add("lepSF_elec", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
+
 
                 ### OLD implimentation from TOP-22-006
                 ## Btag SF following 1a) in https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagSFMethods
@@ -745,7 +749,6 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "nleps" : nleps,
                 "njets" : njets,
                 "nbtagsl" : nbtagsl,
-                "nbtagsm" : nbtagsm,
 
                 "nleps_counts" : nleps,
                 "njets_counts" : njets,
