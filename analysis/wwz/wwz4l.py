@@ -145,7 +145,7 @@ class AnalysisProcessor(processor.ProcessorABC):
     # Main function: run on a given dataset
     def process(self, events):
 
-        TMPdosys = 1 # Temporary standin flag for now (eventualy just use self._do_systematics)
+        TMPdosys = 0 # Temporary standin flag for now (eventualy just use self._do_systematics)
 
         # Dataset parameters
         dataset = events.metadata["dataset"]
@@ -210,57 +210,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             raise ValueError(f"Error: Unknown year \"{year}\".")
         lumi_mask = LumiMask(golden_json_path)(events.run,events.luminosityBlock)
 
-        #########################################################
-        ### START top22006 lep obj sel ###
-        #import topeft.modules.object_selection as te_os
-        #from topeft.modules.corrections import AttachMuonSF, AttachElectronSF
-
-        #ele["idEmu"] = te_os.ttH_idEmu_cuts_E3(ele.hoe, ele.eta, ele.deltaEtaSC, ele.eInvMinusPInv, ele.sieie)
-        #ele["conept"] = te_os.coneptElec(ele.pt, ele.mvaTTHUL, ele.jetRelIso)
-        #mu["conept"] = te_os.coneptMuon(mu.pt, mu.mvaTTHUL, mu.jetRelIso, mu.mediumId)
-        #ele["btagDeepFlavB"] = ak.fill_none(ele.matched_jet.btagDeepFlavB, -99)
-        #mu["btagDeepFlavB"] = ak.fill_none(mu.matched_jet.btagDeepFlavB, -99)
-        #if not isData:
-        #    ele["gen_pdgId"] = ak.fill_none(ele.matched_gen.pdgId, 0)
-        #    mu["gen_pdgId"] = ak.fill_none(mu.matched_gen.pdgId, 0)
-
-        #ele["isPres"] = te_os.isPresElec(ele.pt, ele.eta, ele.dxy, ele.dz, ele.miniPFRelIso_all, ele.sip3d, getattr(ele,"mvaFall17V2noIso_WPL"))
-        #ele["isLooseE"] = te_os.isLooseElec(ele.miniPFRelIso_all,ele.sip3d,ele.lostHits)
-        #ele["isFO"] = te_os.isFOElec(ele.pt, ele.conept, ele.btagDeepFlavB, ele.idEmu, ele.convVeto, ele.lostHits, ele.mvaTTHUL, ele.jetRelIso, ele.mvaFall17V2noIso_WP90, year)
-        #ele["isTightLep"] = te_os.tightSelElec(ele.isFO, ele.mvaTTHUL)
-
-        #mu["isPres"] = te_os.isPresMuon(mu.dxy, mu.dz, mu.sip3d, mu.eta, mu.pt, mu.miniPFRelIso_all)
-        #mu["isLooseM"] = te_os.isLooseMuon(mu.miniPFRelIso_all,mu.sip3d,mu.looseId)
-        #mu["isFO"] = te_os.isFOMuon(mu.pt, mu.conept, mu.btagDeepFlavB, mu.mvaTTHUL, mu.jetRelIso, year)
-        #mu["isTightLep"]= te_os.tightSelMuon(mu.isFO, mu.mediumId, mu.mvaTTHUL)
-
-        #m_loose = mu[mu.isPres & mu.isLooseM]
-        #e_loose = ele[ele.isPres & ele.isLooseE]
-        #l_loose = ak.with_name(ak.concatenate([e_loose, m_loose], axis=1), 'PtEtaPhiMCandidate')
-
-        ## Build FO collection
-        #m_fo = mu[mu.isPres & mu.isLooseM & mu.isFO]
-        #e_fo = ele[ele.isPres & ele.isLooseE & ele.isFO]
-
-        ## Attach the lepton SFs to the electron and muons collections
-        #AttachElectronSF(e_fo,year=year)
-        #AttachMuonSF(m_fo,year=year)
-
-        ## Attach per lepton fake rates
-        #m_fo['convVeto'] = ak.ones_like(m_fo.charge)
-        #m_fo['lostHits'] = ak.zeros_like(m_fo.charge)
-        #l_fo = ak.with_name(ak.concatenate([e_fo, m_fo], axis=1), 'PtEtaPhiMCandidate')
-        #l_fo_conept_sorted = l_fo[ak.argsort(l_fo.conept, axis=-1,ascending=False)]
-
-        #l_wwz_t = l_fo_conept_sorted[l_fo_conept_sorted.isTightLep]
-        #l_wwz_t = l_wwz_t[ak.argsort(l_wwz_t.pt, axis=-1,ascending=False)] # Sort by pt
-
-        ### END top22006 obj sel ###
-        ########################################################
 
         ################### Lepton selection ####################
 
-        #'''
         # Do the object selection for the WWZ eleectrons
         ele_presl_mask = os_ec.is_presel_wwz_ele(ele,tight=True)
         ele["topmva"] = os_ec.get_topmva_score_ele(events, year)
@@ -282,7 +234,6 @@ class AnalysisProcessor(processor.ProcessorABC):
         l_wwz_t = ak.with_name(ak.concatenate([ele_wwz_t,mu_wwz_t],axis=1),'PtEtaPhiMCandidate')
         l_wwz_t = l_wwz_t[ak.argsort(l_wwz_t.pt, axis=-1,ascending=False)] # Sort by pt
 
-        #'''
 
         # For WWZ: Compute pair invariant masses
         llpairs_wwz = ak.combinations(l_wwz_t, 2, fields=["l0","l1"])
@@ -306,6 +257,10 @@ class AnalysisProcessor(processor.ProcessorABC):
         l3 = l_wwz_t_padded[:,3]
 
         nleps = ak.num(l_wwz_t)
+
+        # Put njets and l_fo_conept_sorted into events and get 4l event selection mask
+        events["l_wwz_t"] = l_wwz_t
+        es_ec.add4lmask_wwz(events, year, isData, histAxisName)
 
 
         ######### Normalization and weights ###########
@@ -339,8 +294,13 @@ class AnalysisProcessor(processor.ProcessorABC):
         wgt_correction_syst_lst = append_up_down_to_sys_base(wgt_correction_syst_lst)
 
         if not isData:
+
             weights_obj_base.add('PreFiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
             weights_obj_base.add('PU', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
+
+            weights_obj_base.add("lepSF_muon", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
+            weights_obj_base.add("lepSF_elec", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
+
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
 
@@ -360,17 +320,10 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             #################### Jets ####################
 
-            # Jet cleaning, before any jet selection
-            ##vetos_tocleanjets = ak.with_name( ak.concatenate([tau, l_fo], axis=1), "PtEtaPhiMCandidate")
-            #vetos_tocleanjets = ak.with_name( l_wwz_t, "PtEtaPhiMCandidate")
-            #tmp = ak.cartesian([ak.local_index(jets.pt), vetos_tocleanjets.jetIdx], nested=True)
-            #cleanedJets = jets[~ak.any(tmp.slot0 == tmp.slot1, axis=-1)] # this line should go before *any selection*, otherwise lep.jetIdx is not aligned with the jet index
-
-            # Clean with dr for now
+            # Clean with dr (though another option is to use jetIdx)
             cleanedJets = os_ec.get_cleaned_collection(l_wwz_t,jets)
 
             # Selecting jets and cleaning them
-            # NOTE: The jet id cut is commented for now in objects.py for the sync
             jetptname = "pt_nom" if hasattr(cleanedJets, "pt_nom") else "pt"
             cleanedJets["is_good"] = os_tc.is_tight_jet(getattr(cleanedJets, jetptname), cleanedJets.eta, cleanedJets.jetId, pt_cut=20., eta_cut=get_ec_param("wwz_eta_j_cut"), id_cut=get_ec_param("wwz_jet_id_cut"))
             goodJets = cleanedJets[cleanedJets.is_good]
@@ -412,32 +365,10 @@ class AnalysisProcessor(processor.ProcessorABC):
             isNotBtagJetsMedium = np.invert(isBtagJetsMedium)
             nbtagsm = ak.num(goodJets[isBtagJetsMedium])
 
-            #################### Add variables into event object so that they persist ####################
-
-            # Put njets and l_fo_conept_sorted into events
-            events["njets"] = njets
-            events["l_wwz_t"] = l_wwz_t
-
-            es_ec.add4lmask_wwz(events, year, isData, histAxisName)
 
             ######### Apply SFs #########
 
             if not isData:
-
-                # Does this have to come after jet stuff? TODO
-                weights_obj_base_for_kinematic_syst.add("lepSF_muon", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
-                weights_obj_base_for_kinematic_syst.add("lepSF_elec", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
-
-
-                ### OLD implimentation from TOP-22-006
-                ## Btag SF following 1a) in https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagSFMethods
-                #bJetSF   = cor_ec.GetBTagSF(goodJets, year, 'LOOSE')
-                ###bJetEff  = cor_ec.GetBtagEff(goodJets, year, 'loose') # Need for now
-                #bJetEff_data   = bJetEff*bJetSF
-                #pMC     = ak.prod(bJetEff[isBtagJetsLoose], axis=-1) * ak.prod((1-bJetEff[isNotBtagJetsLoose]), axis=-1)
-                #pMC     = ak.where(pMC==0,1,pMC) # removeing zeroes from denominator...
-                #pData   = ak.prod(bJetEff_data[isBtagJetsLoose], axis=-1) * ak.prod((1-bJetEff_data[isNotBtagJetsLoose]), axis=-1)
-                #weights_obj_base_for_kinematic_syst.add("btagSF", pData/pMC)
 
                 ### Evaluate btag weights ###
                 jets_light = goodJets[goodJets.hadronFlavour==0]
