@@ -27,6 +27,15 @@ get_tc_param = GetParam(topcoffea_path("params/params.json"))
 get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
 
 
+# Small helper function for creating the list of systematics
+# Append "Up" and "Down" to all base strings in a given syst list
+def append_up_down_to_sys_base(sys_lst_in):
+    sys_lst_out = []
+    for s in sys_lst_in:
+        sys_lst_out.append(f"{s}Up")
+        sys_lst_out.append(f"{s}Down")
+    return sys_lst_out
+
 class AnalysisProcessor(processor.ProcessorABC):
 
     def __init__(self, samples, wc_names_lst=[], hist_lst=None, ecut_threshold=None, do_errors=False, do_systematics=False, split_by_lepton_flavor=False, skip_signal_regions=False, skip_control_regions=False, muonSyst='nominal', dtype=np.float32):
@@ -323,19 +332,10 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
         # Set up the list of systematics that are handled via event weight variations
-        btag_systs = [
-            "btagSFlight_correlated",f"btagSFlight_uncorrelated_{year}",
-            "btagSFbc_correlated",   f"btagSFbc_uncorrelated_{year}",
+        wgt_correction_syst_lst = [
+            "btagSFlight_correlated", "btagSFbc_correlated", f"btagSFlight_uncorrelated_{year}", f"btagSFbc_uncorrelated_{year}",
+            "lepSF_elec", "lepSF_muon", "PreFiring", "PU"
         ]
-        wgt_correction_syst_lst = btag_systs + ["lepSF_elec", "lepSF_muon", "PreFiring", "PU"]
-        # Append "Up" and "Down" to all base syst names in a given syst list
-        def append_up_down_to_sys_base(sys_lst_in):
-            sys_lst_out = []
-            for s in sys_lst_in:
-                sys_lst_out.append(f"{s}Up")
-                sys_lst_out.append(f"{s}Down")
-            return sys_lst_out
-
         wgt_correction_syst_lst = append_up_down_to_sys_base(wgt_correction_syst_lst)
 
         if not isData:
@@ -850,6 +850,9 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Loop over the hists we want to fill
             for dense_axis_name, dense_axis_vals in dense_variables_dict.items():
+                if dense_axis_name not in self._hist_lst:
+                    print(f"Skipping \"{dense_axis_name}\", it is not in the list of hists to include.")
+                    continue
                 #print("\ndense_axis_name,vals",dense_axis_name)
                 #print("dense_axis_name,vals",dense_axis_vals)
 
