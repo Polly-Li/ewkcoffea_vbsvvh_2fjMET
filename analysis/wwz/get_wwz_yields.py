@@ -663,7 +663,7 @@ def make_syst_fig(histo_mc,mc_up_arr,mc_do_arr,syst,histo_data=None,title="test"
 def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
 
     for var_name in histo_dict.keys():
-        print(f"\n{var_name}")
+        #print(f"\n{var_name}")
         if var_name not in TMP_VAR_LST: continue
         histo = histo_dict[var_name]
 
@@ -699,18 +699,22 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
             data_nom = merge_overflow(histo_grouped_data[{"systematic":"nominal"}])
 
             for syst in syst_var_lst:
+                #if "lepSF" not in syst: continue
 
                 # Skip the variations that don't apply (TODO: why are these in the hist to begin with??)
                 if year == "UL16APV": blacklist_years = ["2016","2017","2018"]
                 if year == "UL16": blacklist_years = ["2016APV","2017","2018"]
                 if year == "UL17": blacklist_years = ["2016APV","2016","2018"]
                 if year == "UL18": blacklist_years = ["2016APV","2016","2017"]
+                if year == "all": blacklist_years = []
                 skip = False
                 for y in blacklist_years:
                     if syst.endswith(y):
                         skip = True
                 if skip: continue
-                print(syst)
+
+                if year == "all": yeartag = "FullR2"
+                else: yeartag = year
 
                 mc_up     = merge_overflow(histo_grouped_mc[{"systematic":f"{syst}Up"}])
                 mc_down   = merge_overflow(histo_grouped_mc[{"systematic":f"{syst}Down"}])
@@ -720,16 +724,20 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 mc_up_arr = mc_up[{"process_grp":sum}].values()
                 mc_down_arr = mc_down[{"process_grp":sum}].values()
 
+                #if var_name != "nleps": continue
+                #n = sum(sum(mc_nom.values()))
+                #u = sum(mc_up_arr)
                 #print("\n",syst)
-                #print("nom",sum(mc_nom.values()))
-                #print("up",mc_up_arr)
-                #print("up",mc_down_arr)
+                #print("nom",n)
+                #print("up",u)
+                #print("err",abs(n-u)/n)
+                #continue
 
-                fig = make_syst_fig(mc_nom,mc_up_arr,mc_down_arr,syst,title=f"{var_name}_{syst}")
+                fig = make_syst_fig(mc_nom,mc_up_arr,mc_down_arr,syst,title=f"{var_name}_{yeartag}_{cat}_{syst}")
 
-                out_path_for_this_cat = os.path.join(save_dir_path,os.path.join(year,cat))
+                out_path_for_this_cat = os.path.join(save_dir_path,os.path.join(yeartag,cat))
                 if not os.path.exists(out_path_for_this_cat): os.makedirs(out_path_for_this_cat)
-                fig.savefig(f"{out_path_for_this_cat}/{var_name}_{syst}.png")
+                fig.savefig(f"{out_path_for_this_cat}/{var_name}_{yeartag}_{cat}_{syst}.png")
 
             make_html(os.path.join(os.getcwd(),out_path_for_this_cat))
 
@@ -962,8 +970,8 @@ def main():
 
     # Make plots
     if args.make_plots:
-        #make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path)
-        make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year)
+        make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path)
+        #make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
 
 
 

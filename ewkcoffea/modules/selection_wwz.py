@@ -221,12 +221,12 @@ def add4lmask_wwz(events, year, isData, sample_name):
     #mask = (mask & prompt_mask)
 
     # SFs:
-    events['sf_4l_muon'] = leps_padded[:,0].sf_nom_3l_muon*leps_padded[:,1].sf_nom_3l_muon*leps_padded[:,2].sf_nom_3l_muon*leps_padded[:,3].sf_nom_3l_muon
-    events['sf_4l_elec'] = leps_padded[:,0].sf_nom_3l_elec*leps_padded[:,1].sf_nom_3l_elec*leps_padded[:,2].sf_nom_3l_elec*leps_padded[:,3].sf_nom_3l_elec
-    events['sf_4l_hi_muon'] = leps_padded[:,0].sf_hi_3l_muon*leps_padded[:,1].sf_hi_3l_muon*leps_padded[:,2].sf_hi_3l_muon*leps_padded[:,3].sf_hi_3l_muon
-    events['sf_4l_hi_elec'] = leps_padded[:,0].sf_hi_3l_elec*leps_padded[:,1].sf_hi_3l_elec*leps_padded[:,2].sf_hi_3l_elec*leps_padded[:,3].sf_hi_3l_elec
-    events['sf_4l_lo_muon'] = leps_padded[:,0].sf_lo_3l_muon*leps_padded[:,1].sf_lo_3l_muon*leps_padded[:,2].sf_lo_3l_muon*leps_padded[:,3].sf_lo_3l_muon
-    events['sf_4l_lo_elec'] = leps_padded[:,0].sf_lo_3l_elec*leps_padded[:,1].sf_lo_3l_elec*leps_padded[:,2].sf_lo_3l_elec*leps_padded[:,3].sf_lo_3l_elec
+    events['sf_4l_muon'] = leps_padded[:,0].sf_nom_muon*leps_padded[:,1].sf_nom_muon*leps_padded[:,2].sf_nom_muon*leps_padded[:,3].sf_nom_muon
+    events['sf_4l_elec'] = leps_padded[:,0].sf_nom_elec*leps_padded[:,1].sf_nom_elec*leps_padded[:,2].sf_nom_elec*leps_padded[:,3].sf_nom_elec
+    events['sf_4l_hi_muon'] = leps_padded[:,0].sf_hi_muon*leps_padded[:,1].sf_hi_muon*leps_padded[:,2].sf_hi_muon*leps_padded[:,3].sf_hi_muon
+    events['sf_4l_hi_elec'] = leps_padded[:,0].sf_hi_elec*leps_padded[:,1].sf_hi_elec*leps_padded[:,2].sf_hi_elec*leps_padded[:,3].sf_hi_elec
+    events['sf_4l_lo_muon'] = leps_padded[:,0].sf_lo_muon*leps_padded[:,1].sf_lo_muon*leps_padded[:,2].sf_lo_muon*leps_padded[:,3].sf_lo_muon
+    events['sf_4l_lo_elec'] = leps_padded[:,0].sf_lo_elec*leps_padded[:,1].sf_lo_elec*leps_padded[:,2].sf_lo_elec*leps_padded[:,3].sf_lo_elec
 
     events['is4lWWZ'] = ak.fill_none(mask,False)
 
