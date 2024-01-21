@@ -1,22 +1,32 @@
 {
-  "xsec": 0.0493,
-  "year": "2018",
-  "treeName": "Events",
-  "histAxisName": "UL18_TTZToLL_M_1to10",
-  "options": "",
-  "WCnames": [],
-  "files": [
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_3LepTau_4Lep/output_6.root",
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_3LepTau_4Lep/output_5.root",
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_3LepTau_4Lep/output_7.root",
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_3LepTau_4Lep/output_1.root",
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_3LepTau_4Lep/output_4.root",
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_3LepTau_4Lep/output_3.root",
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_3LepTau_4Lep/output_2.root"
-  ],
-  "nEvents": 84576,
-  "nGenEvents": 994000,
-  "nSumOfWeights": 53133.240523064014,
-  "isData": false,
-  "path": "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_3LepTau_4Lep"
+    "xsec": 0.0493,
+    "year": "2018",
+    "treeName": "Events",
+    "histAxisName": "UL18_TTZToLL_M_1to10",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_3LepTau_4Lep/output_6.root",
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_3LepTau_4Lep/output_5.root",
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_3LepTau_4Lep/output_7.root",
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_3LepTau_4Lep/output_1.root",
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_3LepTau_4Lep/output_4.root",
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_3LepTau_4Lep/output_3.root",
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_3LepTau_4Lep/output_2.root"
+    ],
+    "nEvents": 84576,
+    "nGenEvents": 994000,
+    "nSumOfWeights": 53133.240523064014,
+    "isData": false,
+    "path": "/store/user/kdownham/skimOutput/3LepTau_4Lep/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_3LepTau_4Lep",
+    "nSumOfLheWeights": [
+        59903.67471308142,
+        58756.60911700208,
+        57898.76092645365,
+        54494.01147981357,
+        52029.730104745635,
+        49286.50439505837,
+        47854.080410062015,
+        46650.90847903982
+    ]
 }

@@ -1,22 +1,33 @@
 {
-  "xsec": 12.178,
-  "year": "2016",
-  "treeName": "Events",
-  "histAxisName": "UL16_WWTo2L2Nu",
-  "options": "",
-  "WCnames": [],
-  "files": [
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_6.root",
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_5.root",
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_7.root",
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_1.root",
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_4.root",
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_3.root",
-    "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_2.root"
-  ],
-  "nEvents": 11470,
-  "nGenEvents": 2900000,
-  "nSumOfWeights": 32147079.59480001,
-  "isData": false,
-  "path": "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep"
+    "xsec": 12.178,
+    "year": "2016",
+    "treeName": "Events",
+    "histAxisName": "UL16_WWTo2L2Nu",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_6.root",
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_5.root",
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_7.root",
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_1.root",
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_4.root",
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_3.root",
+        "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep/output_2.root"
+    ],
+    "nEvents": 11470,
+    "nGenEvents": 2900000,
+    "nSumOfWeights": 32147079.59480001,
+    "isData": false,
+    "path": "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep",
+    "nSumOfLheWeights": [
+        32528781.102603998,
+        32924948.617177,
+        33249450.946297605,
+        31701758.212928,
+        32147946.27199998,
+        32510439.443344004,
+        31012907.981785994,
+        31498786.252368,
+        31894441.9275057
+    ]
 }

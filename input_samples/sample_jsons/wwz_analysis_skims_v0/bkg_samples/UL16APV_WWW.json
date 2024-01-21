@@ -20,5 +20,16 @@
     "nGenEvents": 71000,
     "nSumOfWeights": 15310.596232080004,
     "isData": false,
-    "path": "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_3LepTau_4Lep"
+    "path": "/store/user/kdownham/skimOutput/3LepTau_4Lep/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_3LepTau_4Lep",
+    "nSumOfLheWeights": [
+        16098.94353257021,
+        15892.903255939813,
+        15727.3262507176,
+        15496.507864836502,
+        15310.596232080004,
+        15157.272207613803,
+        14998.242319787583,
+        14828.976924452,
+        14685.863348964802
+    ]
 }
