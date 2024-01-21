@@ -353,6 +353,7 @@ def make_jsons_for_dict_of_samples(samples_dict,prefix,year,out_dir,on_das=False
             xsec_name = xsec_name,
             hist_axis_name = hist_axis_name,
             on_das = on_das,
+            include_lhe_wgts_arr = True,
         )
         out_name = sample_name+".json"
         if not os.path.exists(out_name):
