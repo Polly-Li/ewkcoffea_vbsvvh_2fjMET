@@ -145,8 +145,6 @@ class AnalysisProcessor(processor.ProcessorABC):
     # Main function: run on a given dataset
     def process(self, events):
 
-        TMPdosys = 0 # Temporary standin flag for now (eventualy just use self._do_systematics)
-
         # Dataset parameters
         dataset = events.metadata["dataset"]
 
@@ -155,33 +153,30 @@ class AnalysisProcessor(processor.ProcessorABC):
         year               = self._samples[dataset]["year"]
         xsec               = self._samples[dataset]["xsec"]
         sow                = self._samples[dataset]["nSumOfWeights"]
+        lhe_sow            = self._samples[dataset]["nSumOfLheWeights"]
 
         # Get up down weights from input dict
         if (self._do_systematics and not isData):
-            # Otherwise we have an NLO xsec, so for these systs we will have e.g. xsec_NLO*(N_pass_up/N_gen_up)
+            # This assumes we have an NLO xsec, so for these systs we will have e.g. xsec_NLO*(N_pass_up/N_gen_up)
             # Thus these systs should only affect acceptance and effeciency and shape
             # The uncty on xsec comes from NLO and is applied as a rate uncty in the text datacard
-            sow_ISRUp          = self._samples[dataset]["nSumOfWeights_ISRUp"          ]
-            sow_ISRDown        = self._samples[dataset]["nSumOfWeights_ISRDown"        ]
-            sow_FSRUp          = self._samples[dataset]["nSumOfWeights_FSRUp"          ]
-            sow_FSRDown        = self._samples[dataset]["nSumOfWeights_FSRDown"        ]
-            sow_renormUp       = self._samples[dataset]["nSumOfWeights_renormUp"       ]
-            sow_renormDown     = self._samples[dataset]["nSumOfWeights_renormDown"     ]
-            sow_factUp         = self._samples[dataset]["nSumOfWeights_factUp"         ]
-            sow_factDown       = self._samples[dataset]["nSumOfWeights_factDown"       ]
-            sow_renormfactUp   = self._samples[dataset]["nSumOfWeights_renormfactUp"   ]
-            sow_renormfactDown = self._samples[dataset]["nSumOfWeights_renormfactDown" ]
+            if len(lhe_sow) == 9:
+                sow_renormDown     = lhe_sow[1]
+                sow_factDown       = lhe_sow[3]
+                sow_factUp         = lhe_sow[5]
+                sow_renormUp       = lhe_sow[7]
+            elif len(lhe_sow) == 8:
+                sow_renormDown     = lhe_sow[1]
+                sow_factDown       = lhe_sow[3]
+                sow_factUp         = lhe_sow[4]
+                sow_renormUp       = lhe_sow[6]
+            else: raise Exception("ERROR: Unknown LHE weights length {len(lhe_sow)}")
         else:
-            sow_ISRUp          = -1
-            sow_ISRDown        = -1
-            sow_FSRUp          = -1
-            sow_FSRDown        = -1
             sow_renormUp       = -1
             sow_renormDown     = -1
             sow_factUp         = -1
             sow_factDown       = -1
-            sow_renormfactUp   = -1
-            sow_renormfactDown = -1
+
 
         datasets = ["SingleMuon", "SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG"]
         for d in datasets:
@@ -286,20 +281,33 @@ class AnalysisProcessor(processor.ProcessorABC):
             weights_obj_base.add("norm",(xsec/sow)*genw*lumi*sm_wgt)
 
 
-        # Set up the list of systematics that are handled via event weight variations
-        wgt_correction_syst_lst = [
-            "btagSFlight_correlated", "btagSFbc_correlated", f"btagSFlight_uncorrelated_{year}", f"btagSFbc_uncorrelated_{year}",
-            "lepSF_elec", "lepSF_muon", "PreFiring", "PU"
-        ]
-        wgt_correction_syst_lst = append_up_down_to_sys_base(wgt_correction_syst_lst)
+            # Scale weights
+            cor_tc.AttachPSWeights(events)
+            cor_tc.AttachScaleWeights(events)
+            # FSR/ISR weights
+            # For now only consider variations in the numerator
+            weights_obj_base.add('ISR', events.nom, events.ISRUp, events.ISRDown)
+            weights_obj_base.add('FSR', events.nom, events.FSRUp, events.FSRDown)
+            # Renorm/fact scale
+            weights_obj_base.add('renorm', events.nom, events.renormUp*(sow/sow_renormUp), events.renormDown*(sow/sow_renormDown))
+            weights_obj_base.add('fact', events.nom, events.factUp*(sow/sow_factUp), events.factDown*(sow/sow_factDown))
 
-        if not isData:
-
+            # Misc other experimental SFs and systs
             weights_obj_base.add('PreFiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
             weights_obj_base.add('PU', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
 
+            # Lepton SFs and systs
             weights_obj_base.add("lepSF_muon", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
             weights_obj_base.add("lepSF_elec", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
+
+
+        # Set up the list of systematics that are handled via event weight variations
+        wgt_correction_syst_lst = [
+            "btagSFlight_correlated", "btagSFbc_correlated", f"btagSFlight_uncorrelated_{year}", f"btagSFbc_uncorrelated_{year}",
+            "lepSF_elec", "lepSF_muon", "PreFiring", "PU",
+            "renorm", "fact", "ISR", "FSR",
+        ]
+        wgt_correction_syst_lst = append_up_down_to_sys_base(wgt_correction_syst_lst)
 
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
@@ -307,7 +315,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         obj_correction_systs = [] # Will have e.g. jes etc
 
         # If we're doing systematics and this isn't data, we will loop over the obj correction syst lst list
-        if TMPdosys and not isData: obj_corr_syst_var_list = ["nominal"] + obj_correction_systs
+        if self._do_systematics and not isData: obj_corr_syst_var_list = ["nominal"] + obj_correction_systs
         # Otherwise loop juse once, for nominal
         else: obj_corr_syst_var_list = ['nominal']
 
@@ -391,7 +399,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 weights_obj_base_for_kinematic_syst.add("btagSF", wgt_btag_nom)
 
                 # Put the btagging up and down weight variations into the weights object
-                if TMPdosys:
+                if self._do_systematics:
                     for btag_sys in ["correlated", "uncorrelated"]:
                         year_tag = f"_{year}"
                         if btag_sys == "correlated": year_tag = ""
@@ -767,7 +775,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Set up the list of weight fluctuations to loop over
             # For now the syst do not depend on the category, so we can figure this out outside of the filling loop
             wgt_var_lst = ["nominal"]
-            if TMPdosys:
+            if self._do_systematics:
                 if not isData:
                     if (obj_corr_syst_var != "nominal"):
                         # In this case, we are dealing with systs that change the kinematics of the objs (e.g. JES)
