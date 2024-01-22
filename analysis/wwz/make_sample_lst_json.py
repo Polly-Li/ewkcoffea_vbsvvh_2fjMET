@@ -333,6 +333,16 @@ test_wwz_dict = {
     },
 }
 
+# CI example
+# Note, if using this to remake the json for the CI, should replace the file in the "files" with just output_1.root (no path) since assumes will be downloaded locally
+ci_dict = {
+    "UL17_WWZJetsTo4L2Nu_forCI" : {
+        "path" : "/cmsuf/data/store/user/kmohrman/test/ci_for_wwz",
+        "histAxisName": "UL17_WWZJetsTo4L2Nu",
+        "xsecName": "WWZ4l",
+    },
+}
+
 
 ############################ Convenience function ############################
 
@@ -376,6 +386,7 @@ def main():
 
     # A simple example
     #make_jsons_for_dict_of_samples(test_wwz_dict, "/ceph/cms/","2017",".",on_das=False) # An example
+    make_jsons_for_dict_of_samples(ci_dict, "","2017","../../input_samples/sample_jsons/test_samples/",on_das=False) # For CI json
 
     # Specify output paths
     jsons_path = "../../input_samples/sample_jsons/"
