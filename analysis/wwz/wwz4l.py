@@ -153,14 +153,19 @@ class AnalysisProcessor(processor.ProcessorABC):
         year               = self._samples[dataset]["year"]
         xsec               = self._samples[dataset]["xsec"]
         sow                = self._samples[dataset]["nSumOfWeights"]
-        lhe_sow            = self._samples[dataset]["nSumOfLheWeights"]
 
         # Get up down weights from input dict
         if (self._do_systematics and not isData):
+            lhe_sow = self._samples[dataset]["nSumOfLheWeights"]
             # This assumes we have an NLO xsec, so for these systs we will have e.g. xsec_NLO*(N_pass_up/N_gen_up)
             # Thus these systs should only affect acceptance and effeciency and shape
             # The uncty on xsec comes from NLO and is applied as a rate uncty in the text datacard
-            if len(lhe_sow) == 9:
+            if lhe_sow == []:
+                sow_renormDown     = sow
+                sow_factDown       = sow
+                sow_factUp         = sow
+                sow_renormUp       = sow
+            elif len(lhe_sow) == 9:
                 sow_renormDown     = lhe_sow[1]
                 sow_factDown       = lhe_sow[3]
                 sow_factUp         = lhe_sow[5]
