@@ -6,7 +6,7 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/cmsuf/data/store/user/kmohrman/test/ci_for_wwz/output_1.root"
+        "output_1.root"
     ],
     "nEvents": 54868,
     "nGenEvents": 109760,
