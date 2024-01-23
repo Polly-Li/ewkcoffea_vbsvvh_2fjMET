@@ -180,8 +180,8 @@ if __name__ == '__main__':
         print('   - nGenEvents   : %i'   %samplesdict[sname]['nGenEvents'])
         print('   - SumWeights   : %i'   %samplesdict[sname]['nSumOfWeights'])
         if not samplesdict[sname]["isData"]:
-                if "nSumOfLheWeights" in samplesdict[sname]:
-                    print(f'   - nSumOfLheWeights : {samplesdict[sname]["nSumOfLheWeights"]}')
+            if "nSumOfLheWeights" in samplesdict[sname]:
+                 print(f'   - nSumOfLheWeights : {samplesdict[sname]["nSumOfLheWeights"]}')
         print('   - Prefix       : %s'   %samplesdict[sname]['redirector'])
         print('   - nFiles       : %i'   %len(samplesdict[sname]['files']))
         for fname in samplesdict[sname]['files']: print('     %s'%fname)
