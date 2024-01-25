@@ -1,15 +1,26 @@
 {
-  "xsec": 0.002067,
-  "year": "2017",
-  "treeName": "Events",
-  "histAxisName": "UL17_WWZJetsTo4L2Nu",
-  "options": "",
-  "WCnames": [],
-  "files": [
-    "output_1.root"
-  ],
-  "nEvents": 54868,
-  "nGenEvents": 109760,
-  "nSumOfWeights": 227.15914198199997,
-  "isData": false
+    "xsec": 0.002067,
+    "year": "2017",
+    "treeName": "Events",
+    "histAxisName": "UL17_WWZJetsTo4L2Nu",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "output_1.root"
+    ],
+    "nEvents": 54868,
+    "nGenEvents": 109760,
+    "nSumOfWeights": 227.15914198199997,
+    "isData": false,
+    "path": "/cmsuf/data/store/user/kmohrman/test/ci_for_wwz",
+    "nSumOfLheWeights": [
+        240.5168487561945,
+        236.51634455287,
+        233.27592728014238,
+        230.91358444751938,
+        224.05776881139798,
+        222.95829859531798,
+        219.4090775656835,
+        216.425230687383
+    ]
 }

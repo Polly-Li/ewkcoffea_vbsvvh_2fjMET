@@ -15,19 +15,6 @@ import wwz4l
 
 LST_OF_KNOWN_EXECUTORS = ["futures","work_queue","iterative"]
 
-WGT_VAR_LST = [
-    "nSumOfWeights_ISRUp",
-    "nSumOfWeights_ISRDown",
-    "nSumOfWeights_FSRUp",
-    "nSumOfWeights_FSRDown",
-    "nSumOfWeights_renormUp",
-    "nSumOfWeights_renormDown",
-    "nSumOfWeights_factUp",
-    "nSumOfWeights_factDown",
-    "nSumOfWeights_renormfactUp",
-    "nSumOfWeights_renormfactDown",
-]
-
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='You can customize your run')
@@ -100,9 +87,9 @@ if __name__ == '__main__':
             port.append(port[0])
 
     # Figure out which hists to include
-    if args.hist_list == ["ana"]:
-        # Here we hardcode a list of hists used for the analysis
-        hist_lst = ["njets","lj0pt","ptz"]
+    if args.hist_list == ["few"]:
+        # Here we hardcode a reduced list of a few hists
+        hist_lst = ["j0pt", "njets", "nbtagsl", "nleps", "met", "l0pt"]
     elif args.hist_list == ["cr"]:
         # Here we hardcode a list of hists used for the CRs
         hist_lst = ["lj0pt", "ptz", "met", "ljptsum", "l0pt", "l0eta", "l1pt", "l1eta", "j0pt", "j0eta", "njets", "nbtagsl", "invmass"]
@@ -177,13 +164,10 @@ if __name__ == '__main__':
         samplesdict[sname]['nGenEvents'] = int(samplesdict[sname]['nGenEvents'])
         samplesdict[sname]['nSumOfWeights'] = float(samplesdict[sname]['nSumOfWeights'])
         if not samplesdict[sname]["isData"]:
-            for wgt_var in WGT_VAR_LST:
-                # Check that MC samples have all needed weight sums (only needed if doing systs)
-                if do_systs:
-                    if (wgt_var not in samplesdict[sname]):
-                        raise Exception(f"Missing weight variation \"{wgt_var}\".")
-                    else:
-                        samplesdict[sname][wgt_var] = float(samplesdict[sname][wgt_var])
+            # Check that MC samples have all needed weight sums (only needed if doing systs)
+            if do_systs:
+                if ("nSumOfLheWeights" not in samplesdict[sname]):
+                    raise Exception(f"Sample is missing scale variations: {sname}")
         # Print file info
         print('>> '+sname)
         print('   - isData?      : %s'   %('YES' if samplesdict[sname]['isData'] else 'NO'))
@@ -196,9 +180,8 @@ if __name__ == '__main__':
         print('   - nGenEvents   : %i'   %samplesdict[sname]['nGenEvents'])
         print('   - SumWeights   : %i'   %samplesdict[sname]['nSumOfWeights'])
         if not samplesdict[sname]["isData"]:
-            for wgt_var in WGT_VAR_LST:
-                if wgt_var in samplesdict[sname]:
-                    print(f'   - {wgt_var}: {samplesdict[sname][wgt_var]}')
+            if "nSumOfLheWeights" in samplesdict[sname]:
+                print(f'   - nSumOfLheWeights : {samplesdict[sname]["nSumOfLheWeights"]}')
         print('   - Prefix       : %s'   %samplesdict[sname]['redirector'])
         print('   - nFiles       : %i'   %len(samplesdict[sname]['files']))
         for fname in samplesdict[sname]['files']: print('     %s'%fname)
