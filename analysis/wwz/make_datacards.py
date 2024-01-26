@@ -9,7 +9,7 @@ import get_wwz_yields as gy # Note the fact that we're using functions from here
 
 # Global variables
 PRECISION = 6   # Decimal point precision in the text datacard output
-PROC_LST = ["WWZ","ZH","ZZ","ttZ","other"]
+PROC_LST = ["WWZ","ZH","ZZ","ttZ","tWZ","other"]
 SIG_LST = ["WWZ","ZH"]
 CAT_LST = ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C", "sr_4l_of_1", "sr_4l_of_2", "sr_4l_of_3", "sr_4l_of_4"]
 
