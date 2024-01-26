@@ -4,14 +4,15 @@ import pickle
 import gzip
 import argparse
 
-from get_wwz_yields import get_yields # Note the fact that we're using this function means it probably belongs in ewkcoffea/ewkcoffea/modules
+import get_wwz_yields as gy # Note the fact that we're using functions from here means they probably belongs in ewkcoffea/ewkcoffea/modules
 
 
 # Global variables
 PRECISION = 6   # Decimal point precision in the text datacard output
 PROC_LST = ["WWZ","ZH","ZZ","ttZ","other"]
 SIG_LST = ["WWZ","ZH"]
-CAT_LST = ["4l_wwz_sf_A", "4l_wwz_sf_B", "4l_wwz_sf_C", "4l_wwz_of_1", "4l_wwz_of_2", "4l_wwz_of_3", "4l_wwz_of_4"]
+CAT_LST = ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C", "sr_4l_of_1", "sr_4l_of_2", "sr_4l_of_3", "sr_4l_of_4"]
+
 
 
 # Sum the predicted yields over categorires to get asimov data number
@@ -122,7 +123,8 @@ def main():
     #     - We can also load a json that contains the yields directly
     if in_file.endswith(".pkl.gz"):
         f = pickle.load(gzip.open(in_file))
-        yld_dict = get_yields(f)
+        sample_dict_mc = gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"all")
+        yld_dict = gy.get_yields(f,sample_dict_mc)
     elif in_file.endswith(".json"):
         with open(in_file) as f:
             yld_dict = json.load(f)
