@@ -14,6 +14,19 @@ SIG_LST = ["WWZ","ZH"]
 CAT_LST = ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C", "sr_4l_of_1", "sr_4l_of_2", "sr_4l_of_3", "sr_4l_of_4"]
 
 
+# Takes two yield dictionaries, returns a dict of their ratio
+# Drops uncertainty
+def get_uncty_dict(nom_dict,up_dict,do_dict):
+    ratio_dict = {}
+    for proc in nom_dict.keys():
+        ratio_dict[proc] = {}
+        for cat in nom_dict[proc]:
+            n = nom_dict[proc][cat][0]
+            u = up_dict[proc][cat][0]
+            d = do_dict[proc][cat][0]
+            ratio_dict[proc][cat] = [u/n, d/n]
+    return ratio_dict
+
 
 # Sum the predicted yields over categorires to get asimov data number
 def get_fake_data_for_ch(yld_dict,ch):
@@ -131,6 +144,40 @@ def main():
     else:
         raise Exception(f"ERROR: This script can only take hists or jsons, not files of type \"{in_file.split('.')[-1]}\".")
 
+    ################
+    # Systematics
+
+    histo = f["njets"]
+
+    # Get the list of systematic base names (i.e. without the up and down tags)
+    # Assumes each syst has a "systnameUp" and a "systnameDown" category on the systematic axis
+    syst_var_lst = []
+    all_syst_var_lst = histo.axes["systematic"]
+    for syst_var_name in all_syst_var_lst:
+        if syst_var_name.endswith("Up"):
+            syst_name_base = syst_var_name.replace("Up","")
+            if syst_name_base not in syst_var_lst:
+                syst_var_lst.append(syst_name_base)
+
+    # Get just the systs that are correlated across years, for now
+    sys_yr_correlated_lst = []
+    for sys in syst_var_lst:
+        if ("2016" in sys) or ("2016APV" in sys) or ("2017" in sys) or ("2018" in sys):
+            pass
+        else:
+            sys_yr_correlated_lst.append(sys)
+
+    # Find the syst variations for each
+    yld_dict_sys = {"nominal":yld_dict}
+    for sys in sys_yr_correlated_lst:
+        yld_up = gy.get_yields(f,sample_dict_mc,systematic_name=f"{sys}Up")
+        yld_do = gy.get_yields(f,sample_dict_mc,systematic_name=f"{sys}Down")
+        yld_dict_sys[sys] = get_uncty_dict(yld_dict,yld_up,yld_do)
+
+    #for k,v in yld_dict_sys.items():
+        #print(k,v)
+
+    ################
 
     # Make the cards for each channel
     print(f"Making cards for {CAT_LST}. \nPutting in {out_dir}.")
