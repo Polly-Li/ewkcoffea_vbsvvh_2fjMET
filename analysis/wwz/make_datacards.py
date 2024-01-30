@@ -14,17 +14,16 @@ SIG_LST = ["WWZ","ZH"]
 CAT_LST = ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C", "sr_4l_of_1", "sr_4l_of_2", "sr_4l_of_3", "sr_4l_of_4"]
 
 
-# Takes two yield dictionaries, returns a dict of their ratio
-# Drops uncertainty
-def get_uncty_dict(nom_dict,up_dict,do_dict):
+# Takes two yield dictionaries, returns a dict of their ratio (for a given category)
+# Drops mc stats uncertainty
+def get_uncty_dict(cat,nom_dict,up_dict,do_dict):
     ratio_dict = {}
     for proc in nom_dict.keys():
         ratio_dict[proc] = {}
-        for cat in nom_dict[proc]:
-            n = nom_dict[proc][cat][0]
-            u = up_dict[proc][cat][0]
-            d = do_dict[proc][cat][0]
-            ratio_dict[proc][cat] = [u/n, d/n]
+        n = nom_dict[proc][cat][0]
+        u = up_dict[proc][cat][0]
+        d = do_dict[proc][cat][0]
+        ratio_dict[proc] = [u/n, d/n]
     return ratio_dict
 
 
@@ -37,7 +36,7 @@ def get_fake_data_for_ch(yld_dict,ch):
 
 
 # Make the datacard for a given channel
-def make_ch_card(ch_ylds,ch,out_dir):
+def make_ch_card(ch,ch_ylds,ch_kappas=None,out_dir="."):
 
     # Building blocks we'll need to build the card formatting
     bin_str = f"bin_{ch}"
@@ -49,7 +48,7 @@ def make_ch_card(ch_ylds,ch,out_dir):
 
     # The output name, location
     outf_card_name = f"test_card_{ch}.txt"
-    print(f"Generating text file: {outf_card_name}")
+    print(f"Generating text file: {out_dir}/{outf_card_name}")
     outf_card_name = os.path.join(out_dir,outf_card_name)
 
     # Create the card for this channel
@@ -103,10 +102,19 @@ def make_ch_card(ch_ylds,ch,out_dir):
                 raise Exception(f"\nERROR: Process {p} has negative total rate: {r:.3f}.\n")
             row.append(f"{r:>{col_width}.{PRECISION}f}")
         row = " ".join(row) + "\n"
-
-        # Write to the file
         f.write(row)
         f.write(line_break)
+
+        # Systematics rows
+        for syst_name in ch_kappas:
+            row = [f"{syst_name} lnN"]
+            for p in proc_order:
+                kappa_str = f"{ch_kappas[syst_name][p][0]}/{ch_kappas[syst_name][p][1]}"
+                row.append(kappa_str)
+            row = " ".join(row) + "\n"
+            f.write(row)
+        f.write(line_break)
+
 
 
 def main():
@@ -168,31 +176,36 @@ def main():
             sys_yr_correlated_lst.append(sys)
 
     # Find the syst variations for each
-    yld_dict_sys = {"nominal":yld_dict}
-    for sys in sys_yr_correlated_lst:
-        yld_up = gy.get_yields(f,sample_dict_mc,systematic_name=f"{sys}Up")
-        yld_do = gy.get_yields(f,sample_dict_mc,systematic_name=f"{sys}Down")
-        yld_dict_sys[sys] = get_uncty_dict(yld_dict,yld_up,yld_do)
-
-    #for k,v in yld_dict_sys.items():
-        #print(k,v)
+    kappa_dict = {}
+    for cat in CAT_LST:
+        kappa_dict[cat] = {}
+        for sys in sys_yr_correlated_lst:
+            yld_up = gy.get_yields(f,sample_dict_mc,systematic_name=f"{sys}Up")
+            yld_do = gy.get_yields(f,sample_dict_mc,systematic_name=f"{sys}Down")
+            kappa_dict[cat][sys] = get_uncty_dict(cat,yld_dict,yld_do,yld_up)
 
     ################
 
     # Make the cards for each channel
     print(f"Making cards for {CAT_LST}. \nPutting in {out_dir}.")
     for ch in CAT_LST:
-        # Get yields for just this chan (also make fake asimov data if necessary)
+
+        # Get nominal yields for this category
         ch_ylds = {}
         for proc_name in yld_dict.keys():
             ch_ylds[proc_name] = yld_dict[proc_name][ch]
+
+        # Overwrite data if necessary
         if not unblind:
             ch_ylds["data_obs"] = get_fake_data_for_ch(yld_dict,ch) # Make asimov data for now
         else:
             raise Exception("We are not unblinded yet.")
 
+        # The kappas for this channel
+        ch_kappas = kappa_dict[ch]
+
         # Make the card for this chan
-        make_ch_card(ch_ylds,ch,out_dir)
+        make_ch_card(ch,ch_ylds,ch_kappas,out_dir)
 
 
     print("Finished!")
