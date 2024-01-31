@@ -1,0 +1,8 @@
+{
+    "rate_uncertainties" : {
+        "lumi": 1.016
+    },
+    "qcd_scale": {
+        "ttZ": "0.898/1.117"
+    }
+}

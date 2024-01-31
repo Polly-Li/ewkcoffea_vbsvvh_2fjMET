@@ -5,6 +5,7 @@ import gzip
 import argparse
 
 from topcoffea.modules import utils
+from ewkcoffea.modules.paths import ewkcoffea_path
 import get_wwz_yields as gy # Note the fact that we're using functions from here means they probably belongs in ewkcoffea/ewkcoffea/modules
 
 
@@ -48,7 +49,7 @@ def get_fake_data_for_ch(yld_dict,ch):
 
 
 # Make the datacard for a given channel
-def make_ch_card(ch,ch_ylds,ch_kappas=None,out_dir="."):
+def make_ch_card(ch,ch_ylds,ch_kappas=None,ch_kappas_flat=None,out_dir="."):
 
     # Building blocks we'll need to build the card formatting
     bin_str = f"bin_{ch}"
@@ -128,6 +129,16 @@ def make_ch_card(ch,ch_ylds,ch_kappas=None,out_dir="."):
                 f.write(row)
             f.write(line_break)
 
+        if ch_kappas_flat is not None:
+            for syst_name in ch_kappas_flat:
+                row = [f"{syst_name} lnN"]
+                for p in proc_order:
+                    kappa_str = f"{ch_kappas_flat[syst_name][p]}"
+                    row.append(kappa_str)
+                row = " ".join(row) + "\n"
+                f.write(row)
+            f.write(line_break)
+
 
 
 def main():
@@ -175,12 +186,39 @@ def main():
     # Systematics
     if do_nuis:
 
-        histo = f["njets"]
+        ### Build up the dict of flat rate systematics like lumi and xsec ###
+
+        # Open the json that lists the rate systs
+        syst_json = ewkcoffea_path("params/rate_systs.json")
+        with open(syst_json) as f_systs: rate_systs_dict = json.load(f_systs)
+
+        # Build up the dictionary
+        kappa_flat_dict = {}
+        for cat in CAT_LST:
+            kappa_flat_dict[cat] = {}
+
+            # Make lumi row
+            kappa_flat_dict[cat]["lumi"] = {}
+            for proc in PROC_LST:
+                kappa_flat_dict[cat]["lumi"][proc] = rate_systs_dict["rate_uncertainties"]["lumi"]
+
+            # Make qcd_scale rows
+            for qcd_scale_proc in rate_systs_dict["qcd_scale"]:
+                kappa_flat_dict[cat][f"qcd_scale_{qcd_scale_proc}"] = {}
+                for proc in PROC_LST:
+                    if proc == qcd_scale_proc:
+                        qcd_scale_uncty = rate_systs_dict["qcd_scale"][proc]
+                    else:
+                        qcd_scale_uncty = "-"
+                    kappa_flat_dict[cat][f"qcd_scale_{qcd_scale_proc}"][proc] = qcd_scale_uncty
+
+
+        ### Build up the dict of systematics determined from up/down histos (in principle affect shape) ###
 
         # Get the list of systematic base names (i.e. without the up and down tags)
         # Assumes each syst has a "systnameUp" and a "systnameDown" category on the systematic axis
         syst_var_lst = []
-        all_syst_var_lst = histo.axes["systematic"]
+        all_syst_var_lst = f["njets"].axes["systematic"] # Use njets for this since why not
         for syst_var_name in all_syst_var_lst:
             if syst_var_name.endswith("Up"):
                 syst_name_base = syst_var_name.replace("Up","")
@@ -220,6 +258,7 @@ def main():
 
                 kappa_dict[cat][sys] = get_uncty_dict(cat,yld_dict,yld_do,yld_up)
 
+
     ################
 
     # Make the cards for each channel
@@ -241,9 +280,10 @@ def main():
         ch_kappas = None
         if do_nuis:
             ch_kappas = kappa_dict[ch]
+            ch_kappas_flat = kappa_flat_dict[ch]
 
         # Make the card for this chan
-        make_ch_card(ch,ch_ylds,ch_kappas,out_dir)
+        make_ch_card(ch,ch_ylds,ch_kappas,ch_kappas_flat,out_dir)
 
 
     print("Finished!")
