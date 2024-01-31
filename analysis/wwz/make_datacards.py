@@ -4,6 +4,7 @@ import pickle
 import gzip
 import argparse
 
+from topcoffea.modules import utils
 import get_wwz_yields as gy # Note the fact that we're using functions from here means they probably belongs in ewkcoffea/ewkcoffea/modules
 
 
@@ -13,6 +14,17 @@ PROC_LST = ["WWZ","ZH","ZZ","ttZ","tWZ","other"]
 SIG_LST = ["WWZ","ZH"]
 CAT_LST = ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C", "sr_4l_of_1", "sr_4l_of_2", "sr_4l_of_3", "sr_4l_of_4"]
 
+# Systs that are not correlated across years
+SYSTS_SPECIAL = {
+    "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+}
 
 # Takes two yield dictionaries, returns a dict of their ratio (for a given category)
 # Drops mc stats uncertainty
@@ -139,12 +151,20 @@ def main():
         print(f"Making dir \"{out_dir}\"")
         os.makedirs(out_dir)
 
+    # Set up the dict of samples for full R2 and for each year individually
+    sample_dict_mc = gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"all")
+    sample_dict_mc_byyear = {
+        "UL16APV" : gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"UL16APV"),
+        "UL16"    : gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"UL16"),
+        "UL17"    : gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"UL17"),
+        "UL18"    : gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"UL18"),
+    }
+
     # Get the yields dict from the input file
     #     - We can load a scikit hist (produced by wwz4l.py processor) and get the yields from that, dumpt to a dict
     #     - We can also load a json that contains the yields directly
     if in_file.endswith(".pkl.gz"):
         f = pickle.load(gzip.open(in_file))
-        sample_dict_mc = gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"all")
         yld_dict = gy.get_yields(f,sample_dict_mc)
     elif in_file.endswith(".json"):
         with open(in_file) as f:
@@ -182,6 +202,22 @@ def main():
         for sys in sys_yr_correlated_lst:
             yld_up = gy.get_yields(f,sample_dict_mc,systematic_name=f"{sys}Up")
             yld_do = gy.get_yields(f,sample_dict_mc,systematic_name=f"{sys}Down")
+            kappa_dict[cat][sys] = get_uncty_dict(cat,yld_dict,yld_do,yld_up)
+
+        for sys in SYSTS_SPECIAL:
+            yr_rel = SYSTS_SPECIAL[sys]["yr_rel"]
+            yld_yr_up = gy.get_yields(f,sample_dict_mc_byyear[yr_rel],systematic_name=f"{sys}Up")
+            yld_yr_do = gy.get_yields(f,sample_dict_mc_byyear[yr_rel],systematic_name=f"{sys}Down")
+
+            # Get nominal yld for all years other than the relevant one
+            yld_yr_nom = gy.get_yields(f,sample_dict_mc_byyear[yr_rel])
+            yld_all_nom = gy.get_yields(f,sample_dict_mc)
+            yld_nom_all_but_yr  = utils.get_diff_between_nested_dicts(yld_all_nom,yld_yr_nom,difftype="absolute_diff") # This is: x = sum(nom yld for all years except relevant year)
+
+            # Get the yield with just the relevant year's up/down variation varied (with nominal yld for all other years)
+            yld_up = utils.get_diff_between_nested_dicts(yld_nom_all_but_yr, yld_yr_up, difftype="sum") # This is: x + (up   yld for relevant year)
+            yld_do = utils.get_diff_between_nested_dicts(yld_nom_all_but_yr, yld_yr_do, difftype="sum") # This is: x + (down yld for relevant year)
+
             kappa_dict[cat][sys] = get_uncty_dict(cat,yld_dict,yld_do,yld_up)
 
     ################
