@@ -118,14 +118,15 @@ def make_ch_card(ch,ch_ylds,ch_kappas=None,out_dir="."):
         f.write(line_break)
 
         # Systematics rows
-        for syst_name in ch_kappas:
-            row = [f"{syst_name} lnN"]
-            for p in proc_order:
-                kappa_str = f"{ch_kappas[syst_name][p][0]}/{ch_kappas[syst_name][p][1]}"
-                row.append(kappa_str)
-            row = " ".join(row) + "\n"
-            f.write(row)
-        f.write(line_break)
+        if ch_kappas is not None:
+            for syst_name in ch_kappas:
+                row = [f"{syst_name} lnN"]
+                for p in proc_order:
+                    kappa_str = f"{ch_kappas[syst_name][p][0]}/{ch_kappas[syst_name][p][1]}"
+                    row.append(kappa_str)
+                row = " ".join(row) + "\n"
+                f.write(row)
+            f.write(line_break)
 
 
 
@@ -135,7 +136,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("in_file_name",help="Either json file of yields or pickle file with scikit hists")
     parser.add_argument("--out-dir","-d",default="./testcards",help="Output directory to write root and text datacard files to")
-    parser.add_argument("--do-nuisance",action="store_true",help="Include nuisance parameters")
+    parser.add_argument("-s","--do-nuisance",action="store_true",help="Include nuisance parameters")
     parser.add_argument("--unblind",action="store_true",help="If set, use real data, otherwise use asimov data")
 
     args = parser.parse_args()
@@ -145,8 +146,6 @@ def main():
     unblind = args.unblind
 
     # Check args
-    if do_nuis:
-        raise Exception("Nuisance params not implimented yet.")
     if out_dir != "." and not os.path.exists(out_dir):
         print(f"Making dir \"{out_dir}\"")
         os.makedirs(out_dir)
@@ -174,51 +173,52 @@ def main():
 
     ################
     # Systematics
+    if do_nuis:
 
-    histo = f["njets"]
+        histo = f["njets"]
 
-    # Get the list of systematic base names (i.e. without the up and down tags)
-    # Assumes each syst has a "systnameUp" and a "systnameDown" category on the systematic axis
-    syst_var_lst = []
-    all_syst_var_lst = histo.axes["systematic"]
-    for syst_var_name in all_syst_var_lst:
-        if syst_var_name.endswith("Up"):
-            syst_name_base = syst_var_name.replace("Up","")
-            if syst_name_base not in syst_var_lst:
-                syst_var_lst.append(syst_name_base)
+        # Get the list of systematic base names (i.e. without the up and down tags)
+        # Assumes each syst has a "systnameUp" and a "systnameDown" category on the systematic axis
+        syst_var_lst = []
+        all_syst_var_lst = histo.axes["systematic"]
+        for syst_var_name in all_syst_var_lst:
+            if syst_var_name.endswith("Up"):
+                syst_name_base = syst_var_name.replace("Up","")
+                if syst_name_base not in syst_var_lst:
+                    syst_var_lst.append(syst_name_base)
 
-    # Get just the systs that are correlated across years, for now
-    sys_yr_correlated_lst = []
-    for sys in syst_var_lst:
-        if ("2016" in sys) or ("2016APV" in sys) or ("2017" in sys) or ("2018" in sys):
-            pass
-        else:
-            sys_yr_correlated_lst.append(sys)
+        # Get just the systs that are correlated across years, for now
+        sys_yr_correlated_lst = []
+        for sys in syst_var_lst:
+            if ("2016" in sys) or ("2016APV" in sys) or ("2017" in sys) or ("2018" in sys):
+                pass
+            else:
+                sys_yr_correlated_lst.append(sys)
 
-    # Find the syst variations for each
-    kappa_dict = {}
-    for cat in CAT_LST:
-        kappa_dict[cat] = {}
-        for sys in sys_yr_correlated_lst:
-            yld_up = gy.get_yields(f,sample_dict_mc,systematic_name=f"{sys}Up")
-            yld_do = gy.get_yields(f,sample_dict_mc,systematic_name=f"{sys}Down")
-            kappa_dict[cat][sys] = get_uncty_dict(cat,yld_dict,yld_do,yld_up)
+        # Find the syst variations for each
+        kappa_dict = {}
+        for cat in CAT_LST:
+            kappa_dict[cat] = {}
+            for sys in sys_yr_correlated_lst:
+                yld_up = gy.get_yields(f,sample_dict_mc,systematic_name=f"{sys}Up")
+                yld_do = gy.get_yields(f,sample_dict_mc,systematic_name=f"{sys}Down")
+                kappa_dict[cat][sys] = get_uncty_dict(cat,yld_dict,yld_do,yld_up)
 
-        for sys in SYSTS_SPECIAL:
-            yr_rel = SYSTS_SPECIAL[sys]["yr_rel"]
-            yld_yr_up = gy.get_yields(f,sample_dict_mc_byyear[yr_rel],systematic_name=f"{sys}Up")
-            yld_yr_do = gy.get_yields(f,sample_dict_mc_byyear[yr_rel],systematic_name=f"{sys}Down")
+            for sys in SYSTS_SPECIAL:
+                yr_rel = SYSTS_SPECIAL[sys]["yr_rel"]
+                yld_yr_up = gy.get_yields(f,sample_dict_mc_byyear[yr_rel],systematic_name=f"{sys}Up")
+                yld_yr_do = gy.get_yields(f,sample_dict_mc_byyear[yr_rel],systematic_name=f"{sys}Down")
 
-            # Get nominal yld for all years other than the relevant one
-            yld_yr_nom = gy.get_yields(f,sample_dict_mc_byyear[yr_rel])
-            yld_all_nom = gy.get_yields(f,sample_dict_mc)
-            yld_nom_all_but_yr  = utils.get_diff_between_nested_dicts(yld_all_nom,yld_yr_nom,difftype="absolute_diff") # This is: x = sum(nom yld for all years except relevant year)
+                # Get nominal yld for all years other than the relevant one
+                yld_yr_nom = gy.get_yields(f,sample_dict_mc_byyear[yr_rel])
+                yld_all_nom = gy.get_yields(f,sample_dict_mc)
+                yld_nom_all_but_yr  = utils.get_diff_between_nested_dicts(yld_all_nom,yld_yr_nom,difftype="absolute_diff") # This is: x = sum(nom yld for all years except relevant year)
 
-            # Get the yield with just the relevant year's up/down variation varied (with nominal yld for all other years)
-            yld_up = utils.get_diff_between_nested_dicts(yld_nom_all_but_yr, yld_yr_up, difftype="sum") # This is: x + (up   yld for relevant year)
-            yld_do = utils.get_diff_between_nested_dicts(yld_nom_all_but_yr, yld_yr_do, difftype="sum") # This is: x + (down yld for relevant year)
+                # Get the yield with just the relevant year's up/down variation varied (with nominal yld for all other years)
+                yld_up = utils.get_diff_between_nested_dicts(yld_nom_all_but_yr, yld_yr_up, difftype="sum") # This is: x + (up   yld for relevant year)
+                yld_do = utils.get_diff_between_nested_dicts(yld_nom_all_but_yr, yld_yr_do, difftype="sum") # This is: x + (down yld for relevant year)
 
-            kappa_dict[cat][sys] = get_uncty_dict(cat,yld_dict,yld_do,yld_up)
+                kappa_dict[cat][sys] = get_uncty_dict(cat,yld_dict,yld_do,yld_up)
 
     ################
 
@@ -238,7 +238,9 @@ def main():
             raise Exception("We are not unblinded yet.")
 
         # The kappas for this channel
-        ch_kappas = kappa_dict[ch]
+        ch_kappas = None
+        if do_nuis:
+            ch_kappas = kappa_dict[ch]
 
         # Make the card for this chan
         make_ch_card(ch,ch_ylds,ch_kappas,out_dir)
