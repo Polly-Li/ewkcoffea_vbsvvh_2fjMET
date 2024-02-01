@@ -262,7 +262,7 @@ def create_data_sample_dict(year):
 ################### Getting and printing yields ###################
 
 # Get the yields in the SR
-def get_yields(histos_dict,sample_dict,raw_counts=False,quiet=False,blind=True):
+def get_yields(histos_dict,sample_dict,raw_counts=False,quiet=True,blind=True,systematic_name="nominal"):
 
     yld_dict = {}
 
@@ -276,8 +276,8 @@ def get_yields(histos_dict,sample_dict,raw_counts=False,quiet=False,blind=True):
                 # If this is data and we're not in a CR category, put placeholder numbers for now
                 yld_dict[proc_name][cat_name] = [-999,-999]
             else:
-                val = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name],"systematic":"nominal"}].values(flow=True)))
-                var = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name],"systematic":"nominal"}].variances(flow=True)))
+                val = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name],"systematic":systematic_name}].values(flow=True)))
+                var = sum(sum(histos_dict[dense_axis][{"category":cat_name,"process":sample_dict[proc_name],"systematic":systematic_name}].variances(flow=True)))
                 yld_dict[proc_name][cat_name] = [val,var]
 
     # Print to screen
@@ -706,6 +706,7 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
 
             for syst in syst_var_lst:
                 #if "btag" not in syst: continue
+                #if "uncorrelated" not in syst: continue
                 #if "lepSF" not in syst: continue
                 #if "PreFiring" not in syst: continue
                 #if "PU" not in syst: continue
