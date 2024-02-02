@@ -415,7 +415,7 @@ def print_yields(yld_dict_in,cats_to_print,procs_to_print,print_fom=True,hlines=
         subkey_order=cats_to_print,
         print_begin_info=True,
         print_end_info=True,
-        print_errs=False, # If you want to turn this on, figure out where/when you want to sqrt the var
+        print_errs=True,
         column_variable="subkeys",
         size="tiny",
         hz_line_lst=[5],
@@ -963,6 +963,7 @@ def main():
         # Dump latex table for cut based
         hlines = [2,3,7,8]
         sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
+        #sr_cats_to_print = ["sr_sf_all_cutbased"] + ["sr_of_all_cutbased","sr_all_cutbased"] + ["sr_4l_sf_presel","sr_4l_of_presel"] # Preselection SR categories
         procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
         print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
 
