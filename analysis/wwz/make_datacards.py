@@ -162,6 +162,7 @@ def main():
         os.makedirs(out_dir)
 
     # Set up the dict of samples for full R2 and for each year individually
+    sample_dict_data = gy.create_data_sample_dict("all")
     sample_dict_mc = gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"all")
     sample_dict_mc_byyear = {
         "UL16APV" : gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"UL16APV"),
@@ -181,6 +182,46 @@ def main():
             yld_dict = json.load(f)
     else:
         raise Exception(f"ERROR: This script can only take hists or jsons, not files of type \"{in_file.split('.')[-1]}\".")
+
+
+
+    ###################################
+    ### Background estimation stuff ###
+
+    # Transfer factor stuff
+    yld_dict_data = gy.get_yields(f,sample_dict_data,quiet=True,blind=True)
+    gy.put_cat_col_sums(yld_dict, sr_sf_lst=gy.SR_SF_CB, sr_of_lst=gy.SR_OF_CB)
+    ttZ_SR_OF_nsf = gy.get_background_dict(yld_dict,yld_dict_data,"ttZ","cr_4l_btag_of","sr_of_all")["nsf"][0]
+    ZZ_SR_OF_nsf  = gy.get_background_dict(yld_dict,yld_dict_data,"ZZ","cr_4l_sf","sr_of_all")["nsf"][0]
+    ttZ_SR_SF_nsf = gy.get_background_dict(yld_dict,yld_dict_data,"ttZ","cr_4l_btag_sf_offZ_met80","sr_sf_all")["nsf"][0]
+    ZZ_SR_SF_nsf  = gy.get_background_dict(yld_dict,yld_dict_data,"ZZ","cr_4l_sf","sr_sf_all")["nsf"][0]
+
+    # Get the norm scale factor for the background estimation (return 1 in cases where this is not applicable)
+    def get_nsf(ch_name,proc_name):
+
+        nsf_dict = {
+            "of" : {
+                "ttZ" : ttZ_SR_OF_nsf,
+                "ZZ"  : ZZ_SR_OF_nsf,
+            },
+            "sf" : {
+                "ttZ" : ttZ_SR_SF_nsf,
+                "ZZ"  : ZZ_SR_SF_nsf,
+            },
+        }
+
+        nsf = 1.0
+        if "of" in ch_name:
+            if proc_name in nsf_dict["of"]:
+                nsf = nsf_dict["of"][proc_name]
+        if "sf" in ch_name:
+            if proc_name in nsf_dict["sf"]:
+                nsf = nsf_dict["sf"][proc_name]
+
+        return nsf
+
+    ###################################
+
 
     ################
     # Systematics
@@ -268,7 +309,10 @@ def main():
         # Get nominal yields for this category
         ch_ylds = {}
         for proc_name in yld_dict.keys():
-            ch_ylds[proc_name] = yld_dict[proc_name][ch]
+            #ch_ylds[proc_name] = yld_dict[proc_name][ch]
+            # Apply transfer factors to yield
+            nsf = get_nsf(ch,proc_name)
+            ch_ylds[proc_name] = [yld_dict[proc_name][ch][0]*nsf,yld_dict[proc_name][ch][1]] # Just apply to yld not uncty for now, though uncty not being used anyway
 
         # Overwrite data if necessary
         if not unblind:
@@ -278,6 +322,7 @@ def main():
 
         # The kappas for this channel
         ch_kappas = None
+        ch_kappas_flat = None
         if do_nuis:
             ch_kappas = kappa_dict[ch]
             ch_kappas_flat = kappa_flat_dict[ch]
