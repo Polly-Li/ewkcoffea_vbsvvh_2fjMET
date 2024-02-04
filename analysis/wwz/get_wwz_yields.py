@@ -833,6 +833,35 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
 
 
 
+###### Transfer factors for background ######
+
+# Function for getting a dict with NSF and TF etc
+def get_background_dict(yld_dict_mc,yld_dict_data,bkg_proc,cr_name,sr_name):
+
+    # Get the sum of all other contributions
+    bkg_all_but_bkg_of_interest = [0,0]
+    for proc in yld_dict_mc.keys():
+        if proc != bkg_proc:
+            bkg_all_but_bkg_of_interest[0] += yld_dict_mc[proc][cr_name][0]
+            bkg_all_but_bkg_of_interest[1] += yld_dict_mc[proc][cr_name][1]
+
+    n_cr = yld_dict_data["data"][cr_name][0] - bkg_all_but_bkg_of_interest[0]
+    m_cr = yld_dict_mc[bkg_proc][cr_name][0]
+    m_sr = yld_dict_mc[bkg_proc][sr_name][0]
+
+    n_cr_err = np.sqrt(yld_dict_data["data"][cr_name][1] + bkg_all_but_bkg_of_interest[1])
+    m_cr_err = np.sqrt(yld_dict_mc[bkg_proc][cr_name][1])
+    m_sr_err = np.sqrt(yld_dict_mc[bkg_proc][sr_name][1])
+
+    out_dict = {
+        "n_sr_est" : [n_cr*(m_sr/m_cr) , (n_cr*(m_sr/m_cr))*np.sqrt((n_cr_err/n_cr)**2 + (m_sr_err/m_sr)**2 + (m_cr_err/m_cr)**2)],
+        "m_sr"     : [m_sr , m_sr_err],
+        "n_cr"     : [n_cr , n_cr_err],
+        "m_cr"     : [m_cr , m_cr_err],
+        "tf"       : [m_sr/m_cr , (m_sr/m_cr)*np.sqrt((m_sr_err/m_sr)**2+(m_cr_err/m_cr)**2)],
+        "nsf"      : [n_cr/m_cr , (n_cr/m_cr)*np.sqrt((n_cr_err/n_cr)**2+(m_cr_err/m_cr)**2)],
+    }
+    return out_dict
 
 # Wrapper around the background estimation of TFs and yields
 def do_background_estimation(yld_dict_mc,yld_dict_data):
@@ -847,33 +876,6 @@ def do_background_estimation(yld_dict_mc,yld_dict_data):
         "nsf"      : "NSF",
     }
 
-    # Function for getting a dict with NSF and TF etc
-    def get_background_dict(yld_dict_mc,yld_dict_data,bkg_proc,cr_name,sr_name):
-
-        # Get the sum of all other contributions
-        bkg_all_but_bkg_of_interest = [0,0]
-        for proc in yld_dict_mc.keys():
-            if proc != bkg_proc:
-                bkg_all_but_bkg_of_interest[0] += yld_dict_mc[proc][cr_name][0]
-                bkg_all_but_bkg_of_interest[1] += yld_dict_mc[proc][cr_name][1]
-
-        n_cr = yld_dict_data["data"][cr_name][0] - bkg_all_but_bkg_of_interest[0]
-        m_cr = yld_dict_mc[bkg_proc][cr_name][0]
-        m_sr = yld_dict_mc[bkg_proc][sr_name][0]
-
-        n_cr_err = np.sqrt(yld_dict_data["data"][cr_name][1] + bkg_all_but_bkg_of_interest[1])
-        m_cr_err = np.sqrt(yld_dict_mc[bkg_proc][cr_name][1])
-        m_sr_err = np.sqrt(yld_dict_mc[bkg_proc][sr_name][1])
-
-        out_dict = {
-            "n_sr_est" : [n_cr*(m_sr/m_cr) , (n_cr*(m_sr/m_cr))*np.sqrt((n_cr_err/n_cr)**2 + (m_sr_err/m_sr)**2 + (m_cr_err/m_cr)**2)],
-            "m_sr"     : [m_sr , m_sr_err],
-            "n_cr"     : [n_cr , n_cr_err],
-            "m_cr"     : [m_cr , m_cr_err],
-            "tf"       : [m_sr/m_cr , (m_sr/m_cr)*np.sqrt((m_sr_err/m_sr)**2+(m_cr_err/m_cr)**2)],
-            "nsf"      : [n_cr/m_cr , (n_cr/m_cr)*np.sqrt((n_cr_err/n_cr)**2+(m_cr_err/m_cr)**2)],
-        }
-        return out_dict
 
     print_dict = {}
 
