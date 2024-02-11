@@ -29,6 +29,95 @@ SYSTS_SPECIAL = {
     #"btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
 }
 
+BKG_TF_MAP = {
+
+    "ZZ" : {
+        "sr_4l_sf_A" : "cr_4l_sf",
+        "sr_4l_sf_B" : "cr_4l_sf",
+        "sr_4l_sf_C" : "cr_4l_sf",
+        "sr_4l_of_1" : "cr_4l_sf",
+        "sr_4l_of_2" : "cr_4l_sf",
+        "sr_4l_of_3" : "cr_4l_sf",
+        "sr_4l_of_4" : "cr_4l_sf",
+
+    },
+    "ttZ" : {
+        "sr_4l_sf_A" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_sf_B" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_sf_C" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_of_1" : "cr_4l_btag_of",
+        "sr_4l_of_2" : "cr_4l_btag_of",
+        "sr_4l_of_3" : "cr_4l_btag_of",
+        "sr_4l_of_4" : "cr_4l_btag_of",
+    }
+}
+
+
+# Make the datacard for a given channel
+def make_ch_card(ch,proc_order,ch_ylds,out_dir="."):
+
+    # Building blocks we'll need to build the card formatting
+    bin_str = f"bin_{ch}"
+    syst_width = 0
+    col_width = max(PRECISION*2+5,len(bin_str))
+    line_break = "##----------------------------------\n"
+    left_width = len(line_break) + 2
+    left_width = max(syst_width+len("shape")+1,left_width)
+
+    # The output name, location
+    outf_card_name = f"test_card_{ch}.txt"
+    print(f"Generating text file: {out_dir}/{outf_card_name}")
+    outf_card_name = os.path.join(out_dir,outf_card_name)
+
+    # Create the card for this channel
+    with open(outf_card_name,"w") as f:
+
+        # Shapes rows, not sure of the purpose of the shapes lines when we have no shape templates
+        f.write("shapes *        * FAKE\n")
+        f.write(line_break)
+        f.write(f"bin         {bin_str}\n")
+        f.write(f"observation {ch_ylds['data_obs']}\n")
+        f.write(line_break)
+        f.write(line_break)
+
+        # Bin row
+        row = [f"{'bin':<{left_width}}"] # Python string formatting is pretty great!
+        for p in proc_order:
+            row.append(f"{bin_str:>{col_width}}")
+        row = " ".join(row) + "\n"
+        f.write(row)
+
+        # 1st process row
+        row = [f"{'process':<{left_width}}"]
+        for p in proc_order:
+            row.append(f"{p:>{col_width}}")
+        row = " ".join(row) + "\n"
+        f.write(row)
+
+        # 2nd process row
+        row = [f"{'process':<{left_width}}"]
+        bkgd_count =  1
+        sgnl_count = -1
+        for p in proc_order:
+            if any([x in p for x in SIG_LST]): # Check for if the process is signal or not
+                row.append(f"{sgnl_count:>{col_width}}")
+                sgnl_count += -1
+            else:
+                row.append(f"{bkgd_count:>{col_width}}")
+                bkgd_count += 1
+        row = " ".join(row) + "\n"
+        f.write(row)
+
+        # Rate row
+        row = [f"{'rate':<{left_width}}"]
+        for p in proc_order:
+            r = ch_ylds[p]
+            row.append(r)
+        row = " ".join(row) + "\n"
+        f.write(row)
+        f.write(line_break)
+
+
 
 # Get the yields (nested in the order: year, category, syst, proc)
 def get_yields(histo,sample_dict,blind=True,systematic_name=None):
@@ -48,7 +137,7 @@ def get_yields(histo,sample_dict,blind=True,systematic_name=None):
             for proc_name in sample_dict.keys():
                 if blind and (("data" in proc_name) and (not cat_name.startswith("cr_"))):
                     # If this is data and we're not in a CR category, put placeholder numbers for now
-                    yld_dict[proc_name][cat_name] = [-999,-999]
+                    yld_dict[cat_name][proc_name] = [-999,-999]
                 else:
                     val = sum(sum(histo[{"category":cat_name,"process":sample_dict[proc_name],"systematic":syst_name }].values(flow=True)))
                     var = sum(sum(histo[{"category":cat_name,"process":sample_dict[proc_name],"systematic":syst_name }].variances(flow=True)))
@@ -79,13 +168,101 @@ def handle_per_year_systs_for_fr2(in_dict, systs_special=SYSTS_SPECIAL):
             in_dict["FR2"][cat][f"{sys}Down"] = yld_do
 
 
-# Takes a full yield dict and returns the yields for just the procs we care about for datacard
-# Specify the year of interest, and category list, (and nominal syst is returned by default)
-def get_rate_dict(in_dict,yr_key,cat_lst):
+
+#####################################################
+# Get kappa dict
+def get_kappa_dict(in_dict_mc,in_dict_data,bkg_tf_map):
+
+    # Get the list of systematic base names (i.e. without the up and down tags)
+    #     - Assumes each syst has a "systnameUp" and a "systnameDown"
+    #     - This will drop nominal (since there is no "nominalUp" to tag on)
+    def get_syst_base_name_lst(in_lst):
+        out_lst = []
+        for syst in in_lst:
+            if syst.endswith("Up"):
+                syst_name_base = syst.replace("Up","")
+                if syst_name_base not in out_lst:
+                    out_lst.append(syst_name_base)
+        return out_lst
+
+
+    # Takes two pairs [val1,var1] and [val2,var2], returns the product with error propagated
+    # Note the var is like sumw2 i.e. alreayd squared (in both input and output)
+    def valvar_op(valvar_1, valvar_2, op):
+        #valvar_out = [None,None]
+
+        val1 = valvar_1[0]
+        var1 = valvar_1[1]
+        val2 = valvar_2[0]
+        var2 = valvar_2[1]
+
+        if op == "prod":
+            val = val1*val2
+        elif op == "div":
+            val = val1/val2
+        else:
+            raise Exception("Unknown operatation")
+
+        var = (val**2) * ( (np.sqrt(var1)/val1)**2 + (np.sqrt(var2)/val2)**2 )
+
+        return [val,var]
+
+
+    kappa_dict = {}
+    for cat in in_dict_mc.keys():
+        kappa_dict[cat] = {}
+        for sys in get_syst_base_name_lst(list(in_dict_mc[cat].keys())):
+            kappa_dict[cat][sys] = {}
+            for proc in in_dict_mc[cat]["nominal"]:
+                kappa_dict[cat][sys][proc] = {}
+                valvar_up = in_dict_mc[cat][f"{sys}Up"][proc]
+                valvar_do = in_dict_mc[cat][f"{sys}Down"][proc]
+                valvar_nom = in_dict_mc[cat]["nominal"][proc]
+                valvar_kappa_up = valvar_op(valvar_up,valvar_nom,"div")
+                valvar_kappa_do = valvar_op(valvar_do,valvar_nom,"div")
+
+                kappa_dict[cat][sys][proc]["Up"] = valvar_kappa_up
+                kappa_dict[cat][sys][proc]["Down"] = valvar_kappa_do
+
+    return kappa_dict
+
+
+## VERY IN PROGRESS
+#def do_tf():
+#    # Do the TF calculation
+#    if proc in bkg_tf_map:
+#        if cat not in bkg_tf_map[proc]:
+#            # Skip the TF calculation for categories that we have not defined it
+#            #print(f"Warning: the \"{cat}\" category does not have a TF CR defined. Skipping.")
+#            continue
+#        cr_name = bkg_tf_map[proc][cat]
+#        valvar_cr_mc   = in_dict_mc[cr_name]["nominal"][proc]
+#        valvar_cr_data = in_dict_data[cr_name]["nominal"]["data"]
+#
+#        print("PROC!!!",proc)
+#        print("mc",valvar_cr_mc)
+#        print("da",valvar_cr_data)
+#####################################################
+
+
+# Get just the numbers we want for rate row for datacard
+# Also sum all MC rates together into asimov number
+def get_rate_for_dc(in_dict,cats_for_asimov_data):
     out_dict = {}
-    for cat in cat_lst:
-        out_dict[cat] = in_dict[yr_key][cat]["nominal"]
+    for cat in in_dict:
+        out_dict[cat] = {}
+        asimov_data = 0
+        for proc in in_dict[cat]["nominal"]:
+            rate = in_dict[cat]["nominal"][proc][0]
+            if rate < 0:
+                print(f"\nWarning: Process \"{proc}\" in \"{cat}\" has negative total rate: {rate}.\n")
+            out_dict[cat][proc] = str(rate)
+            asimov_data += rate
+        out_dict[cat]["data_obs"] = str(asimov_data)
     return out_dict
+
+
+#####################################################
 
 
 def main():
@@ -113,7 +290,7 @@ def main():
     histo = f["njets"] # Let's use njets
 
     # Get the dictionary defining the mc sample grouping
-    sample_names_dict_data = gy.create_data_sample_dict("all")
+    sample_names_dict_data = {"FR2" : gy.create_data_sample_dict("all")}
     sample_names_dict_mc = {
         "UL16APV" : gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"UL16APV"),
         "UL16"    : gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"UL16"),
@@ -123,128 +300,38 @@ def main():
     }
 
     # Get yield dictionary (nested in the order: year, category, syst, proc)
-    yld_dict = {}
+    yld_dict_mc = {}
     for year in sample_names_dict_mc:
-        yld_dict[year] = get_yields(histo,sample_names_dict_mc[year])
-    handle_per_year_systs_for_fr2(yld_dict)
+        yld_dict_mc[year] = get_yields(histo,sample_names_dict_mc[year])
+    handle_per_year_systs_for_fr2(yld_dict_mc)
 
     # We're only looking at Full R2 for now
-    yld_dict = yld_dict["FR2"]
+    yld_dict_mc = yld_dict_mc["FR2"]
+    yld_dict_data = get_yields(histo,sample_names_dict_data["FR2"])
 
+    # Get the ratios to nominal
+    kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data,BKG_TF_MAP)
 
-    # Get just the yields we care about for now
-
-    def do_bkg_tf(in_dict):
-        print(in_dict.keys())
-
-    def get_kappa_dict(in_dict):
-
-        # Get the list of systematic base names (i.e. without the up and down tags)
-        #     - Assumes each syst has a "systnameUp" and a "systnameDown"
-        #     - This will drop nominal (since there is no "nominalUp" to tag on)
-        def get_syst_base_name_lst(in_lst):
-            out_lst = []
-            for syst in in_lst:
-                if syst.endswith("Up"):
-                    syst_name_base = syst.replace("Up","")
-                    if syst_name_base not in out_lst:
-                        out_lst.append(syst_name_base)
-            return out_lst
-
-
-        # Takes two pairs [val1,var1] and [val2,var2], returns the product with error propagated
-        # Note the var is like sumw2 i.e. alreayd squared (in both input and output)
-        def valvar_op(valvar_1, valvar_2, op):
-            #valvar_out = [None,None]
-
-            val1 = valvar_1[0]
-            var1 = valvar_1[1]
-            val2 = valvar_2[0]
-            var2 = valvar_2[1]
-
-            if op == "prod":
-                val = val1*val2
-            elif op == "div":
-                val = val1/val2
-            else:
-                raise Exception("Unknown operatation")
-
-            var = (val**2) * ( (np.sqrt(var1)/val1)**2 + (np.sqrt(var2)/val2)**2 )
-
-            return [val,var]
-
-
-        for cat in in_dict.keys():
-            print("\n",cat)
-            for sys in get_syst_base_name_lst(list(in_dict[cat].keys())):
-                print("\t",sys)
-                for proc in in_dict[cat]["nominal"]:
-                    valvar_up = in_dict[cat][f"{sys}Up"][proc]
-                    valvar_do = in_dict[cat][f"{sys}Down"][proc]
-                    valvar_nom = in_dict[cat]["nominal"][proc]
-                    valvar_kappa_up = valvar_op(valvar_up,valvar_nom,"div")
-                    valvar_kappa_do = valvar_op(valvar_do,valvar_nom,"div")
-                    print("\t\t",proc,valvar_nom)
-                    print("\t\t",proc,valvar_up)
-                    print("\t\t",proc,valvar_do)
-                    print("\t\t",proc,valvar_kappa_up)
-                    print("\t\t",proc,valvar_kappa_do)
-
-
-    tf_info_dict = {
-
-        'sr_4l_sf_A' : {
-            "ZZ" : {
-                "sr" : "sr_sf_all",
-                "cr" : "cr_4l_sf",
-            },
-            "ttZ" : {
-                "sr" : "sr_sf_all",
-                "cr" : "cr_4l_btag_sf_offZ_met80",
-            },
-        },
-    }
-
-    #for cat in tf_info_dict:
-        #zz_yld = n_cr * mc_sr / mc_cr
-
-    #'sr_4l_sf_B' :
-    #'sr_4l_sf_C' :
-
-    #'sr_4l_of_1' :
-    #'sr_4l_of_2' :
-    #'sr_4l_of_3' :
-    #'sr_4l_of_4' :
-
-    #'cr_4l_btag_of'
-    #'cr_4l_btag_sf_offZ_met80'
-    #'cr_4l_sf'
-
-
-    #x = do_bkg_tf(yld_dict)
-    x = get_kappa_dict(yld_dict)
+    # Get just the info we want to put in the card in str form
+    yld_rate_for_dc = get_rate_for_dc(yld_dict_mc,cats_for_asimov_data=CAT_LST_CB)
 
 
 
+    # Make the cards for each channel
+    print(f"Making cards for {CAT_LST_CB}. \nPutting in {out_dir}.")
+    for ch in CAT_LST_CB:
 
-    #rate_dict = get_rate_dict(yld_dict,yr_key="FR2",cat_lst=CAT_LST_CB)
-    #kappa_dict = get_kappa_dict(yld_didct
-    #print("Before",yld_dict)
-    #print("After",rate_dict)
+        # Make the card for this chan
+        make_ch_card(
+            ch,
+            PROC_LST,
+            yld_rate_for_dc[ch],
+            out_dir,
+        )
 
 
-    exit()
-    ### Print stuff
-    print("")
-    print(yld_dict)
-    for yr in yld_dict:
-        print(yr)
-        if yr != "FR2": continue
-        for cat in yld_dict[yr]:
-            print("\t",cat)
-            for sys in yld_dict[yr][cat]:
-                #print("\t\t",sys,yld_dict[yr][cat][sys].keys())
-                #if cat == "sr_4l_of_4" and sys == "btagSFbc_uncorrelated_2018Up":
-                print("\t\t",sys,yld_dict[yr][cat][sys])
+    print("Finished!")
 
-main()
+
+if __name__ == "__main__":
+    main()
