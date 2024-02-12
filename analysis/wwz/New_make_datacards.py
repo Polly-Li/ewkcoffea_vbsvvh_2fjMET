@@ -30,6 +30,8 @@ TMP_SYS_ORDER = [
     "btagSFbc_uncorrelated_2017",
     "btagSFlight_uncorrelated_2018",
     "btagSFbc_uncorrelated_2018",
+    "lumi",
+    "qcd_scale_ttZ",
 ]
 
 
@@ -144,7 +146,7 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,out_dir="."):
             #for syst_name in ch_kappas:
             ### TMP so we can match old card order for the diffs ###
             if set(TMP_SYS_ORDER) != set(ch_kappas.keys()):
-                raise Exception("THIS IS HERE")
+                raise Exception("THIS IS BAD HERE")
             for syst_name in TMP_SYS_ORDER:
             ###
                 row = [f"{syst_name} lnN"]
@@ -206,7 +208,36 @@ def handle_per_year_systs_for_fr2(in_dict, systs_special=SYSTS_SPECIAL):
 
 
 #####################################################
-# Get kappa dict
+### Related to systeamtics ###
+
+# Get the rate systs from the intput json, dump into dict (with nested keys: syst, proc)
+# Outputs strings, ready to be dumped into datacard
+def get_rate_systs(proc_lst):
+    syst_json = ewkcoffea_path("params/rate_systs.json")
+    with open(syst_json) as f_systs: rate_systs_dict = json.load(f_systs)
+
+    # Build up the dictionary
+    out_dict = {}
+
+    # Make lumi row
+    out_dict["lumi"] = {}
+    for proc in proc_lst:
+        out_dict["lumi"][proc] = str(rate_systs_dict["rate_uncertainties"]["lumi"])
+
+    # Make qcd_scale rows
+    for qcd_scale_proc in rate_systs_dict["qcd_scale"]:
+        out_dict[f"qcd_scale_{qcd_scale_proc}"] = {}
+        for proc in proc_lst:
+            if proc == qcd_scale_proc:
+                qcd_scale_uncty = str(rate_systs_dict["qcd_scale"][proc])
+            else:
+                qcd_scale_uncty = "-"
+            out_dict[f"qcd_scale_{qcd_scale_proc}"][proc] = qcd_scale_uncty
+
+    return out_dict
+
+
+# Get kappa dict (e.g. up/nom ratios) from the dict of all histograms
 def get_kappa_dict(in_dict_mc,in_dict_data,bkg_tf_map):
 
     # Get the list of systematic base names (i.e. without the up and down tags)
@@ -368,20 +399,24 @@ def main():
     yld_rate_for_dc = get_rate_for_dc(yld_dict_mc)
     kappa_for_dc = get_kappa_for_dc(kappa_dict)
 
-    #print(kappa_for_dc)
-    #exit()
-
 
     # Make the cards for each channel
     print(f"Making cards for {CAT_LST_CB}. \nPutting in {out_dir}.")
     for ch in CAT_LST_CB:
 
+        # The rates for this channel
+        yld_rate_for_dc_ch = yld_rate_for_dc[ch]
+
+        # Get the kappas for this channel
+        kappa_for_dc_ch = kappa_for_dc[ch]
+        kappa_for_dc_ch.update(get_rate_systs(PROC_LST)) # Append in the ones from rate json
+
         # Make the card for this chan
         make_ch_card(
             ch,
             PROC_LST,
-            yld_rate_for_dc[ch],
-            kappa_for_dc[ch],
+            yld_rate_for_dc_ch,
+            kappa_for_dc_ch,
             out_dir,
         )
 
