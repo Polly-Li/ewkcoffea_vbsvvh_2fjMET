@@ -146,7 +146,7 @@ def btag_eff_eval(jets,wp,year):
 
     return eff
 
-def run3_muons_sf_Attach(muons,year,syst,id_method,iso_method): 
+def run3_muons_sf_Attach(muons,year,syst,id_method,iso_method):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":
