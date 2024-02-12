@@ -154,7 +154,7 @@ def run3_muons_sf_Attach(muons,year,syst,id_method,iso_method):
     elif year == "2022":
         fname = ewkcoffea_path("data/run3_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_schemaV2.json")
     else:
-        raise Exception(f"Trying to apply run3 SF where they shouldn't be!")
+        raise Exception("Trying to apply run3 SF where they shouldn't be!")
 
     # Flatten the input (until correctionlib handles jagged data natively)
     abseta_flat = ak.flatten(abs(muons.eta))
@@ -174,7 +174,7 @@ def run3_muons_sf_Attach(muons,year,syst,id_method,iso_method):
     muons['ele_sf'] = ak.ones_like(sf)
     muons['muon_sf'] = sf
 
-def run3_electrons_sf_Attach(electrons,year,valtype,wp): 
+def run3_electrons_sf_Attach(electrons,year,valtype,wp):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":
@@ -182,9 +182,9 @@ def run3_electrons_sf_Attach(electrons,year,valtype,wp):
         fname = ewkcoffea_path("data/run3_sf/electron_sf/electron.json")
     elif year == "2022":
         #fname = ewkcoffea_path("data/run3_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_schemaV2.json")
-        raise Exception(f"Eras B,C,D, are not implemented yet!")
+        raise Exception("Eras B,C,D, are not implemented yet!")
     else:
-        raise Exception(f"Trying to apply run3 SF where they shouldn't be!")
+        raise Exception("Trying to apply run3 SF where they shouldn't be!")
 
     # Flatten the input (until correctionlib handles jagged data natively)
     eta_flat = ak.flatten(electrons.eta)
@@ -209,9 +209,9 @@ def run3_pu_Attach(pileup,year,syst):
         fname = ewkcoffea_path("data/run3_pu/pu_2022EE/puWeights.json")
     elif year == "2022":
         #fname = ewkcoffea_path("data/run3_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_schemaV2.json")
-        raise Exception(f"Era B,C,D not implemented yet!")
+        raise Exception("Era B,C,D not implemented yet!")
     else:
-        raise Exception(f"Trying to apply run3 SF where they shouldn't be!")
+        raise Exception("Trying to apply run3 SF where they shouldn't be!")
 
     # Flatten the input (until correctionlib handles jagged data natively)
     #nTrueInt_flat = ak.flatten(pileup.nTrueInt)

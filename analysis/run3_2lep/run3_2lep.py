@@ -8,7 +8,6 @@ import copy
 from hist import axis
 from coffea.analysis_tools import PackedSelection
 from coffea.lumi_tools import LumiMask
-import pandas as pd
 from topcoffea.modules.paths import topcoffea_path
 import topcoffea.modules.event_selection as es_tc
 from ewkcoffea.modules.paths import ewkcoffea_path as ewkcoffea_path
