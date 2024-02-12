@@ -10,6 +10,28 @@ from ewkcoffea.modules.paths import ewkcoffea_path
 
 import get_wwz_yields as gy # Note the fact that we're using functions from here means they probably belongs in ewkcoffea/ewkcoffea/modules
 
+# TMP!!! To match the old script's order
+TMP_SYS_ORDER = [
+    "btagSFlight_correlated",
+    "btagSFbc_correlated",
+    "lepSF_elec",
+    "lepSF_muon",
+    "PreFiring",
+    "PU",
+    "renorm",
+    "fact",
+    "ISR",
+    "FSR",
+    "btagSFlight_uncorrelated_2016APV",
+    "btagSFbc_uncorrelated_2016APV",
+    "btagSFlight_uncorrelated_2016",
+    "btagSFbc_uncorrelated_2016",
+    "btagSFlight_uncorrelated_2017",
+    "btagSFbc_uncorrelated_2017",
+    "btagSFlight_uncorrelated_2018",
+    "btagSFbc_uncorrelated_2018",
+]
+
 
 # Global variables
 PRECISION = 6   # Decimal point precision in the text datacard output
@@ -19,14 +41,14 @@ CAT_LST_CB = ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C", "sr_4l_of_1", "sr_4l_of_
 
 # Systs that are not correlated across years
 SYSTS_SPECIAL = {
-    #"btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
     "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    #"btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    #"btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    #"btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    #"btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    #"btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-    #"btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
 }
 
 BKG_TF_MAP = {
@@ -54,7 +76,7 @@ BKG_TF_MAP = {
 
 
 # Make the datacard for a given channel
-def make_ch_card(ch,proc_order,ch_ylds,out_dir="."):
+def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,out_dir="."):
 
     # Building blocks we'll need to build the card formatting
     bin_str = f"bin_{ch}"
@@ -117,6 +139,21 @@ def make_ch_card(ch,proc_order,ch_ylds,out_dir="."):
         f.write(row)
         f.write(line_break)
 
+        # Systematics rows
+        if ch_kappas is not None:
+            #for syst_name in ch_kappas:
+            ### TMP so we can match old card order for the diffs ###
+            if set(TMP_SYS_ORDER) != set(ch_kappas.keys()):
+                raise Exception("THIS IS HERE")
+            for syst_name in TMP_SYS_ORDER:
+            ###
+                row = [f"{syst_name} lnN"]
+                for p in proc_order:
+                    kappa_str = ch_kappas[syst_name][p]
+                    row.append(kappa_str)
+                row = " ".join(row) + "\n"
+                f.write(row)
+            f.write(line_break)
 
 
 # Get the yields (nested in the order: year, category, syst, proc)
@@ -131,8 +168,7 @@ def get_yields(histo,sample_dict,blind=True,systematic_name=None):
     for cat_name in histo.axes["category"]:
         yld_dict[cat_name] = {}
         for syst_name in syst_lst:
-            #if syst_name not in ["nominal", "btagSFlight_correlatedUp", "btagSFlight_correlatedDown", "PUUp", "PUDown", "btagSFbc_uncorrelated_2016APVUp", "btagSFbc_uncorrelated_2016APVDown"]: continue # TMP !!!
-            if syst_name not in ["nominal", "PUUp", "PUDown", "btagSFbc_uncorrelated_2016APVUp", "btagSFbc_uncorrelated_2016APVDown"]: continue # TMP !!!
+            #if syst_name not in ["nominal", "PUUp", "PUDown", "btagSFbc_uncorrelated_2016APVUp", "btagSFbc_uncorrelated_2016APVDown"]: continue # TMP !!!
             yld_dict[cat_name][syst_name ] = {}
             for proc_name in sample_dict.keys():
                 if blind and (("data" in proc_name) and (not cat_name.startswith("cr_"))):
@@ -247,7 +283,8 @@ def get_kappa_dict(in_dict_mc,in_dict_data,bkg_tf_map):
 
 # Get just the numbers we want for rate row for datacard
 # Also sum all MC rates together into asimov number
-def get_rate_for_dc(in_dict,cats_for_asimov_data):
+# Assumes in_dict has nested keys: cat,syst,proc
+def get_rate_for_dc(in_dict):
     out_dict = {}
     for cat in in_dict:
         out_dict[cat] = {}
@@ -260,6 +297,21 @@ def get_rate_for_dc(in_dict,cats_for_asimov_data):
             asimov_data += rate
         out_dict[cat]["data_obs"] = str(asimov_data)
     return out_dict
+
+
+# Assumes in_dict has nested keys: cat,syst_base,proc,"Up"(or "Down)
+# Takes just the val (dropps uncty)
+def get_kappa_for_dc(in_dict):
+    out_dict = {}
+    for cat in in_dict:
+        out_dict[cat] = {}
+        for systname_base in in_dict[cat]:
+            out_dict[cat][systname_base] = {}
+            for proc in in_dict[cat][systname_base]:
+                u = in_dict[cat][systname_base][proc]['Up'][0]
+                d = in_dict[cat][systname_base][proc]['Down'][0]
+                out_dict[cat][systname_base][proc] = f"{d}/{u}"
+    return(out_dict)
 
 
 #####################################################
@@ -313,8 +365,11 @@ def main():
     kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data,BKG_TF_MAP)
 
     # Get just the info we want to put in the card in str form
-    yld_rate_for_dc = get_rate_for_dc(yld_dict_mc,cats_for_asimov_data=CAT_LST_CB)
+    yld_rate_for_dc = get_rate_for_dc(yld_dict_mc)
+    kappa_for_dc = get_kappa_for_dc(kappa_dict)
 
+    #print(kappa_for_dc)
+    #exit()
 
 
     # Make the cards for each channel
@@ -326,6 +381,7 @@ def main():
             ch,
             PROC_LST,
             yld_rate_for_dc[ch],
+            kappa_for_dc[ch],
             out_dir,
         )
 
