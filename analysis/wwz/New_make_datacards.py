@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import copy
 import json
 import pickle
 import gzip
@@ -44,7 +45,7 @@ CAT_LST_CB = ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C", "sr_4l_of_1", "sr_4l_of_
 # Systs that are not correlated across years
 SYSTS_SPECIAL = {
     "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]}, # !!!
     "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
     "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
     "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
@@ -146,7 +147,7 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,out_dir="."):
         # Systematics rows
         if ch_kappas is not None:
             #for syst_name in ch_kappas:
-            ### TMP so we can match old card order for the diffs ###
+            ### TMP so we can match old card order for the diffs !!! ###
             if set(TMP_SYS_ORDER) != set(ch_kappas.keys()):
                 raise Exception("THIS IS BAD HERE")
             for syst_name in TMP_SYS_ORDER:
@@ -158,6 +159,34 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,out_dir="."):
                 row = " ".join(row) + "\n"
                 f.write(row)
             f.write(line_break)
+
+
+########### General ###########
+
+# Takes two pairs [val1,var1] and [val2,var2], returns the product with error propagated
+# Note the var is like sumw2 i.e. alreayd squared (in both input and output)
+def valvar_op(valvar_1, valvar_2, op):
+    #valvar_out = [None,None]
+
+    val1 = valvar_1[0]
+    var1 = valvar_1[1]
+    val2 = valvar_2[0]
+    var2 = valvar_2[1]
+
+    if op == "prod":
+        val = val1*val2
+        var = (val**2) * ( (np.sqrt(var1)/val1)**2 + (np.sqrt(var2)/val2)**2 )
+    elif op == "div":
+        val = val1/val2
+        var = (val**2) * ( (np.sqrt(var1)/val1)**2 + (np.sqrt(var2)/val2)**2 )
+    elif op == "diff":
+        val = val1 - val2
+        var = var1 + var2
+    else:
+        raise Exception("Unknown operatation")
+
+
+    return [val,var]
 
 
 ########### Getting and manipulating yields ###########
@@ -179,11 +208,11 @@ def get_yields(histo,sample_dict,blind=True,systematic_name=None):
             for proc_name in sample_dict.keys():
                 if blind and (("data" in proc_name) and (not cat_name.startswith("cr_"))):
                     # If this is data and we're not in a CR category, put placeholder numbers for now
-                    yld_dict[cat_name][proc_name] = [-999,-999]
+                    yld_dict[cat_name][syst_name][proc_name] = [-999,-999]
                 else:
                     val = sum(sum(histo[{"category":cat_name,"process":sample_dict[proc_name],"systematic":syst_name }].values(flow=True)))
                     var = sum(sum(histo[{"category":cat_name,"process":sample_dict[proc_name],"systematic":syst_name }].variances(flow=True)))
-                    yld_dict[cat_name][syst_name ][proc_name] = [val,var]
+                    yld_dict[cat_name][syst_name][proc_name] = [val,var]
 
     return yld_dict
 
@@ -243,7 +272,7 @@ def get_rate_systs(proc_lst):
 
 
 # Get kappa dict (e.g. up/nom ratios) from the dict of all histograms
-def get_kappa_dict(in_dict_mc,in_dict_data,bkg_tf_map):
+def get_kappa_dict(in_dict_mc,in_dict_data):
 
     # Get the list of systematic base names (i.e. without the up and down tags)
     #     - Assumes each syst has a "systnameUp" and a "systnameDown"
@@ -256,28 +285,6 @@ def get_kappa_dict(in_dict_mc,in_dict_data,bkg_tf_map):
                 if syst_name_base not in out_lst:
                     out_lst.append(syst_name_base)
         return out_lst
-
-
-    # Takes two pairs [val1,var1] and [val2,var2], returns the product with error propagated
-    # Note the var is like sumw2 i.e. alreayd squared (in both input and output)
-    def valvar_op(valvar_1, valvar_2, op):
-        #valvar_out = [None,None]
-
-        val1 = valvar_1[0]
-        var1 = valvar_1[1]
-        val2 = valvar_2[0]
-        var2 = valvar_2[1]
-
-        if op == "prod":
-            val = val1*val2
-        elif op == "div":
-            val = val1/val2
-        else:
-            raise Exception("Unknown operatation")
-
-        var = (val**2) * ( (np.sqrt(var1)/val1)**2 + (np.sqrt(var2)/val2)**2 )
-
-        return [val,var]
 
     # Get the kappa dict
     kappa_dict = {}
@@ -299,21 +306,43 @@ def get_kappa_dict(in_dict_mc,in_dict_data,bkg_tf_map):
     return kappa_dict
 
 
-## VERY IN PROGRESS
-#def do_tf():
-#    # Do the TF calculation
-#    if proc in bkg_tf_map:
-#        if cat not in bkg_tf_map[proc]:
-#            # Skip the TF calculation for categories that we have not defined it
-#            #print(f"Warning: the \"{cat}\" category does not have a TF CR defined. Skipping.")
-#            continue
-#        cr_name = bkg_tf_map[proc][cat]
-#        valvar_cr_mc   = in_dict_mc[cr_name]["nominal"][proc]
-#        valvar_cr_data = in_dict_data[cr_name]["nominal"]["data"]
-#
-#        print("PROC!!!",proc)
-#        print("mc",valvar_cr_mc)
-#        print("da",valvar_cr_data)
+# Calculate the background estimation from relevant CRs
+def do_tf(yld_mc,yld_data,kappas,tf_map):
+
+    # Loop over cat and do NSF calculation for each relevant proc in each cat
+    yld_mc_out = copy.deepcopy(yld_mc)
+    for cat in yld_mc:
+        # Just nonimal for now
+        for proc_of_interest in yld_mc[cat]["nominal"]:
+
+            # Skip procs that do not get TF calculations
+            if proc_of_interest not in tf_map: continue
+            if cat not in tf_map[proc_of_interest]:
+                #print(f"Warning, cat \"{cat}\" not defined for this proc.")
+                continue
+
+            # Get the nominal mc and data yields in the CR
+            cr_name = tf_map[proc_of_interest][cat]
+            valvar_cr_mc   = yld_mc[cr_name]["nominal"][proc_of_interest]
+            valvar_cr_data = yld_data[cr_name]["nominal"]["data"]
+
+            # Sum up all contributions in the CR besides bkg of interest
+            valvar_bkg_all_but_bkg_of_interest = [0,0]
+            for p in yld_mc[cr_name]["nominal"]:
+                if p != proc_of_interest:
+                    valvar_bkg_all_but_bkg_of_interest[0] += yld_mc[cr_name]["nominal"][p][0]
+                    valvar_bkg_all_but_bkg_of_interest[1] += yld_mc[cr_name]["nominal"][p][1]
+
+            # Subtract those extra background contributions from the data
+            valvar_cr_data_corrected = valvar_op(valvar_cr_data, valvar_bkg_all_but_bkg_of_interest, "diff")
+
+            # Calculate the NSF = N_CR_with_other_bkg_subtracted / MC_CR
+            valvar_nsf = valvar_op(valvar_cr_data_corrected, valvar_cr_mc, "div")
+
+            # Put the old yield times the NSF into the out dict
+            yld_mc_out[cat]["nominal"][proc_of_interest] = valvar_op(valvar_nsf, yld_mc[cat]["nominal"][proc_of_interest], "prod")
+
+    return yld_mc_out
 
 
 
@@ -331,9 +360,11 @@ def get_rate_for_dc(in_dict):
             rate = in_dict[cat]["nominal"][proc][0]
             if rate < 0:
                 print(f"\nWarning: Process \"{proc}\" in \"{cat}\" has negative total rate: {rate}.\n")
-            out_dict[cat][proc] = str(rate)
+            #out_dict[cat][proc] = str(rate)
+            out_dict[cat][proc] = "{:.6f}".format(np.round(rate,6)) ### TMP!!!
             asimov_data += rate
-        out_dict[cat]["data_obs"] = str(asimov_data)
+        #out_dict[cat]["data_obs"] = str(asimov_data)
+        out_dict[cat]["data_obs"] = str(np.round(asimov_data,6)) ### TMP!!!
     return out_dict
 
 
@@ -402,9 +433,15 @@ def main():
     yld_dict_data = get_yields(histo,sample_names_dict_data["FR2"])
 
     # Get the syst ratios to nominal (i.e. kappas)
-    kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data,BKG_TF_MAP)
+    kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data)
+
+    # Do the TF calculation
+    yld_dict_mc = do_tf(yld_dict_mc,yld_dict_data,kappa_dict,BKG_TF_MAP)
+
+
 
     # Get just the info we want to put in the card in str form
+    # Maybe move this to inside the card making loop
     rate_for_dc = get_rate_for_dc(yld_dict_mc)
     kappa_for_dc = get_kappa_for_dc(kappa_dict)
 
