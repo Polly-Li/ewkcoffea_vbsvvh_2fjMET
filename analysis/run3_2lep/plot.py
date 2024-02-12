@@ -42,7 +42,7 @@ p.dump_plot(
         "yield_prec": 4,
         "lumi_value": 35.1,
         "yaxis_log": True,
-        "ratio_range": [0., 2.],
+        "ratio_range": [0.5, 1.5],
     },
 
     dirname=dir_name,

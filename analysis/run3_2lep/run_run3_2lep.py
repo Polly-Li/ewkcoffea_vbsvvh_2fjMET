@@ -8,6 +8,8 @@ import os
 from coffea import processor
 from coffea.nanoevents import NanoAODSchema
 
+NanoAODSchema.warn_missing_crossrefs = False
+
 import topcoffea.modules.remote_environment as remote_environment
 
 LST_OF_KNOWN_EXECUTORS = ["futures","work_queue"]

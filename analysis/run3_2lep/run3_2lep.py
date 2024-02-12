@@ -4,6 +4,7 @@ import awkward as ak
 np.seterr(divide='ignore', invalid='ignore', over='ignore')
 from coffea import processor
 import hist
+import copy
 from hist import axis
 from coffea.analysis_tools import PackedSelection
 from coffea.lumi_tools import LumiMask
@@ -12,6 +13,7 @@ from topcoffea.modules.paths import topcoffea_path
 import topcoffea.modules.event_selection as es_tc
 from ewkcoffea.modules.paths import ewkcoffea_path as ewkcoffea_path
 import ewkcoffea.modules.selection_Run3_2Lep as selRun3_2Lep
+import ewkcoffea.modules.corrections as ewk_corrections
 import ewkcoffea.modules.objects_Run3_2Lep as objRun3_2Lep
 from topcoffea.modules.get_param_from_jsons import GetParam
 get_tc_param = GetParam(topcoffea_path("params/params.json"))
@@ -189,6 +191,10 @@ class AnalysisProcessor(processor.ProcessorABC):
         mu_Run3_2Lep_t = mu[mu.is_tight_lep_for_Run3_2Lep]
         mu_Run3_2Lep_t = mu_Run3_2Lep_t[ak.argsort(mu_Run3_2Lep_t.pt, axis=-1,ascending=False)] # Sort by pt
 
+        #Attach the SF
+        ewk_corrections.run3_muons_sf_Attach(mu_Run3_2Lep_t,year,"nominal","NUM_MediumID_DEN_TrackerMuons","NUM_TightPFIso_DEN_MediumID")
+        ewk_corrections.run3_electrons_sf_Attach(ele_Run3_2Lep_t,year,"sf","wp90iso")
+
         # Create a List of Leptons from the Muons and Electrons
         l_Run3_2Lep_t = ak.with_name(ak.concatenate([ele_Run3_2Lep_t,mu_Run3_2Lep_t],axis=1),'PtEtaPhiMCandidate')
         l_Run3_2Lep_t = l_Run3_2Lep_t[ak.argsort(l_Run3_2Lep_t.pt, axis=-1,ascending=False)] # Sort by pt
@@ -233,7 +239,6 @@ class AnalysisProcessor(processor.ProcessorABC):
         jet1 = jets_Run3_2Lep_padded[:,1]
 
         selRun3_2Lep.addjetispresent_Run3_2Lep(jet0, jet1, jets_Run3_2Lep)
-
         # Do the object selection for the Run3  muons
         ######### Systematics ###########
 
@@ -242,26 +247,10 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         weights_obj_base = coffea.analysis_tools.Weights(len(events),storeIndividual=True)
         if not isData:
-            npu = pileup.nTrueInt
-            pu_weights = []
-            if year == "2022":
-                pu_path = ewkcoffea_path("data/run3_pu/pu_2022/puWeights.csv")
-                df = pd.read_csv(pu_path)
-                for value in npu:
-                    npu_value = min(value, 80)
-                    ratio = df[df['npu'] == npu_value]['ratio'].iloc[0]
-                    pu_weights.append(ratio)
-            if year == "2022EE":
-                pu_path = ewkcoffea_path("data/run3_pu/pu_2022EE/puWeights.csv")
-                df = pd.read_csv(pu_path)
-                for value in npu:
-                    value = int(value)
-                    npu_value = min(value, 80)
-                    ratio = df[df['npu'] == npu_value]['ratio'].iloc[0]
-                    pu_weights.append(ratio)
+            sm_wgt = 1.0   #Keep as 1.0 for now
             genw = events["genWeight"]
             lumi = 1000.0*get_tc_param(f"lumi_{year}")
-            weights_obj_base.add("norm",((xsec/sow)*genw*lumi*pu_weights))
+            weights_obj_base.add("norm",((xsec/sow)*genw*lumi*sm_wgt))
 
         # We do not have systematics yet
         syst_var_list = ['nominal']
@@ -269,10 +258,17 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Loop over the list of systematic variations we've constructed
         for syst_var in syst_var_list:
 
-            #################### Add variables into event object so that they persist ####################
             events["l_Run3_2Lep_t"] = l_Run3_2Lep_t
             events["jets_Run3_2Lep"] = jets_Run3_2Lep
             selRun3_2Lep.add2lmask_Run3_2Lep(events, year, isData)
+            weights_obj_base_for_kinematics_syst = copy.deepcopy(weights_obj_base)
+            if not isData:
+                ewk_corrections.run3_pu_Attach(pileup,year,"nominal")
+                weights_obj_base_for_kinematics_syst.add("pu_corr", pileup.pileup_corr)
+                weights_obj_base_for_kinematics_syst.add("lepSF_muon", events.muon_sf)
+                weights_obj_base_for_kinematics_syst.add("lepSF_ele", events.ele_sf)
+
+            #################### Add variables into event object so that they persist ####################
             selRun3_2Lep.addjetmask_Run3_2Lep(events, year, isData)
             selRun3_2Lep.addmetmask_Run3_2Lep(events, year, isData)
 
@@ -423,7 +419,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
                         # Decide if we are filling this hist with weight or raw event counts
                         #if dense_axis_name.endswith("_counts"): weights = events.nom
-                        weights = weights_obj_base.partial_weight(include=["norm"])
+                        weights = weights_obj_base_for_kinematics_syst.weight(None)
 
                         # Make the cuts mask
                         cuts_lst = [sr_name]

@@ -3,6 +3,7 @@ import pickle
 import gzip
 import awkward as ak
 
+import correctionlib
 from coffea import lookup_tools
 
 from ewkcoffea.modules.paths import ewkcoffea_path
@@ -145,4 +146,79 @@ def btag_eff_eval(jets,wp,year):
 
     return eff
 
+def run3_muons_sf_Attach(muons,year,syst,id_method,iso_method): 
 
+    # Get the right sf json for the given campaign
+    if year == "2022EE":
+        fname = ewkcoffea_path("data/run3_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_EE_schemaV2.json")
+    elif year == "2022":
+        fname = ewkcoffea_path("data/run3_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_schemaV2.json")
+    else:
+        raise Exception(f"Trying to apply run3 SF where they shouldn't be!")
+
+    # Flatten the input (until correctionlib handles jagged data natively)
+    abseta_flat = ak.flatten(abs(muons.eta))
+    pt_flat = ak.flatten(muons.pt)
+
+    # For now, cap all pt at 199.9 (limit for this particular sf)
+    pt_flat = ak.where(pt_flat>199.9,199.9,pt_flat)
+    pt_flat = ak.where(pt_flat<15.0,15.0,pt_flat)
+
+    # Evaluate the SF
+    ceval = correctionlib.CorrectionSet.from_file(fname)
+    sf_id_flat = ceval[id_method].evaluate(abseta_flat,pt_flat,syst)
+    sf_iso_flat = ceval[iso_method].evaluate(abseta_flat,pt_flat,syst)
+    sf_flat = sf_id_flat * sf_iso_flat
+    sf = ak.unflatten(sf_flat,ak.num(muons.pt))
+
+    muons['ele_sf'] = ak.ones_like(sf)
+    muons['muon_sf'] = sf
+
+def run3_electrons_sf_Attach(electrons,year,valtype,wp): 
+
+    # Get the right sf json for the given campaign
+    if year == "2022EE":
+        n_year = "2022Re-recoE+PromptFG"
+        fname = ewkcoffea_path("data/run3_sf/electron_sf/electron.json")
+    elif year == "2022":
+        #fname = ewkcoffea_path("data/run3_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_schemaV2.json")
+        raise Exception(f"Eras B,C,D, are not implemented yet!")
+    else:
+        raise Exception(f"Trying to apply run3 SF where they shouldn't be!")
+
+    # Flatten the input (until correctionlib handles jagged data natively)
+    eta_flat = ak.flatten(electrons.eta)
+    pt_flat = ak.flatten(electrons.pt)
+
+    # For now, min pt sf is 10.0
+    pt_flat = ak.where(pt_flat<10.0,10.0,pt_flat)
+
+    # Evaluate the SF
+    ceval = correctionlib.CorrectionSet.from_file(fname)
+    sf_flat = ceval["Electron-ID-SF"].evaluate(n_year,valtype,wp,eta_flat,pt_flat)
+    sf = ak.unflatten(sf_flat,ak.num(electrons.pt))
+
+    electrons['ele_sf'] = sf
+    electrons['muon_sf'] = ak.ones_like(electrons.pt)
+
+
+def run3_pu_Attach(pileup,year,syst):
+
+    # Get the right sf json for the given campaign
+    if year == "2022EE":
+        fname = ewkcoffea_path("data/run3_pu/pu_2022EE/puWeights.json")
+    elif year == "2022":
+        #fname = ewkcoffea_path("data/run3_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_schemaV2.json")
+        raise Exception(f"Era B,C,D not implemented yet!")
+    else:
+        raise Exception(f"Trying to apply run3 SF where they shouldn't be!")
+
+    # Flatten the input (until correctionlib handles jagged data natively)
+    #nTrueInt_flat = ak.flatten(pileup.nTrueInt)
+
+    # Evaluate the SF
+    ceval = correctionlib.CorrectionSet.from_file(fname)
+    pu_corr = ceval["Collisions2022_359022_362760_eraEFG_GoldenJson"].evaluate(pileup.nTrueInt,syst)
+    #pu_corr = ak.unflatten(pu_corr_flat,ak.num(pileup.nTrueInt))
+
+    pileup['pileup_corr'] = pu_corr

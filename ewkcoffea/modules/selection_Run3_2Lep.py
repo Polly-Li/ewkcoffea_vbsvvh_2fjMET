@@ -106,6 +106,7 @@ def add2lmask_Run3_2Lep(events, year, isData):
 
     # Leptons and padded leptons
     leps = events.l_Run3_2Lep_t
+    leps_padded = ak.pad_none(leps,2)
 
     # Filters
     filter_flags = events.Flag
@@ -115,6 +116,9 @@ def add2lmask_Run3_2Lep(events, year, isData):
     nlep_2 = (ak.num(leps) == 2)
 
     mask = filters & nlep_2
+
+    events['muon_sf'] = leps_padded[:,0].muon_sf*leps_padded[:,1].muon_sf
+    events['ele_sf'] = leps_padded[:,0].ele_sf*leps_padded[:,1].ele_sf
     events['is2l'] = ak.fill_none(mask,False)
 
 
