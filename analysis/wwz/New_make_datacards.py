@@ -77,6 +77,8 @@ BKG_TF_MAP = {
 }
 
 
+########### Writing the datacard ###########
+
 # Make the datacard for a given channel
 def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,out_dir="."):
 
@@ -158,7 +160,9 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,out_dir="."):
             f.write(line_break)
 
 
-# Get the yields (nested in the order: year, category, syst, proc)
+########### Getting and manipulating yields ###########
+
+# Get the yields (nested in the order: year,cat,syst,proc)
 def get_yields(histo,sample_dict,blind=True,systematic_name=None):
 
     yld_dict = {}
@@ -184,10 +188,12 @@ def get_yields(histo,sample_dict,blind=True,systematic_name=None):
     return yld_dict
 
 
-# Modifies the "FR2" subdict of the yield dict to have proper up and down variations for the per year systematics
-# Because of how we fill in the processor, the yields for per year systs come _only_ from that year
-# So this function adds the nominal yields from the other three years to the up/down variation for the relevant year
-# Note the in_dict is modifed in place (we do not return a copy of the dict)
+# Modify the yields dict to properly calculate the per-year systs
+#   - Needs all years in input dict, expects input dict with keys: year,cat,syst,proc
+#   - Modifies the "FR2" subdict of the yield dict to have proper up and down variations for the per year systematics
+#   - Because of how we fill in the processor, the yields for per year systs come _only_ from that year
+#   - So this function adds the nominal yields from the other three years to the up/down variation for the relevant year
+#   - Note the in_dict is modifed in place (we do not return a copy of the dict)
 def handle_per_year_systs_for_fr2(in_dict, systs_special=SYSTS_SPECIAL):
     for cat in in_dict["FR2"].keys():
         for sys in systs_special:
@@ -207,8 +213,7 @@ def handle_per_year_systs_for_fr2(in_dict, systs_special=SYSTS_SPECIAL):
 
 
 
-#####################################################
-### Related to systeamtics ###
+########### Regarding uncertainties ###########
 
 # Get the rate systs from the intput json, dump into dict (with nested keys: syst, proc)
 # Outputs strings, ready to be dumped into datacard
@@ -274,7 +279,7 @@ def get_kappa_dict(in_dict_mc,in_dict_data,bkg_tf_map):
 
         return [val,var]
 
-
+    # Get the kappa dict
     kappa_dict = {}
     for cat in in_dict_mc.keys():
         kappa_dict[cat] = {}
@@ -309,8 +314,10 @@ def get_kappa_dict(in_dict_mc,in_dict_data,bkg_tf_map):
 #        print("PROC!!!",proc)
 #        print("mc",valvar_cr_mc)
 #        print("da",valvar_cr_data)
-#####################################################
 
+
+
+########### Put stuff into form to pass to the function to write out cards ###########
 
 # Get just the numbers we want for rate row for datacard
 # Also sum all MC rates together into asimov number
@@ -345,8 +352,10 @@ def get_kappa_for_dc(in_dict):
     return(out_dict)
 
 
-#####################################################
 
+
+#####################################
+########### Main function ###########
 
 def main():
 
@@ -382,21 +391,21 @@ def main():
         "FR2"     : gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"all"),
     }
 
-    # Get yield dictionary (nested in the order: year, category, syst, proc)
-    yld_dict_mc = {}
+    # Get yield dictionary (nested in the order: year,cat,syst,proc)
+    yld_dict_mc_allyears = {}
     for year in sample_names_dict_mc:
-        yld_dict_mc[year] = get_yields(histo,sample_names_dict_mc[year])
-    handle_per_year_systs_for_fr2(yld_dict_mc)
+        yld_dict_mc_allyears[year] = get_yields(histo,sample_names_dict_mc[year])
+    handle_per_year_systs_for_fr2(yld_dict_mc_allyears)
 
     # We're only looking at Full R2 for now
-    yld_dict_mc = yld_dict_mc["FR2"]
+    yld_dict_mc = yld_dict_mc_allyears["FR2"]
     yld_dict_data = get_yields(histo,sample_names_dict_data["FR2"])
 
-    # Get the ratios to nominal
+    # Get the syst ratios to nominal (i.e. kappas)
     kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data,BKG_TF_MAP)
 
     # Get just the info we want to put in the card in str form
-    yld_rate_for_dc = get_rate_for_dc(yld_dict_mc)
+    rate_for_dc = get_rate_for_dc(yld_dict_mc)
     kappa_for_dc = get_kappa_for_dc(kappa_dict)
 
 
@@ -405,7 +414,7 @@ def main():
     for ch in CAT_LST_CB:
 
         # The rates for this channel
-        yld_rate_for_dc_ch = yld_rate_for_dc[ch]
+        rate_for_dc_ch = rate_for_dc[ch]
 
         # Get the kappas for this channel
         kappa_for_dc_ch = kappa_for_dc[ch]
@@ -415,7 +424,7 @@ def main():
         make_ch_card(
             ch,
             PROC_LST,
-            yld_rate_for_dc_ch,
+            rate_for_dc_ch,
             kappa_for_dc_ch,
             out_dir,
         )
