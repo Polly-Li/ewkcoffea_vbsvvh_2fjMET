@@ -156,6 +156,7 @@ SAMPLE_DICT_BASE = {
     ],
 
     "tWZ" : ["tWll"],
+    #"tWZ" : ["tWZ4l"],
 
     "other" : [
 
@@ -205,6 +206,7 @@ SAMPLE_DICT_BASE_INDIV = {
     "TTZToLLNuNu_M_10":          ["TTZToLLNuNu_M_10"],
     "TTZToQQ":                   ["TTZToQQ"],
     "tWll" :                     ["tWll"],
+    #"tWZ4l" :                     ["tWZ4l"],
 
     ##"DYJetsToLL_M_10to50_MLM": ["DYJetsToLL_M_10to50_MLM"],
     "DYJetsToLL_M_50_MLM":       ["DYJetsToLL_M_50_MLM"],
@@ -964,8 +966,8 @@ def main():
 
         # Dump latex table for cut based
         hlines = [2,3,7,8]
-        sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
-        #sr_cats_to_print = ["sr_sf_all_cutbased"] + ["sr_of_all_cutbased","sr_all_cutbased"] + ["sr_4l_sf_presel","sr_4l_of_presel"] # Preselection SR categories
+        #sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
+        sr_cats_to_print = ["sr_sf_all_cutbased" , "sr_of_all_cutbased" , "sr_all_cutbased" , "sr_4l_sf_presel" , "sr_4l_sf_trn" , "sr_4l_of_presel"] # Preselection SR categories
         procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
         print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
 
