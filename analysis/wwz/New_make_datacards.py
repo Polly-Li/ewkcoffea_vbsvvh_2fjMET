@@ -149,6 +149,7 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,out_dir="."):
             ### TMP so we can match old card order for the diffs !!! ###
             #if set(TMP_SYS_ORDER) != set(ch_kappas.keys()):
                 #raise Exception("THIS IS BAD HERE")
+                #pass
             #for syst_name in TMP_SYS_ORDER:
             ###
             for syst_name in ch_kappas:
@@ -352,16 +353,16 @@ def do_tf(yld_mc,yld_data,kappas,tf_map):
 
                 # Loop over syst and replace the kappas with the e.g. MC_SR_up/MC_CR_up
                 for syst_base_name in kappas[cat]:
-                    for proc in kappas[cat][syst_base_name]:
-                        sr_up = kappas[cat][syst_base_name][proc]["Up"]
-                        sr_do = kappas[cat][syst_base_name][proc]["Down"]
-                        cr_up = kappas[cr_name][syst_base_name][proc]["Up"]
-                        cr_do = kappas[cr_name][syst_base_name][proc]["Down"]
-                        new_kappa_up = valvar_op(cr_up,sr_up,"div")
-                        new_kappa_do = valvar_op(cr_do,sr_do,"div")
 
-                        kappas_out[cat][syst_base_name][proc]["Up"] = new_kappa_up
-                        kappas_out[cat][syst_base_name][proc]["Down"] = new_kappa_do
+                    sr_up = kappas[cat][syst_base_name][proc_of_interest]["Up"]
+                    sr_do = kappas[cat][syst_base_name][proc_of_interest]["Down"]
+                    cr_up = kappas[cr_name][syst_base_name][proc_of_interest]["Up"]
+                    cr_do = kappas[cr_name][syst_base_name][proc_of_interest]["Down"]
+                    new_kappa_up = valvar_op(sr_up,cr_up,"div")
+                    new_kappa_do = valvar_op(sr_do,cr_do,"div")
+
+                    kappas_out[cat][syst_base_name][proc_of_interest]["Up"] = new_kappa_up
+                    kappas_out[cat][syst_base_name][proc_of_interest]["Down"] = new_kappa_do
 
                 # Make new syst rows for CR stats, I don't like this, FIXME
                 kappas_out[cat][f"cr_stats_{proc_of_interest}"] = {}
@@ -390,11 +391,11 @@ def get_rate_for_dc(in_dict):
             rate = in_dict[cat]["nominal"][proc][0]
             if rate < 0:
                 print(f"\nWarning: Process \"{proc}\" in \"{cat}\" has negative total rate: {rate}.\n")
-            #out_dict[cat][proc] = str(rate)
-            out_dict[cat][proc] = "{:.6f}".format(np.round(rate,6)) ### TMP!!!
+            out_dict[cat][proc] = str(rate)
+            #out_dict[cat][proc] = "{:.6f}".format(np.round(rate,6)) ### TMP!!!
             asimov_data += rate
-        #out_dict[cat]["data_obs"] = str(asimov_data)
-        out_dict[cat]["data_obs"] = str(np.round(asimov_data,6)) ### TMP!!!
+        out_dict[cat]["data_obs"] = str(asimov_data)
+        #out_dict[cat]["data_obs"] = str(np.round(asimov_data,6)) ### TMP!!!
     return out_dict
 
 
@@ -464,6 +465,19 @@ def main():
     # We're only looking at Full R2 for now
     yld_dict_mc = yld_dict_mc_allyears["FR2"]
     yld_dict_data = get_yields(histo,sample_names_dict_data["FR2"])
+
+    #print("THIS!!!")
+    #s = "renorm"
+    #p = "ttZ"
+    #c = "sr_4l_of_1"
+    #cr = "cr_4l_btag_of"
+    #print("mc sr n",yld_dict_mc[c]["nominal"][p])
+    #print("mc sr u",yld_dict_mc[c][f"{s}Up"][p])
+    #print("mc cr n",yld_dict_mc[cr]["nominal"][p])
+    #print("mc cr u",yld_dict_mc[cr][f"{s}Up"][p])
+    #print("da cr n",yld_dict_data[cr]["nominal"]["data"])
+    #print("da cr u",yld_dict_data[cr][f"{s}Up"]["data"])
+    #exit()
 
     # Get the syst ratios to nominal (i.e. kappas)
     kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data)
