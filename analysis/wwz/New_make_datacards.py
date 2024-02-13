@@ -9,7 +9,7 @@ import argparse
 from topcoffea.modules import utils
 from ewkcoffea.modules.paths import ewkcoffea_path
 
-import get_wwz_yields as gy # Note the fact that we're using functions from here means they probably belongs in ewkcoffea/ewkcoffea/modules
+import sample_groupings as sg # Note the fact that we're using functions from here means they probably belongs in ewkcoffea/ewkcoffea/modules
 
 # TMP!!! To match the old script's order
 TMP_SYS_ORDER = [
@@ -471,13 +471,13 @@ def main():
     histo = f["njets"] # Let's use njets
 
     # Get the dictionary defining the mc sample grouping
-    sample_names_dict_data = {"FR2" : gy.create_data_sample_dict("all")}
+    sample_names_dict_data = {"FR2" : sg.create_data_sample_dict("all")}
     sample_names_dict_mc = {
-        "UL16APV" : gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"UL16APV"),
-        "UL16"    : gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"UL16"),
-        "UL17"    : gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"UL17"),
-        "UL18"    : gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"UL18"),
-        "FR2"     : gy.create_mc_sample_dict(gy.SAMPLE_DICT_BASE,"all"),
+        "UL16APV" : sg.create_mc_sample_dict(sg.SAMPLE_DICT_BASE,"UL16APV"),
+        "UL16"    : sg.create_mc_sample_dict(sg.SAMPLE_DICT_BASE,"UL16"),
+        "UL17"    : sg.create_mc_sample_dict(sg.SAMPLE_DICT_BASE,"UL17"),
+        "UL18"    : sg.create_mc_sample_dict(sg.SAMPLE_DICT_BASE,"UL18"),
+        "FR2"     : sg.create_mc_sample_dict(sg.SAMPLE_DICT_BASE,"all"),
     }
 
     # Get yield dictionary (nested in the order: year,cat,syst,proc)
