@@ -146,12 +146,12 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,out_dir="."):
 
         # Systematics rows
         if ch_kappas is not None:
-            #for syst_name in ch_kappas:
             ### TMP so we can match old card order for the diffs !!! ###
-            if set(TMP_SYS_ORDER) != set(ch_kappas.keys()):
-                raise Exception("THIS IS BAD HERE")
-            for syst_name in TMP_SYS_ORDER:
+            #if set(TMP_SYS_ORDER) != set(ch_kappas.keys()):
+                #raise Exception("THIS IS BAD HERE")
+            #for syst_name in TMP_SYS_ORDER:
             ###
+            for syst_name in ch_kappas:
                 row = [f"{syst_name} lnN"]
                 for p in proc_order:
                     kappa_str = ch_kappas[syst_name][p]
@@ -341,12 +341,14 @@ def do_tf(yld_mc,yld_data,kappas,tf_map):
                 # Subtract those extra background contributions from the data
                 valvar_cr_data_corrected = valvar_op(valvar_cr_data, valvar_bkg_all_but_bkg_of_interest, "diff")
 
-                # Calculate the NSF = N_CR_with_other_bkg_subtracted / MC_CR
+                # Calculate the NSF = N_CR_with_other_bkg_subtracted / MC_CR, use this to scale the yld
                 valvar_nsf = valvar_op(valvar_cr_data_corrected, valvar_cr_mc, "div")
+                valvar_bkg = valvar_op(valvar_nsf, yld_mc[cat]["nominal"][proc_of_interest], "prod")
 
                 # Put the old yield times the NSF into the out dict
-                yld_mc_out[cat]["nominal"][proc_of_interest] = valvar_op(valvar_nsf, yld_mc[cat]["nominal"][proc_of_interest], "prod")
+                yld_mc_out[cat]["nominal"][proc_of_interest] = valvar_bkg
 
+                ### Handle the kappas ###
 
                 # Loop over syst and replace the kappas with the e.g. MC_SR_up/MC_CR_up
                 for syst_base_name in kappas[cat]:
@@ -360,6 +362,15 @@ def do_tf(yld_mc,yld_data,kappas,tf_map):
 
                         kappas_out[cat][syst_base_name][proc]["Up"] = new_kappa_up
                         kappas_out[cat][syst_base_name][proc]["Down"] = new_kappa_do
+
+                # Make new syst rows for CR stats, I don't like this, FIXME
+                kappas_out[cat][f"cr_stats_{proc_of_interest}"] = {}
+                kappas_out[cat][f"cr_stats_{proc_of_interest}"][proc_of_interest] = {}
+                kappas_out[cat][f"cr_stats_{proc_of_interest}"][proc_of_interest]["Up"]   = [(valvar_bkg[0] + np.sqrt(valvar_bkg[1]))/valvar_bkg[0], None] # Rel err up, do not include error on the error (just leave as None)
+                kappas_out[cat][f"cr_stats_{proc_of_interest}"][proc_of_interest]["Down"] = [(valvar_bkg[0] - np.sqrt(valvar_bkg[1]))/valvar_bkg[0], None] # Rel err down, do not include error on the error (just leave as None)
+                for p in yld_mc[cr_name]["nominal"]:
+                    if p != proc_of_interest:
+                        kappas_out[cat][f"cr_stats_{proc_of_interest}"][p] = {"Up": [None,None], "Down": [None,None]}
 
     return [yld_mc_out, kappas_out]
 
@@ -398,7 +409,10 @@ def get_kappa_for_dc(in_dict):
             for proc in in_dict[cat][systname_base]:
                 u = in_dict[cat][systname_base][proc]['Up'][0]
                 d = in_dict[cat][systname_base][proc]['Down'][0]
-                out_dict[cat][systname_base][proc] = f"{d}/{u}"
+                if (u is None) and (d is None):
+                    out_dict[cat][systname_base][proc] = "-"
+                else:
+                    out_dict[cat][systname_base][proc] = f"{d}/{u}"
     return(out_dict)
 
 
@@ -455,7 +469,7 @@ def main():
     kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data)
 
     # Do the TF calculation
-    yld_dict_mc, _kappa_dict = do_tf(yld_dict_mc,yld_dict_data,kappa_dict,BKG_TF_MAP)
+    yld_dict_mc, kappa_dict = do_tf(yld_dict_mc,yld_dict_data,kappa_dict,BKG_TF_MAP)
 
 
 
