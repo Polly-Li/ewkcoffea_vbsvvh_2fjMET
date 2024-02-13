@@ -364,16 +364,38 @@ def do_tf(yld_mc,yld_data,kappas,tf_map):
                     kappas_out[cat][syst_base_name][proc_of_interest]["Up"] = new_kappa_up
                     kappas_out[cat][syst_base_name][proc_of_interest]["Down"] = new_kappa_do
 
-                # Make new syst rows for CR stats, I don't like this, FIXME
-                kappas_out[cat][f"cr_stats_{proc_of_interest}"] = {}
-                kappas_out[cat][f"cr_stats_{proc_of_interest}"][proc_of_interest] = {}
-                kappas_out[cat][f"cr_stats_{proc_of_interest}"][proc_of_interest]["Up"]   = [(valvar_bkg[0] + np.sqrt(valvar_bkg[1]))/valvar_bkg[0], None] # Rel err up, do not include error on the error (just leave as None)
-                kappas_out[cat][f"cr_stats_{proc_of_interest}"][proc_of_interest]["Down"] = [(valvar_bkg[0] - np.sqrt(valvar_bkg[1]))/valvar_bkg[0], None] # Rel err down, do not include error on the error (just leave as None)
-                for p in yld_mc[cr_name]["nominal"]:
-                    if p != proc_of_interest:
-                        kappas_out[cat][f"cr_stats_{proc_of_interest}"][p] = {"Up": [None,None], "Down": [None,None]}
-
     return [yld_mc_out, kappas_out]
+
+
+# Get the MC stats from the yld dict and put it into kappa dict
+def add_stats_kappas(yld_mc,kappas):
+
+    kappas_out = copy.deepcopy(kappas)
+
+    # Loop over cat and do NSF calculation for each relevant proc in each cat
+    for cat in yld_mc:
+
+        # Make a row for proc_of_interest's stats
+        for proc_of_interest in yld_mc[cat]["nominal"]:
+            kappas_out[cat][f"stats_{cat}_{proc_of_interest}"] = {}
+            # Now fill the columns for proc_of_interest's row
+            for proc_itr in yld_mc[cat]["nominal"]:
+                # Most columns are not relevant (will just be a "-" in the datacard)
+                kappas_out[cat][f"stats_{cat}_{proc_of_interest}"][proc_itr] = {"Up": [None,None], "Down": [None,None]}
+                # But for the column that goes with this proc_of_interest, fill the actual numbers
+                if proc_itr == proc_of_interest:
+                    valvar = yld_mc[cat]["nominal"][proc_of_interest]
+                    up = (valvar[0] + np.sqrt(valvar[1]))/valvar[0]
+                    do = (valvar[0] - np.sqrt(valvar[1]))/valvar[0]
+                    # Clip at 0
+                    if do < 0:
+                        clipval = 0.000001
+                        print(f"WARNING: For cat \"{cat}\" and proc \"{proc_of_interest}\", the uncertainty {np.sqrt(valvar[1])} is larger than the value {valvar[0]}. Clipping to {clipval}.")
+                        do = clipval
+                    kappas_out[cat][f"stats_{cat}_{proc_of_interest}"][proc_itr]["Up"]   = [up, None] # Rel err up, do not include error on the error (just leave as None)
+                    kappas_out[cat][f"stats_{cat}_{proc_of_interest}"][proc_itr]["Down"] = [do, None] # Rel err down, do not include error on the error (just leave as None)
+
+    return kappas_out
 
 
 
@@ -466,24 +488,29 @@ def main():
     yld_dict_mc = yld_dict_mc_allyears["FR2"]
     yld_dict_data = get_yields(histo,sample_names_dict_data["FR2"])
 
-    #print("THIS!!!")
-    #s = "renorm"
-    #p = "ttZ"
-    #c = "sr_4l_of_1"
-    #cr = "cr_4l_btag_of"
-    #print("mc sr n",yld_dict_mc[c]["nominal"][p])
-    #print("mc sr u",yld_dict_mc[c][f"{s}Up"][p])
-    #print("mc cr n",yld_dict_mc[cr]["nominal"][p])
-    #print("mc cr u",yld_dict_mc[cr][f"{s}Up"][p])
-    #print("da cr n",yld_dict_data[cr]["nominal"]["data"])
-    #print("da cr u",yld_dict_data[cr][f"{s}Up"]["data"])
-    #exit()
+    # Print info about a bin
+    printinfo = 0
+    if printinfo:
+        s = "renorm"
+        p = "other"
+        c = "sr_4l_of_2"
+        cr = "cr_4l_btag_of"
+        print("mc sr n",yld_dict_mc[c]["nominal"][p])
+        print("mc sr u",yld_dict_mc[c][f"{s}Up"][p])
+        print("mc cr n",yld_dict_mc[cr]["nominal"][p])
+        print("mc cr u",yld_dict_mc[cr][f"{s}Up"][p])
+        print("da cr n",yld_dict_data[cr]["nominal"]["data"])
+        print("da cr u",yld_dict_data[cr][f"{s}Up"]["data"])
+        exit()
 
     # Get the syst ratios to nominal (i.e. kappas)
     kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data)
 
     # Do the TF calculation
     yld_dict_mc, kappa_dict = do_tf(yld_dict_mc,yld_dict_data,kappa_dict,BKG_TF_MAP)
+
+    # Add mc stats to kappa dict (important to be after TF calculation so that data driven bkg stats include stats of CRs)
+    kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict)
 
 
 
