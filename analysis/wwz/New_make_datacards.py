@@ -254,20 +254,22 @@ def get_rate_systs(proc_lst):
     # Build up the dictionary
     out_dict = {}
 
-    # Make lumi row
-    out_dict["lumi"] = {}
-    for proc in proc_lst:
-        out_dict["lumi"][proc] = str(rate_systs_dict["rate_uncertainties"]["lumi"])
-
-    # Make qcd_scale rows
-    for qcd_scale_proc in rate_systs_dict["qcd_scale"]:
-        out_dict[f"qcd_scale_{qcd_scale_proc}"] = {}
+    # Make row for rate uncertainties that impact all processes (for now just lumi)
+    for uncty_name in rate_systs_dict["rate_uncertainties_all_proc"]:
+        out_dict[uncty_name] = {}
         for proc in proc_lst:
-            if proc == qcd_scale_proc:
-                qcd_scale_uncty = str(rate_systs_dict["qcd_scale"][proc])
-            else:
-                qcd_scale_uncty = "-"
-            out_dict[f"qcd_scale_{qcd_scale_proc}"][proc] = qcd_scale_uncty
+            out_dict[uncty_name][proc] = str(rate_systs_dict["rate_uncertainties_all_proc"][uncty_name])
+
+    # Make rows for rate uncertainties that impact a subset of the processes
+    for uncty_name in rate_systs_dict["rate_uncertainties_some_proc"]:
+        for proc_of_interest in rate_systs_dict["rate_uncertainties_some_proc"][uncty_name]["procs"]:
+            out_dict[f"{uncty_name}_{proc_of_interest}"] = {}
+            for proc_itr in proc_lst:
+                if proc_itr == proc_of_interest:
+                    uncty = str(rate_systs_dict["rate_uncertainties_some_proc"][uncty_name]["val"])
+                else:
+                    uncty = "-"
+                out_dict[f"{uncty_name}_{proc_of_interest}"][proc_itr] = uncty
 
     return out_dict
 
@@ -493,7 +495,7 @@ def main():
     if printinfo:
         s = "renorm"
         p = "other"
-        c = "sr_4l_of_2"
+        c = "sr_4l_of_1"
         cr = "cr_4l_btag_of"
         print("mc sr n",yld_dict_mc[c]["nominal"][p])
         print("mc sr u",yld_dict_mc[c][f"{s}Up"][p])

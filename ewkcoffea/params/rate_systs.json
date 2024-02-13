@@ -1,8 +1,11 @@
 {
-    "rate_uncertainties" : {
+    "rate_uncertainties_all_proc" : {
         "lumi": 1.016
     },
-    "qcd_scale": {
-        "ttZ": "0.898/1.117"
+    "rate_uncertainties_some_proc" : {
+        "qcd_scale": {
+            "procs": ["ttZ"],
+            "val": "0.898/1.117"
+        }
     }
 }
