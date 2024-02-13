@@ -163,11 +163,9 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,out_dir="."):
 
 ########### General ###########
 
-# Takes two pairs [val1,var1] and [val2,var2], returns the product with error propagated
+# Takes two pairs [val1,var1] and [val2,var2], returns the product or sum with error propagated
 # Note the var is like sumw2 i.e. alreayd squared (in both input and output)
 def valvar_op(valvar_1, valvar_2, op):
-    #valvar_out = [None,None]
-
     val1 = valvar_1[0]
     var1 = valvar_1[1]
     val2 = valvar_2[0]
@@ -179,12 +177,14 @@ def valvar_op(valvar_1, valvar_2, op):
     elif op == "div":
         val = val1/val2
         var = (val**2) * ( (np.sqrt(var1)/val1)**2 + (np.sqrt(var2)/val2)**2 )
+    elif op == "sum":
+        val = val1 + val2
+        var = var1 + var2
     elif op == "diff":
         val = val1 - val2
         var = var1 + var2
     else:
         raise Exception("Unknown operatation")
-
 
     return [val,var]
 
@@ -309,40 +309,59 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
 # Calculate the background estimation from relevant CRs
 def do_tf(yld_mc,yld_data,kappas,tf_map):
 
-    # Loop over cat and do NSF calculation for each relevant proc in each cat
     yld_mc_out = copy.deepcopy(yld_mc)
+    kappas_out = copy.deepcopy(kappas)
+
+    # Loop over cat and do NSF calculation for each relevant proc in each cat
     for cat in yld_mc:
         # Just nonimal for now
         for proc_of_interest in yld_mc[cat]["nominal"]:
 
             # Skip procs that do not get TF calculations
             if proc_of_interest not in tf_map: continue
-            if cat not in tf_map[proc_of_interest]:
+            elif cat not in tf_map[proc_of_interest]:
                 #print(f"Warning, cat \"{cat}\" not defined for this proc.")
                 continue
 
-            # Get the nominal mc and data yields in the CR
-            cr_name = tf_map[proc_of_interest][cat]
-            valvar_cr_mc   = yld_mc[cr_name]["nominal"][proc_of_interest]
-            valvar_cr_data = yld_data[cr_name]["nominal"]["data"]
+            # Otherwise we go ahead and do the background estimation stuff
+            else:
 
-            # Sum up all contributions in the CR besides bkg of interest
-            valvar_bkg_all_but_bkg_of_interest = [0,0]
-            for p in yld_mc[cr_name]["nominal"]:
-                if p != proc_of_interest:
-                    valvar_bkg_all_but_bkg_of_interest[0] += yld_mc[cr_name]["nominal"][p][0]
-                    valvar_bkg_all_but_bkg_of_interest[1] += yld_mc[cr_name]["nominal"][p][1]
+                # Get the nominal mc and data yields in the CR
+                cr_name = tf_map[proc_of_interest][cat]
+                valvar_cr_mc   = yld_mc[cr_name]["nominal"][proc_of_interest]
+                valvar_cr_data = yld_data[cr_name]["nominal"]["data"]
 
-            # Subtract those extra background contributions from the data
-            valvar_cr_data_corrected = valvar_op(valvar_cr_data, valvar_bkg_all_but_bkg_of_interest, "diff")
+                # Sum up all contributions in the CR besides bkg of interest
+                valvar_bkg_all_but_bkg_of_interest = [0,0]
+                for p in yld_mc[cr_name]["nominal"]:
+                    if p != proc_of_interest:
+                        valvar_bkg_all_but_bkg_of_interest[0] += yld_mc[cr_name]["nominal"][p][0]
+                        valvar_bkg_all_but_bkg_of_interest[1] += yld_mc[cr_name]["nominal"][p][1]
 
-            # Calculate the NSF = N_CR_with_other_bkg_subtracted / MC_CR
-            valvar_nsf = valvar_op(valvar_cr_data_corrected, valvar_cr_mc, "div")
+                # Subtract those extra background contributions from the data
+                valvar_cr_data_corrected = valvar_op(valvar_cr_data, valvar_bkg_all_but_bkg_of_interest, "diff")
 
-            # Put the old yield times the NSF into the out dict
-            yld_mc_out[cat]["nominal"][proc_of_interest] = valvar_op(valvar_nsf, yld_mc[cat]["nominal"][proc_of_interest], "prod")
+                # Calculate the NSF = N_CR_with_other_bkg_subtracted / MC_CR
+                valvar_nsf = valvar_op(valvar_cr_data_corrected, valvar_cr_mc, "div")
 
-    return yld_mc_out
+                # Put the old yield times the NSF into the out dict
+                yld_mc_out[cat]["nominal"][proc_of_interest] = valvar_op(valvar_nsf, yld_mc[cat]["nominal"][proc_of_interest], "prod")
+
+
+                # Loop over syst and replace the kappas with the e.g. MC_SR_up/MC_CR_up
+                for syst_base_name in kappas[cat]:
+                    for proc in kappas[cat][syst_base_name]:
+                        sr_up = kappas[cat][syst_base_name][proc]["Up"]
+                        sr_do = kappas[cat][syst_base_name][proc]["Down"]
+                        cr_up = kappas[cr_name][syst_base_name][proc]["Up"]
+                        cr_do = kappas[cr_name][syst_base_name][proc]["Down"]
+                        new_kappa_up = valvar_op(cr_up,sr_up,"div")
+                        new_kappa_do = valvar_op(cr_do,sr_do,"div")
+
+                        kappas_out[cat][syst_base_name][proc]["Up"] = new_kappa_up
+                        kappas_out[cat][syst_base_name][proc]["Down"] = new_kappa_do
+
+    return [yld_mc_out, kappas_out]
 
 
 
@@ -436,7 +455,7 @@ def main():
     kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data)
 
     # Do the TF calculation
-    yld_dict_mc = do_tf(yld_dict_mc,yld_dict_data,kappa_dict,BKG_TF_MAP)
+    yld_dict_mc, _kappa_dict = do_tf(yld_dict_mc,yld_dict_data,kappa_dict,BKG_TF_MAP)
 
 
 
