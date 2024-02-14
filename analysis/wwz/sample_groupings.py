@@ -20,6 +20,8 @@ SAMPLE_DICT_BASE = {
     "tWZ" : ["tWll"],
     #"tWZ" : ["tWZ4l"],
 
+    "WZ" : ["WZTo3LNu"],
+
     "other" : [
 
         ##"WWZJetsTo4L2Nu",
@@ -44,7 +46,7 @@ SAMPLE_DICT_BASE = {
         "VHnobb",
         ##"WJetsToLNu",
         "WWTo2L2Nu",
-        "WZTo3LNu",
+        #"WZTo3LNu", # Now by itself
 
         "WWW",
         "WZZ",

@@ -11,6 +11,8 @@ from ewkcoffea.modules.paths import ewkcoffea_path
 
 import sample_groupings as sg # Note the fact that we're using functions from here means they probably belongs in ewkcoffea/ewkcoffea/modules
 
+SMALL = 0.000001
+
 # TMP!!! To match the old script's order
 TMP_SYS_ORDER = [
     "btagSFlight_correlated",
@@ -38,7 +40,7 @@ TMP_SYS_ORDER = [
 
 # Global variables
 PRECISION = 6   # Decimal point precision in the text datacard output
-PROC_LST = ["WWZ","ZH","ZZ","ttZ","tWZ","other"]
+PROC_LST = ["WWZ","ZH","ZZ","ttZ","tWZ","WZ","other"]
 SIG_LST = ["WWZ","ZH"]
 CAT_LST_CB = ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C", "sr_4l_of_1", "sr_4l_of_2", "sr_4l_of_3", "sr_4l_of_4"]
 
@@ -242,6 +244,28 @@ def handle_per_year_systs_for_fr2(in_dict, systs_special=SYSTS_SPECIAL):
             in_dict["FR2"][cat][f"{sys}Down"] = yld_do
 
 
+# Get rid of negative values in the yld dict
+#   - Replace the value with SMALL
+#   - And add |value| to the stat error to be more conservative
+#   - Shift the up/down variations to be centered around SMALL (does not touch stat uncertainty on up/down)
+def handle_negatives(in_dict):
+    out_dict = copy.deepcopy(in_dict)
+    for cat in in_dict:
+        for proc in in_dict[cat]["nominal"]:
+            val = in_dict[cat]["nominal"][proc][0]
+            var = in_dict[cat]["nominal"][proc][1]
+            if val < 0:
+                print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and shifting up/down systematic variations accordingly.")
+                out_dict[cat]["nominal"][proc][0] = SMALL
+                out_dict[cat]["nominal"][proc][1] = (abs(val) + np.sqrt(var))**2
+                for syst in out_dict[cat]:
+                    if syst == "nominal": continue # Already handled this one
+                    syst_var_orig = out_dict[cat][syst][proc]
+                    out_dict[cat][syst][proc][0] = (syst_var_orig - val) + SMALL # Center around SMALL
+
+    return out_dict
+
+
 
 ########### Regarding uncertainties ###########
 
@@ -303,8 +327,18 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
                 valvar_kappa_up = valvar_op(valvar_up,valvar_nom,"div")
                 valvar_kappa_do = valvar_op(valvar_do,valvar_nom,"div")
 
+                # Handle negative cases
+                if (valvar_kappa_up[0]<0) and (valvar_kappa_do[0]<0): raise Exception("Both kappas negative, should not be possible.")
+                if valvar_kappa_up[0] < 0:
+                    print(f"WARNING: Up var for {sys} for {proc} for {cat} is negative, setting to {SMALL}.")
+                    valvar_kappa_up[0] = SMALL
+                if valvar_kappa_do[0] < 0:
+                    valvar_kappa_do[0] = SMALL
+                    print(f"WARNING: Down var for {sys} for {proc} for {cat} is negative, setting to {SMALL}.")
+
                 kappa_dict[cat][sys][proc]["Up"] = valvar_kappa_up
                 kappa_dict[cat][sys][proc]["Down"] = valvar_kappa_do
+
 
     return kappa_dict
 
@@ -391,9 +425,8 @@ def add_stats_kappas(yld_mc,kappas):
                     do = (valvar[0] - np.sqrt(valvar[1]))/valvar[0]
                     # Clip at 0
                     if do < 0:
-                        clipval = 0.000001
-                        print(f"WARNING: For cat \"{cat}\" and proc \"{proc_of_interest}\", the uncertainty {np.sqrt(valvar[1])} is larger than the value {valvar[0]}. Clipping to {clipval}.")
-                        do = clipval
+                        print(f"WARNING: For cat \"{cat}\" and proc \"{proc_of_interest}\", the uncertainty {np.sqrt(valvar[1])} is larger than the value {valvar[0]}. Clipping down variation to {SMALL}.")
+                        do = SMALL
                     kappas_out[cat][f"stats_{cat}_{proc_of_interest}"][proc_itr]["Up"]   = [up, None] # Rel err up, do not include error on the error (just leave as None)
                     kappas_out[cat][f"stats_{cat}_{proc_of_interest}"][proc_itr]["Down"] = [do, None] # Rel err down, do not include error on the error (just leave as None)
 
@@ -491,25 +524,29 @@ def main():
     yld_dict_data = get_yields(histo,sample_names_dict_data["FR2"])
 
     # Print info about a bin
-    printinfo = 0
+    printinfo = 1
     if printinfo:
         s = "renorm"
-        p = "other"
-        c = "sr_4l_of_1"
+        p = "WWZ"
+        c = "sr_4l_of_2"
         cr = "cr_4l_btag_of"
+        print(p,c,s,cr)
         print("mc sr n",yld_dict_mc[c]["nominal"][p])
         print("mc sr u",yld_dict_mc[c][f"{s}Up"][p])
         print("mc cr n",yld_dict_mc[cr]["nominal"][p])
         print("mc cr u",yld_dict_mc[cr][f"{s}Up"][p])
         print("da cr n",yld_dict_data[cr]["nominal"]["data"])
         print("da cr u",yld_dict_data[cr][f"{s}Up"]["data"])
-        exit()
+        #exit()
 
     # Get the syst ratios to nominal (i.e. kappas)
     kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data)
 
     # Do the TF calculation
     yld_dict_mc, kappa_dict = do_tf(yld_dict_mc,yld_dict_data,kappa_dict,BKG_TF_MAP)
+
+    # Get rid of negative yields (and recenter syst variations around SMALL), should happen before computing kappas
+    yld_dict_mc = handle_negatives(yld_dict_mc)
 
     # Add mc stats to kappa dict (important to be after TF calculation so that data driven bkg stats include stats of CRs)
     kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict)
