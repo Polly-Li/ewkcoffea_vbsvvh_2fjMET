@@ -83,7 +83,7 @@ BKG_TF_MAP = {
 ########### Writing the datacard ###########
 
 # Make the datacard for a given channel
-def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,out_dir="."):
+def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,out_dir="."):
 
     # Building blocks we'll need to build the card formatting
     bin_str = f"bin_{ch}"
@@ -161,6 +161,18 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,out_dir="."):
                     row.append(kappa_str)
                 row = " ".join(row) + "\n"
                 f.write(row)
+
+        # Systematics rows for gmN
+        if ch_gmn is not None:
+            for name in ch_gmn:
+                row = [name]
+                for p in proc_order:
+                    alpha_str = ch_gmn[name][p]
+                    row.append(alpha_str)
+                row = " ".join(row) + "\n"
+                f.write(row)
+            f.write(line_break)
+        else:
             f.write(line_break)
 
 
@@ -348,6 +360,7 @@ def do_tf(yld_mc,yld_data,kappas,tf_map):
 
     yld_mc_out = copy.deepcopy(yld_mc)
     kappas_out = copy.deepcopy(kappas)
+    gmn_alpha_out = {}
 
     # Loop over cat and do NSF calculation for each relevant proc in each cat
     for cat in yld_mc:
@@ -385,6 +398,12 @@ def do_tf(yld_mc,yld_data,kappas,tf_map):
                 # Put the old yield times the NSF into the out dict
                 yld_mc_out[cat]["nominal"][proc_of_interest] = valvar_bkg
 
+                # Get the gmN numbers
+                valvar_alpha = valvar_op(valvar_bkg,valvar_cr_data, "div")
+                if cat not in gmn_alpha_out: gmn_alpha_out[cat] = {}
+                if cr_name not in gmn_alpha_out[cat]: gmn_alpha_out[cat][cr_name] = {"N": valvar_cr_data[0], "proc_alpha": {}}
+                gmn_alpha_out[cat][cr_name]["proc_alpha"][proc_of_interest] = valvar_alpha[0]
+
                 ### Handle the kappas ###
 
                 # Loop over syst and replace the kappas with the e.g. MC_SR_up/MC_CR_up
@@ -400,11 +419,14 @@ def do_tf(yld_mc,yld_data,kappas,tf_map):
                     kappas_out[cat][syst_base_name][proc_of_interest]["Up"] = new_kappa_up
                     kappas_out[cat][syst_base_name][proc_of_interest]["Down"] = new_kappa_do
 
-    return [yld_mc_out, kappas_out]
+    return [yld_mc_out, kappas_out, gmn_alpha_out]
+
+
 
 
 # Get the MC stats from the yld dict and put it into kappa dict
-def add_stats_kappas(yld_mc,kappas):
+# Can optionally skip processes (e.g. skip data driven ZZ and ttZ since do these different via gmN)
+def add_stats_kappas(yld_mc, kappas, skip_procs=[]):
 
     kappas_out = copy.deepcopy(kappas)
 
@@ -413,6 +435,7 @@ def add_stats_kappas(yld_mc,kappas):
 
         # Make a row for proc_of_interest's stats
         for proc_of_interest in yld_mc[cat]["nominal"]:
+            if proc_of_interest in skip_procs: continue
             kappas_out[cat][f"stats_{cat}_{proc_of_interest}"] = {}
             # Now fill the columns for proc_of_interest's row
             for proc_itr in yld_mc[cat]["nominal"]:
@@ -474,6 +497,23 @@ def get_kappa_for_dc(in_dict):
     return out_dict
 
 
+# Prepares the gmN line for the datacard
+# The proc_lst shoudl be all processes
+# Assumes this is for a single category, so dict looks like {cr_name: {"N": 60, "proc_alpha": {"proc": value}}}
+def get_gmn_for_dc(in_dict,proc_lst):
+    out_dict = {}
+    for cr_name in in_dict:
+        N = in_dict[cr_name]['N']
+        if int(N)!= N: raise Exception(f"ERROR: Why is the number of events in your CR ({N}) not an int?")
+        row_name = f"stats_{cr_name} gmN {int(N)}"
+        out_dict[row_name] = {}
+        for p_itr in proc_lst:
+            if p_itr in in_dict[cr_name]["proc_alpha"]:
+                out = str(in_dict[cr_name]["proc_alpha"][p_itr])
+            else:
+                out = "-"
+            out_dict[row_name][p_itr] = out
+    return out_dict
 
 
 #####################################
@@ -539,17 +579,19 @@ def main():
         print("da cr u",yld_dict_data[cr][f"{s}Up"]["data"])
         #exit()
 
+
     # Get the syst ratios to nominal (i.e. kappas)
     kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data)
 
     # Do the TF calculation
-    yld_dict_mc, kappa_dict = do_tf(yld_dict_mc,yld_dict_data,kappa_dict,BKG_TF_MAP)
+    yld_dict_mc, kappa_dict, gmn_dict = do_tf(yld_dict_mc,yld_dict_data,kappa_dict,BKG_TF_MAP)
 
     # Get rid of negative yields (and recenter syst variations around SMALL), should happen before computing kappas
     yld_dict_mc = handle_negatives(yld_dict_mc)
 
     # Add mc stats to kappa dict (important to be after TF calculation so that data driven bkg stats include stats of CRs)
-    kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict)
+    kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,skip_procs=["ZZ","ttZ"])
+
 
 
 
@@ -570,12 +612,16 @@ def main():
         kappa_for_dc_ch = kappa_for_dc[ch]
         kappa_for_dc_ch.update(get_rate_systs(PROC_LST)) # Append in the ones from rate json
 
+        # Get the gmN rows for this channel
+        gmn_for_dc_ch = get_gmn_for_dc(gmn_dict[ch],proc_lst=list(sg.SAMPLE_DICT_BASE.keys()))
+
         # Make the card for this chan
         make_ch_card(
             ch,
             PROC_LST,
             rate_for_dc_ch,
             kappa_for_dc_ch,
+            gmn_for_dc_ch,
             out_dir,
         )
 
