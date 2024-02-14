@@ -150,8 +150,8 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,out_dir="."):
         if ch_kappas is not None:
             ### TMP so we can match old card order for the diffs !!! ###
             #if set(TMP_SYS_ORDER) != set(ch_kappas.keys()):
-                #raise Exception("THIS IS BAD HERE")
-                #pass
+            #    raise Exception("THIS IS BAD HERE")
+            #    pass
             #for syst_name in TMP_SYS_ORDER:
             ###
             for syst_name in ch_kappas:
@@ -471,7 +471,7 @@ def get_kappa_for_dc(in_dict):
                     out_dict[cat][systname_base][proc] = "-"
                 else:
                     out_dict[cat][systname_base][proc] = f"{d}/{u}"
-    return(out_dict)
+    return out_dict
 
 
 
