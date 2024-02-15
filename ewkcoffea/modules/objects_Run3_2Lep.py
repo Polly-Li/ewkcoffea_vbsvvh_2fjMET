@@ -29,7 +29,7 @@ def is_presel_Run3_2Lep_mu(mu):
         (abs(mu.eta)         <  get_param("Run3_2Lep_pres_m_eta")) &
         (abs(mu.dxy)         <  get_param("Run3_2Lep_pres_m_dxy")) &
         (abs(mu.dz)          <  get_param("Run3_2Lep_pres_m_dz")) &
-        (mu.pfIsoId >=  get_param("wwz_pres_m_pfIsoId_Tight")) &
+        (mu.pfIsoId >=  get_param("Run3_pres_m_pfIsoId_Tight")) &
         #(mu.pfRelIso03_all <  get_param("Run3_2Lep_pres_m_pfRelIso_all")) &
         (mu.mediumId)
     )
