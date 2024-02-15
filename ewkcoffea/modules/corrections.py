@@ -150,9 +150,9 @@ def run3_muons_sf_Attach(muons,year,syst,id_method,iso_method):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":
-        fname = ewkcoffea_path("data/run3_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_EE_schemaV2.json")
+        fname = ewkcoffea_path("data/run3_lep_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_EE_schemaV2.json")
     elif year == "2022":
-        fname = ewkcoffea_path("data/run3_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_schemaV2.json")
+        fname = ewkcoffea_path("data/run3_lep_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_schemaV2.json")
     else:
         raise Exception("Trying to apply run3 SF where they shouldn't be!")
 
@@ -179,7 +179,7 @@ def run3_electrons_sf_Attach(electrons,year,valtype,wp):
     # Get the right sf json for the given campaign
     if year == "2022EE":
         n_year = "2022Re-recoE+PromptFG"
-        fname = ewkcoffea_path("data/run3_sf/electron_sf/electron.json")
+        fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/electron.json")
     elif year == "2022":
         #fname = ewkcoffea_path("data/run3_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_schemaV2.json")
         raise Exception("Eras B,C,D, are not implemented yet!")

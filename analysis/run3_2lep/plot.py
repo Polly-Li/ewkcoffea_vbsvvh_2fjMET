@@ -41,7 +41,7 @@ p.dump_plot(
         "print_yield": True,
         "yield_prec": 4,
         "lumi_value": 35.1,
-        "yaxis_log": True,
+        #"yaxis_log": True,
         "ratio_range": [0.5, 1.5],
     },
 
