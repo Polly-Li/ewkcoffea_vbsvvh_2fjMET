@@ -4,12 +4,12 @@ Run3 muon corrections: [`2022`](https://gitlab.cern.ch/cms-muonPOG/muonefficienc
 
 ## Run3 Electron Corrections
 2022 Electron Corrections:<br>
-'''
+```
 /eos/cms/store/group/phys_egamma/correctionlibJSONs/Run3_2022_recoBCDE_PromptFG/2022Re-recoBCD/electron.json.gz
-'''
+```
 2022EE Electron Corrections:<br>
-'''
+```
 /eos/cms/store/group/phys_egamma/correctionlibJSONs/Run3_2022_recoBCDE_PromptFG/2022Re-recoE+PromptFG/electron.json.gz
-'''
+```
 Relevant twiki can be found [`here`](https://twiki.cern.ch/twiki/bin/view/CMS/EgammSFandSSRun3). 
 
