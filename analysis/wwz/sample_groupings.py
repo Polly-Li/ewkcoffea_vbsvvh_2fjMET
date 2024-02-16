@@ -17,8 +17,7 @@ SAMPLE_DICT_BASE = {
         "TTZToQQ",
     ],
 
-    "tWZ" : ["tWll"],
-    #"tWZ" : ["tWZ4l"],
+    "tWZ" : ["tWZ4l"], # Old sample tWll
 
     "WZ" : ["WZTo3LNu"],
 
@@ -28,7 +27,7 @@ SAMPLE_DICT_BASE = {
         ##"GluGluZH","qqToZHToZTo2L",
         ##"ZZTo4l", "ggToZZTo2e2mu", "ggToZZTo2e2tau", "ggToZZTo2mu2tau", "ggToZZTo4e", "ggToZZTo4mu", "ggToZZTo4tau",
         ##"TTZToLL_M_1to10","TTZToLLNuNu_M_10","TTZToQQ",
-        ##"tWll",
+        ##"tWZ4l",
 
         ##"DYJetsToLL_M_10to50_MLM",
         "DYJetsToLL_M_50_MLM",
@@ -69,8 +68,7 @@ SAMPLE_DICT_BASE_INDIV = {
     "TTZToLL_M_1to10":           ["TTZToLL_M_1to10"],
     "TTZToLLNuNu_M_10":          ["TTZToLLNuNu_M_10"],
     "TTZToQQ":                   ["TTZToQQ"],
-    "tWll" :                     ["tWll"],
-    #"tWZ4l" :                     ["tWZ4l"],
+    "tWZ4l" :                     ["tWZ4l"], # Old sample tWll
 
     ##"DYJetsToLL_M_10to50_MLM": ["DYJetsToLL_M_10to50_MLM"],
     "DYJetsToLL_M_50_MLM":       ["DYJetsToLL_M_50_MLM"],
