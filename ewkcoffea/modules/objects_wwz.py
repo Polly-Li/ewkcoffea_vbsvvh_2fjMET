@@ -17,7 +17,7 @@ def get_cleaned_collection(obj_collection_a,obj_collection_b,drcut=0.4):
 ######### WWZ 4l analysis object selection #########
 
 # WWZ preselection for electrons
-def is_presel_wwz_ele(ele,tight):
+def is_presel_wwz_ele(ele,year,tight):
     mask = (
         (ele.pt               >  get_ec_param("wwz_pres_e_pt")) &
         (abs(ele.eta)         <  get_ec_param("wwz_pres_e_eta")) &
@@ -28,20 +28,24 @@ def is_presel_wwz_ele(ele,tight):
         (ele.lostHits         <= get_ec_param("wwz_pres_e_lostHits"))
     )
     if tight: mask = (mask & ele.convVeto & (ele.tightCharge == get_ec_param("wwz_pres_e_tightCharge")))
+    if "2022" in year: mask = (mask & (ele.cutBased >= get_ec_param("Run3_pres_e_cutBased_med")))
     return mask
 
 
 # WWZ preselection for muons
-def is_presel_wwz_mu(mu):
+def is_presel_wwz_mu(mu,year):
     mask = (
         (mu.pt               >  get_ec_param("wwz_pres_m_pt")) &
         (abs(mu.eta)         <  get_ec_param("wwz_pres_m_eta")) &
         (abs(mu.dxy)         <  get_ec_param("wwz_pres_m_dxy")) &
         (abs(mu.dz)          <  get_ec_param("wwz_pres_m_dz")) &
         (abs(mu.sip3d)       <  get_ec_param("wwz_pres_m_sip3d")) &
-        (mu.miniPFRelIso_all <  get_ec_param("wwz_pres_m_miniPFRelIso_all")) &
         (mu.mediumId)
     )
+    if "2022" not in year:
+        mask = (mask & (ele.miniPFRelIso_all <  get_ec_param("wwz_pres_e_miniPFRelIso_all")))
+    else:
+        mask = (mask & (mu.pfIsoId >=  get_ec_param("Run3_pres_m_pfIsoId_Tight")))
     return mask
 
 

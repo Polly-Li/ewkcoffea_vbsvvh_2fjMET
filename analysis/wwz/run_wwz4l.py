@@ -8,7 +8,7 @@ import gzip
 import os
 from coffea import processor
 from coffea.nanoevents import NanoAODSchema
-
+NanoAODSchema.warn_missing_crossrefs = False
 import topcoffea.modules.remote_environment as remote_environment
 
 import wwz4l

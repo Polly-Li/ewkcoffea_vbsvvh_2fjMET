@@ -191,7 +191,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         mu_Run3_2Lep_t = mu_Run3_2Lep_t[ak.argsort(mu_Run3_2Lep_t.pt, axis=-1,ascending=False)] # Sort by pt
 
         #Attach the SF
-        ewk_corrections.run3_muons_sf_Attach(mu_Run3_2Lep_t,year,"nominal","NUM_MediumID_DEN_TrackerMuons","NUM_TightPFIso_DEN_MediumID")
+        ewk_corrections.run3_muons_sf_Attach(mu_Run3_2Lep_t,year,"NUM_MediumID_DEN_TrackerMuons","NUM_TightPFIso_DEN_MediumID")
         ewk_corrections.run3_electrons_sf_Attach(ele_Run3_2Lep_t,year,"sf","wp90iso")
 
         # Create a List of Leptons from the Muons and Electrons

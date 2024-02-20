@@ -17,6 +17,12 @@ dataset_dict = {
         "EGamma" : [
             "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
         ],
+        "DoubleMuon" : [
+            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
+        ],
+        "SingleMuon" : [
+            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
+        ],
         "Muon" : [
             "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
         ],
@@ -57,9 +63,11 @@ trgs_for_matching = {
 #   - Otherwise, you may be removing events that show up in other datasets you're not using
 exclude_dict = {
     "2022": {
-        "Muon"     : [],
-        "EGamma"         : dataset_dict["2022"]["Muon"],
-        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
+        "Muon"           : [],
+        "SingleMuon"     : dataset_dict["2022"]["Muon"],
+        "DoubleMuon"     : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["SingleMuon"],
+        "EGamma"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["SingleMuon"] + dataset_dict["2022"]["DoubleMuon"],
+        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["SingleMuon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["EGamma"],
     },
 }
 
@@ -117,8 +125,8 @@ def add2lmask_Run3_2Lep(events, year, isData):
 
     mask = filters & nlep_2
 
-    events['muon_sf'] = leps_padded[:,0].muon_sf*leps_padded[:,1].muon_sf
-    events['ele_sf'] = leps_padded[:,0].ele_sf*leps_padded[:,1].ele_sf
+    events['muon_sf'] = leps_padded[:,0].sf_nom_muon*leps_padded[:,1].sf_nom_muon
+    events['ele_sf'] = leps_padded[:,0].sf_nom_elec*leps_padded[:,1].sf_nom_elec
     events['is2l'] = ak.fill_none(mask,False)
 
 

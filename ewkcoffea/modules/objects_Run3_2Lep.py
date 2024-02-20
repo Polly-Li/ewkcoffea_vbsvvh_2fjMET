@@ -15,8 +15,7 @@ def is_presel_Run3_2Lep_ele(ele):
         (abs(ele.eta + ele.deltaEtaSC)         <  get_param("Run3_2Lep_pres_e_eta")) &
         (abs(ele.dxy)                          <  get_param("Run3_2Lep_pres_e_dxy")) &
         (abs(ele.dz)                           <  get_param("Run3_2Lep_pres_e_dz")) &
-        (ele.pfRelIso03_all                    <  get_param("Run3_2Lep_pres_e_pfRelIso_all")) &
-        (ele.mvaNoIso_WP90) &
+        (ele.cutBased                          >= get_param("Run3_pres_e_cutBased_med"))  &
         ((abs(ele.eta) < 1.444) | (abs(ele.eta) > 1.566))
     )
     return mask

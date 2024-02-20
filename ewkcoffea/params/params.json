@@ -36,6 +36,7 @@
     "Run3_2Lep_pres_e_dxy"   : 0.05,
     "Run3_2Lep_pres_e_dz"    : 0.1,
     "Run3_2Lep_pres_e_pfRelIso_all" : 0.15,
+    "Run3_pres_e_cutBased_med" : 3.0,
 
     "Run3_2Lep_pres_m_pt"    : 10.0,
     "Run3_2Lep_pres_m_eta"   : 2.4,
