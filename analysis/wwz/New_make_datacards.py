@@ -608,12 +608,14 @@ def main():
         # The rates for this channel
         rate_for_dc_ch = rate_for_dc[ch]
 
-        # Get the kappas for this channel
-        kappa_for_dc_ch = kappa_for_dc[ch]
-        kappa_for_dc_ch.update(get_rate_systs(PROC_LST)) # Append in the ones from rate json
+        # Get the kappa and gamma dict for this channel if we are doing systs
+        kappa_for_dc_ch = None
+        gmn_for_dc_ch   = None
+        if do_nuis:
+            kappa_for_dc_ch = kappa_for_dc[ch]
+            kappa_for_dc_ch.update(get_rate_systs(PROC_LST)) # Append in the ones from rate json
+            gmn_for_dc_ch = get_gmn_for_dc(gmn_dict[ch],proc_lst=list(sg.SAMPLE_DICT_BASE.keys()))
 
-        # Get the gmN rows for this channel
-        gmn_for_dc_ch = get_gmn_for_dc(gmn_dict[ch],proc_lst=list(sg.SAMPLE_DICT_BASE.keys()))
 
         # Make the card for this chan
         make_ch_card(
