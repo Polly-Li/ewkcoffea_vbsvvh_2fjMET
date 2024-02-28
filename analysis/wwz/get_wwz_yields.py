@@ -25,10 +25,10 @@ import topcoffea.modules.MakeLatexTable as mlt
 #WZ    = (163, 155, 47) #A39B2F
 #tWZ   = (205, 240, 155) #CDF09B
 #Other = (205, 205, 205) #CDCDCD
-CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#CDCDCD"]
+CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"]
 #CLR_LST = ["#F09B9B","#00D091","#CDF09B"]
 
-import sample_groupings.py as sg
+import sample_groupings as sg
 SAMPLE_DICT_BASE = sg.SAMPLE_DICT_BASE
 
 # Names of the cut-based and BDT SRs
@@ -643,7 +643,7 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
 def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
 
     for var_name in histo_dict.keys():
-        print(f"\n{var_name}")
+        #print(f"\n{var_name}")
         if "counts" in var_name: continue
         #if var_name != "njets": continue # TMP
         if var_name == "nbtagsm": continue # TMP
@@ -665,9 +665,10 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
         # Loop over categories and make plots for each
         for cat_name in histo.axes["category"]:
             #if cat_name not in ["cr_4l_sf","cr_4l_btag_of"]: continue # TMP
-            if "cr" not in cat_name: continue # TMP
+            #if "cr" not in cat_name: continue # TMP
+            if "bdt" in cat_name: continue # TMP
             #if cat_name not in ["cr_4l_sf","cr_4l_btag_of","sr_4l_of_presel","sr_4l_sf_presel"]: continue # TMP
-            print(cat_name)
+            #print(cat_name)
 
             histo_cat = histo[{"category":cat_name}]
 
@@ -675,8 +676,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
             histo_grouped_mc = group(histo_cat,"process","process_grp",grouping_mc)
             histo_grouped_data = group(histo_cat,"process","process_grp",grouping_data)
 
-            #######
-            ###if (cat_name == "cr_4l_sf" or cat_name == "cr_4l_btag_of") and var_name == "nleps":
+            ######
             #if (cat_name == "cr_4l_btag_sf_offZ_met80") and var_name == "nleps":
             #if ("met80" in cat_name and ("ee" in cat_name or "mm" in cat_name)) and var_name == "nleps":
             #if ("ee" in cat_name or "mm" in cat_name) or ("cutflow" in cat_name and var_name == "nleps"):
@@ -691,12 +691,14 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
             #    #print("var mc\n",(histo_grouped_mc.variances(flow=True)))
             #    #print("var data\n",(histo_grouped_data.variances(flow=True)))
             #continue
-            #print("\Yields")
-            #print(type(histo_cat.values(flow=True)))
-            #print(sum(histo_cat.values(flow=True)))
-            #print(sum(sum(histo_cat.values(flow=True))))
+            #if (cat_name == "cr_4l_sf" or cat_name == "cr_4l_btag_of" or cat_name=="cr_4l_btag_sf_offZ_met80") and var_name == "nleps":
+            #    print(f"\n{cat_name} {var_name}:")
+            #    print("Yields")
+            #    print("mc:",sum(sum(histo_grouped_mc.values(flow=True))))
+            #    print("data:",sum(sum(histo_grouped_data.values(flow=True))))
+            #    print("data/mc:",sum(sum(histo_grouped_data.values(flow=True))) / sum(sum(histo_grouped_mc.values(flow=True))) )
             #continue
-            ######
+            #####
 
             # Merge overflow into last bin (so it shows up in the plot)
             histo_grouped_data = merge_overflow(histo_grouped_data)
