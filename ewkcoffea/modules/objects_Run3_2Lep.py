@@ -15,8 +15,7 @@ def is_presel_Run3_2Lep_ele(ele):
         (abs(ele.eta + ele.deltaEtaSC)         <  get_param("Run3_2Lep_pres_e_eta")) &
         (abs(ele.dxy)                          <  get_param("Run3_2Lep_pres_e_dxy")) &
         (abs(ele.dz)                           <  get_param("Run3_2Lep_pres_e_dz")) &
-        (ele.pfRelIso03_all                    <  get_param("Run3_2Lep_pres_e_pfRelIso_all")) &
-        (ele.mvaNoIso_WP90) &
+        (ele.cutBased                          >= get_param("Run3_2Lep_pres_e_cutBasedID_Med")) &
         ((abs(ele.eta) < 1.444) | (abs(ele.eta) > 1.566))
     )
     return mask
@@ -30,7 +29,6 @@ def is_presel_Run3_2Lep_mu(mu):
         (abs(mu.dxy)         <  get_param("Run3_2Lep_pres_m_dxy")) &
         (abs(mu.dz)          <  get_param("Run3_2Lep_pres_m_dz")) &
         (mu.pfIsoId >=  get_param("Run3_pres_m_pfIsoId_Tight")) &
-        #(mu.pfRelIso03_all <  get_param("Run3_2Lep_pres_m_pfRelIso_all")) &
         (mu.mediumId)
     )
     return mask
@@ -38,6 +36,7 @@ def is_presel_Run3_2Lep_mu(mu):
 # Run3 2Lep preselection for jets
 def is_presel_Run3_2Lep_jets(jets):
     mask = (
-        (jets.pt               >  get_param("Run3_2Lep_pres_jets_pt"))
+        (jets.pt               >  get_param("Run3_2Lep_pres_jets_pt")) &
+        (abs(jets.eta)         <  get_param("Run3_2Lep_pres_jets_eta"))
     )
     return mask
