@@ -637,21 +637,29 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
 # A function for making a summary plot of SR yields
 def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data):
 
+    import New_make_datacards as yt # TODO Functions from this will move to a yield_tools library
+
+    # Declare the hist we'll be filling
     sr_lst  = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C" , "sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
     proc_lst  = ["WWZ", "ZH", "ZZ", "ttZ", "tWZ", "WZ", "other"]
-
     histo_comb = hist.Hist(
         hist.axis.StrCategory(proc_lst, name="process", label="process"),
         hist.axis.StrCategory(sr_lst,   name="cat",     label="Cut-based SRs"),
     )
 
+    # Get the yield dict
+    year = "all"
+    histo = histo_dict["njets"]
+    sample_names_dict_mc   = sg.create_mc_sample_dict(sg.SAMPLE_DICT_BASE,"all")
+    sample_names_dict_data = sg.create_data_sample_dict(year)
+    yld_dict_mc   = yt.get_yields(histo,sample_names_dict_mc)
+    yld_dict_data = yt.get_yields(histo,sample_names_dict_data)
+
     # Get the values and fill the combined hist
     histo = histo_dict["nleps"][{"systematic":"nominal"}]
     for cat_name in sr_lst:
-        histo_cat = histo[{"category":cat_name}]
-        histo_cat_grouped = group(histo_cat,"process","process_grp",grouping_mc)
         for proc_name in proc_lst:
-            val = sum(histo_cat_grouped[{"process_grp":proc_name}].values())
+            val = yld_dict_mc[cat_name]["nominal"][proc_name][0]
             histo_comb[{"process": proc_name, "cat": cat_name}] = val
 
     fig = make_single_fig(histo_comb)
