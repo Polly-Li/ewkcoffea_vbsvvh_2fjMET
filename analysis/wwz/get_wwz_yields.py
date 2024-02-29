@@ -479,15 +479,9 @@ def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False):
 
 
 # Plots a hist
-def make_single_fig(histo_mc,title,unit_norm_bool=False):
+def make_single_fig(histo_mc,ax_to_overlay="process",unit_norm_bool=False,title=None):
     #print("\nPlotting values:",histo.values())
-    fig, ax = plt.subplots(1, 1, figsize=(7,7))
-
-    # Guard against accidently looking at data before unblind
-    proc_lst = get_axis_cats(histo_mc,"process_grp")
-    for proc_name in proc_lst:
-        if "data" in proc_name:
-            raise Exception(f"CAUTION: Are you sure you want to look at this data in {proc_name}?")
+    fig, ax = plt.subplots(1, 1, figsize=(12,7))
 
     # Plot the mc
     histo_mc.plot1d(
@@ -495,9 +489,10 @@ def make_single_fig(histo_mc,title,unit_norm_bool=False):
         histtype="fill",
         color=CLR_LST,
         yerr=True,
+        overlay=ax_to_overlay
     )
 
-    plt.title(title)
+    if title is not None: plt.title(title)
     ax.autoscale(axis='y')
     plt.legend()
     return fig
@@ -639,6 +634,30 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
             make_html(os.path.join(os.getcwd(),out_path_for_this_cat))
 
 
+# A function for making a summary plot of SR yields
+def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data):
+
+    sr_lst  = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C" , "sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
+    proc_lst  = ["WWZ", "ZH", "ZZ", "ttZ", "tWZ", "WZ", "other"]
+
+    histo_comb = hist.Hist(
+        hist.axis.StrCategory(proc_lst, name="process", label="process"),
+        hist.axis.StrCategory(sr_lst,   name="cat",     label="Cut-based SRs"),
+    )
+
+    # Get the values and fill the combined hist
+    histo = histo_dict["nleps"][{"systematic":"nominal"}]
+    for cat_name in sr_lst:
+        histo_cat = histo[{"category":cat_name}]
+        histo_cat_grouped = group(histo_cat,"process","process_grp",grouping_mc)
+        for proc_name in proc_lst:
+            val = sum(histo_cat_grouped[{"process_grp":proc_name}].values())
+            histo_comb[{"process": proc_name, "cat": cat_name}] = val
+
+    fig = make_single_fig(histo_comb)
+    fig.savefig("sr_comb_plot.png")
+
+
 # Main function for making CR plots
 def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
 
@@ -662,12 +681,13 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
         #grouping_sr_procs = {"sr_4l_sf":["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C"],"sr_4l_of":["sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]}
         #histo = group(histo,"category","category",grouping_sr_procs)
 
+
         # Loop over categories and make plots for each
         for cat_name in histo.axes["category"]:
             #if cat_name not in ["cr_4l_sf","cr_4l_btag_of"]: continue # TMP
             #if "cr" not in cat_name: continue # TMP
-            if "bdt" in cat_name: continue # TMP
-            #if cat_name not in ["cr_4l_sf","cr_4l_btag_of","sr_4l_of_presel","sr_4l_sf_presel"]: continue # TMP
+            #if "bdt" in cat_name: continue # TMP
+            if cat_name not in ["cr_4l_sf","sr_4l_of_incl","sr_4l_sf_incl","sr_4l_bdt_sf_presel","sr_4l_bdt_sf_trn","sr_4l_bdt_of_presel"]: continue # TMP
             #print(cat_name)
 
             histo_cat = histo[{"category":cat_name}]
@@ -872,8 +892,9 @@ def main():
 
     # Make plots
     if args.make_plots:
-        make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path)
+        #make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path)
         #make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
+        make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data) # Make plot of all SR yields in one plot
 
 
 
