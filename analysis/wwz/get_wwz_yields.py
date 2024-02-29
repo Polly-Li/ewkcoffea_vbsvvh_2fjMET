@@ -660,7 +660,7 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data):
     yld_dict_data = yt.get_yields(histo,sample_names_dict_data)
 
     # Apply the data-driven normalization for ZZ, ttZ
-    yld_dict_mc, _, _ = yt.do_tf(yld_dict_mc,yld_dict_data,None,sg.BKG_TF_MAP)
+    yld_dict_mc, _, _ = yt.do_tf(yld_dict_mc,yld_dict_data,None,sg.BKG_TF_MAP,quiet=False)
 
     # Get the values and fill the combined hist
     histo = histo_dict["nleps"][{"systematic":"nominal"}]

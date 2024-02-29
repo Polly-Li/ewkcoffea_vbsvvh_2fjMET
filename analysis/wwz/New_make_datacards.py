@@ -333,7 +333,7 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
 
 
 # Calculate the background estimation from relevant CRs
-def do_tf(yld_mc,yld_data,kappas,tf_map):
+def do_tf(yld_mc,yld_data,kappas,tf_map,quiet=True):
 
     yld_mc_out = copy.deepcopy(yld_mc)
     kappas_out = copy.deepcopy(kappas)
@@ -371,6 +371,12 @@ def do_tf(yld_mc,yld_data,kappas,tf_map):
                 # Calculate the NSF = N_CR_with_other_bkg_subtracted / MC_CR, use this to scale the yld
                 valvar_nsf = valvar_op(valvar_cr_data_corrected, valvar_cr_mc, "div")
                 valvar_bkg = valvar_op(valvar_nsf, yld_mc[cat]["nominal"][proc_of_interest], "prod")
+
+                # Dump NSF value
+                if not quiet:
+                    relerr = 100*(np.sqrt(valvar_nsf[1])/valvar_nsf[0])
+                    print(f"NSF for {cat} {proc_of_interest}: {np.round(valvar_nsf[0],2)} +- {np.round(relerr,2)}%")
+                    #print(f"NSF for {cat} {proc_of_interest}: {np.round(valvar_nsf[0],2)} +- {np.round(np.sqrt(valvar_nsf[1]),2)}")
 
                 # Put the old yield times the NSF into the out dict
                 yld_mc_out[cat]["nominal"][proc_of_interest] = valvar_bkg
