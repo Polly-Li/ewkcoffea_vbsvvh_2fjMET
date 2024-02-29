@@ -111,6 +111,10 @@ def btag_eff_eval(jets,wp,year):
         pname = f"UL17_{pname_base}"
     elif year == "2018":
         pname = f"UL18_{pname_base}"
+    elif year == "2022":
+        pname = f"UL18_{pname_base}"
+    elif year == "2022EE":
+        pname = f"UL18_{pname_base}"
     else:
         raise Exception(f"Not a known year: {year}")
 
@@ -150,23 +154,41 @@ def run3_muons_sf_Attach(muons,year,syst,id_method,iso_method):
 
     # Evaluate the SF
     ceval = correctionlib.CorrectionSet.from_file(fname)
-    sf_id_flat = ceval[id_method].evaluate(abseta_flat,pt_flat,syst)
-    sf_iso_flat = ceval[iso_method].evaluate(abseta_flat,pt_flat,syst)
-    sf_flat = sf_id_flat * sf_iso_flat
-    sf = ak.unflatten(sf_flat,ak.num(muons.pt))
+    sf_id_flat_nom = ceval[id_method].evaluate(abseta_flat,pt_flat,"nominal")
+    sf_id_flat_syst = ceval[id_method].evaluate(abseta_flat,pt_flat,"syst")
+    sf_id_flat_hi = sf_id_flat_nom + sf_id_flat_syst
+    sf_id_flat_lo = sf_id_flat_nom - sf_id_flat_syst
 
-    muons['ele_sf'] = ak.ones_like(sf)
-    muons['muon_sf'] = sf
+    sf_iso_flat_nom = ceval[iso_method].evaluate(abseta_flat,pt_flat,"nominal")
+    sf_iso_flat_syst = ceval[iso_method].evaluate(abseta_flat,pt_flat,"syst")
+    sf_iso_flat_hi = sf_iso_flat_nom + sf_iso_flat_syst
+    sf_iso_flat_lo = sf_iso_flat_nom - sf_iso_flat_syst
+
+    sf_flat_nom = sf_id_flat_nom * sf_iso_flat_nom
+    sf_flat_hi = sf_id_flat_hi * sf_iso_flat_hi
+    sf_flat_lo = sf_id_flat_lo * sf_iso_flat_lo
+
+    sf_nom = ak.unflatten(sf_flat_nom,ak.num(muons.pt))
+    sf_hi = ak.unflatten(sf_flat_hi,ak.num(muons.pt))
+    sf_lo = ak.unflatten(sf_flat_lo,ak.num(muons.pt))
+
+    muons['sf_nom_muon'] = sf_nom
+    muons['sf_hi_muon']  = sf_hi
+    muons['sf_lo_muon']  = sf_lo
+    muons['sf_nom_elec'] = ak.ones_like(sf_nom)
+    muons['sf_hi_elec']  = ak.ones_like(sf_nom)
+    muons['sf_lo_elec']  = ak.ones_like(sf_nom)
+
 
 def run3_electrons_sf_Attach(electrons,year,valtype,wp):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":
         n_year = "2022Re-recoE+PromptFG"
-        fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/electron.json")
+        fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2022EE_ele/electron.json")
     elif year == "2022":
-        #fname = ewkcoffea_path("data/run3_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_schemaV2.json")
-        raise Exception("Eras B,C,D, are not implemented yet!")
+        n_year = "2022Re-recoBCD"
+        fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2022_ele/electron.json")
     else:
         raise Exception("Trying to apply run3 SF where they shouldn't be!")
 
@@ -179,12 +201,20 @@ def run3_electrons_sf_Attach(electrons,year,valtype,wp):
 
     # Evaluate the SF
     ceval = correctionlib.CorrectionSet.from_file(fname)
-    sf_flat = ceval["Electron-ID-SF"].evaluate(n_year,valtype,wp,eta_flat,pt_flat)
+    sf_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sf",wp,eta_flat,pt_flat)
+    hi_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sfup",wp,eta_flat,pt_flat)
+    lo_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown",wp,eta_flat,pt_flat)
+
     sf = ak.unflatten(sf_flat,ak.num(electrons.pt))
+    hi = ak.unflatten(sf_flat,ak.num(electrons.pt))
+    lo = ak.unflatten(sf_flat,ak.num(electrons.pt))
 
-    electrons['ele_sf'] = sf
-    electrons['muon_sf'] = ak.ones_like(electrons.pt)
-
+    electrons['sf_nom_muon'] = ak.ones_like(sf)
+    electrons['sf_hi_muon']  = ak.ones_like(sf)
+    electrons['sf_lo_muon']  = ak.ones_like(sf)
+    electrons['sf_nom_elec'] = sf
+    electrons['sf_hi_elec']  = hi
+    electrons['sf_lo_elec']  = lo
 
 def run3_pu_Attach(pileup,year,syst):
 
@@ -192,17 +222,21 @@ def run3_pu_Attach(pileup,year,syst):
     if year == "2022EE":
         fname = ewkcoffea_path("data/run3_pu/pu_2022EE/puWeights.json")
     elif year == "2022":
-        #fname = ewkcoffea_path("data/run3_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_schemaV2.json")
-        raise Exception("Era B,C,D not implemented yet!")
+        fname = ewkcoffea_path("data/run3_pu/pu_2022/puWeights.json")
     else:
         raise Exception("Trying to apply run3 SF where they shouldn't be!")
 
-    # Flatten the input (until correctionlib handles jagged data natively)
-    #nTrueInt_flat = ak.flatten(pileup.nTrueInt)
-
     # Evaluate the SF
     ceval = correctionlib.CorrectionSet.from_file(fname)
-    pu_corr = ceval["Collisions2022_359022_362760_eraEFG_GoldenJson"].evaluate(pileup.nTrueInt,syst)
-    #pu_corr = ak.unflatten(pu_corr_flat,ak.num(pileup.nTrueInt))
+    if year == "2022EE":
+        pu_corr = ceval["Collisions2022_359022_362760_eraEFG_GoldenJson"].evaluate(pileup.nTrueInt,"nominal")
+        pu_corr_hi = ceval["Collisions2022_359022_362760_eraEFG_GoldenJson"].evaluate(pileup.nTrueInt,"up")
+        pu_corr_lo = ceval["Collisions2022_359022_362760_eraEFG_GoldenJson"].evaluate(pileup.nTrueInt,"down")
+    if year == "2022":
+        pu_corr = ceval["Collisions2022_355100_357900_eraBCD_GoldenJson"].evaluate(pileup.nTrueInt,"nominal")
+        pu_corr_hi = ceval["Collisions2022_355100_357900_eraBCD_GoldenJson"].evaluate(pileup.nTrueInt,"up")
+        pu_corr_lo = ceval["Collisions2022_355100_357900_eraBCD_GoldenJson"].evaluate(pileup.nTrueInt,"down")
 
     pileup['pileup_corr'] = pu_corr
+    pileup['pileup_corr_hi'] = pu_corr_hi
+    pileup['pileup_corr_lo'] = pu_corr_lo
