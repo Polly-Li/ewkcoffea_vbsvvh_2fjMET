@@ -2,6 +2,32 @@
 
 ######################## Dictionaries ########################
 
+
+# Map showing which CR categories are used to calculate NSFs for which SRs for which processes
+BKG_TF_MAP = {
+
+    "ZZ" : {
+        "sr_4l_sf_A" : "cr_4l_sf",
+        "sr_4l_sf_B" : "cr_4l_sf",
+        "sr_4l_sf_C" : "cr_4l_sf",
+        "sr_4l_of_1" : "cr_4l_sf",
+        "sr_4l_of_2" : "cr_4l_sf",
+        "sr_4l_of_3" : "cr_4l_sf",
+        "sr_4l_of_4" : "cr_4l_sf",
+
+    },
+    "ttZ" : {
+        "sr_4l_sf_A" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_sf_B" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_sf_C" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_of_1" : "cr_4l_btag_of",
+        "sr_4l_of_2" : "cr_4l_btag_of",
+        "sr_4l_of_3" : "cr_4l_btag_of",
+        "sr_4l_of_4" : "cr_4l_btag_of",
+    }
+}
+
+
 # The "official" groupings
 SAMPLE_DICT_BASE = {
     "WWZ" : ["WWZJetsTo4L2Nu"],

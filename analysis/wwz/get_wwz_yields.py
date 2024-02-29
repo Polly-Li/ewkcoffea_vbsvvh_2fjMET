@@ -479,7 +479,7 @@ def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False):
 
 
 # Plots a hist
-def make_single_fig(histo_mc,ax_to_overlay="process",unit_norm_bool=False,title=None):
+def make_single_fig(histo_mc,ax_to_overlay="process",ylims=None,unit_norm_bool=False,title=None):
     #print("\nPlotting values:",histo.values())
     fig, ax = plt.subplots(1, 1, figsize=(12,7))
 
@@ -493,7 +493,11 @@ def make_single_fig(histo_mc,ax_to_overlay="process",unit_norm_bool=False,title=
     )
 
     if title is not None: plt.title(title)
-    ax.autoscale(axis='y')
+    if ylims is None:
+        ax.autoscale(axis='y')
+    else:
+        ax.set_ylim(ylims)
+
     plt.legend()
     return fig
 
@@ -655,6 +659,9 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data):
     yld_dict_mc   = yt.get_yields(histo,sample_names_dict_mc)
     yld_dict_data = yt.get_yields(histo,sample_names_dict_data)
 
+    # Apply the data-driven normalization for ZZ, ttZ
+    yld_dict_mc, _, _ = yt.do_tf(yld_dict_mc,yld_dict_data,None,sg.BKG_TF_MAP)
+
     # Get the values and fill the combined hist
     histo = histo_dict["nleps"][{"systematic":"nominal"}]
     for cat_name in sr_lst:
@@ -662,7 +669,7 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data):
             val = yld_dict_mc[cat_name]["nominal"][proc_name][0]
             histo_comb[{"process": proc_name, "cat": cat_name}] = val
 
-    fig = make_single_fig(histo_comb)
+    fig = make_single_fig(histo_comb,ylims=[0,9])
     fig.savefig("sr_comb_plot.png")
 
 

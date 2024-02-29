@@ -56,29 +56,6 @@ SYSTS_SPECIAL = {
     "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
 }
 
-BKG_TF_MAP = {
-
-    "ZZ" : {
-        "sr_4l_sf_A" : "cr_4l_sf",
-        "sr_4l_sf_B" : "cr_4l_sf",
-        "sr_4l_sf_C" : "cr_4l_sf",
-        "sr_4l_of_1" : "cr_4l_sf",
-        "sr_4l_of_2" : "cr_4l_sf",
-        "sr_4l_of_3" : "cr_4l_sf",
-        "sr_4l_of_4" : "cr_4l_sf",
-
-    },
-    "ttZ" : {
-        "sr_4l_sf_A" : "cr_4l_btag_sf_offZ_met80",
-        "sr_4l_sf_B" : "cr_4l_btag_sf_offZ_met80",
-        "sr_4l_sf_C" : "cr_4l_btag_sf_offZ_met80",
-        "sr_4l_of_1" : "cr_4l_btag_of",
-        "sr_4l_of_2" : "cr_4l_btag_of",
-        "sr_4l_of_3" : "cr_4l_btag_of",
-        "sr_4l_of_4" : "cr_4l_btag_of",
-    }
-}
-
 
 ########### Writing the datacard ###########
 
@@ -406,18 +383,20 @@ def do_tf(yld_mc,yld_data,kappas,tf_map):
 
                 ### Handle the kappas ###
 
-                # Loop over syst and replace the kappas with the e.g. MC_SR_up/MC_CR_up
-                for syst_base_name in kappas[cat]:
+                if kappas is not None:
 
-                    sr_up = kappas[cat][syst_base_name][proc_of_interest]["Up"]
-                    sr_do = kappas[cat][syst_base_name][proc_of_interest]["Down"]
-                    cr_up = kappas[cr_name][syst_base_name][proc_of_interest]["Up"]
-                    cr_do = kappas[cr_name][syst_base_name][proc_of_interest]["Down"]
-                    new_kappa_up = valvar_op(sr_up,cr_up,"div")
-                    new_kappa_do = valvar_op(sr_do,cr_do,"div")
+                    # Loop over syst and replace the kappas with the e.g. MC_SR_up/MC_CR_up
+                    for syst_base_name in kappas[cat]:
 
-                    kappas_out[cat][syst_base_name][proc_of_interest]["Up"] = new_kappa_up
-                    kappas_out[cat][syst_base_name][proc_of_interest]["Down"] = new_kappa_do
+                        sr_up = kappas[cat][syst_base_name][proc_of_interest]["Up"]
+                        sr_do = kappas[cat][syst_base_name][proc_of_interest]["Down"]
+                        cr_up = kappas[cr_name][syst_base_name][proc_of_interest]["Up"]
+                        cr_do = kappas[cr_name][syst_base_name][proc_of_interest]["Down"]
+                        new_kappa_up = valvar_op(sr_up,cr_up,"div")
+                        new_kappa_do = valvar_op(sr_do,cr_do,"div")
+
+                        kappas_out[cat][syst_base_name][proc_of_interest]["Up"] = new_kappa_up
+                        kappas_out[cat][syst_base_name][proc_of_interest]["Down"] = new_kappa_do
 
     return [yld_mc_out, kappas_out, gmn_alpha_out]
 
@@ -584,7 +563,7 @@ def main():
     kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data)
 
     # Do the TF calculation
-    yld_dict_mc, kappa_dict, gmn_dict = do_tf(yld_dict_mc,yld_dict_data,kappa_dict,BKG_TF_MAP)
+    yld_dict_mc, kappa_dict, gmn_dict = do_tf(yld_dict_mc,yld_dict_data,kappa_dict,sg.BKG_TF_MAP)
 
     # Get rid of negative yields (and recenter syst variations around SMALL), should happen before computing kappas
     yld_dict_mc = handle_negatives(yld_dict_mc)
