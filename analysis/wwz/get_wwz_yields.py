@@ -418,7 +418,7 @@ def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False):
 
 
 # Plots a hist
-def make_single_fig(histo_mc,ax_to_overlay="process",ylims=None,unit_norm_bool=False,title=None):
+def make_single_fig(histo_mc,ax_to_overlay="process",err_p=None,err_m=None,ylims=None,unit_norm_bool=False,title=None):
     #print("\nPlotting values:",histo.values())
     fig, ax = plt.subplots(1, 1, figsize=(12,7))
 
@@ -431,11 +431,18 @@ def make_single_fig(histo_mc,ax_to_overlay="process",ylims=None,unit_norm_bool=F
         overlay=ax_to_overlay
     )
 
+    # Set title and y lims
     if title is not None: plt.title(title)
     if ylims is None:
         ax.autoscale(axis='y')
     else:
         ax.set_ylim(ylims)
+
+    # Draw errors
+    if (err_p is not None) and (err_m is not None):
+        bin_edges_arr = histo_mc.axes[0].edges
+        bin_centers_arr = histo_mc.axes[0].centers
+        ax.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', alpha=0.5, linewidth=0.0, label='MC stat', hatch='/////')
 
     plt.legend()
     return fig
@@ -619,12 +626,27 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data):
 
     # Get the values and fill the combined hist
     histo = histo_dict["nleps"][{"systematic":"nominal"}]
+    err_lst_p = []
+    err_lst_m = []
     for cat_name in sr_lst:
+        val_sum = 0
+        var_sum = 0
+        # Loop over processes, get yields to fill hist with (along with summing errs)
         for proc_name in proc_lst:
             val = yld_dict_mc[cat_name]["nominal"][proc_name][0]
             histo_comb[{"process": proc_name, "cat": cat_name}] = val
+            # Sum the variances so we can have stat uncertainty (also need sum of nom)
+            var_sum += yld_dict_mc[cat_name]["nominal"][proc_name][1]
+            val_sum += val
+        err_lst_p.append(val_sum + np.sqrt(var_sum))
+        err_lst_m.append(val_sum - np.sqrt(var_sum))
 
-    fig = make_single_fig(histo_comb,ylims=[0,9])
+    # Append a 0 err for overflow bin
+    err_lst_p.append(0)
+    err_lst_m.append(0)
+
+    # Make plot
+    fig = make_single_fig(histo_comb,err_p=err_lst_p,err_m=err_lst_m,ylims=[0,9])
     fig.savefig("sr_comb_plot.png")
 
 
@@ -865,9 +887,9 @@ def main():
 
     # Make plots
     if args.make_plots:
-        #make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path)
+        make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path)
         #make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
-        make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data) # Make plot of all SR yields in one plot
+        #make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data) # Make plot of all SR yields in one plot
 
 
 
