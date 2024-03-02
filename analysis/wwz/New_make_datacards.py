@@ -250,10 +250,6 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
     return kappa_dict
 
 
-
-
-
-
 # Get the MC stats from the yld dict and put it into kappa dict
 # Can optionally skip processes (e.g. skip data driven ZZ and ttZ since do these different via gmN)
 def add_stats_kappas(yld_mc, kappas, skip_procs=[]):
@@ -292,36 +288,33 @@ def add_stats_kappas(yld_mc, kappas, skip_procs=[]):
 # Get just the numbers we want for rate row for datacard
 # Also sum all MC rates together into asimov number
 # Assumes in_dict has nested keys: cat,syst,proc
-def get_rate_for_dc(in_dict):
+def get_rate_for_dc(in_dict,cat):
     out_dict = {}
-    for cat in in_dict:
-        out_dict[cat] = {}
-        asimov_data = 0
-        for proc in in_dict[cat]["nominal"]:
-            rate = in_dict[cat]["nominal"][proc][0]
-            if rate < 0:
-                print(f"\nWarning: Process \"{proc}\" in \"{cat}\" has negative total rate: {rate}.\n")
-            out_dict[cat][proc] = str(rate)
-            asimov_data += rate
-        out_dict[cat]["data_obs"] = str(asimov_data)
+    asimov_data = 0
+    for proc in in_dict[cat]["nominal"]:
+        rate = in_dict[cat]["nominal"][proc][0]
+        if rate < 0:
+            print(f"\nWarning: Process \"{proc}\" in \"{cat}\" has negative total rate: {rate}.\n")
+        out_dict[proc] = str(rate)
+        asimov_data += rate
+    out_dict["data_obs"] = str(asimov_data)
+
     return out_dict
 
 
 # Assumes in_dict has nested keys: cat,syst_base,proc,"Up"(or "Down)
 # Takes just the val (dropps uncty)
-def get_kappa_for_dc(in_dict):
+def get_kappa_for_dc(in_dict,cat):
     out_dict = {}
-    for cat in in_dict:
-        out_dict[cat] = {}
-        for systname_base in in_dict[cat]:
-            out_dict[cat][systname_base] = {}
-            for proc in in_dict[cat][systname_base]:
-                u = in_dict[cat][systname_base][proc]['Up'][0]
-                d = in_dict[cat][systname_base][proc]['Down'][0]
-                if (u is None) and (d is None):
-                    out_dict[cat][systname_base][proc] = "-"
-                else:
-                    out_dict[cat][systname_base][proc] = f"{d}/{u}"
+    for systname_base in in_dict[cat]:
+        out_dict[systname_base] = {}
+        for proc in in_dict[cat][systname_base]:
+            u = in_dict[cat][systname_base][proc]['Up'][0]
+            d = in_dict[cat][systname_base][proc]['Down'][0]
+            if (u is None) and (d is None):
+                out_dict[systname_base][proc] = "-"
+            else:
+                out_dict[systname_base][proc] = f"{d}/{u}"
     return out_dict
 
 
@@ -421,26 +414,18 @@ def main():
     kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,skip_procs=["ZZ","ttZ"])
 
 
-
-
-    # Get just the info we want to put in the card in str form
-    # Maybe move this to inside the card making loop
-    rate_for_dc = get_rate_for_dc(yld_dict_mc)
-    kappa_for_dc = get_kappa_for_dc(kappa_dict)
-
-
-    # Make the cards for each channel
+    #### Make the cards for each channel ####
     print(f"Making cards for {CAT_LST_CB}. \nPutting in {out_dir}.")
     for ch in CAT_LST_CB:
 
-        # The rates for this channel
-        rate_for_dc_ch = rate_for_dc[ch]
+        # Get just the info we want to put in the card in str form
+        rate_for_dc_ch = get_rate_for_dc(yld_dict_mc,ch)
 
         # Get the kappa and gamma dict for this channel if we are doing systs
         kappa_for_dc_ch = None
         gmn_for_dc_ch   = None
         if do_nuis:
-            kappa_for_dc_ch = kappa_for_dc[ch]
+            kappa_for_dc_ch = get_kappa_for_dc(kappa_dict,ch)
             kappa_for_dc_ch.update(get_rate_systs(PROC_LST)) # Append in the ones from rate json
             gmn_for_dc_ch = get_gmn_for_dc(gmn_dict[ch],proc_lst=list(sg.SAMPLE_DICT_BASE.keys()))
 
