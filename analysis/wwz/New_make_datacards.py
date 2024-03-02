@@ -8,8 +8,8 @@ import argparse
 
 from topcoffea.modules import utils
 from ewkcoffea.modules.paths import ewkcoffea_path
-
-import sample_groupings as sg # Note the fact that we're using functions from here means they probably belongs in ewkcoffea/ewkcoffea/modules
+import ewkcoffea.modules.sample_groupings as sg
+import ewkcoffea.modules.yield_tools as yt
 
 SMALL = 0.000001
 
@@ -153,60 +153,9 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,out_dir="."):
             f.write(line_break)
 
 
-########### General ###########
-
-# Takes two pairs [val1,var1] and [val2,var2], returns the product or sum with error propagated
-# Note the var is like sumw2 i.e. alreayd squared (in both input and output)
-def valvar_op(valvar_1, valvar_2, op):
-    val1 = valvar_1[0]
-    var1 = valvar_1[1]
-    val2 = valvar_2[0]
-    var2 = valvar_2[1]
-
-    if op == "prod":
-        val = val1*val2
-        var = (val**2) * ( (np.sqrt(var1)/val1)**2 + (np.sqrt(var2)/val2)**2 )
-    elif op == "div":
-        val = val1/val2
-        var = (val**2) * ( (np.sqrt(var1)/val1)**2 + (np.sqrt(var2)/val2)**2 )
-    elif op == "sum":
-        val = val1 + val2
-        var = var1 + var2
-    elif op == "diff":
-        val = val1 - val2
-        var = var1 + var2
-    else:
-        raise Exception("Unknown operatation")
-
-    return [val,var]
 
 
 ########### Getting and manipulating yields ###########
-
-# Get the yields (nested in the order: year,cat,syst,proc)
-def get_yields(histo,sample_dict,blind=True,systematic_name=None):
-
-    yld_dict = {}
-
-    if systematic_name is None: syst_lst = histo.axes["systematic"]
-    else: syst_lst = [systematic_name]
-
-    # Look at the yields in the histo
-    for cat_name in histo.axes["category"]:
-        yld_dict[cat_name] = {}
-        for syst_name in syst_lst:
-            #if syst_name not in ["nominal", "PUUp", "PUDown", "btagSFbc_uncorrelated_2016APVUp", "btagSFbc_uncorrelated_2016APVDown"]: continue # TMP !!!
-            yld_dict[cat_name][syst_name ] = {}
-            for proc_name in sample_dict.keys():
-                if blind and (("data" in proc_name) and (not cat_name.startswith("cr_"))):
-                    # If this is data and we're not in a CR category, put placeholder numbers for now
-                    yld_dict[cat_name][syst_name][proc_name] = [-999,-999]
-                else:
-                    val = sum(sum(histo[{"category":cat_name,"process":sample_dict[proc_name],"systematic":syst_name }].values(flow=True)))
-                    var = sum(sum(histo[{"category":cat_name,"process":sample_dict[proc_name],"systematic":syst_name }].variances(flow=True)))
-                    yld_dict[cat_name][syst_name][proc_name] = [val,var]
-
-    return yld_dict
 
 
 # Modify the yields dict to properly calculate the per-year systs
@@ -313,8 +262,8 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
                 valvar_up = in_dict_mc[cat][f"{sys}Up"][proc]
                 valvar_do = in_dict_mc[cat][f"{sys}Down"][proc]
                 valvar_nom = in_dict_mc[cat]["nominal"][proc]
-                valvar_kappa_up = valvar_op(valvar_up,valvar_nom,"div")
-                valvar_kappa_do = valvar_op(valvar_do,valvar_nom,"div")
+                valvar_kappa_up = yt.valvar_op(valvar_up,valvar_nom,"div")
+                valvar_kappa_do = yt.valvar_op(valvar_do,valvar_nom,"div")
 
                 # Handle negative cases
                 if (valvar_kappa_up[0]<0) and (valvar_kappa_do[0]<0): raise Exception("Both kappas negative, should not be possible.")
@@ -332,79 +281,6 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
     return kappa_dict
 
 
-# Calculate the background estimation from relevant CRs
-def do_tf(yld_mc,yld_data,kappas,tf_map,quiet=True):
-
-    yld_mc_out = copy.deepcopy(yld_mc)
-    kappas_out = copy.deepcopy(kappas)
-    gmn_alpha_out = {}
-
-    # Loop over cat and do NSF calculation for each relevant proc in each cat
-    for cat in yld_mc:
-        # Just nonimal for now
-        for proc_of_interest in yld_mc[cat]["nominal"]:
-
-            # Skip procs that do not get TF calculations
-            if proc_of_interest not in tf_map: continue
-            elif cat not in tf_map[proc_of_interest]:
-                #print(f"Warning, cat \"{cat}\" not defined for this proc.")
-                continue
-
-            # Otherwise we go ahead and do the background estimation stuff
-            else:
-
-                # Get the nominal mc and data yields in the CR
-                cr_name = tf_map[proc_of_interest][cat]
-                valvar_cr_mc   = yld_mc[cr_name]["nominal"][proc_of_interest]
-                valvar_cr_data = yld_data[cr_name]["nominal"]["data"]
-
-                # Sum up all contributions in the CR besides bkg of interest
-                valvar_bkg_all_but_bkg_of_interest = [0,0]
-                for p in yld_mc[cr_name]["nominal"]:
-                    if p != proc_of_interest:
-                        valvar_bkg_all_but_bkg_of_interest[0] += yld_mc[cr_name]["nominal"][p][0]
-                        valvar_bkg_all_but_bkg_of_interest[1] += yld_mc[cr_name]["nominal"][p][1]
-
-                # Subtract those extra background contributions from the data
-                valvar_cr_data_corrected = valvar_op(valvar_cr_data, valvar_bkg_all_but_bkg_of_interest, "diff")
-
-                # Calculate the NSF = N_CR_with_other_bkg_subtracted / MC_CR, use this to scale the yld
-                valvar_nsf = valvar_op(valvar_cr_data_corrected, valvar_cr_mc, "div")
-                valvar_bkg = valvar_op(valvar_nsf, yld_mc[cat]["nominal"][proc_of_interest], "prod")
-
-                # Dump NSF value
-                if not quiet:
-                    relerr = 100*(np.sqrt(valvar_nsf[1])/valvar_nsf[0])
-                    print(f"NSF for {cat} {proc_of_interest}: {np.round(valvar_nsf[0],2)} +- {np.round(relerr,2)}%")
-                    #print(f"NSF for {cat} {proc_of_interest}: {np.round(valvar_nsf[0],2)} +- {np.round(np.sqrt(valvar_nsf[1]),2)}")
-
-                # Put the old yield times the NSF into the out dict
-                yld_mc_out[cat]["nominal"][proc_of_interest] = valvar_bkg
-
-                # Get the gmN numbers
-                valvar_alpha = valvar_op(valvar_bkg,valvar_cr_data, "div")
-                if cat not in gmn_alpha_out: gmn_alpha_out[cat] = {}
-                if cr_name not in gmn_alpha_out[cat]: gmn_alpha_out[cat][cr_name] = {"N": valvar_cr_data[0], "proc_alpha": {}}
-                gmn_alpha_out[cat][cr_name]["proc_alpha"][proc_of_interest] = valvar_alpha[0]
-
-                ### Handle the kappas ###
-
-                if kappas is not None:
-
-                    # Loop over syst and replace the kappas with the e.g. MC_SR_up/MC_CR_up
-                    for syst_base_name in kappas[cat]:
-
-                        sr_up = kappas[cat][syst_base_name][proc_of_interest]["Up"]
-                        sr_do = kappas[cat][syst_base_name][proc_of_interest]["Down"]
-                        cr_up = kappas[cr_name][syst_base_name][proc_of_interest]["Up"]
-                        cr_do = kappas[cr_name][syst_base_name][proc_of_interest]["Down"]
-                        new_kappa_up = valvar_op(sr_up,cr_up,"div")
-                        new_kappa_do = valvar_op(sr_do,cr_do,"div")
-
-                        kappas_out[cat][syst_base_name][proc_of_interest]["Up"] = new_kappa_up
-                        kappas_out[cat][syst_base_name][proc_of_interest]["Down"] = new_kappa_do
-
-    return [yld_mc_out, kappas_out, gmn_alpha_out]
 
 
 
@@ -541,12 +417,12 @@ def main():
     # Get yield dictionary (nested in the order: year,cat,syst,proc)
     yld_dict_mc_allyears = {}
     for year in sample_names_dict_mc:
-        yld_dict_mc_allyears[year] = get_yields(histo,sample_names_dict_mc[year])
+        yld_dict_mc_allyears[year] = yt.get_yields(histo,sample_names_dict_mc[year])
     handle_per_year_systs_for_fr2(yld_dict_mc_allyears)
 
     # We're only looking at Full R2 for now
     yld_dict_mc = yld_dict_mc_allyears["FR2"]
-    yld_dict_data = get_yields(histo,sample_names_dict_data["FR2"])
+    yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR2"])
 
     # Print info about a bin
     printinfo = 1
@@ -569,7 +445,7 @@ def main():
     kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data)
 
     # Do the TF calculation
-    yld_dict_mc, kappa_dict, gmn_dict = do_tf(yld_dict_mc,yld_dict_data,kappa_dict,sg.BKG_TF_MAP)
+    yld_dict_mc, kappa_dict, gmn_dict = yt.do_tf(yld_dict_mc,yld_dict_data,kappa_dict,sg.BKG_TF_MAP)
 
     # Get rid of negative yields (and recenter syst variations around SMALL), should happen before computing kappas
     yld_dict_mc = handle_negatives(yld_dict_mc)

@@ -15,9 +15,12 @@ from topcoffea.scripts.make_html import make_html
 from topcoffea.modules import utils
 import topcoffea.modules.MakeLatexTable as mlt
 
+import ewkcoffea.modules.yield_tools as yt
+
+
 # This script opens a pkl file of histograms produced by wwz processor
 # Reads the histograms and dumps out the yields for each group of processes
-# Example usage: python get_yld_check.py -f histos/tmp_histo.pkl.gz
+# Example usage: python get_yld_check.py histos/tmp_histo.pkl.gz -y
 
 # Colors in VVV observation
 #ZZ    = (240, 155, 205)  #F09B9B
@@ -28,7 +31,7 @@ import topcoffea.modules.MakeLatexTable as mlt
 CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"]
 #CLR_LST = ["#F09B9B","#00D091","#CDF09B"]
 
-import sample_groupings as sg
+import ewkcoffea.modules.sample_groupings as sg
 SAMPLE_DICT_BASE = sg.SAMPLE_DICT_BASE
 
 # Names of the cut-based and BDT SRs
@@ -659,8 +662,6 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
 # A function for making a summary plot of SR yields
 def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data):
 
-    import New_make_datacards as yt # TODO Functions from this will move to a yield_tools library
-
     # Declare the hist we'll be filling
     sr_lst  = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C" , "sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
     proc_lst  = ["WWZ", "ZH", "ZZ", "ttZ", "tWZ", "WZ", "other"]
@@ -776,6 +777,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
 
 ###### Transfer factors for background ######
 
+# TODO move to same function as used in datacard maker
 # Function for getting a dict with NSF and TF etc
 def get_background_dict(yld_dict_mc,yld_dict_data,bkg_proc,cr_name,sr_name):
 
@@ -804,6 +806,7 @@ def get_background_dict(yld_dict_mc,yld_dict_data,bkg_proc,cr_name,sr_name):
     }
     return out_dict
 
+# TODO move to same function as used in datacard maker
 # Wrapper around the background estimation of TFs and yields
 def do_background_estimation(yld_dict_mc,yld_dict_data):
 
@@ -884,6 +887,7 @@ def main():
 
 
     # Wrapper around the code for getting the TFs and background estimation factors
+    # TODO move to same function as used in datacard maker
     if args.get_backgrounds:
         yld_dict_data = get_yields(histo_dict,sample_dict_data,quiet=True,blind=True)
         yld_dict_mc   = get_yields(histo_dict,sample_dict_mc,quiet=True)
@@ -925,9 +929,9 @@ def main():
 
     # Make plots
     if args.make_plots:
-        make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path)
+        #make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path)
         #make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
-        #make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data) # Make plot of all SR yields in one plot
+        make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data) # Make plot of all SR yields in one plot
 
 
 
