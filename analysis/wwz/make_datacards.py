@@ -43,7 +43,7 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,out_dir="."):
     left_width = max(syst_width+len("shape")+1,left_width)
 
     # The output name, location
-    outf_card_name = f"test_card_{ch}.txt"
+    outf_card_name = f"wwz4l_card_{ch}.txt"
     print(f"Generating text file: {out_dir}/{outf_card_name}")
     outf_card_name = os.path.join(out_dir,outf_card_name)
 
@@ -342,7 +342,7 @@ def main():
     # Parse args
     parser = argparse.ArgumentParser()
     parser.add_argument("in_file_name",help="Either json file of yields or pickle file with scikit hists")
-    parser.add_argument("--out-dir","-d",default="./testcards",help="Output directory to write root and text datacard files to")
+    parser.add_argument("--out-dir","-d",default="./cards_wwz4l",help="Output directory to write root and text datacard files to")
     parser.add_argument("-s","--do-nuisance",action="store_true",help="Include nuisance parameters")
     parser.add_argument("--unblind",action="store_true",help="If set, use real data, otherwise use asimov data")
 
@@ -382,19 +382,21 @@ def main():
     yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR2"])
 
     # Print info about a bin
-    printinfo = 1
+    printinfo = 0
     if printinfo:
         s = "renorm"
         p = "WWZ"
         c = "sr_4l_of_2"
         cr = "cr_4l_btag_of"
         print(p,c,s,cr)
+        print("\nPrinting info:")
         print("mc sr n",yld_dict_mc[c]["nominal"][p])
         print("mc sr u",yld_dict_mc[c][f"{s}Up"][p])
         print("mc cr n",yld_dict_mc[cr]["nominal"][p])
         print("mc cr u",yld_dict_mc[cr][f"{s}Up"][p])
         print("da cr n",yld_dict_data[cr]["nominal"]["data"])
         print("da cr u",yld_dict_data[cr][f"{s}Up"]["data"])
+        print("\n")
         #exit()
 
 
