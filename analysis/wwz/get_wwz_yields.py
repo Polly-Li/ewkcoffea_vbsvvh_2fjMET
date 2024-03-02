@@ -7,15 +7,14 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 import copy
-
 import hist
 
 from topcoffea.scripts.make_html import make_html
-
 from topcoffea.modules import utils
 import topcoffea.modules.MakeLatexTable as mlt
 
 import ewkcoffea.modules.yield_tools as yt
+import ewkcoffea.modules.sample_groupings as sg
 
 
 # This script opens a pkl file of histograms produced by wwz processor
@@ -31,7 +30,6 @@ import ewkcoffea.modules.yield_tools as yt
 CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"]
 #CLR_LST = ["#F09B9B","#00D091","#CDF09B"]
 
-import ewkcoffea.modules.sample_groupings as sg
 SAMPLE_DICT_BASE = sg.SAMPLE_DICT_BASE
 
 # Names of the cut-based and BDT SRs
@@ -87,65 +85,7 @@ EWK_REF = {'WWZ': {'sr_4l_of_1': [0.5089704111430158, 1.2928098662250936e-05], '
 SOVERROOTB = "$S/\sqrt{B}$"
 SOVERROOTSPLUSB = "$S/\sqrt{S+B}$"
 
-# Keegan's yields as of Aug 18, 2023
-KEEGAN_YIELDS = {
-    "WWZ" : {
-        "sr_4l_sf_A": 2.33,
-        "sr_4l_sf_B": 1.97,
-        "sr_4l_sf_C": 0.572,
-        "sr_4l_of_1": 0.645,
-        "sr_4l_of_2": 0.738,
-        "sr_4l_of_3": 1.48,
-        "sr_4l_of_4": 5.14,
-    },
-    "ZH" : {
-        "sr_4l_sf_A": 0.952,
-        "sr_4l_sf_B": 1.52,
-        "sr_4l_sf_C": 0.677,
-        "sr_4l_of_1": 3.05,
-        "sr_4l_of_2": 1.35,
-        "sr_4l_of_3": 0.348,
-        "sr_4l_of_4": 0.152,
-    },
-    "ttZ" : {
-        "sr_4l_sf_A": 1.32*(0.281/0.2529),
-        "sr_4l_sf_B": 1.12*(0.281/0.2529),
-        "sr_4l_sf_C": 0.269*(0.281/0.2529),
-        "sr_4l_of_1": 0.322*(0.281/0.2529),
-        "sr_4l_of_2": 0.382*(0.281/0.2529),
-        "sr_4l_of_3": 0.833*(0.281/0.2529),
-        "sr_4l_of_4": 2.51*(0.281/0.2529),
-    },
-    "ZZ": {
-        "sr_4l_sf_A": 1.32,
-        "sr_4l_sf_B": 4.58,
-        "sr_4l_sf_C": 2.78,
-        "sr_4l_of_1": 0.623,
-        "sr_4l_of_2": 0.619,
-        "sr_4l_of_3": 0.39,
-        "sr_4l_of_4": 0.503,
-    },
-    "other": {
-        "sr_4l_sf_A": 0.607 + 0.00855,
-        "sr_4l_sf_B": 0.417 + 0.0571,
-        "sr_4l_sf_C": 0.0967 + 0.0106,
-        "sr_4l_of_1": 0.27 + 0.107 + 0.0069,
-        "sr_4l_of_2": -0.055 + 0.0 + 0.0106,
-        "sr_4l_of_3": -0.0555 + 0.176 + 0.0446,
-        "sr_4l_of_4": 0.452 + 0.12 + 0.0233,
-    },
-}
 
-_SAMPLE_DICT_BASE = {
-    "ZZ"  : ['ZZTo4L_central'],
-    "ttZ" : ['ttllJet_private'], #['ttZ_central'],
-    "tWZ" : ['TWZToLL_central'],
-}
-_SAMPLE_DICT_BASE = {
-    "ZZ"  : ["ZZTo4l", "ggToZZTo2e2mu", "ggToZZTo2e2tau", "ggToZZTo2mu2tau", "ggToZZTo4e", "ggToZZTo4mu", "ggToZZTo4tau"],
-    "ttZ" : ["TTZToLLNuNu_M_10"],
-    "tWZ" : ["tWll"],
-}
 
 
 ################### Getting and printing yields ###################
@@ -182,9 +122,7 @@ def get_yields(histos_dict,sample_dict,raw_counts=False,quiet=True,blind=True,sy
 
 # Gets the process sums for S and B and gets metrics e.g. S/sqrt(B) and puts it into the dict
 # Hard coded for the summed values (e.g. looking for "ZH" not "GluGluZH","qqToZHToZTo2L")
-def put_proc_row_sums(yld_dict,sr_cat_lst):
-    sig_lst = ["WWZ","ZH"]
-    bkg_lst = ["ZZ","ttZ","tWZ","WZ","other"]
+def put_proc_row_sums(yld_dict,sr_cat_lst, sig_lst=sg.SIG_LST,bkg_lst=sg.BKG_LST):
     # Build up the empty dicts for sig and bkg that we can later fill and then put into the yld dict
     # Will look something like this: {"sr_4l_sf_A":[0,0], "sr_4l_sf_B":[0,0], "sr_4l_sf_C":[0,0], "sr_4l_of_1":[0,0], "sr_4l_of_2":[0,0], "sr_4l_of_3":[0,0], "sr_4l_of_4":[0,0]}
     sig_sum = {}
@@ -223,6 +161,7 @@ def put_proc_row_sums(yld_dict,sr_cat_lst):
         yld_dict["Zmetric"][cat] = [math.sqrt(2 * ((s + b) * math.log(1 + s / b) - s)), None] # Eq 18 https://cds.cern.ch/record/2203244/files/1087459_109-114.pdf
         yld_dict["Sig"][cat] = [s, s_var]
         yld_dict["Bkg"][cat] = [b, b_var]
+
 
 # Gets the sums of categoreis (assumed to be columns in the input dict) and puts them into the dict
 # Special handling for rows that are metrics (e.g. s/sqrt(b)), sums these in quadrature
@@ -313,12 +252,9 @@ def print_yields(yld_dict_in,cats_to_print,procs_to_print,print_fom=True,hlines=
 
     ### Compare with other yields, print comparison ###
 
-    #tag1 = "ewkcoffea"
-    #tag2 = "VVVNanoLooper"
-    tag1 = "lepTightSF btagSFtopeft"
-    tag2 = "lepTightSF " # Hard coded ref
+    tag1 = "New"
+    tag2 = "Ref"
 
-    #yld_dict_comp = utils.put_none_errs(KEEGAN_YIELDS)
     yld_dict_comp = get_err_from_var(EWK_REF)
 
     yld_dict_1 = copy.deepcopy(yld_dict)

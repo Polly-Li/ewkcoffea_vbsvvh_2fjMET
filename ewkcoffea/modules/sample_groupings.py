@@ -1,7 +1,15 @@
 # Dict to keep track of sample groupings, and associated tools
 
-######################## Dictionaries ########################
 
+######################## Lists ########################
+
+PROC_LST = ["WWZ","ZH","ZZ","ttZ","tWZ","WZ","other"]
+SIG_LST = ["WWZ","ZH"]
+BKG_LST = ["ZZ","ttZ","tWZ","WZ","other"]
+CAT_LST_CB = ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C", "sr_4l_of_1", "sr_4l_of_2", "sr_4l_of_3", "sr_4l_of_4"]
+
+
+######################## Dictionaries ########################
 
 # Map showing which CR categories are used to calculate NSFs for which SRs for which processes
 BKG_TF_MAP = {

@@ -15,9 +15,6 @@ SMALL = 0.000001
 
 # Global variables
 PRECISION = 6   # Decimal point precision in the text datacard output
-PROC_LST = ["WWZ","ZH","ZZ","ttZ","tWZ","WZ","other"]
-SIG_LST = ["WWZ","ZH"]
-CAT_LST_CB = ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C", "sr_4l_of_1", "sr_4l_of_2", "sr_4l_of_3", "sr_4l_of_4"]
 
 # Systs that are not correlated across years
 SYSTS_SPECIAL = {
@@ -80,7 +77,7 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,out_dir="."):
         bkgd_count =  1
         sgnl_count = -1
         for p in proc_order:
-            if any([x in p for x in SIG_LST]): # Check for if the process is signal or not
+            if any([x in p for x in sg.SIG_LST]): # Check for if the process is signal or not
                 row.append(f"{sgnl_count:>{col_width}}")
                 sgnl_count += -1
             else:
@@ -415,8 +412,8 @@ def main():
 
 
     #### Make the cards for each channel ####
-    print(f"Making cards for {CAT_LST_CB}. \nPutting in {out_dir}.")
-    for ch in CAT_LST_CB:
+    print(f"Making cards for {sg.CAT_LST_CB}. \nPutting in {out_dir}.")
+    for ch in sg.CAT_LST_CB:
 
         # Get just the info we want to put in the card in str form
         rate_for_dc_ch = get_rate_for_dc(yld_dict_mc,ch)
@@ -426,14 +423,14 @@ def main():
         gmn_for_dc_ch   = None
         if do_nuis:
             kappa_for_dc_ch = get_kappa_for_dc(kappa_dict,ch)
-            kappa_for_dc_ch.update(get_rate_systs(PROC_LST)) # Append in the ones from rate json
+            kappa_for_dc_ch.update(get_rate_systs(sg.PROC_LST)) # Append in the ones from rate json
             gmn_for_dc_ch = get_gmn_for_dc(gmn_dict[ch],proc_lst=list(sg.SAMPLE_DICT_BASE.keys()))
 
 
         # Make the card for this chan
         make_ch_card(
             ch,
-            PROC_LST,
+            sg.PROC_LST,
             rate_for_dc_ch,
             kappa_for_dc_ch,
             gmn_for_dc_ch,
