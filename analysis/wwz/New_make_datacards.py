@@ -13,31 +13,6 @@ import ewkcoffea.modules.yield_tools as yt
 
 SMALL = 0.000001
 
-# TMP!!! To match the old script's order
-TMP_SYS_ORDER = [
-    "btagSFlight_correlated",
-    "btagSFbc_correlated",
-    "lepSF_elec",
-    "lepSF_muon",
-    "PreFiring",
-    "PU",
-    "renorm",
-    "fact",
-    "ISR",
-    "FSR",
-    "btagSFlight_uncorrelated_2016APV",
-    "btagSFbc_uncorrelated_2016APV",
-    "btagSFlight_uncorrelated_2016",
-    "btagSFbc_uncorrelated_2016",
-    "btagSFlight_uncorrelated_2017",
-    "btagSFbc_uncorrelated_2017",
-    "btagSFlight_uncorrelated_2018",
-    "btagSFbc_uncorrelated_2018",
-    "lumi",
-    "qcd_scale_ttZ",
-]
-
-
 # Global variables
 PRECISION = 6   # Decimal point precision in the text datacard output
 PROC_LST = ["WWZ","ZH","ZZ","ttZ","tWZ","WZ","other"]
@@ -47,7 +22,7 @@ CAT_LST_CB = ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C", "sr_4l_of_1", "sr_4l_of_
 # Systs that are not correlated across years
 SYSTS_SPECIAL = {
     "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]}, # !!!
+    "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
     "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
     "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
     "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
@@ -125,12 +100,6 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,out_dir="."):
 
         # Systematics rows
         if ch_kappas is not None:
-            ### TMP so we can match old card order for the diffs !!! ###
-            #if set(TMP_SYS_ORDER) != set(ch_kappas.keys()):
-            #    raise Exception("THIS IS BAD HERE")
-            #    pass
-            #for syst_name in TMP_SYS_ORDER:
-            ###
             for syst_name in ch_kappas:
                 row = [f"{syst_name} lnN"]
                 for p in proc_order:
@@ -333,10 +302,8 @@ def get_rate_for_dc(in_dict):
             if rate < 0:
                 print(f"\nWarning: Process \"{proc}\" in \"{cat}\" has negative total rate: {rate}.\n")
             out_dict[cat][proc] = str(rate)
-            #out_dict[cat][proc] = "{:.6f}".format(np.round(rate,6)) ### TMP!!!
             asimov_data += rate
         out_dict[cat]["data_obs"] = str(asimov_data)
-        #out_dict[cat]["data_obs"] = str(np.round(asimov_data,6)) ### TMP!!!
     return out_dict
 
 
