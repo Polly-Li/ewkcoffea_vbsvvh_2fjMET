@@ -181,7 +181,7 @@ def get_yields(histos_dict,sample_dict,raw_counts=False,quiet=True,blind=True,sy
 # Hard coded for the summed values (e.g. looking for "ZH" not "GluGluZH","qqToZHToZTo2L")
 def put_proc_row_sums(yld_dict,sr_cat_lst):
     sig_lst = ["WWZ","ZH"]
-    bkg_lst = ["ZZ","ttZ","tWZ","other"]
+    bkg_lst = ["ZZ","ttZ","tWZ","WZ","other"]
     # Build up the empty dicts for sig and bkg that we can later fill and then put into the yld dict
     # Will look something like this: {"sr_4l_sf_A":[0,0], "sr_4l_sf_B":[0,0], "sr_4l_sf_C":[0,0], "sr_4l_of_1":[0,0], "sr_4l_of_2":[0,0], "sr_4l_of_3":[0,0], "sr_4l_of_4":[0,0]}
     sig_sum = {}
@@ -304,7 +304,7 @@ def print_yields(yld_dict_in,cats_to_print,procs_to_print,print_fom=True,hlines=
         print_errs=True,
         column_variable="subkeys",
         size="tiny",
-        hz_line_lst=[5],
+        hz_line_lst=[6],
     )
     #exit()
 
@@ -559,11 +559,18 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
         histo = histo_dict[var_name]
 
         cat_lst = [
-            "cr_4l_sf",
-            "cr_4l_btag_sf_offZ_met80",
-            "cr_4l_btag_of",
-            "sr_4l_of_presel",
-            "sr_4l_sf_presel",
+            "sr_4l_sf_A",
+            "sr_4l_sf_B",
+            "sr_4l_sf_C",
+            "sr_4l_of_1",
+            "sr_4l_of_2",
+            "sr_4l_of_3",
+            "sr_4l_of_4",
+            #"cr_4l_sf",
+            #"cr_4l_btag_sf_offZ_met80",
+            #"cr_4l_btag_of",
+            #"sr_4l_of_incl",
+            #"sr_4l_sf_incl",
         ]
 
         # Rebin if continous variable
@@ -581,6 +588,7 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                     syst_var_lst.append(syst_name_base)
 
         for cat in cat_lst:
+            print("\n",cat)
             if "cr_4l_of" not in cat and var_name == "j0pt": continue
             histo_cat = histo[{"category":cat}]
             histo_grouped_mc = group(histo_cat,"process","process_grp",grouping_mc)
@@ -595,7 +603,8 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 #if "lepSF" not in syst: continue
                 #if "PreFiring" not in syst: continue
                 #if "PU" not in syst: continue
-                #if "ISR" not in syst and "FSR" not in syst and "renorm" not in syst and "fact" not in syst: continue
+                #if "ISR" not in syst and "FSR" not in syst: continue
+                if "renorm" not in syst and "fact" not in syst: continue
 
                 # Skip the variations that don't apply (TODO: why are these in the hist to begin with??)
                 if year == "UL16APV": blacklist_years = ["2016","2017","2018"]
@@ -620,13 +629,22 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 mc_up_arr = mc_up[{"process_grp":sum}].values()
                 mc_down_arr = mc_down[{"process_grp":sum}].values()
 
+                # Print individual syst numbers
                 #if var_name != "nleps": continue
                 #n = sum(sum(mc_nom.values()))
                 #u = sum(mc_up_arr)
+                #d = sum(mc_down_arr)
                 #print("\n",syst)
                 #print("nom",n)
                 #print("up",u)
-                #print("err",abs(n-u)/n)
+                #print("do",d)
+                #r_up = abs((n-u)/n)
+                #r_do = abs((n-d)/n)
+                #r = (r_up+r_do)/2
+                #print("err",np.round(100*abs(n-u)/n,1),"%")
+                #print("err up",np.round(100*r_up,1),"%")
+                #print("err do",np.round(100*r_do,1),"%")
+                #print("err do",np.round(100*r,1),"%")
                 #continue
 
                 fig = make_syst_fig(mc_nom,mc_up_arr,mc_down_arr,syst,title=f"{var_name}_{yeartag}_{cat}_{syst}")
@@ -887,15 +905,15 @@ def main():
 
         # Dump latex table for cut based
         hlines = [2,3,7,8]
-        #sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
-        sr_cats_to_print = ["sr_sf_all_cutbased" , "sr_of_all_cutbased" , "sr_all_cutbased" , "sr_4l_sf_presel" , "sr_4l_sf_trn" , "sr_4l_of_presel"] # Preselection SR categories
-        procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
+        sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
+        #sr_cats_to_print = ["sr_sf_all_cutbased" , "sr_of_all_cutbased" , "sr_all_cutbased" , "sr_4l_sf_presel" , "sr_4l_sf_trn" , "sr_4l_of_presel"] # Preselection SR categories
+        procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
         print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
 
         # Dump latex table for BDT
         #hlines = [6,7,15,16]
         #sr_cats_to_print = SR_SF_BDT + ["sr_sf_all_bdt"] + SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"]
-        #procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
+        #procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
         #print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
 
         # Dump yield dict to json
@@ -907,9 +925,9 @@ def main():
 
     # Make plots
     if args.make_plots:
-        #make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path)
+        make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path)
         #make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
-        make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data) # Make plot of all SR yields in one plot
+        #make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data) # Make plot of all SR yields in one plot
 
 
 
