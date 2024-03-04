@@ -53,6 +53,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             "scalarptsum_lep" : axis.Regular(180, 0, 500, name="scalarptsum_lep", label="S_T"),
             "scalarptsum_lepmet" : axis.Regular(180, 0, 600, name="scalarptsum_lepmet", label="S_T + metpt"),
             "scalarptsum_lepmetjet" : axis.Regular(180, 0, 1100, name="scalarptsum_lepmetjet", label="S_T + metpt + H_T"),
+            "scalarptsum_jet" : axis.Regular(180, 0, 1100, name="scalarptsum_jet", label="H_T"),
             "mll_01": axis.Regular(180, 0, 200, name="mll_01",  label="mll_l0_l1"),
             "mllll": axis.Regular(180, 0, 600, name="mllll",  label="mllll"),
             "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
@@ -79,12 +80,16 @@ class AnalysisProcessor(processor.ProcessorABC):
             "dr_wl0_wl1" : axis.Regular(180, 0, 5, name="dr_wl0_wl1", label="dr(Wl0,Wl1)"),
             "dr_wleps_zleps" : axis.Regular(180, 0, 5, name="dr_wleps_zleps", label="dr((Wl0+Wl1),(Zl0,Zl1))"),
 
+            ##"mt_4l_met"  : axis.Regular(180, 0, 500, name="mt_4l_met", label="mt_4l_met"),
+
             "absdphi_zl0_zl1" : axis.Regular(180, 0, 4, name="absdphi_zl0_zl1", label="abs dphi(Zl0,Zl1)"),
             "absdphi_wl0_wl1" : axis.Regular(180, 0, 4, name="absdphi_wl0_wl1", label="abs dphi(Wl0,Wl1)"),
             "absdphi_z_ww"    : axis.Regular(180, 0, 4, name="absdphi_z_ww", label="abs dphi((Zl0+Zl1),(Wl0+Wl1+met))"),
             "dphi_4l_met"    : axis.Regular(180, -4, 4, name="dphi_4l_met", label="dphi((Zl0+Zl1+Wl0+Wl1),met)"),
             "dphi_zleps_met" : axis.Regular(180, -4, 4, name="dphi_zleps_met", label="dphi((Zl0+Zl1),met)"),
             "dphi_wleps_met" : axis.Regular(180, -4, 4, name="dphi_wleps_met", label="dphi((Wl0+Wl1),met)"),
+            "dphi_wl0_met"   : axis.Regular(180, -4, 4, name="dphi_wl0_met", label="dphi(Wl0,met)"),
+            "dphi_wl1_met"   : axis.Regular(180, -4, 4, name="dphi_wl1_met", label="dphi(Wl1,met)"),
 
             "absdphi_min_afas" : axis.Regular(180, 0, 4, name="absdphi_min_afas",  label="min(abs(delta phi of all pairs))"),
             "absdphi_min_afos" : axis.Regular(180, 0, 4, name="absdphi_min_afos",  label="min(abs(delta phi of OS pairs))"),
@@ -483,6 +488,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             scalarptsum_lep = l0.pt + l1.pt + l2.pt + l3.pt
             scalarptsum_lepmet = l0.pt + l1.pt + l2.pt + l3.pt + met.pt
             scalarptsum_lepmetjet = l0.pt + l1.pt + l2.pt + l3.pt + met.pt + ak.sum(goodJets.pt,axis=-1)
+            scalarptsum_jet = ak.sum(goodJets.pt,axis=-1)
 
             # Get lep from Z
             z_lep0 = leps_from_z_candidate_ptordered[:,0]
@@ -502,6 +508,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             absdphi_z_ww = abs((z_lep0 + z_lep1).delta_phi(w_lep0 + w_lep1 + met))
             dphi_4l_met = (z_lep0 + z_lep1 + w_lep0 + w_lep1).delta_phi(met)
             dphi_wleps_met = (w_lep0 + w_lep1).delta_phi(met)
+            dphi_wl0_met = w_lep0.delta_phi(met)
+            dphi_wl1_met = w_lep1.delta_phi(met)
             dphi_zleps_met = (z_lep0 + z_lep1).delta_phi(met)
 
             # lb pairs (i.e. always one lep, one bjet)
@@ -661,6 +669,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "scalarptsum_lep" : scalarptsum_lep,
                 "scalarptsum_lepmet" : scalarptsum_lepmet,
                 "scalarptsum_lepmetjet" : scalarptsum_lepmetjet,
+                "scalarptsum_jet" : scalarptsum_jet,
                 "mll_01" : mll_01,
                 "mllll" : mllll,
                 "l0pt" : l0pt,
@@ -693,6 +702,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "dphi_4l_met" : dphi_4l_met,
                 "dphi_zleps_met" : dphi_zleps_met,
                 "dphi_wleps_met" : dphi_wleps_met,
+                "dphi_wl0_met" : dphi_wl0_met,
+                "dphi_wl1_met" : dphi_wl1_met,
 
                 "nleps" : nleps,
                 "njets" : njets,
@@ -734,6 +745,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "scalarptsum_lep" : ["all_events"],
                 "scalarptsum_lepmet" : ["all_events"],
                 "scalarptsum_lepmetjet" : ["all_events"],
+                "scalarptsum_jet" : ["all_events"],
                 "w_lep0_pt"  : ["all_events"],
                 "w_lep1_pt"  : ["all_events"],
                 "z_lep0_pt"  : ["all_events"],
@@ -760,6 +772,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "dphi_4l_met" : ["all_events"],
                 "dphi_zleps_met" : ["all_events"],
                 "dphi_wleps_met" : ["all_events"],
+                "dphi_wl0_met" : ["all_events"],
+                "dphi_wl1_met" : ["all_events"],
 
                 "absdphi_min_afas" : ["all_events"],
                 "absdphi_min_afos" : ["all_events"],
