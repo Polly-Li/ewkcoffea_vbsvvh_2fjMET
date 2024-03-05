@@ -320,6 +320,11 @@ def attach_wwz_preselection_mask(events,lep_collection):
     events["wwz_presel_of"] = (wwz_presel_mask & ~sf_mask)
 
 
+# Get the MT variable
+# See also https://en.wikipedia.org/wiki/Transverse_mass#Transverse_mass_in_two-particle_systems
+def get_mt(p1,p2):
+    return np.sqrt(2*p1.pt*p2.pt*(1 - np.cos(p1.delta_phi(p2))))
+
 # Get MT2 for WW
 def get_mt2(w_lep0,w_lep1,met):
 
