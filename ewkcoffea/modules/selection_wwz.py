@@ -364,6 +364,16 @@ def get_mt2(w_lep0,w_lep1,met):
     return mt2_var
 
 
+# Helicity function as defined here:
+# https://github.com/cmstas/VVVNanoLooper/blob/46ee6437978e8be46a903f8f075e4d50c55f1573/analysis/process.cc#L2326-L2344
+def helicity(p1,p2):
+    parent = p1+p2
+    boost_to_parent = parent.boostvec.negative()
+    p1_new = p1.boost(boost_to_parent)
+    cos_theta_1 = p1_new.dot(parent) / (p1_new.absolute()*parent.absolute())
+    return abs(cos_theta_1)
+
+
 # Evaluate the BDTs from Keegan
 def eval_sig_bdt(events,in_vals,model_fpath):
 

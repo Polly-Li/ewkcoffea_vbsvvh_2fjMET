@@ -11,6 +11,7 @@ import hist
 from hist import axis
 from coffea.analysis_tools import PackedSelection
 from coffea.lumi_tools import LumiMask
+from coffea.nanoevents.methods import vector
 
 from topcoffea.modules.paths import topcoffea_path
 import topcoffea.modules.event_selection as es_tc
@@ -102,6 +103,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             "mll_min_afas" : axis.Regular(180, 0, 150, name="mll_min_afas",  label="min mll of all pairs"),
             "mll_min_afos" : axis.Regular(180, 0, 150, name="mll_min_afos",  label="min mll of OF pairs"),
             "mll_min_sfos" : axis.Regular(180, 0, 150, name="mll_min_sfos",  label="min mll of SFOF pairs"),
+
+            "cos_helicity_x" : axis.Regular(180, 0, 100, name="cos_helicity_x",  label="cos_helicity_x"),
 
             "mlb_min" : axis.Regular(180, 0, 300, name="mlb_min",  label="min mass(b+l)"),
             "mlb_max" : axis.Regular(180, 0, 500, name="mlb_max",  label="max mass(b+l)"),
@@ -525,6 +528,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             mt_wl0_met   = es_ec.get_mt((w_lep0),met)
             mt_wl1_met   = es_ec.get_mt((w_lep1),met)
 
+            # The helicity w0 w1 variable
+            cos_helicity_x = es_ec.helicity(w_lep0,w_lep1)
+
             # lb pairs (i.e. always one lep, one bjet)
             bjets = goodJets[isBtagJetsLoose]
             lb_pairs = ak.cartesian({"l":l_wwz_t,"j":bjets})
@@ -724,6 +730,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "dphi_wl0_met" : dphi_wl0_met,
                 "dphi_wl1_met" : dphi_wl1_met,
 
+                "cos_helicity_x" : cos_helicity_x,
+
                 "nleps" : nleps,
                 "njets" : njets,
                 "nbtagsl" : nbtagsl,
@@ -799,6 +807,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "dphi_wleps_met" : ["all_events"],
                 "dphi_wl0_met" : ["all_events"],
                 "dphi_wl1_met" : ["all_events"],
+
+                "cos_helicity_x" : ["all_events"],
 
                 "absdphi_min_afas" : ["all_events"],
                 "absdphi_min_afos" : ["all_events"],
