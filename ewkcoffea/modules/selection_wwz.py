@@ -370,7 +370,9 @@ def helicity(p1,p2):
     parent = p1+p2
     boost_to_parent = parent.boostvec.negative()
     p1_new = p1.boost(boost_to_parent)
-    cos_theta_1 = p1_new.dot(parent) / (p1_new.absolute()*parent.absolute())
+    p1_new_3 = p1_new.pvec # 3 vector
+    parent_3 = parent.pvec # 3 vector
+    cos_theta_1 = p1_new_3.dot(parent_3) / (p1_new_3.absolute()*parent_3.absolute())
     return abs(cos_theta_1)
 
 

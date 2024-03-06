@@ -51,10 +51,10 @@ class AnalysisProcessor(processor.ProcessorABC):
             "met"   : axis.Regular(180, 0, 300, name="met",  label="met"),
             "metphi": axis.Regular(180, -4, 4, name="metphi", label="met phi"),
             "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
-            "scalarptsum_lep" : axis.Regular(180, 0, 500, name="scalarptsum_lep", label="S_T"),
+            "scalarptsum_lep" : axis.Regular(180, 0, 600, name="scalarptsum_lep", label="S_T"),
             "scalarptsum_lepmet" : axis.Regular(180, 0, 600, name="scalarptsum_lepmet", label="S_T + metpt"),
             "scalarptsum_lepmetjet" : axis.Regular(180, 0, 1100, name="scalarptsum_lepmetjet", label="S_T + metpt + H_T"),
-            "scalarptsum_jet" : axis.Regular(180, 0, 1100, name="scalarptsum_jet", label="H_T"),
+            "scalarptsum_jet" : axis.Regular(180, 0, 500, name="scalarptsum_jet", label="H_T"),
             "mll_01": axis.Regular(180, 0, 200, name="mll_01",  label="mll_l0_l1"),
             "mllll": axis.Regular(180, 0, 600, name="mllll",  label="mllll"),
             "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
@@ -84,18 +84,18 @@ class AnalysisProcessor(processor.ProcessorABC):
             "dr_wl1_j_min" : axis.Regular(180, 0, 5, name="dr_wl1_j_min",  label="min dr(Wl1,j)"),
 
             "mt_4l_met"   : axis.Regular(180, 0, 500, name="mt_4l_met", label="mT of 4l system and met"),
-            "mt_wleps_met": axis.Regular(180, 0, 500, name="mt_wleps_met", label="mT of W leptons system and met"),
-            "mt_wl0_met"  : axis.Regular(180, 0, 500, name="mt_wl0_met", label="mT of W lep0 and met"),
-            "mt_wl1_met"  : axis.Regular(180, 0, 500, name="mt_wl1_met", label="mT of W lep1 and met"),
+            "mt_wleps_met": axis.Regular(180, 0, 300, name="mt_wleps_met", label="mT of W leptons system and met"),
+            "mt_wl0_met"  : axis.Regular(180, 0, 300, name="mt_wl0_met", label="mT of W lep0 and met"),
+            "mt_wl1_met"  : axis.Regular(180, 0, 300, name="mt_wl1_met", label="mT of W lep1 and met"),
 
             "absdphi_zl0_zl1": axis.Regular(180, 0, 4, name="absdphi_zl0_zl1", label="abs dphi(Zl0,Zl1)"),
             "absdphi_wl0_wl1": axis.Regular(180, 0, 4, name="absdphi_wl0_wl1", label="abs dphi(Wl0,Wl1)"),
             "absdphi_z_ww"   : axis.Regular(180, 0, 4, name="absdphi_z_ww", label="abs dphi((Zl0+Zl1),(Wl0+Wl1+met))"),
-            "dphi_4l_met"    : axis.Regular(180, -4, 4, name="dphi_4l_met", label="dphi((Zl0+Zl1+Wl0+Wl1),met)"),
-            "dphi_zleps_met" : axis.Regular(180, -4, 4, name="dphi_zleps_met", label="dphi((Zl0+Zl1),met)"),
-            "dphi_wleps_met" : axis.Regular(180, -4, 4, name="dphi_wleps_met", label="dphi((Wl0+Wl1),met)"),
-            "dphi_wl0_met"   : axis.Regular(180, -4, 4, name="dphi_wl0_met", label="dphi(Wl0,met)"),
-            "dphi_wl1_met"   : axis.Regular(180, -4, 4, name="dphi_wl1_met", label="dphi(Wl1,met)"),
+            "absdphi_4l_met" : axis.Regular(180, 0, 4, name="absdphi_4l_met", label="abs dphi((Zl0+Zl1+Wl0+Wl1),met)"),
+            "absdphi_zleps_met" : axis.Regular(180, 0, 4, name="absdphi_zleps_met", label="absdphi((Zl0+Zl1),met)"),
+            "absdphi_wleps_met" : axis.Regular(180, 0, 4, name="absdphi_wleps_met", label="abs dphi((Wl0+Wl1),met)"),
+            "absdphi_wl0_met": axis.Regular(180, 0, 4, name="absdphi_wl0_met", label="abs dphi(Wl0,met)"),
+            "absdphi_wl1_met": axis.Regular(180, 0, 4, name="absdphi_wl1_met", label="abs dphi(Wl1,met)"),
 
             "absdphi_min_afas" : axis.Regular(180, 0, 4, name="absdphi_min_afas",  label="min(abs(delta phi of all pairs))"),
             "absdphi_min_afos" : axis.Regular(180, 0, 4, name="absdphi_min_afos",  label="min(abs(delta phi of OS pairs))"),
@@ -104,7 +104,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             "mll_min_afos" : axis.Regular(180, 0, 150, name="mll_min_afos",  label="min mll of OF pairs"),
             "mll_min_sfos" : axis.Regular(180, 0, 150, name="mll_min_sfos",  label="min mll of SFOF pairs"),
 
-            "cos_helicity_x" : axis.Regular(180, 0, 100, name="cos_helicity_x",  label="cos_helicity_x"),
+            "cos_helicity_x" : axis.Regular(180, 0, 1, name="cos_helicity_x",  label="cos_helicity_x"),
 
             "mlb_min" : axis.Regular(180, 0, 300, name="mlb_min",  label="min mass(b+l)"),
             "mlb_max" : axis.Regular(180, 0, 500, name="mlb_max",  label="max mass(b+l)"),
@@ -519,11 +519,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             absdphi_zl0_zl1 = abs(z_lep0.delta_phi(z_lep1))
             absdphi_wl0_wl1 = abs(w_lep0.delta_phi(w_lep1))
             absdphi_z_ww = abs((z_lep0 + z_lep1).delta_phi(w_lep0 + w_lep1 + met))
-            dphi_4l_met = (z_lep0 + z_lep1 + w_lep0 + w_lep1).delta_phi(met)
-            dphi_wleps_met = (w_lep0 + w_lep1).delta_phi(met)
-            dphi_wl0_met = w_lep0.delta_phi(met)
-            dphi_wl1_met = w_lep1.delta_phi(met)
-            dphi_zleps_met = (z_lep0 + z_lep1).delta_phi(met)
+            absdphi_4l_met = abs((z_lep0 + z_lep1 + w_lep0 + w_lep1).delta_phi(met))
+            absdphi_wleps_met = abs((w_lep0 + w_lep1).delta_phi(met))
+            absdphi_wl0_met = abs(w_lep0.delta_phi(met))
+            absdphi_wl1_met = abs(w_lep1.delta_phi(met))
+            absdphi_zleps_met = (z_lep0 + z_lep1).delta_phi(met)
 
             # Transverse mass
             mt_4l_met    = es_ec.get_mt((l0+l1+l2+l3),met)
@@ -543,9 +543,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Get BDT values
             bdt_vars = [
                 ak.fill_none(mll_wl0_wl1,-9999),
-                ak.fill_none(dphi_4l_met,-9999),
-                ak.fill_none(dphi_zleps_met,-9999),
-                ak.fill_none(dphi_wleps_met,-9999),
+                ak.fill_none(absdphi_4l_met,-9999),
+                ak.fill_none(absdphi_zleps_met,-9999),
+                ak.fill_none(absdphi_wleps_met,-9999),
                 ak.fill_none(dr_wl0_wl1,-9999),
                 ak.fill_none(dr_zl0_zl1,-9999),
                 ak.fill_none(dr_wleps_zleps,-9999),
@@ -727,11 +727,11 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "absdphi_zl0_zl1" : absdphi_zl0_zl1,
                 "absdphi_wl0_wl1" : absdphi_wl0_wl1,
                 "absdphi_z_ww" : absdphi_z_ww,
-                "dphi_4l_met" : dphi_4l_met,
-                "dphi_zleps_met" : dphi_zleps_met,
-                "dphi_wleps_met" : dphi_wleps_met,
-                "dphi_wl0_met" : dphi_wl0_met,
-                "dphi_wl1_met" : dphi_wl1_met,
+                "absdphi_4l_met" : absdphi_4l_met,
+                "absdphi_zleps_met" : absdphi_zleps_met,
+                "absdphi_wleps_met" : absdphi_wleps_met,
+                "absdphi_wl0_met" : absdphi_wl0_met,
+                "absdphi_wl1_met" : absdphi_wl1_met,
 
                 "cos_helicity_x" : cos_helicity_x,
 
@@ -805,11 +805,11 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "absdphi_zl0_zl1" : ["all_events"],
                 "absdphi_wl0_wl1" : ["all_events"],
                 "absdphi_z_ww" : ["all_events"],
-                "dphi_4l_met" : ["all_events"],
-                "dphi_zleps_met" : ["all_events"],
-                "dphi_wleps_met" : ["all_events"],
-                "dphi_wl0_met" : ["all_events"],
-                "dphi_wl1_met" : ["all_events"],
+                "absdphi_4l_met" : ["all_events"],
+                "absdphi_zleps_met" : ["all_events"],
+                "absdphi_wleps_met" : ["all_events"],
+                "absdphi_wl0_met" : ["all_events"],
+                "absdphi_wl1_met" : ["all_events"],
 
                 "cos_helicity_x" : ["all_events"],
 
