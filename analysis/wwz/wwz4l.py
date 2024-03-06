@@ -83,14 +83,14 @@ class AnalysisProcessor(processor.ProcessorABC):
             "dr_wl0_j_min" : axis.Regular(180, 0, 5, name="dr_wl0_j_min",  label="min dr(Wl0,j)"),
             "dr_wl1_j_min" : axis.Regular(180, 0, 5, name="dr_wl1_j_min",  label="min dr(Wl1,j)"),
 
-            "mt_4l_met"  : axis.Regular(180, 0, 500, name="mt_4l_met", label="mT of 4l system and met"),
-            "mt_wleps_met"  : axis.Regular(180, 0, 500, name="mt_wleps_met", label="mT of W leptons system and met"),
+            "mt_4l_met"   : axis.Regular(180, 0, 500, name="mt_4l_met", label="mT of 4l system and met"),
+            "mt_wleps_met": axis.Regular(180, 0, 500, name="mt_wleps_met", label="mT of W leptons system and met"),
             "mt_wl0_met"  : axis.Regular(180, 0, 500, name="mt_wl0_met", label="mT of W lep0 and met"),
             "mt_wl1_met"  : axis.Regular(180, 0, 500, name="mt_wl1_met", label="mT of W lep1 and met"),
 
-            "absdphi_zl0_zl1" : axis.Regular(180, 0, 4, name="absdphi_zl0_zl1", label="abs dphi(Zl0,Zl1)"),
-            "absdphi_wl0_wl1" : axis.Regular(180, 0, 4, name="absdphi_wl0_wl1", label="abs dphi(Wl0,Wl1)"),
-            "absdphi_z_ww"    : axis.Regular(180, 0, 4, name="absdphi_z_ww", label="abs dphi((Zl0+Zl1),(Wl0+Wl1+met))"),
+            "absdphi_zl0_zl1": axis.Regular(180, 0, 4, name="absdphi_zl0_zl1", label="abs dphi(Zl0,Zl1)"),
+            "absdphi_wl0_wl1": axis.Regular(180, 0, 4, name="absdphi_wl0_wl1", label="abs dphi(Wl0,Wl1)"),
+            "absdphi_z_ww"   : axis.Regular(180, 0, 4, name="absdphi_z_ww", label="abs dphi((Zl0+Zl1),(Wl0+Wl1+met))"),
             "dphi_4l_met"    : axis.Regular(180, -4, 4, name="dphi_4l_met", label="dphi((Zl0+Zl1+Wl0+Wl1),met)"),
             "dphi_zleps_met" : axis.Regular(180, -4, 4, name="dphi_zleps_met", label="dphi((Zl0+Zl1),met)"),
             "dphi_wleps_met" : axis.Regular(180, -4, 4, name="dphi_wleps_met", label="dphi((Wl0+Wl1),met)"),
@@ -510,8 +510,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             dr_zl0_zl1 = z_lep0.delta_r(z_lep1)
             dr_wl0_wl1 = w_lep0.delta_r(w_lep1)
             dr_wleps_zleps = (w_lep0 + w_lep1).delta_r(z_lep0 + z_lep1)
+
             dr_wl0_j_min = ak.min(w_lep0.delta_r(goodJets),axis=-1)
             dr_wl1_j_min = ak.min(w_lep1.delta_r(goodJets),axis=-1)
+            dr_wl0_j_min = ak.where(njets>0,dr_wl0_j_min,0)
+            dr_wl1_j_min = ak.where(njets>0,dr_wl1_j_min,0)
 
             absdphi_zl0_zl1 = abs(z_lep0.delta_phi(z_lep1))
             absdphi_wl0_wl1 = abs(w_lep0.delta_phi(w_lep1))
@@ -715,8 +718,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "dr_zl0_zl1" : dr_zl0_zl1,
                 "dr_wl0_wl1" : dr_wl0_wl1,
                 "dr_wleps_zleps" : dr_wleps_zleps,
-                #"dr_wl0_j_min" : dr_wl0_j_min, # TMP !!! Figure out how to define in caes with no jet
-                #"dr_wl1_j_min" : dr_wl1_j_min, # TMP !!! Figure out how to define in caes with no jet
+                "dr_wl0_j_min" : dr_wl0_j_min,
+                "dr_wl1_j_min" : dr_wl1_j_min,
                 "mt_4l_met" : mt_4l_met,
                 "mt_wleps_met" : mt_wleps_met,
                 "mt_wl0_met" : mt_wl0_met,
@@ -793,8 +796,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "dr_zl0_zl1" : ["all_events"],
                 "dr_wl0_wl1" : ["all_events"],
                 "dr_wleps_zleps" : ["all_events"],
-                #"dr_wl0_j_min" : ["all_events","TODO jets??"],
-                #"dr_wl1_j_min" : ["all_events","TODO jets??"],
+                "dr_wl0_j_min" : ["all_events"],
+                "dr_wl1_j_min" : ["all_events"],
                 "mt_4l_met" : ["all_events"],
                 "mt_wleps_met" : ["all_events"],
                 "mt_wl0_met" : ["all_events"],
