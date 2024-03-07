@@ -681,7 +681,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             bdt_of_5 = ((bdt_of_wwz > 0.0) & ~bdt_of_1 & ~bdt_of_2 & (bdt_of_zh < 0.0))
             bdt_of_6 = ((bdt_of_wwz >= -0.4) & (bdt_of_wwz < 0) & (bdt_of_zh < -0.8))
             bdt_of_7 = (~bdt_of_3 & ~bdt_of_4 & (bdt_of_zh > 0))
-            bdt_of_8 = ((bdt_of_wwz > 0) & ~bdt_of_6 & (bdt_of_zh > 0.0))
+            bdt_of_8 = ((bdt_of_wwz < 0) & ~bdt_of_6 & (bdt_of_zh < 0.0))
 
             # Put the bdt variables into the dict of variables too
             dense_variables_dict["bdt_of_wwz_raw"] = bdt_of_wwz_raw
@@ -736,7 +736,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             sr_4l_bdt_of_trn    = sr_4l_bdt_of_presel # For OF, presel and trn regions are the same
             selections.add("sr_4l_bdt_sf_presel", sr_4l_bdt_sf_presel)
             selections.add("sr_4l_bdt_sf_trn"   , sr_4l_bdt_sf_trn)
-            selections.add("sr_4l_bdt_of_presel", sr_4l_bdt_of_trn)
+            selections.add("sr_4l_bdt_of_presel", sr_4l_bdt_of_presel)
+            selections.add("sr_4l_bdt_of_trn"   , sr_4l_bdt_of_trn)
 
             selections.add("sr_4l_bdt_sf_1", (sr_4l_bdt_sf_trn & bdt_sf_1))
             selections.add("sr_4l_bdt_sf_2", (sr_4l_bdt_sf_trn & bdt_sf_2))
@@ -779,7 +780,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4",
                     "all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl",
                     "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf",
-                    "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_presel",
+                    "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn", "sr_4l_bdt_of_presel",
                 ] + bdt_sr_names
             }
 
@@ -793,7 +794,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             exclude_var_dict = {
                 "mt2" : ["all_events"],
                 "ptl4" : ["all_events"],
-                "j0pt" : ["all_events", "4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_presel", "cr_4l_sf"] + analysis_cats,
+                "j0pt" : ["all_events", "4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn", "sr_4l_bdt_of_presel", "cr_4l_sf"] + analysis_cats,
                 "l0pt" : ["all_events"],
                 "mll_01" : ["all_events"],
                 "mllll" : ["all_events"],
@@ -845,8 +846,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mll_min_afos" : ["all_events"],
                 "mll_min_sfos" : ["all_events"],
 
-                "mlb_min" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_presel", "cr_4l_sf"] + analysis_cats,
-                "mlb_max" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_presel", "cr_4l_sf"] + analysis_cats,
+                "mlb_min" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn", "sr_4l_bdt_of_presel", "cr_4l_sf"] + analysis_cats,
+                "mlb_max" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn", "sr_4l_bdt_of_presel", "cr_4l_sf"] + analysis_cats,
 
                 "bdt_of_wwz_raw": ["all_events"],
                 "bdt_sf_wwz_raw": ["all_events"],
