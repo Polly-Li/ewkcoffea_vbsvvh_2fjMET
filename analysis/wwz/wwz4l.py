@@ -11,7 +11,6 @@ import hist
 from hist import axis
 from coffea.analysis_tools import PackedSelection
 from coffea.lumi_tools import LumiMask
-from coffea.nanoevents.methods import vector
 
 from topcoffea.modules.paths import topcoffea_path
 import topcoffea.modules.event_selection as es_tc
