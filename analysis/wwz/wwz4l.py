@@ -665,35 +665,33 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             ### BDT SRs ###
             # SF BDT SRs
-            sf_wwz_sr1 = ( (bdt_sf_wwz > 0.9) & (bdt_sf_zh  >  0.8))
-            sf_wwz_sr2 = ( (bdt_sf_wwz > 0.9) & (bdt_sf_zh  > -0.6) & (bdt_sf_zh  < 0.8))
-            sf_zh_sr1  = ( (bdt_sf_wwz < 0.9) & (bdt_sf_wwz >  0.7) & (bdt_sf_zh  > 0.85))
-            sf_zh_sr2  = ( (bdt_sf_wwz < 0.7) & (bdt_sf_wwz >  0.6) & (bdt_sf_zh  > 0.85))
-            sf_any     = ( sf_wwz_sr1 | sf_wwz_sr2 | sf_zh_sr1 | sf_zh_sr2)
-            sf_wwz_sr3 = ( ~sf_any & ((bdt_sf_zh > 0.5) & (bdt_sf_wwz > 0.35)))
-            sf_wwz_sr4 = ( ~(sf_any | sf_wwz_sr3) & ( (bdt_sf_zh > 0.85) & (bdt_sf_wwz > -0.5)))
-            sf_zh_sr3  = ( ~(sf_any | sf_wwz_sr3 | sf_wwz_sr4) & ( bdt_sf_wwz > 0.8 ) )
-
-            # OF BDT SRs
-            of_wwz_sr1 = ( (bdt_of_wwz > 0.7) & (bdt_of_zh < -0.3) )
-            of_wwz_sr2 = ( (bdt_of_wwz < 0.7) & (bdt_of_wwz > 0.4) & (bdt_of_zh < -0.6) )
-            of_zh_sr1  = ( (bdt_of_wwz > 0.5) & (bdt_of_zh > 0.7) )
-            of_zh_sr2  = ( (bdt_of_wwz < 0.5) & (bdt_of_wwz > -0.2) & (bdt_of_zh > 0.7) )
-            of_any     = ( of_wwz_sr1 | of_wwz_sr2 | of_zh_sr1 | of_zh_sr2 )
-            of_wwz_sr3 = ( ~of_any & (bdt_of_wwz > 0.0) & (bdt_of_zh < (0.8*(bdt_of_wwz-1.))) )
-            of_wwz_sr4 = ( (~of_any & ~of_wwz_sr3) & (bdt_of_wwz > 0.0) )
-            of_zh_sr3  = ( (~of_any & ~of_wwz_sr3 & ~of_wwz_sr4) & (bdt_of_zh > 0.5) )
-            of_zh_sr4  = ( (~of_any & ~of_wwz_sr3 & ~of_wwz_sr4 & ~of_zh_sr3) & (bdt_of_zh > 0.0) & (bdt_of_wwz > -0.5) )
+            bdt_sf_1 = ((bdt_sf_wwz > 0.8) & (bdt_sf_zh < -0.6))
+            bdt_sf_2 = ((bdt_sf_wwz >= 0.6) & (bdt_sf_wwz <= 0.8) & (bdt_sf_zh < -0.6))
+            bdt_sf_3 = ((bdt_sf_wwz > 0.8) & (bdt_sf_zh > 0.9))
+            bdt_sf_4 = ((bdt_sf_wwz >= 0.5) & (bdt_sf_wwz <= 0.8) & (bdt_sf_zh > 0.9))
+            bdt_sf_5 = ((bdt_sf_wwz >= 0.0) & (bdt_sf_wwz < 0.6) & (bdt_sf_zh < -0.8))
+            bdt_sf_1or2or3or4or5 = (bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4 | bdt_sf_5)
+            bdt_sf_6 = ((bdt_sf_wwz > 0.0) & ~(bdt_sf_1or2or3or4or5) & (bdt_sf_zh > -0.8))
+            bdt_sf_7 = (bdt_sf_wwz < 0.0)
+            # SF BDT SRs
+            bdt_of_1 = ((bdt_of_wwz > 0.8) & (bdt_of_zh < -0.6))
+            bdt_of_2 = ((bdt_of_wwz >= 0.5) & (bdt_of_wwz <= 0.8) & (bdt_of_zh < -0.6))
+            bdt_of_3 = ((bdt_of_wwz > 0.6) & (bdt_of_zh > 0.8))
+            bdt_of_4 = ((bdt_of_wwz >= 0.2) & (bdt_of_wwz <= 0.6) & (bdt_of_zh > 0.8))
+            bdt_of_5 = ((bdt_of_wwz > 0.0) & ~bdt_of_1 & ~bdt_of_2 & (bdt_of_zh < 0.0))
+            bdt_of_6 = ((bdt_of_wwz >= -0.4) & (bdt_of_wwz < 0) & (bdt_of_zh < -0.8))
+            bdt_of_7 = (~bdt_of_3 & ~bdt_of_4 & (bdt_of_zh > 0))
+            bdt_of_8 = ((bdt_of_wwz > 0) & ~bdt_of_6 & (bdt_of_zh > 0.0))
 
             # Put the bdt variables into the dict of variables too
-            dense_variables_dict["bdt_of_wwz_raw"] = bdt_of_wwz_raw,
-            dense_variables_dict["bdt_sf_wwz_raw"] = bdt_sf_wwz_raw,
-            dense_variables_dict["bdt_of_zh_raw"]  = bdt_of_zh_raw,
-            dense_variables_dict["bdt_sf_zh_raw"]  = bdt_sf_zh_raw,
-            dense_variables_dict["bdt_of_wwz"]     = bdt_of_wwz,
-            dense_variables_dict["bdt_sf_wwz"]     = bdt_sf_wwz,
-            dense_variables_dict["bdt_of_zh"]      = bdt_of_zh,
-            dense_variables_dict["bdt_sf_zh"]      = bdt_sf_zh,
+            dense_variables_dict["bdt_of_wwz_raw"] = bdt_of_wwz_raw
+            dense_variables_dict["bdt_sf_wwz_raw"] = bdt_sf_wwz_raw
+            dense_variables_dict["bdt_of_zh_raw"]  = bdt_of_zh_raw
+            dense_variables_dict["bdt_sf_zh_raw"]  = bdt_sf_zh_raw
+            dense_variables_dict["bdt_of_wwz"]     = bdt_of_wwz
+            dense_variables_dict["bdt_sf_wwz"]     = bdt_sf_wwz
+            dense_variables_dict["bdt_of_zh"]      = bdt_of_zh
+            dense_variables_dict["bdt_sf_zh"]      = bdt_sf_zh
 
 
             ######### Store boolean masks with PackedSelection ##########
@@ -705,7 +703,16 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             zeroj = (njets==0)
 
-            # For WWZ selection
+            # Fill the packed slection object
+
+            # CRs
+            ww_ee = ((abs(w_lep0.pdgId) == 11) & (abs(w_lep1.pdgId) == 11))
+            ww_mm = ((abs(w_lep0.pdgId) == 13) & (abs(w_lep1.pdgId) == 13))
+            ww_em = ((abs(w_lep0.pdgId) == 11) & (abs(w_lep1.pdgId) == 13))
+            ww_me = ((abs(w_lep0.pdgId) == 13) & (abs(w_lep1.pdgId) == 11))
+            selections.add("cr_4l_btag_of",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of))
+            selections.add("cr_4l_btag_sf_offZ_met80", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0)))
+            selections.add("cr_4l_sf", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
 
             selections.add("sr_4l_sf_A", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_A))
             selections.add("sr_4l_sf_B", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_B))
@@ -723,53 +730,48 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # For BDT SRs
 
-            selections.add("sr_4l_bdt_sf_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z))
-            selections.add("sr_4l_bdt_sf_trn"   , (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & mt2_mask))
-            selections.add("sr_4l_bdt_of_presel", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of))
+            sr_4l_bdt_sf_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z)
+            sr_4l_bdt_sf_trn    = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & mt2_mask)
+            sr_4l_bdt_of_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)
+            sr_4l_bdt_of_trn    = sr_4l_bdt_of_presel # For OF, presel and trn regions are the same
+            selections.add("sr_4l_bdt_sf_presel", sr_4l_bdt_sf_presel)
+            selections.add("sr_4l_bdt_sf_trn"   , sr_4l_bdt_sf_trn)
+            selections.add("sr_4l_bdt_of_presel", sr_4l_bdt_of_trn)
 
-            selections.add("sr_4l_bdt_sf_wwz_sr1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_wwz_sr1))
-            selections.add("sr_4l_bdt_sf_wwz_sr2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_wwz_sr2))
-            selections.add("sr_4l_bdt_sf_wwz_sr3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_wwz_sr3))
-            selections.add("sr_4l_bdt_sf_wwz_sr4", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_wwz_sr4))
-            selections.add("sr_4l_bdt_sf_zh_sr1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_zh_sr1))
-            selections.add("sr_4l_bdt_sf_zh_sr2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_zh_sr2))
-            selections.add("sr_4l_bdt_sf_zh_sr3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_zh_sr3))
+            selections.add("sr_4l_bdt_sf_1", (sr_4l_bdt_sf_trn & bdt_sf_1))
+            selections.add("sr_4l_bdt_sf_2", (sr_4l_bdt_sf_trn & bdt_sf_2))
+            selections.add("sr_4l_bdt_sf_3", (sr_4l_bdt_sf_trn & bdt_sf_3))
+            selections.add("sr_4l_bdt_sf_4", (sr_4l_bdt_sf_trn & bdt_sf_4))
+            selections.add("sr_4l_bdt_sf_5", (sr_4l_bdt_sf_trn & bdt_sf_5))
+            selections.add("sr_4l_bdt_sf_6", (sr_4l_bdt_sf_trn & bdt_sf_6))
+            selections.add("sr_4l_bdt_sf_7", (sr_4l_bdt_sf_trn & bdt_sf_7))
 
-            selections.add("sr_4l_bdt_of_wwz_sr1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_wwz_sr1))
-            selections.add("sr_4l_bdt_of_wwz_sr2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_wwz_sr2))
-            selections.add("sr_4l_bdt_of_wwz_sr3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_wwz_sr3))
-            selections.add("sr_4l_bdt_of_wwz_sr4", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_wwz_sr4))
-            selections.add("sr_4l_bdt_of_zh_sr1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_zh_sr1))
-            selections.add("sr_4l_bdt_of_zh_sr2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_zh_sr2))
-            selections.add("sr_4l_bdt_of_zh_sr3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_zh_sr3))
-            selections.add("sr_4l_bdt_of_zh_sr4", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_zh_sr4))
-
-            # CRs
-            ww_ee = ((abs(w_lep0.pdgId) == 11) & (abs(w_lep1.pdgId) == 11))
-            ww_mm = ((abs(w_lep0.pdgId) == 13) & (abs(w_lep1.pdgId) == 13))
-            ww_em = ((abs(w_lep0.pdgId) == 11) & (abs(w_lep1.pdgId) == 13))
-            ww_me = ((abs(w_lep0.pdgId) == 13) & (abs(w_lep1.pdgId) == 11))
-            selections.add("cr_4l_btag_of",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of))
-            selections.add("cr_4l_btag_sf_offZ_met80", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0)))
-            selections.add("cr_4l_sf", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
+            selections.add("sr_4l_bdt_of_1", (sr_4l_bdt_of_trn & bdt_of_1))
+            selections.add("sr_4l_bdt_of_2", (sr_4l_bdt_of_trn & bdt_of_2))
+            selections.add("sr_4l_bdt_of_3", (sr_4l_bdt_of_trn & bdt_of_3))
+            selections.add("sr_4l_bdt_of_4", (sr_4l_bdt_of_trn & bdt_of_4))
+            selections.add("sr_4l_bdt_of_5", (sr_4l_bdt_of_trn & bdt_of_5))
+            selections.add("sr_4l_bdt_of_6", (sr_4l_bdt_of_trn & bdt_of_6))
+            selections.add("sr_4l_bdt_of_7", (sr_4l_bdt_of_trn & bdt_of_7))
+            selections.add("sr_4l_bdt_of_8", (sr_4l_bdt_of_trn & bdt_of_8))
 
             bdt_sr_names = [
-                "sr_4l_bdt_sf_wwz_sr1",
-                "sr_4l_bdt_sf_wwz_sr2",
-                "sr_4l_bdt_sf_wwz_sr3",
-                "sr_4l_bdt_sf_wwz_sr4",
-                "sr_4l_bdt_sf_zh_sr1",
-                "sr_4l_bdt_sf_zh_sr2",
-                "sr_4l_bdt_sf_zh_sr3",
+                "sr_4l_bdt_sf_1",
+                "sr_4l_bdt_sf_2",
+                "sr_4l_bdt_sf_3",
+                "sr_4l_bdt_sf_4",
+                "sr_4l_bdt_sf_5",
+                "sr_4l_bdt_sf_6",
+                "sr_4l_bdt_sf_7",
 
-                "sr_4l_bdt_of_wwz_sr1",
-                "sr_4l_bdt_of_wwz_sr2",
-                "sr_4l_bdt_of_wwz_sr3",
-                "sr_4l_bdt_of_wwz_sr4",
-                "sr_4l_bdt_of_zh_sr1",
-                "sr_4l_bdt_of_zh_sr2",
-                "sr_4l_bdt_of_zh_sr3",
-                "sr_4l_bdt_of_zh_sr4",
+                "sr_4l_bdt_of_1",
+                "sr_4l_bdt_of_2",
+                "sr_4l_bdt_of_3",
+                "sr_4l_bdt_of_4",
+                "sr_4l_bdt_of_5",
+                "sr_4l_bdt_of_6",
+                "sr_4l_bdt_of_7",
+                "sr_4l_bdt_of_8",
             ]
 
             cat_dict = {
@@ -877,7 +879,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                     print(f"Skipping \"{dense_axis_name}\", it is not in the list of hists to include.")
                     continue
                 #print("\ndense_axis_name,vals",dense_axis_name)
-                print("dense_axis_name,vals",dense_axis_name,dense_axis_vals)
+                #print("\ndense_axis_name,vals",vals)
 
                 # Create the hist for this dense axis variable
                 hout[dense_axis_name] = hist.Hist(
