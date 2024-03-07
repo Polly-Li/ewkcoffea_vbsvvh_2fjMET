@@ -35,26 +35,37 @@ SAMPLE_DICT_BASE = sg.SAMPLE_DICT_BASE
 # Names of the cut-based and BDT SRs
 SR_SF_CB = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C"]
 SR_OF_CB = ["sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
-SR_SF_BDT = ["sr_4l_bdt_sf_wwz_sr1", "sr_4l_bdt_sf_wwz_sr2", "sr_4l_bdt_sf_wwz_sr3", "sr_4l_bdt_sf_wwz_sr4", "sr_4l_bdt_sf_zh_sr1", "sr_4l_bdt_sf_zh_sr2", "sr_4l_bdt_sf_zh_sr3"]
-SR_OF_BDT = ["sr_4l_bdt_of_wwz_sr1", "sr_4l_bdt_of_wwz_sr2", "sr_4l_bdt_of_wwz_sr3", "sr_4l_bdt_of_wwz_sr4", "sr_4l_bdt_of_zh_sr1", "sr_4l_bdt_of_zh_sr2", "sr_4l_bdt_of_zh_sr3", "sr_4l_bdt_of_zh_sr4",]
+SR_SF_BDT = ["sr_4l_bdt_sf_1", "sr_4l_bdt_sf_2", "sr_4l_bdt_sf_3", "sr_4l_bdt_sf_4", "sr_4l_bdt_sf_5", "sr_4l_bdt_sf_6", "sr_4l_bdt_sf_7"]
+SR_OF_BDT = ["sr_4l_bdt_of_1", "sr_4l_bdt_of_2", "sr_4l_bdt_of_3", "sr_4l_bdt_of_4", "sr_4l_bdt_of_5", "sr_4l_bdt_of_6", "sr_4l_bdt_of_7", "sr_4l_bdt_of_8"]
 
 BDT_INPUT_LST = [
     "mll_wl0_wl1",
-    "dphi_4l_met",
-    "dphi_zleps_met",
-    "dphi_wleps_met",
+    "mllll",
+    "absdphi_wl0_met",
+    "absdphi_wl1_met",
+    "absdphi_4l_met",
+    "absdphi_wleps_met",
+    "absdphi_zleps_met",
+    "dr_wleps_zleps",
     "dr_wl0_wl1",
     "dr_zl0_zl1",
-    "dr_wleps_zleps",
+    "scalarptsum_jet",
+    "scalarptsum_lepmet",
     "met",
     "mt2",
+    "mt_4l_met",
+    "mt_wleps_met",
+    "mt_wl0_met",
+    "mt_wl1_met",
     "ptl4",
-    "scalarptsum_lepmet",
-    "scalarptsum_lepmetjet",
     "z_lep0_pt",
     "z_lep1_pt",
     "w_lep0_pt",
     "w_lep1_pt",
+    "cos_helicity_x",
+    "dr_wl0_j_min",
+    "dr_wl1_j_min",
+    "njets",
 ]
 
 TMP_VAR_LST = [
@@ -648,9 +659,10 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
     for var_name in histo_dict.keys():
         #print(f"\n{var_name}")
         if "counts" in var_name: continue
-        #if var_name != "njets": continue # TMP
         if var_name == "nbtagsm": continue # TMP
+        #if var_name != "njets": continue # TMP
         #if var_name not in BDT_INPUT_LST and "bdt" not in var_name: continue # TMP
+        if var_name not in BDT_INPUT_LST and var_name != "njets": continue # TMP
         #if var_name not in TMP_VAR_LST: continue # TMP
         histo = histo_dict[var_name]
 
@@ -672,6 +684,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
             #if "cr" not in cat_name: continue # TMP
             #if "bdt" in cat_name: continue # TMP
             if cat_name not in ["cr_4l_sf","sr_4l_of_incl","sr_4l_sf_incl","sr_4l_bdt_sf_presel","sr_4l_bdt_sf_trn","sr_4l_bdt_of_presel"]: continue # TMP
+            #if "incl" not in cat_name and "trn" not in cat_name and "presel" not in cat_name: continue
             #print(cat_name)
 
             histo_cat = histo[{"category":cat_name}]
@@ -858,17 +871,17 @@ def main():
         #exit()
 
         # Dump latex table for cut based
-        hlines = [2,3,7,8]
-        sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
-        #sr_cats_to_print = ["sr_sf_all_cutbased" , "sr_of_all_cutbased" , "sr_all_cutbased" , "sr_4l_sf_presel" , "sr_4l_sf_trn" , "sr_4l_of_presel"] # Preselection SR categories
-        procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
-        print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
-
-        # Dump latex table for BDT
-        #hlines = [6,7,15,16]
-        #sr_cats_to_print = SR_SF_BDT + ["sr_sf_all_bdt"] + SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"]
+        #hlines = [2,3,7,8]
+        #sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
+        ##sr_cats_to_print = ["sr_sf_all_cutbased" , "sr_of_all_cutbased" , "sr_all_cutbased" , "sr_4l_sf_presel" , "sr_4l_sf_trn" , "sr_4l_of_presel"] # Preselection SR categories
         #procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
         #print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
+
+        # Dump latex table for BDT
+        hlines = [6,7,15,16]
+        sr_cats_to_print = SR_SF_BDT + ["sr_sf_all_bdt"] + SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"]
+        procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
+        print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
 
         # Dump yield dict to json
         json_name = "process_yields.json" # Could be an argument
