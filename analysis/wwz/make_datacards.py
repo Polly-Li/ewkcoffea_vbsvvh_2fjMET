@@ -440,7 +440,7 @@ def main():
         if do_nuis:
             kappa_for_dc_ch = get_kappa_for_dc(kappa_dict,ch)
             kappa_for_dc_ch.update(get_rate_systs(sg.PROC_LST)) # Append in the ones from rate json
-        if not skip_tf:
+        if do_nuis and not skip_tf:
             gmn_for_dc_ch = get_gmn_for_dc(gmn_dict[ch],proc_lst=list(sg.SAMPLE_DICT_BASE.keys()))
 
 
