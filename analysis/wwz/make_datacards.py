@@ -375,7 +375,8 @@ def main():
     yld_dict_mc_allyears = {}
     for year in sample_names_dict_mc:
         yld_dict_mc_allyears[year] = yt.get_yields(histo,sample_names_dict_mc[year])
-    handle_per_year_systs_for_fr2(yld_dict_mc_allyears)
+    if do_nuis:
+        handle_per_year_systs_for_fr2(yld_dict_mc_allyears)
 
     # We're only looking at Full R2 for now
     yld_dict_mc = yld_dict_mc_allyears["FR2"]
@@ -401,7 +402,9 @@ def main():
 
 
     # Get the syst ratios to nominal (i.e. kappas)
-    kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data)
+    kappa_dict = None
+    if do_nuis:
+        kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data)
 
     # Do the TF calculation
     yld_dict_mc, kappa_dict, gmn_dict = yt.do_tf(yld_dict_mc,yld_dict_data,kappa_dict,sg.BKG_TF_MAP)
@@ -410,7 +413,8 @@ def main():
     yld_dict_mc = handle_negatives(yld_dict_mc)
 
     # Add mc stats to kappa dict (important to be after TF calculation so that data driven bkg stats include stats of CRs)
-    kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,skip_procs=["ZZ","ttZ"])
+    if do_nuis:
+        kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,skip_procs=["ZZ","ttZ"])
 
 
     #### Make the cards for each channel ####
