@@ -164,7 +164,7 @@ def handle_negatives(in_dict):
                 out_dict[cat]["nominal"][proc][1] = (abs(val) + np.sqrt(var))**2
                 for syst in out_dict[cat]:
                     if syst == "nominal": continue # Already handled this one
-                    syst_var_orig = out_dict[cat][syst][proc]
+                    syst_var_orig = out_dict[cat][syst][proc][0] # Dont bother messsing with mc stat error on the syst variation
                     out_dict[cat][syst][proc][0] = (syst_var_orig - val) + SMALL # Center around SMALL
 
     return out_dict
@@ -253,10 +253,10 @@ def add_stats_kappas(yld_mc, kappas, skip_procs=[]):
 
     kappas_out = copy.deepcopy(kappas)
 
-    # Loop over cat and do NSF calculation for each relevant proc in each cat
+    # Loop over cat and get mc stats
     for cat in yld_mc:
 
-        # Make a row for proc_of_interest's stats
+        # Looping over each proc (these will be rows, i.e. one row for each proc's mc stats)
         for proc_of_interest in yld_mc[cat]["nominal"]:
             if proc_of_interest in skip_procs: continue
             kappas_out[cat][f"stats_{cat}_{proc_of_interest}"] = {}
@@ -382,7 +382,9 @@ def main():
     yld_dict_mc = yld_dict_mc_allyears["FR2"]
     yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR2"])
 
-    # Print info about a bin
+    ####################################################################################
+    # Dump some info about a bin (just raw numbers, more or less)
+    # This print is before we start messing with the yields (eg to get rid of negatives)
     printinfo = 0
     if printinfo:
         s = "renorm"
@@ -399,22 +401,20 @@ def main():
         print("da cr u",yld_dict_data[cr][f"{s}Up"]["data"])
         print("\n")
         #exit()
+    ####################################################################################
 
+
+    # Get rid of negative yields (and recenter syst variations around SMALL), should happen before computing kappas
+    yld_dict_mc = handle_negatives(yld_dict_mc)
 
     # Get the syst ratios to nominal (i.e. kappas)
     kappa_dict = None
     if do_nuis:
         kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data)
+        kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,skip_procs=["ZZ","ttZ"])
 
     # Do the TF calculation
     yld_dict_mc, kappa_dict, gmn_dict = yt.do_tf(yld_dict_mc,yld_dict_data,kappa_dict,sg.BKG_TF_MAP)
-
-    # Get rid of negative yields (and recenter syst variations around SMALL), should happen before computing kappas
-    yld_dict_mc = handle_negatives(yld_dict_mc)
-
-    # Add mc stats to kappa dict (important to be after TF calculation so that data driven bkg stats include stats of CRs)
-    if do_nuis:
-        kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,skip_procs=["ZZ","ttZ"])
 
 
     #### Make the cards for each channel ####
