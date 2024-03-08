@@ -232,11 +232,11 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
                 valvar_kappa_do = yt.valvar_op(valvar_do,valvar_nom,"div")
 
                 # Handle negative cases
-                if (valvar_kappa_up[0]<0) and (valvar_kappa_do[0]<0): raise Exception("Both kappas negative, should not be possible.")
-                if valvar_kappa_up[0] < 0:
+                if (valvar_kappa_up[0]<=0) and (valvar_kappa_do[0]<=0): raise Exception("Both kappas negative, should not be possible.")
+                if valvar_kappa_up[0] <= 0:
                     print(f"WARNING: Up var for {sys} for {proc} for {cat} is negative, setting to {SMALL}.")
                     valvar_kappa_up[0] = SMALL
-                if valvar_kappa_do[0] < 0:
+                if valvar_kappa_do[0] <= 0:
                     valvar_kappa_do[0] = SMALL
                     print(f"WARNING: Down var for {sys} for {proc} for {cat} is negative, setting to {SMALL}.")
 
@@ -270,7 +270,7 @@ def add_stats_kappas(yld_mc, kappas, skip_procs=[]):
                     up = (valvar[0] + np.sqrt(valvar[1]))/valvar[0]
                     do = (valvar[0] - np.sqrt(valvar[1]))/valvar[0]
                     # Clip at 0
-                    if do < 0:
+                    if do <= 0:
                         print(f"WARNING: For cat \"{cat}\" and proc \"{proc_of_interest}\", the uncertainty {np.sqrt(valvar[1])} is larger than the value {valvar[0]}. Clipping down variation to {SMALL}.")
                         do = SMALL
                     kappas_out[cat][f"stats_{cat}_{proc_of_interest}"][proc_itr]["Up"]   = [up, None] # Rel err up, do not include error on the error (just leave as None)
@@ -344,15 +344,21 @@ def main():
     parser.add_argument("in_file_name",help="Either json file of yields or pickle file with scikit hists")
     parser.add_argument("--out-dir","-d",default="./cards_wwz4l",help="Output directory to write root and text datacard files to")
     parser.add_argument("-s","--do-nuisance",action="store_true",help="Include nuisance parameters")
+    parser.add_argument("--no-tf",action="store_true",help="Skip doing the data-driven background estimation")
+    parser.add_argument("--bdt",action="store_true",help="Use BDT SR bins")
     parser.add_argument("--unblind",action="store_true",help="If set, use real data, otherwise use asimov data")
 
     args = parser.parse_args()
     in_file = args.in_file_name
     out_dir = args.out_dir
     do_nuis = args.do_nuisance
+    skip_tf = args.no_tf
+    use_bdt_sr = args.bdt
     unblind = args.unblind
 
     # Check args
+    if use_bdt_sr and not skip_tf:
+        raise Exception("Cannot yet run BDT SRs with data-driven estimation. Try running with \"--no-tf\".")
     if out_dir != "." and not os.path.exists(out_dir):
         print(f"Making dir \"{out_dir}\"")
         os.makedirs(out_dir)
@@ -388,19 +394,20 @@ def main():
     printinfo = 0
     if printinfo:
         s = "renorm"
-        p = "WWZ"
-        c = "sr_4l_of_2"
+        p = "WZ"
+        c = "sr_4l_bdt_of_6"
         cr = "cr_4l_btag_of"
         print(p,c,s,cr)
         print("\nPrinting info:")
         print("mc sr n",yld_dict_mc[c]["nominal"][p])
         print("mc sr u",yld_dict_mc[c][f"{s}Up"][p])
+        print("mc sr d",yld_dict_mc[c][f"{s}Down"][p])
         print("mc cr n",yld_dict_mc[cr]["nominal"][p])
         print("mc cr u",yld_dict_mc[cr][f"{s}Up"][p])
         print("da cr n",yld_dict_data[cr]["nominal"]["data"])
         print("da cr u",yld_dict_data[cr][f"{s}Up"]["data"])
         print("\n")
-        #exit()
+        exit()
     ####################################################################################
 
 
@@ -414,12 +421,15 @@ def main():
         kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,skip_procs=["ZZ","ttZ"])
 
     # Do the TF calculation
-    yld_dict_mc, kappa_dict, gmn_dict = yt.do_tf(yld_dict_mc,yld_dict_data,kappa_dict,sg.BKG_TF_MAP)
+    if not skip_tf:
+        yld_dict_mc, kappa_dict, gmn_dict = yt.do_tf(yld_dict_mc,yld_dict_data,kappa_dict,sg.BKG_TF_MAP)
 
 
     #### Make the cards for each channel ####
-    print(f"Making cards for {sg.CAT_LST_CB}. \nPutting in {out_dir}.")
-    for ch in sg.CAT_LST_CB:
+    cat_lst = sg.CAT_LST_CB
+    if use_bdt_sr: cat_lst = sg.CAT_LST_BDT
+    print(f"\nMaking cards for {cat_lst}. \nPutting in {out_dir}.")
+    for ch in cat_lst:
 
         # Get just the info we want to put in the card in str form
         rate_for_dc_ch = get_rate_for_dc(yld_dict_mc,ch)
@@ -430,6 +440,7 @@ def main():
         if do_nuis:
             kappa_for_dc_ch = get_kappa_for_dc(kappa_dict,ch)
             kappa_for_dc_ch.update(get_rate_systs(sg.PROC_LST)) # Append in the ones from rate json
+        if not skip_tf:
             gmn_for_dc_ch = get_gmn_for_dc(gmn_dict[ch],proc_lst=list(sg.SAMPLE_DICT_BASE.keys()))
 
 
