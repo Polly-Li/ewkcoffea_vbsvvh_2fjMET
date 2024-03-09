@@ -122,6 +122,9 @@ def do_tf(yld_mc,yld_data,kappas,tf_map,quiet=True):
                     # Loop over syst and replace the kappas with the e.g. MC_SR_up/MC_CR_up
                     for syst_base_name in kappas[cat]:
 
+                        # Skip the stats uncertainties (they are not correlated between CR and SR, so just leave alone)
+                        if syst_base_name.startswith("stats_"): continue
+
                         sr_up = kappas[cat][syst_base_name][proc_of_interest]["Up"]
                         sr_do = kappas[cat][syst_base_name][proc_of_interest]["Down"]
                         cr_up = kappas[cr_name][syst_base_name][proc_of_interest]["Up"]
