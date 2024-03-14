@@ -521,8 +521,24 @@ class AnalysisProcessor(processor.ProcessorABC):
             dr_wl0_wl1 = w_lep0.delta_r(w_lep1)
             dr_wleps_zleps = (w_lep0 + w_lep1).delta_r(z_lep0 + z_lep1)
 
-            dr_wl0_j_min = ak.min(w_lep0.delta_r(goodJets),axis=-1)
-            dr_wl1_j_min = ak.min(w_lep1.delta_r(goodJets),axis=-1)
+            # Variables involving the "met 4 vector"
+            # Right now used for the tmp standin variable dr(wlep,met4vec) that's called as dr_wl1_j_min in BDT v5
+            from coffea.nanoevents.methods import vector
+            met4v = ak.zip(
+                {
+                    "pt": met.pt,
+                    "eta": 0,
+                    "phi": met.phi,
+                    "mass": np.full(len(np.zeros_like(met)), 0),
+                },
+                with_name="PtEtaPhiMLorentzVector",
+                behavior=vector.behavior,
+            )
+            dr_wl0_j_min = w_lep0.delta_r(met4v)
+            dr_wl1_j_min = w_lep1.delta_r(met4v)
+
+            #dr_wl0_j_min = ak.min(w_lep0.delta_r(goodJets),axis=-1) # The actual dr_wl0_j_min, uncomment when updated in next BDT iteration
+            #dr_wl1_j_min = ak.min(w_lep1.delta_r(goodJets),axis=-1) # The actual dr_wl1_j_min, uncomment when updated in next BDT iteration
             dr_wl0_j_min = ak.where(njets>0,dr_wl0_j_min,0)
             dr_wl1_j_min = ak.where(njets>0,dr_wl1_j_min,0)
 
@@ -533,7 +549,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             absdphi_wleps_met = abs((w_lep0 + w_lep1).delta_phi(met))
             absdphi_wl0_met = abs(w_lep0.delta_phi(met))
             absdphi_wl1_met = abs(w_lep1.delta_phi(met))
-            absdphi_zleps_met = (z_lep0 + z_lep1).delta_phi(met)
+            absdphi_zleps_met = abs((z_lep0 + z_lep1).delta_phi(met))
 
             # Transverse mass
             mt_4l_met    = es_ec.get_mt((l0+l1+l2+l3),met)
