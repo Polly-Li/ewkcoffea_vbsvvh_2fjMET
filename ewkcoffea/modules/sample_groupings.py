@@ -20,6 +20,8 @@ CAT_LST_BDT = SR_SF_BDT + SR_OF_BDT
 BKG_TF_MAP = {
 
     "ZZ" : {
+
+        # Cut based
         "sr_4l_sf_A" : "cr_4l_sf",
         "sr_4l_sf_B" : "cr_4l_sf",
         "sr_4l_sf_C" : "cr_4l_sf",
@@ -28,8 +30,29 @@ BKG_TF_MAP = {
         "sr_4l_of_3" : "cr_4l_sf",
         "sr_4l_of_4" : "cr_4l_sf",
 
+
+        # BDT based
+        "sr_4l_bdt_sf_1" : "cr_4l_sf",
+        "sr_4l_bdt_sf_2" : "cr_4l_sf",
+        "sr_4l_bdt_sf_3" : "cr_4l_sf",
+        "sr_4l_bdt_sf_4" : "cr_4l_sf",
+        "sr_4l_bdt_sf_5" : "cr_4l_sf",
+        "sr_4l_bdt_sf_6" : "cr_4l_sf",
+        "sr_4l_bdt_sf_7" : "cr_4l_sf",
+
+        "sr_4l_bdt_of_1" : "cr_4l_sf",
+        "sr_4l_bdt_of_2" : "cr_4l_sf",
+        "sr_4l_bdt_of_3" : "cr_4l_sf",
+        "sr_4l_bdt_of_4" : "cr_4l_sf",
+        "sr_4l_bdt_of_5" : "cr_4l_sf",
+        "sr_4l_bdt_of_6" : "cr_4l_sf",
+        "sr_4l_bdt_of_7" : "cr_4l_sf",
+        "sr_4l_bdt_of_8" : "cr_4l_sf",
+
     },
     "ttZ" : {
+
+        # Cut based
         "sr_4l_sf_A" : "cr_4l_btag_sf_offZ_met80",
         "sr_4l_sf_B" : "cr_4l_btag_sf_offZ_met80",
         "sr_4l_sf_C" : "cr_4l_btag_sf_offZ_met80",
@@ -37,6 +60,24 @@ BKG_TF_MAP = {
         "sr_4l_of_2" : "cr_4l_btag_of",
         "sr_4l_of_3" : "cr_4l_btag_of",
         "sr_4l_of_4" : "cr_4l_btag_of",
+
+        # BDT based
+        "sr_4l_bdt_sf_1" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_bdt_sf_2" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_bdt_sf_3" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_bdt_sf_4" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_bdt_sf_5" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_bdt_sf_6" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_bdt_sf_7" : "cr_4l_btag_sf_offZ_met80",
+
+        "sr_4l_bdt_of_1" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_2" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_3" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_4" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_5" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_6" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_7" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_8" : "cr_4l_btag_of",
     }
 }
 

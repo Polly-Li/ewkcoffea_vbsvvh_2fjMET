@@ -357,8 +357,6 @@ def main():
     unblind = args.unblind
 
     # Check args
-    if use_bdt_sr and not skip_tf:
-        raise Exception("Cannot yet run BDT SRs with data-driven estimation. Try running with \"--no-tf\".")
     if out_dir != "." and not os.path.exists(out_dir):
         print(f"Making dir \"{out_dir}\"")
         os.makedirs(out_dir)
@@ -393,9 +391,9 @@ def main():
     # This print is before we start messing with the yields (eg to get rid of negatives)
     printinfo = 0
     if printinfo:
-        s = "renorm"
-        p = "WZ"
-        c = "sr_4l_bdt_of_6"
+        s = "FSR"
+        p = "ttZ"
+        c = "sr_4l_bdt_of_1"
         cr = "cr_4l_btag_of"
         print(p,c,s,cr)
         print("\nPrinting info:")

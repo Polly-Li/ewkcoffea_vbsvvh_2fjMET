@@ -615,7 +615,7 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data,ana_type="cb"):
     elif ana_type == "bdt":
         sr_lst  = sg.CAT_LST_BDT
         hist_label = "BDT-based SRs"
-        y_max = 18
+        y_max = 20
         fig_size = (24,7)
     else:
         raise Exception("Unknown analysis type.")
