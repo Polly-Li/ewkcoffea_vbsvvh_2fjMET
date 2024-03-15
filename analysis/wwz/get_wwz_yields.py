@@ -419,9 +419,9 @@ def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False):
 
 
 # Plots a hist
-def make_single_fig(histo_mc,ax_to_overlay="process",err_p=None,err_m=None,ylims=None,unit_norm_bool=False,title=None):
+def make_single_fig(histo_mc,ax_to_overlay="process",err_p=None,err_m=None,ylims=None,unit_norm_bool=False,title=None,fig_size=(12,7)):
     #print("\nPlotting values:",histo.values())
-    fig, ax = plt.subplots(1, 1, figsize=(12,7))
+    fig, ax = plt.subplots(1, 1, figsize=fig_size)
 
     # Plot the mc
     histo_mc.plot1d(
@@ -441,8 +441,8 @@ def make_single_fig(histo_mc,ax_to_overlay="process",err_p=None,err_m=None,ylims
 
     # Draw errors
     if (err_p is not None) and (err_m is not None):
-        bin_edges_arr = histo_mc.axes[0].edges
-        bin_centers_arr = histo_mc.axes[0].centers
+        bin_edges_arr = histo_mc.axes[1].edges
+        bin_centers_arr = histo_mc.axes[1].centers
         ax.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', alpha=0.5, linewidth=0.0, label='MC stat', hatch='/////')
 
     plt.legend()
@@ -609,14 +609,18 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data,ana_type="cb"):
     # Set variables based on cut based or bdt
     if ana_type == "cb":
         sr_lst  = sg.CAT_LST_CB
-        proc_lst  = sg.PROC_LST
         hist_label = "Cut-based SRs"
+        y_max = 9
+        fig_size = (12,7)
     elif ana_type == "bdt":
-        sr_lst  = sg.CAT_LST_CB
-        proc_lst  = sg.PROC_LST
+        sr_lst  = sg.CAT_LST_BDT
         hist_label = "BDT-based SRs"
+        y_max = 18
+        fig_size = (24,7)
     else:
         raise Exception("Unknown analysis type.")
+
+    proc_lst  = sg.PROC_LST
 
     # Declare the hist we'll be filling
     histo_comb = hist.Hist(
@@ -657,7 +661,7 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data,ana_type="cb"):
     err_lst_m.append(0)
 
     # Make plot
-    fig = make_single_fig(histo_comb,err_p=err_lst_p,err_m=err_lst_m,ylims=[0,9])
+    fig = make_single_fig(histo_comb,err_p=err_lst_p,err_m=err_lst_m,ylims=[0,y_max],fig_size=fig_size)
     fig.savefig("sr_comb_plot.png")
 
 
