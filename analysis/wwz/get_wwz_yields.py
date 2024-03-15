@@ -604,14 +604,24 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
 
 
 # A function for making a summary plot of SR yields
-def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data):
+def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data,ana_type="cb"):
+
+    # Set variables based on cut based or bdt
+    if ana_type == "cb":
+        sr_lst  = sg.CAT_LST_CB
+        proc_lst  = sg.PROC_LST
+        hist_label = "Cut-based SRs"
+    elif ana_type == "bdt":
+        sr_lst  = sg.CAT_LST_CB
+        proc_lst  = sg.PROC_LST
+        hist_label = "BDT-based SRs"
+    else:
+        raise Exception("Unknown analysis type.")
 
     # Declare the hist we'll be filling
-    sr_lst  = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C" , "sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
-    proc_lst  = ["WWZ", "ZH", "ZZ", "ttZ", "tWZ", "WZ", "other"]
     histo_comb = hist.Hist(
         hist.axis.StrCategory(proc_lst, name="process", label="process"),
-        hist.axis.StrCategory(sr_lst,   name="cat",     label="Cut-based SRs"),
+        hist.axis.StrCategory(sr_lst,   name="cat",     label=hist_label),
     )
 
     # Get the yield dict
@@ -659,17 +669,13 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
         if "counts" in var_name: continue
         if var_name == "nbtagsm": continue # TMP
         #if var_name != "njets": continue # TMP
-        #if var_name not in BDT_INPUT_LST and "bdt" not in var_name: continue # TMP
-        if var_name not in BDT_INPUT_LST and var_name != "njets": continue # TMP
+        if var_name not in BDT_INPUT_LST: continue # TMP
+        #if "bdt" not in var_name: continue # TMP
         #if var_name not in TMP_VAR_LST: continue # TMP
-        histo = histo_dict[var_name]
+        histo_orig = histo_dict[var_name]
 
         # Just plot nominal syst for now
-        histo = histo[{"systematic":"nominal"}]
-
-        # Rebin if continous variable
-        if var_name not in ["njets","nbtagsl","nleps"]:
-            histo = rebin(histo,6)
+        histo_orig = histo_orig[{"systematic":"nominal"}]
 
         # Group SR procs together
         #grouping_sr_procs = {"sr_4l_sf":["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C"],"sr_4l_of":["sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]}
@@ -677,13 +683,24 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
 
 
         # Loop over categories and make plots for each
-        for cat_name in histo.axes["category"]:
+        for cat_name in histo_orig.axes["category"]:
             #if cat_name not in ["cr_4l_sf","cr_4l_btag_of"]: continue # TMP
             #if "cr" not in cat_name: continue # TMP
             #if "bdt" in cat_name: continue # TMP
-            if cat_name not in ["cr_4l_sf","sr_4l_of_incl","sr_4l_sf_incl","sr_4l_bdt_sf_presel","sr_4l_bdt_sf_trn","sr_4l_bdt_of_presel"]: continue # TMP
+            #if cat_name not in ["cr_4l_sf","sr_4l_of_incl","sr_4l_sf_incl","sr_4l_bdt_sf_presel","sr_4l_bdt_sf_trn","sr_4l_bdt_of_presel"]: continue # TMP
+            if cat_name not in ["sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn"]: continue # TMP
             #if "incl" not in cat_name and "trn" not in cat_name and "presel" not in cat_name: continue
             #print(cat_name)
+
+            # Make a copy so changes to binning do not propagate to next loop
+            histo = copy.deepcopy(histo_orig)
+
+            # Rebin if continous variable
+            if var_name not in ["njets","nbtagsl","nleps"]:
+                if cat_name in ["cr_4l_btag_sf_offZ_met80","cr_4l_btag_of"]:
+                    histo = rebin(histo,15)
+                else:
+                    histo = rebin(histo,6)
 
             histo_cat = histo[{"category":cat_name}]
 
@@ -899,7 +916,7 @@ def main():
     if args.make_plots:
         make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path)
         #make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
-        #make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data) # Make plot of all SR yields in one plot
+        #make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data,ana_type="cb") # Make plot of all SR yields in one plot
 
 
 
