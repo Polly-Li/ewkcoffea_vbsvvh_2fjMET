@@ -6,7 +6,12 @@
 PROC_LST = ["WWZ","ZH","ZZ","ttZ","tWZ","WZ","other"]
 SIG_LST = ["WWZ","ZH"]
 BKG_LST = ["ZZ","ttZ","tWZ","WZ","other"]
+
 CAT_LST_CB = ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C", "sr_4l_of_1", "sr_4l_of_2", "sr_4l_of_3", "sr_4l_of_4"]
+
+SR_SF_BDT = ["sr_4l_bdt_sf_1", "sr_4l_bdt_sf_2", "sr_4l_bdt_sf_3", "sr_4l_bdt_sf_4", "sr_4l_bdt_sf_5", "sr_4l_bdt_sf_6", "sr_4l_bdt_sf_7"]
+SR_OF_BDT = ["sr_4l_bdt_of_1", "sr_4l_bdt_of_2", "sr_4l_bdt_of_3", "sr_4l_bdt_of_4", "sr_4l_bdt_of_5", "sr_4l_bdt_of_6", "sr_4l_bdt_of_7", "sr_4l_bdt_of_8"]
+CAT_LST_BDT = SR_SF_BDT + SR_OF_BDT
 
 
 ######################## Dictionaries ########################
@@ -15,6 +20,8 @@ CAT_LST_CB = ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C", "sr_4l_of_1", "sr_4l_of_
 BKG_TF_MAP = {
 
     "ZZ" : {
+
+        # Cut based
         "sr_4l_sf_A" : "cr_4l_sf",
         "sr_4l_sf_B" : "cr_4l_sf",
         "sr_4l_sf_C" : "cr_4l_sf",
@@ -23,8 +30,29 @@ BKG_TF_MAP = {
         "sr_4l_of_3" : "cr_4l_sf",
         "sr_4l_of_4" : "cr_4l_sf",
 
+
+        # BDT based
+        "sr_4l_bdt_sf_1" : "cr_4l_sf",
+        "sr_4l_bdt_sf_2" : "cr_4l_sf",
+        "sr_4l_bdt_sf_3" : "cr_4l_sf",
+        "sr_4l_bdt_sf_4" : "cr_4l_sf",
+        "sr_4l_bdt_sf_5" : "cr_4l_sf",
+        "sr_4l_bdt_sf_6" : "cr_4l_sf",
+        "sr_4l_bdt_sf_7" : "cr_4l_sf",
+
+        "sr_4l_bdt_of_1" : "cr_4l_sf",
+        "sr_4l_bdt_of_2" : "cr_4l_sf",
+        "sr_4l_bdt_of_3" : "cr_4l_sf",
+        "sr_4l_bdt_of_4" : "cr_4l_sf",
+        "sr_4l_bdt_of_5" : "cr_4l_sf",
+        "sr_4l_bdt_of_6" : "cr_4l_sf",
+        "sr_4l_bdt_of_7" : "cr_4l_sf",
+        "sr_4l_bdt_of_8" : "cr_4l_sf",
+
     },
     "ttZ" : {
+
+        # Cut based
         "sr_4l_sf_A" : "cr_4l_btag_sf_offZ_met80",
         "sr_4l_sf_B" : "cr_4l_btag_sf_offZ_met80",
         "sr_4l_sf_C" : "cr_4l_btag_sf_offZ_met80",
@@ -32,6 +60,24 @@ BKG_TF_MAP = {
         "sr_4l_of_2" : "cr_4l_btag_of",
         "sr_4l_of_3" : "cr_4l_btag_of",
         "sr_4l_of_4" : "cr_4l_btag_of",
+
+        # BDT based
+        "sr_4l_bdt_sf_1" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_bdt_sf_2" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_bdt_sf_3" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_bdt_sf_4" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_bdt_sf_5" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_bdt_sf_6" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_bdt_sf_7" : "cr_4l_btag_sf_offZ_met80",
+
+        "sr_4l_bdt_of_1" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_2" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_3" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_4" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_5" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_6" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_7" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_8" : "cr_4l_btag_of",
     }
 }
 

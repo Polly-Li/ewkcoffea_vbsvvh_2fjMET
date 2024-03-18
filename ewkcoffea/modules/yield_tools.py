@@ -67,8 +67,63 @@ def do_tf(yld_mc,yld_data,kappas,tf_map,quiet=True):
     kappas_out = copy.deepcopy(kappas)
     gmn_alpha_out = {}
 
+    nsf_dict = get_nsf_dict(yld_mc,yld_data,tf_map)
+
     # Loop over cat and do NSF calculation for each relevant proc in each cat
+    for cat in nsf_dict:
+        for proc in nsf_dict[cat]:
+
+            # Get the NSF = N_CR_with_other_bkg_subtracted / MC_CR, the scaled yld, and the alpha
+            valvar_nsf    = nsf_dict[cat][proc]["nsf"]
+            valvar_bkg    = nsf_dict[cat][proc]["bkg_scaled"]
+            cr_name       = nsf_dict[cat][proc]["cr_name"]
+            valvar_alpha  = nsf_dict[cat][proc]["alpha"]
+            valvar_cr_obs = nsf_dict[cat][proc]["cr_obs"]
+
+            # Dump NSF value
+            if not quiet:
+                relerr = 100*(np.sqrt(valvar_nsf[1])/valvar_nsf[0])
+                print(f"NSF for {cat} {proc}: {np.round(valvar_nsf[0],2)} +- {np.round(relerr,2)}%")
+                #print(f"NSF for {cat} {proc}: {np.round(valvar_nsf[0],2)} +- {np.round(np.sqrt(valvar_nsf[1]),2)}")
+
+            # Put the old yield times the NSF into the out dict
+            yld_mc_out[cat]["nominal"][proc] = valvar_bkg
+
+            # Get the gmN numbers
+            if cat not in gmn_alpha_out: gmn_alpha_out[cat] = {}
+            if cr_name not in gmn_alpha_out[cat]: gmn_alpha_out[cat][cr_name] = {"N": valvar_cr_obs[0], "proc_alpha": {}}
+            gmn_alpha_out[cat][cr_name]["proc_alpha"][proc] = valvar_alpha[0]
+
+            ### Handle the kappas ###
+
+            if kappas is not None:
+
+                # Loop over syst and replace the kappas with the e.g. MC_SR_up/MC_CR_up
+                for syst_base_name in kappas[cat]:
+
+                    # Skip the stats uncertainties (they are not correlated between CR and SR, so just leave alone)
+                    if syst_base_name.startswith("stats_"): continue
+
+                    sr_up = kappas[cat][syst_base_name][proc]["Up"]
+                    sr_do = kappas[cat][syst_base_name][proc]["Down"]
+                    cr_up = kappas[cr_name][syst_base_name][proc]["Up"]
+                    cr_do = kappas[cr_name][syst_base_name][proc]["Down"]
+                    new_kappa_up = valvar_op(sr_up,cr_up,"div")
+                    new_kappa_do = valvar_op(sr_do,cr_do,"div")
+
+                    kappas_out[cat][syst_base_name][proc]["Up"] = new_kappa_up
+                    kappas_out[cat][syst_base_name][proc]["Down"] = new_kappa_do
+
+    return [yld_mc_out, kappas_out, gmn_alpha_out]
+
+
+# Calculate the NSF for the cats and procs in the given background tf map, return as a dict
+def get_nsf_dict(yld_mc, yld_data, tf_map):
+
+    out_dict = {}
+
     for cat in yld_mc:
+
         # Just nonimal for now
         for proc_of_interest in yld_mc[cat]["nominal"]:
 
@@ -80,6 +135,8 @@ def do_tf(yld_mc,yld_data,kappas,tf_map,quiet=True):
 
             # Otherwise we go ahead and do the background estimation stuff
             else:
+
+                if cat not in out_dict: out_dict[cat] = {}
 
                 # Get the nominal mc and data yields in the CR
                 cr_name = tf_map[proc_of_interest][cat]
@@ -98,38 +155,20 @@ def do_tf(yld_mc,yld_data,kappas,tf_map,quiet=True):
 
                 # Calculate the NSF = N_CR_with_other_bkg_subtracted / MC_CR, use this to scale the yld
                 valvar_nsf = valvar_op(valvar_cr_data_corrected, valvar_cr_mc, "div")
+
+                # Scale the yield by this NSF
                 valvar_bkg = valvar_op(valvar_nsf, yld_mc[cat]["nominal"][proc_of_interest], "prod")
 
-                # Dump NSF value
-                if not quiet:
-                    relerr = 100*(np.sqrt(valvar_nsf[1])/valvar_nsf[0])
-                    print(f"NSF for {cat} {proc_of_interest}: {np.round(valvar_nsf[0],2)} +- {np.round(relerr,2)}%")
-                    #print(f"NSF for {cat} {proc_of_interest}: {np.round(valvar_nsf[0],2)} +- {np.round(np.sqrt(valvar_nsf[1]),2)}")
+                # Get the alpha value (needed for datacard)
+                valvar_alpha = valvar_op(valvar_bkg,valvar_cr_data, "div") ###
 
-                # Put the old yield times the NSF into the out dict
-                yld_mc_out[cat]["nominal"][proc_of_interest] = valvar_bkg
+                # Put these outputs (nsf, the scaled bkg, and the alpha) into the out dict
+                out_dict[cat][proc_of_interest] = {
+                    "nsf"        : valvar_nsf,
+                    "bkg_scaled" : valvar_bkg,
+                    "cr_name"    : cr_name,
+                    "alpha"      : valvar_alpha,
+                    "cr_obs"     : valvar_cr_data,
+                }
 
-                # Get the gmN numbers
-                valvar_alpha = valvar_op(valvar_bkg,valvar_cr_data, "div")
-                if cat not in gmn_alpha_out: gmn_alpha_out[cat] = {}
-                if cr_name not in gmn_alpha_out[cat]: gmn_alpha_out[cat][cr_name] = {"N": valvar_cr_data[0], "proc_alpha": {}}
-                gmn_alpha_out[cat][cr_name]["proc_alpha"][proc_of_interest] = valvar_alpha[0]
-
-                ### Handle the kappas ###
-
-                if kappas is not None:
-
-                    # Loop over syst and replace the kappas with the e.g. MC_SR_up/MC_CR_up
-                    for syst_base_name in kappas[cat]:
-
-                        sr_up = kappas[cat][syst_base_name][proc_of_interest]["Up"]
-                        sr_do = kappas[cat][syst_base_name][proc_of_interest]["Down"]
-                        cr_up = kappas[cr_name][syst_base_name][proc_of_interest]["Up"]
-                        cr_do = kappas[cr_name][syst_base_name][proc_of_interest]["Down"]
-                        new_kappa_up = valvar_op(sr_up,cr_up,"div")
-                        new_kappa_do = valvar_op(sr_do,cr_do,"div")
-
-                        kappas_out[cat][syst_base_name][proc_of_interest]["Up"] = new_kappa_up
-                        kappas_out[cat][syst_base_name][proc_of_interest]["Down"] = new_kappa_do
-
-    return [yld_mc_out, kappas_out, gmn_alpha_out]
+    return out_dict

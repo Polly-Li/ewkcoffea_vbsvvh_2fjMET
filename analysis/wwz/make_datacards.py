@@ -164,7 +164,7 @@ def handle_negatives(in_dict):
                 out_dict[cat]["nominal"][proc][1] = (abs(val) + np.sqrt(var))**2
                 for syst in out_dict[cat]:
                     if syst == "nominal": continue # Already handled this one
-                    syst_var_orig = out_dict[cat][syst][proc]
+                    syst_var_orig = out_dict[cat][syst][proc][0] # Dont bother messsing with mc stat error on the syst variation
                     out_dict[cat][syst][proc][0] = (syst_var_orig - val) + SMALL # Center around SMALL
 
     return out_dict
@@ -232,11 +232,11 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
                 valvar_kappa_do = yt.valvar_op(valvar_do,valvar_nom,"div")
 
                 # Handle negative cases
-                if (valvar_kappa_up[0]<0) and (valvar_kappa_do[0]<0): raise Exception("Both kappas negative, should not be possible.")
-                if valvar_kappa_up[0] < 0:
+                if (valvar_kappa_up[0]<=0) and (valvar_kappa_do[0]<=0): raise Exception("Both kappas negative, should not be possible.")
+                if valvar_kappa_up[0] <= 0:
                     print(f"WARNING: Up var for {sys} for {proc} for {cat} is negative, setting to {SMALL}.")
                     valvar_kappa_up[0] = SMALL
-                if valvar_kappa_do[0] < 0:
+                if valvar_kappa_do[0] <= 0:
                     valvar_kappa_do[0] = SMALL
                     print(f"WARNING: Down var for {sys} for {proc} for {cat} is negative, setting to {SMALL}.")
 
@@ -253,10 +253,10 @@ def add_stats_kappas(yld_mc, kappas, skip_procs=[]):
 
     kappas_out = copy.deepcopy(kappas)
 
-    # Loop over cat and do NSF calculation for each relevant proc in each cat
+    # Loop over cat and get mc stats
     for cat in yld_mc:
 
-        # Make a row for proc_of_interest's stats
+        # Looping over each proc (these will be rows, i.e. one row for each proc's mc stats)
         for proc_of_interest in yld_mc[cat]["nominal"]:
             if proc_of_interest in skip_procs: continue
             kappas_out[cat][f"stats_{cat}_{proc_of_interest}"] = {}
@@ -270,7 +270,7 @@ def add_stats_kappas(yld_mc, kappas, skip_procs=[]):
                     up = (valvar[0] + np.sqrt(valvar[1]))/valvar[0]
                     do = (valvar[0] - np.sqrt(valvar[1]))/valvar[0]
                     # Clip at 0
-                    if do < 0:
+                    if do <= 0:
                         print(f"WARNING: For cat \"{cat}\" and proc \"{proc_of_interest}\", the uncertainty {np.sqrt(valvar[1])} is larger than the value {valvar[0]}. Clipping down variation to {SMALL}.")
                         do = SMALL
                     kappas_out[cat][f"stats_{cat}_{proc_of_interest}"][proc_itr]["Up"]   = [up, None] # Rel err up, do not include error on the error (just leave as None)
@@ -344,12 +344,16 @@ def main():
     parser.add_argument("in_file_name",help="Either json file of yields or pickle file with scikit hists")
     parser.add_argument("--out-dir","-d",default="./cards_wwz4l",help="Output directory to write root and text datacard files to")
     parser.add_argument("-s","--do-nuisance",action="store_true",help="Include nuisance parameters")
+    parser.add_argument("--no-tf",action="store_true",help="Skip doing the data-driven background estimation")
+    parser.add_argument("--bdt",action="store_true",help="Use BDT SR bins")
     parser.add_argument("--unblind",action="store_true",help="If set, use real data, otherwise use asimov data")
 
     args = parser.parse_args()
     in_file = args.in_file_name
     out_dir = args.out_dir
     do_nuis = args.do_nuisance
+    skip_tf = args.no_tf
+    use_bdt_sr = args.bdt
     unblind = args.unblind
 
     # Check args
@@ -375,47 +379,55 @@ def main():
     yld_dict_mc_allyears = {}
     for year in sample_names_dict_mc:
         yld_dict_mc_allyears[year] = yt.get_yields(histo,sample_names_dict_mc[year])
-    handle_per_year_systs_for_fr2(yld_dict_mc_allyears)
+    if do_nuis:
+        handle_per_year_systs_for_fr2(yld_dict_mc_allyears)
 
     # We're only looking at Full R2 for now
     yld_dict_mc = yld_dict_mc_allyears["FR2"]
     yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR2"])
 
-    # Print info about a bin
+    ####################################################################################
+    # Dump some info about a bin (just raw numbers, more or less)
+    # This print is before we start messing with the yields (eg to get rid of negatives)
     printinfo = 0
     if printinfo:
-        s = "renorm"
-        p = "WWZ"
-        c = "sr_4l_of_2"
+        s = "FSR"
+        p = "ttZ"
+        c = "sr_4l_bdt_of_1"
         cr = "cr_4l_btag_of"
         print(p,c,s,cr)
         print("\nPrinting info:")
         print("mc sr n",yld_dict_mc[c]["nominal"][p])
         print("mc sr u",yld_dict_mc[c][f"{s}Up"][p])
+        print("mc sr d",yld_dict_mc[c][f"{s}Down"][p])
         print("mc cr n",yld_dict_mc[cr]["nominal"][p])
         print("mc cr u",yld_dict_mc[cr][f"{s}Up"][p])
         print("da cr n",yld_dict_data[cr]["nominal"]["data"])
         print("da cr u",yld_dict_data[cr][f"{s}Up"]["data"])
         print("\n")
-        #exit()
+        exit()
+    ####################################################################################
 
-
-    # Get the syst ratios to nominal (i.e. kappas)
-    kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data)
-
-    # Do the TF calculation
-    yld_dict_mc, kappa_dict, gmn_dict = yt.do_tf(yld_dict_mc,yld_dict_data,kappa_dict,sg.BKG_TF_MAP)
 
     # Get rid of negative yields (and recenter syst variations around SMALL), should happen before computing kappas
     yld_dict_mc = handle_negatives(yld_dict_mc)
 
-    # Add mc stats to kappa dict (important to be after TF calculation so that data driven bkg stats include stats of CRs)
-    kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,skip_procs=["ZZ","ttZ"])
+    # Get the syst ratios to nominal (i.e. kappas)
+    kappa_dict = None
+    if do_nuis:
+        kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data)
+        kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,skip_procs=["ZZ","ttZ"])
+
+    # Do the TF calculation
+    if not skip_tf:
+        yld_dict_mc, kappa_dict, gmn_dict = yt.do_tf(yld_dict_mc,yld_dict_data,kappa_dict,sg.BKG_TF_MAP)
 
 
     #### Make the cards for each channel ####
-    print(f"Making cards for {sg.CAT_LST_CB}. \nPutting in {out_dir}.")
-    for ch in sg.CAT_LST_CB:
+    cat_lst = sg.CAT_LST_CB
+    if use_bdt_sr: cat_lst = sg.CAT_LST_BDT
+    print(f"\nMaking cards for {cat_lst}. \nPutting in {out_dir}.")
+    for ch in cat_lst:
 
         # Get just the info we want to put in the card in str form
         rate_for_dc_ch = get_rate_for_dc(yld_dict_mc,ch)
@@ -426,6 +438,7 @@ def main():
         if do_nuis:
             kappa_for_dc_ch = get_kappa_for_dc(kappa_dict,ch)
             kappa_for_dc_ch.update(get_rate_systs(sg.PROC_LST)) # Append in the ones from rate json
+        if do_nuis and not skip_tf:
             gmn_for_dc_ch = get_gmn_for_dc(gmn_dict[ch],proc_lst=list(sg.SAMPLE_DICT_BASE.keys()))
 
 
