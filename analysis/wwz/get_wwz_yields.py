@@ -666,34 +666,35 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data,ana_type="cb"):
 
 
 # Main function for making CR plots
-def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
+def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_cr=False):
+
+    # Get the yield dict to get NSF dict (if we want to scale hists by NSFs)
+    histo = histo_dict["njets"]
+    yld_dict_mc   = yt.get_yields(histo,grouping_mc)
+    yld_dict_data = yt.get_yields(histo,grouping_data)
+    nsf_dict = yt.get_nsf_dict(yld_dict_mc,yld_dict_data,sg.BKG_TF_MAP)
+
 
     for var_name in histo_dict.keys():
-        #print(f"\n{var_name}")
+        # Skip over some variables if you want to
         if "counts" in var_name: continue
-        if var_name == "nbtagsm": continue # TMP
-        #if var_name != "njets": continue # TMP
-        if var_name not in BDT_INPUT_LST: continue # TMP
-        #if "bdt" not in var_name: continue # TMP
-        #if var_name not in TMP_VAR_LST: continue # TMP
+        if var_name == "nbtagsm": continue
+        #if var_name not in BDT_INPUT_LST: continue
+        if var_name != "nleps" and "bdt" not in var_name: continue
+
+        # Get the relevant histogram from the input dict
+        #print(f"\n{var_name}")
         histo_orig = histo_dict[var_name]
 
         # Just plot nominal syst for now
         histo_orig = histo_orig[{"systematic":"nominal"}]
 
-        # Group SR procs together
-        #grouping_sr_procs = {"sr_4l_sf":["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C"],"sr_4l_of":["sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]}
-        #histo = group(histo,"category","category",grouping_sr_procs)
-
-
         # Loop over categories and make plots for each
         for cat_name in histo_orig.axes["category"]:
-            #if cat_name not in ["cr_4l_sf","cr_4l_btag_of"]: continue # TMP
-            #if "cr" not in cat_name: continue # TMP
-            #if "bdt" in cat_name: continue # TMP
-            #if cat_name not in ["cr_4l_sf","sr_4l_of_incl","sr_4l_sf_incl","sr_4l_bdt_sf_presel","sr_4l_bdt_sf_trn","sr_4l_bdt_of_presel"]: continue # TMP
-            if cat_name not in ["sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn"]: continue # TMP
-            #if "incl" not in cat_name and "trn" not in cat_name and "presel" not in cat_name: continue
+            # Skip some of the cats if you want to
+            #if "bdt" in cat_name: continue
+            #if cat_name not in ["sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn"]: continue # TMP
+            if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]: continue
             #print(cat_name)
 
             # Make a copy so changes to binning do not propagate to next loop
@@ -712,21 +713,20 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
             histo_grouped_mc = group(histo_cat,"process","process_grp",grouping_mc)
             histo_grouped_data = group(histo_cat,"process","process_grp",grouping_data)
 
+            # Apply the NSF (the NSF dict is set up for SRs, not CRs but we can just grab the ones we need)
+            if apply_nsf_to_cr:
+                nsf_zz = 1
+                nsf_ttz = 1
+                if cat_name in ["cr_4l_btag_of"]:
+                    nsfs = {"ZZ" : nsf_dict["sr_4l_of_1"]["ZZ"]["nsf"][0], "ttZ" : nsf_dict["sr_4l_of_1"]["ttZ"]["nsf"][0]}
+                elif cat_name in ["cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]:
+                    nsfs = {"ZZ" : nsf_dict["sr_4l_sf_A"]["ZZ"]["nsf"][0], "ttZ" : nsf_dict["sr_4l_sf_A"]["ttZ"]["nsf"][0]}
+                for i, name in enumerate(histo_grouped_mc.axes["process_grp"]):
+                    # Scale the hist, see https://github.com/CoffeaTeam/coffea/discussions/705
+                    histo_grouped_mc.view(flow=True)[i] *= nsfs.get(name,1) # Scale by 1 if the process is not ttZ or ZZ
+
             ######
-            #if (cat_name == "cr_4l_btag_sf_offZ_met80") and var_name == "nleps":
-            #if ("met80" in cat_name and ("ee" in cat_name or "mm" in cat_name)) and var_name == "nleps":
-            #if ("ee" in cat_name or "mm" in cat_name) or ("cutflow" in cat_name and var_name == "nleps"):
-            #    #print("mc\n",histo_grouped_mc)
-            #    #print("data\n",histo_grouped_data)
-            #    #print("val mc\n",histo_grouped_mc.values(flow=True))
-            #    #print("val data\n",histo_grouped_data.values(flow=True))
-            #    ##print("var mc\n",(histo_grouped_mc.variances(flow=True)))
-            #    ##print("var data\n",(histo_grouped_data.variances(flow=True)))
-            #    print("val mc\n",sum(histo_grouped_mc.values(flow=True)))
-            #    print("val data\n",sum(histo_grouped_data.values(flow=True)))
-            #    #print("var mc\n",(histo_grouped_mc.variances(flow=True)))
-            #    #print("var data\n",(histo_grouped_data.variances(flow=True)))
-            #continue
+            # Print stuff if you want to
             #if (cat_name == "cr_4l_sf" or cat_name == "cr_4l_btag_of" or cat_name=="cr_4l_btag_sf_offZ_met80") and var_name == "nleps":
             #    print(f"\n{cat_name} {var_name}:")
             #    print("Yields")
@@ -759,7 +759,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
 
 ###### Transfer factors for background ######
 
-# TODO move to same function as used in datacard maker
+# TODO Get rid of this it's old
 # Function for getting a dict with NSF and TF etc
 def get_background_dict(yld_dict_mc,yld_dict_data,bkg_proc,cr_name,sr_name):
 
@@ -918,7 +918,7 @@ def main():
 
     # Make plots
     if args.make_plots:
-        make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path)
+        make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path,apply_nsf_to_cr=False)
         #make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
         #make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data,ana_type="cb") # Make plot of all SR yields in one plot
 
