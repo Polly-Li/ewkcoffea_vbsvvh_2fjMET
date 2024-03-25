@@ -31,10 +31,9 @@ def is_presel_wwz_ele(ele,year,tight):
         (ele.pt               >  10.0) &
         (abs(ele.eta)         <  2.5) &
         (abs(ele.dxy)         <  0.05) &
-        (abs(ele.dz)          <  0.1) &
-        (ele.mvaIso_WP80)
+        (abs(ele.dz)          <  0.1)
     )
-    if ("2022" in year): mask_return = mask_2022
+    if ("2022" in year): mask_return = (mask_2022 & ele.mvaIso_WP80)
     if ("2022" not in year): mask_return = mask
     if tight: mask_return = (mask_return & ele.convVeto & (ele.tightCharge == get_ec_param("wwz_pres_e_tightCharge")))
     return mask_return
