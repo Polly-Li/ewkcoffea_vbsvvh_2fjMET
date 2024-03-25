@@ -243,7 +243,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Attach the lepton SFs to the electron and muons collections
         if "2022" in year:
             cor_ec.run3_muons_sf_Attach(mu_wwz_t,year,"NUM_MediumID_DEN_TrackerMuons","NUM_TightPFIso_DEN_MediumID")
-            cor_ec.run3_electrons_sf_Attach(ele_wwz_t,year,"Medium")
+            cor_ec.run3_electrons_sf_Attach(ele_wwz_t,year,"wp80iso")
         else:
             cor_ec.AttachElectronSF(ele_wwz_t,year=year)
             cor_ec.AttachMuonSF(mu_wwz_t,year=year)
@@ -882,57 +882,57 @@ class AnalysisProcessor(processor.ProcessorABC):
 #                )
 #
 #                # Loop over weight fluctuations
-#                for wgt_fluct in wgt_var_lst:
+#                #for wgt_fluct in wgt_var_lst:
 #
-#                    # Get the appropriate weight fluctuation
-#                    if (wgt_fluct == "nominal") or (wgt_fluct in obj_corr_syst_var_list):
-#                        # In the case of "nominal", no weight systematic variation is used
-#                        weight = weights_obj_base_for_kinematic_syst.weight(None)
-#                    else:
-#                        # Otherwise get the weight from the Weights object
-#                        weight = weights_obj_base_for_kinematic_syst.weight(wgt_fluct)
+#                #    # Get the appropriate weight fluctuation
+#                #    if (wgt_fluct == "nominal") or (wgt_fluct in obj_corr_syst_var_list):
+#                #        # In the case of "nominal", no weight systematic variation is used
+#                #        weight = weights_obj_base_for_kinematic_syst.weight(None)
+#                #    else:
+#                #        # Otherwise get the weight from the Weights object
+#                weight = weights_obj_base_for_kinematic_syst.weight(None)
 #
 #
-#                    # Loop over categories
-#                    for sr_cat in cat_dict["lep_chan_lst"]:
+#                # Loop over categories
+#                for sr_cat in cat_dict["lep_chan_lst"]:
 #
-#                        # Skip filling if this variable is not relevant for this selection
-#                        if (dense_axis_name in exclude_var_dict) and (sr_cat in exclude_var_dict[dense_axis_name]): continue
+#                    # Skip filling if this variable is not relevant for this selection
+#                    if (dense_axis_name in exclude_var_dict) and (sr_cat in exclude_var_dict[dense_axis_name]): continue
 #
-#                        # If this is a counts hist, forget the weights and just fill with unit weights
-#                        if dense_axis_name.endswith("_counts"): weight = events.nom
-#                        #else: weights = weights_obj_base_for_kinematic_syst.partial_weight(include=["norm"]) # For testing
-#                        #else: weights = weights_obj_base_for_kinematic_syst.weight(None) # For testing
+#                    # If this is a counts hist, forget the weights and just fill with unit weights
+#                    if dense_axis_name.endswith("_counts"): weight = events.nom
+#                    #else: weights = weights_obj_base_for_kinematic_syst.partial_weight(include=["norm"]) # For testing
+#                    #else: weights = weights_obj_base_for_kinematic_syst.weight(None) # For testing
 #
-#                        # Make the cuts mask
-#                        cuts_lst = [sr_cat]
-#                        if isData: cuts_lst.append("is_good_lumi") # Apply golden json requirements if this is data
-#                        all_cuts_mask = selections.all(*cuts_lst)
+#                    # Make the cuts mask
+#                    cuts_lst = [sr_cat]
+#                    if isData: cuts_lst.append("is_good_lumi") # Apply golden json requirements if this is data
+#                    all_cuts_mask = selections.all(*cuts_lst)
 #
-#                        #run = events.run[all_cuts_mask]
-#                        #luminosityBlock = events.luminosityBlock[all_cuts_mask]
-#                        #event = events.event[all_cuts_mask]
-#                        #w = weights[all_cuts_mask]
-#                        #if dense_axis_name == "njets":
-#                        #    print("\nSTARTPRINT")
-#                        #    for i,j in enumerate(w):
-#                        #        out_str = f"PRINTTAG {i} {dense_axis_name} {year} {sr_cat} {event[i]} {run[i]} {luminosityBlock[i]} {w[i]}"
-#                        #        print(out_str,file=sys.stderr,flush=True)
-#                        #    print("ENDPRINT\n")
-#                        #print("\ndense_axis_name",dense_axis_name)
-#                        #print("sr_cat",sr_cat)
-#                        #print("dense_axis_vals[all_cuts_mask]",dense_axis_vals[all_cuts_mask])
-#                        #print("end")
+#                    #run = events.run[all_cuts_mask]
+#                    #luminosityBlock = events.luminosityBlock[all_cuts_mask]
+#                    #event = events.event[all_cuts_mask]
+#                    #w = weights[all_cuts_mask]
+#                    #if dense_axis_name == "njets":
+#                    #    print("\nSTARTPRINT")
+#                    #    for i,j in enumerate(w):
+#                    #        out_str = f"PRINTTAG {i} {dense_axis_name} {year} {sr_cat} {event[i]} {run[i]} {luminosityBlock[i]} {w[i]}"
+#                    #        print(out_str,file=sys.stderr,flush=True)
+#                    #    print("ENDPRINT\n")
+#                    #print("\ndense_axis_name",dense_axis_name)
+#                    #print("sr_cat",sr_cat)
+#                    #print("dense_axis_vals[all_cuts_mask]",dense_axis_vals[all_cuts_mask])
+#                    #print("end")
 #
-#                        # Fill the histos
-#                        axes_fill_info_dict = {
-#                            dense_axis_name : dense_axis_vals[all_cuts_mask],
-#                            "weight"        : weight[all_cuts_mask],
-#                            "process"       : histAxisName,
-#                            "category"      : sr_cat,
-#                            "systematic"    : wgt_fluct,
-#                        }
-#                        hout[dense_axis_name].fill(**axes_fill_info_dict)
+#                    # Fill the histos
+#                    axes_fill_info_dict = {
+#                        dense_axis_name : dense_axis_vals[all_cuts_mask],
+#                        "weight"        : weight[all_cuts_mask],
+#                        "process"       : histAxisName,
+#                        "category"      : sr_cat,
+#                        "systematic"    : "nominal",
+#                    }
+#                    hout[dense_axis_name].fill(**axes_fill_info_dict)
 #
 #        return hout
 #

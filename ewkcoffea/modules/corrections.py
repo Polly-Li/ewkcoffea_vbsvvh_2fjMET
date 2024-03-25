@@ -216,8 +216,8 @@ def run3_electrons_sf_Attach(electrons,year,wp):
     sf_flat_75 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","RecoAbove75",eta_flat,pt_flat_75)
 
     #Mutiply the sf by their respective zero lists (gets rid of unwanted values)
-    sf_flat_20_z = sf_flat_20 * wp_selector_20_z 
-    sf_flat_2075_z = sf_flat_2075 * wp_selector_2075_z 
+    sf_flat_20_z = sf_flat_20 * wp_selector_20_z
+    sf_flat_2075_z = sf_flat_2075 * wp_selector_2075_z
     sf_flat_75_z = sf_flat_75 * wp_selector_75_z
 
     #Add up the sf lists
