@@ -112,9 +112,9 @@ def btag_eff_eval(jets,wp,year):
     elif year == "2018":
         pname = f"UL18_{pname_base}"
     elif year == "2022":
-        pname = f"UL18_{pname_base}"
+        pname = f"UL18_{pname_base}" #TODO Update with 2022 efficiency when available
     elif year == "2022EE":
-        pname = f"UL18_{pname_base}"
+        pname = f"UL18_{pname_base}" #TODO Update with 2022EE efficiency when available
     else:
         raise Exception(f"Not a known year: {year}")
 
@@ -134,7 +134,7 @@ def btag_eff_eval(jets,wp,year):
 
     return eff
 
-def run3_muons_sf_Attach(muons,year,syst,id_method,iso_method):
+def run3_muons_sf_Attach(muons,year,id_method,iso_method):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":
@@ -148,7 +148,7 @@ def run3_muons_sf_Attach(muons,year,syst,id_method,iso_method):
     abseta_flat = ak.flatten(abs(muons.eta))
     pt_flat = ak.flatten(muons.pt)
 
-    # For now, cap all pt at 199.9 (limit for this particular sf)
+    # For now, cap all pt at 199.9 and min of 15.0 (limits for this particular json)
     pt_flat = ak.where(pt_flat>199.9,199.9,pt_flat)
     pt_flat = ak.where(pt_flat<15.0,15.0,pt_flat)
 
@@ -180,14 +180,14 @@ def run3_muons_sf_Attach(muons,year,syst,id_method,iso_method):
     muons['sf_lo_elec']  = ak.ones_like(sf_nom)
 
 
-def run3_electrons_sf_Attach(electrons,year,valtype,wp):
+def run3_electrons_sf_Attach(electrons,year,wp):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":
-        n_year = "2022Re-recoE+PromptFG"
+        n_year = "2022Re-recoE+PromptFG" #key for accessing the 2022EE SFs
         fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2022EE_ele/electron.json")
     elif year == "2022":
-        n_year = "2022Re-recoBCD"
+        n_year = "2022Re-recoBCD" #key for accessing the 2022 SFs
         fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2022_ele/electron.json")
     else:
         raise Exception("Trying to apply run3 SF where they shouldn't be!")
@@ -195,19 +195,44 @@ def run3_electrons_sf_Attach(electrons,year,valtype,wp):
     # Flatten the input (until correctionlib handles jagged data natively)
     eta_flat = ak.flatten(electrons.eta)
     pt_flat = ak.flatten(electrons.pt)
+    ceval = correctionlib.CorrectionSet.from_file(fname)
 
-    # For now, min pt sf is 10.0
-    pt_flat = ak.where(pt_flat<10.0,10.0,pt_flat)
+    # Make flat pT for the different pt regions
+    pt_flat_20 = ak.where(pt_flat >= 20.0,19.9,pt_flat)
+    pt_flat_2075 = ak.where(pt_flat < 20.0, 20.0, ak.where(pt_flat >= 75.0, 74.9, pt_flat))
+    pt_flat_75 = ak.where(pt_flat < 75.0, 75.0,pt_flat)
+    #Flat lists with zeros (to multiply later)
+    wp_selector_20 = ak.where(pt_flat >= 20.0, 0, pt_flat)
+    wp_selector_2075 = ak.where(pt_flat < 20.0, 0, ak.where(pt_flat >= 75.0, 0, pt_flat))
+    wp_selector_75 = ak.where(pt_flat < 75.0, 0, pt_flat)
+
+    wp_selector_20_z = ak.where(wp_selector_20 != 0, 1, wp_selector_20)
+    wp_selector_2075_z = ak.where(wp_selector_2075 != 0, 1, wp_selector_2075)
+    wp_selector_75_z = ak.where(wp_selector_75 != 0, 1, wp_selector_75)
+
+    #Get the appropriate SF
+    sf_flat_20 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","RecoBelow20",eta_flat,pt_flat_20)
+    sf_flat_2075 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","Reco20to75",eta_flat,pt_flat_2075)
+    sf_flat_75 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","RecoAbove75",eta_flat,pt_flat_75)
+
+    #Mutiply the sf by their respective zero lists (gets rid of unwanted values)
+    sf_flat_20_z = sf_flat_20 * wp_selector_20_z 
+    sf_flat_2075_z = sf_flat_2075 * wp_selector_2075_z 
+    sf_flat_75_z = sf_flat_75 * wp_selector_75_z
+
+    #Add up the sf lists
+    sf_reco = sf_flat_20_z + sf_flat_2075_z + sf_flat_75_z
 
     # Evaluate the SF
-    ceval = correctionlib.CorrectionSet.from_file(fname)
     sf_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sf",wp,eta_flat,pt_flat)
     hi_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sfup",wp,eta_flat,pt_flat)
     lo_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown",wp,eta_flat,pt_flat)
 
-    sf = ak.unflatten(sf_flat,ak.num(electrons.pt))
-    hi = ak.unflatten(sf_flat,ak.num(electrons.pt))
-    lo = ak.unflatten(sf_flat,ak.num(electrons.pt))
+    sf_return = sf_flat * sf_reco
+
+    sf = ak.unflatten(sf_return,ak.num(electrons.pt))
+    hi = ak.unflatten(hi_flat,ak.num(electrons.pt))
+    lo = ak.unflatten(lo_flat,ak.num(electrons.pt))
 
     electrons['sf_nom_muon'] = ak.ones_like(sf)
     electrons['sf_hi_muon']  = ak.ones_like(sf)
@@ -216,7 +241,7 @@ def run3_electrons_sf_Attach(electrons,year,valtype,wp):
     electrons['sf_hi_elec']  = hi
     electrons['sf_lo_elec']  = lo
 
-def run3_pu_Attach(pileup,year,syst):
+def run3_pu_Attach(pileup,year):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":

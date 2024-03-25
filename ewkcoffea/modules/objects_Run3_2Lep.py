@@ -8,35 +8,47 @@ def get_cleaned_collection(obj_collection_a,obj_collection_b,drcut=0.4):
     mask = ak.fill_none(dr>drcut,True)
     return mask
 
-# Run3 2Lep preselection for electrons
-def is_presel_Run3_2Lep_ele(ele):
+def is_veto_Run3_2Lep_ele(ele):
     mask = (
-        (ele.pt                                >  get_param("Run3_2Lep_pres_e_pt")) &
-        (abs(ele.eta + ele.deltaEtaSC)         <  get_param("Run3_2Lep_pres_e_eta")) &
-        (abs(ele.dxy)                          <  get_param("Run3_2Lep_pres_e_dxy")) &
-        (abs(ele.dz)                           <  get_param("Run3_2Lep_pres_e_dz")) &
-        (ele.cutBased                          >= get_param("Run3_2Lep_pres_e_cutBasedID_Med")) &
-        ((abs(ele.eta) < 1.444) | (abs(ele.eta) > 1.566))
+        (ele.pt                 >  get_param("run3_2lep_pres_e_pt")) &
+        (abs(ele.eta)           <  get_param("run3_2lep_pres_e_eta")) &
+        (ele.cutBased           >= get_param("run3_2lep_pres_e_cutBasedID_veto")) &
+        (ele.convVeto)
     )
     return mask
 
-
-# Run3 2Lep preselection for muons
-def is_presel_Run3_2Lep_mu(mu):
+def is_tight_Run3_2Lep_ele(ele):
     mask = (
-        (mu.pt               >  get_param("Run3_2Lep_pres_m_pt")) &
-        (abs(mu.eta)         <  get_param("Run3_2Lep_pres_m_eta")) &
-        (abs(mu.dxy)         <  get_param("Run3_2Lep_pres_m_dxy")) &
-        (abs(mu.dz)          <  get_param("Run3_2Lep_pres_m_dz")) &
-        (mu.pfIsoId >=  get_param("Run3_pres_m_pfIsoId_Tight")) &
+        (ele.pt                                >  get_param("run3_2lep_pres_e_pt")) &
+        (abs(ele.eta)                          <  get_param("run3_2lep_pres_e_eta")) &
+        (abs(ele.dxy)                          <  get_param("run3_2lep_pres_e_dxy")) &
+        (abs(ele.dz)                           <  get_param("run3_2lep_pres_e_dz")) &
+        (ele.cutBased                          >= get_param("run3_2lep_pres_e_cutBasedID_med")) 
+    )
+    return mask
+
+def is_veto_Run3_2Lep_mu(mu):
+    mask = (
+        (mu.pt               >  get_param("run3_2lep_pres_m_pt")) &
+        (abs(mu.eta)         <  get_param("run3_2lep_pres_m_eta")) &
+        (mu.looseId)
+    )
+    return mask
+
+def is_tight_Run3_2Lep_mu(mu):
+    mask = (
+        (mu.pt               >  get_param("run3_2lep_pres_m_pt")) &
+        (abs(mu.eta)         <  get_param("run3_2lep_pres_m_eta")) &
+        (abs(mu.dxy)         <  get_param("run3_2lep_pres_m_dxy")) &
+        (abs(mu.dz)          <  get_param("run3_2lep_pres_m_dz")) &
+        (mu.pfIsoId          >= get_param("run3_2lep_pres_m_pfIsoId_Tight")) &
         (mu.mediumId)
     )
     return mask
 
-# Run3 2Lep preselection for jets
 def is_presel_Run3_2Lep_jets(jets):
     mask = (
-        (jets.pt               >  get_param("Run3_2Lep_pres_jets_pt")) &
-        (abs(jets.eta)         <  get_param("Run3_2Lep_pres_jets_eta"))
+        (jets.pt               >  get_param("run3_2lep_pres_jets_pt")) &
+        (abs(jets.eta)         <  get_param("run3_2lep_pres_jets_eta"))
     )
     return mask

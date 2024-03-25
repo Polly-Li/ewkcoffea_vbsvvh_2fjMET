@@ -1,0 +1,23 @@
+{
+    "xsec": 1.0,
+    "year": "2022",
+    "treeName": "Events",
+    "era": "B",
+    "histAxisName": "",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/Run3_Data_2L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_2L_02162024_Loose/output_7.root",
+        "/store/user/mdittric/skim/Run3_Data_2L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_2L_02162024_Loose/output_2.root",
+        "/store/user/mdittric/skim/Run3_Data_2L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_2L_02162024_Loose/output_3.root",
+        "/store/user/mdittric/skim/Run3_Data_2L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_2L_02162024_Loose/output_6.root",
+        "/store/user/mdittric/skim/Run3_Data_2L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_2L_02162024_Loose/output_1.root",
+        "/store/user/mdittric/skim/Run3_Data_2L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_2L_02162024_Loose/output_4.root",
+        "/store/user/mdittric/skim/Run3_Data_2L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_2L_02162024_Loose/output_5.root"
+    ],
+    "nEvents": 94538,
+    "nGenEvents": 94538,
+    "nSumOfWeights": 94538,
+    "isData": true,
+    "path": "/store/user/mdittric/skim/Run3_Data_2L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_2L_02162024_Loose/"
+}
