@@ -57,21 +57,38 @@ dataset_dict = {
             "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
             "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ",
         ]
-    }
+    },
+
     "2022" : {
         "EGamma" : [
+            "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
             "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL",
+            "Ele30_WPTight_Gsf",
+            "Ele32_WPTight_Gsf",
+            "Ele32_WPTight_Gsf_L1DoubleEG",
+            "Ele35_WPTight_Gsf",
+            "Ele115_CaloIdVT_GsfTrkIdT",
+            "DoubleEle25_CaloIdL_MW",
         ],
         "Muon" : [
+            "IsoMu24",
+            "IsoMu27",
+            "Mu50",
             "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
+            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8",
         ],
         "SingleMuon" : [
-            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
+            "IsoMu24",
+            "IsoMu27",
+            "Mu50",
         ],
         "DoubleMuon" : [
             "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
+            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8",
         ],
         "MuonEG" : [
+            "Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ",
+            "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL",
             "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
             "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ",
         ]
@@ -134,7 +151,7 @@ trgs_for_matching = {
             "trg_lst" : ["Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ"],
             "offline_thresholds" : [25.0,10.0],
         },
-    }
+    },
     "2022" : {
         "m_m" : {
             "trg_lst" : dataset_dict["2022"]["Muon"],
@@ -145,11 +162,11 @@ trgs_for_matching = {
             "offline_thresholds" : [25.0,15.0],
         },
         "m_e" : {
-            "trg_lst" : ["Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ"],
+            "trg_lst" : dataset_dict["2022"]["MuonEG"],
             "offline_thresholds" : [25.0,15.0],
         },
         "e_m" : {
-            "trg_lst" : ["Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ"],
+            "trg_lst" : dataset_dict["2022"]["MuonEG"],
             "offline_thresholds" : [25.0,10.0],
         },
     }
@@ -175,6 +192,13 @@ exclude_dict = {
         "DoubleMuon"     : [],
         "EGamma"         : dataset_dict["2018"]["DoubleMuon"],
         "MuonEG"         : dataset_dict["2018"]["DoubleMuon"] + dataset_dict["2018"]["EGamma"],
+    },
+    "2022": {
+        "Muon"           : [],
+        "EGamma"         : dataset_dict["2022"]["Muon"],
+        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
+        "SingleMuon"     : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"] + dataset_dict["2022"]["MuonEG"],
+        "DoubleMuon"     : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"] + dataset_dict["2022"]["MuonEG"] + dataset_dict["2022"]["SingleMuon"],
     },
 }
 

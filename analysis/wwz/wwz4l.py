@@ -826,7 +826,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 for sr_cat in cat_dict["lep_chan_lst"]:
 
                     # Skip filling if this variable is not relevant for this selection
-                    #if sr_cat in analysis_cats: continue 
+                    #if sr_cat in analysis_cats: continue
                     if (dense_axis_name in exclude_var_dict) and (sr_cat in exclude_var_dict[dense_axis_name]): continue
                     hist_name = sr_cat + "_" + dense_axis_name
                     # Create the hist for this dense axis variable
