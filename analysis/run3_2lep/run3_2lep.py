@@ -149,7 +149,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             if d in dataset:
                 if d == "Muon" and (("MuonEG" in dataset) or ("SingleMuon" in dataset) or ("DoubleMuon" in dataset)):
                     continue  #
-                else:                
+                else:
                     dataset = d
 
         # Initialize objects
@@ -373,61 +373,6 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "npvs": pv.npvs,
                     "npvsGood": pv.npvsGood,
                 },
-#                "2l_of" : {
-#                    "nleps" : nleps,
-#                    "njets" : njets,
-#                    "nBjets_loose" : nbtagsl,
-#                    "nBjets_medium" : nbtagsm,
-#                    "mLL" : mll,
-#                    "pt_mu" : mu0.pt,
-#                    "pt_e" : ele0.pt,
-#                    "eta_mu": mu0.eta,
-#                    "eta_e": ele0.eta,
-#                    "reliso_mu": mu0.pfRelIso03_all,
-#                    "reliso_e": ele0.pfRelIso03_all,
-#                    "dxy_mu": mu0.dxy,
-#                    "dxy_e": ele0.dxy,
-#                    "dz_mu": mu0.dz,
-#                    "dz_e": ele0.dz,
-#                    "met": met.pt,
-#                    "phi_met": met.phi,
-#                    "eta_jet0": jet0.eta,
-#                    "pt_jet0": jet0.pt,
-#                    "eta_jet1": jet1.eta,
-#                    "pt_jet1": jet1.pt,
-#                    "phi_jet0": jet0.phi,
-#                    "phi_jet1": jet1.phi,
-#                    "phi_mu": mu0.phi,
-#                    "phi_e": ele0.phi,
-#                    "npvs": pv.npvs,
-#                    "npvsGood": pv.npvsGood,
-#                },
-#                "2l_of_btag" : {
-#                    "nleps" : nleps,
-#                    "njets" : njets,
-#                    "nBjets_loose" : nbtagsl,
-#                    "nBjets_medium" : nbtagsm,
-#                    "mLL" : mll,
-#                    "pt_mu" : mu0.pt,
-#                    "pt_e" : ele0.pt,
-#                    "eta_mu": mu0.eta,
-#                    "eta_e": ele0.eta,
-#                    "reliso_mu": mu0.pfRelIso03_all,
-#                    "reliso_e": ele0.pfRelIso03_all,
-#                    "dxy_mu": mu0.dxy,
-#                    "dxy_e": ele0.dxy,
-#                    "dz_mu": mu0.dz,
-#                    "dz_e": ele0.dz,
-#                    "met": met.pt,
-#                    "phi_met": met.phi,
-#                    "eta_jet0": jet0.eta,
-#                    "pt_jet0": jet0.pt,
-#                    "phi_jet0": jet0.phi,
-#                    "phi_mu": mu0.phi,
-#                    "phi_e": ele0.phi,
-#                    "npvs": pv.npvs,
-#                    "npvsGood": pv.npvsGood,
-#                },
             }
 
             #First Loop over the SR_CAT_DICT and loop through the relevant SRs
