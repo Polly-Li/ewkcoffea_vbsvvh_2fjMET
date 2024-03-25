@@ -105,14 +105,14 @@ class AnalysisProcessor(processor.ProcessorABC):
             "nleps_counts"   : axis.Regular(30, 0, 30, name="nleps_counts",   label="Lep multiplicity counts"),
             "nbtagsl_counts" : axis.Regular(30, 0, 30, name="nbtagsl_counts", label="Loose btag multiplicity counts"),
 
-#            "bdt_of_wwz_raw": axis.Regular(180, -3.5, 3.5, name="bdt_of_wwz_raw", label="Raw score bdt_of_wwz"),
-#            "bdt_sf_wwz_raw": axis.Regular(180, -3.5, 3.5, name="bdt_sf_wwz_raw", label="Raw score bdt_sf_wwz"),
-#            "bdt_of_zh_raw" : axis.Regular(180, -3.5, 3.5, name="bdt_of_zh_raw", label="Raw score bdt_of_zh"),
-#            "bdt_sf_zh_raw" : axis.Regular(180, -3.5, 3.5, name="bdt_sf_zh_raw", label="Raw score bdt_sf_zh"),
-#            "bdt_of_wwz": axis.Regular(180, -1, 1, name="bdt_of_wwz", label="Score bdt_of_wwz"),
-#            "bdt_sf_wwz": axis.Regular(180, -1, 1, name="bdt_sf_wwz", label="Score bdt_sf_wwz"),
-#            "bdt_of_zh" : axis.Regular(180, -1, 1, name="bdt_of_zh", label="Score bdt_of_zh"),
-#            "bdt_sf_zh" : axis.Regular(180, -1, 1, name="bdt_sf_zh", label="Score bdt_sf_zh"),
+            #"bdt_of_wwz_raw": axis.Regular(180, -3.5, 3.5, name="bdt_of_wwz_raw", label="Raw score bdt_of_wwz"),
+            #"bdt_sf_wwz_raw": axis.Regular(180, -3.5, 3.5, name="bdt_sf_wwz_raw", label="Raw score bdt_sf_wwz"),
+            #"bdt_of_zh_raw" : axis.Regular(180, -3.5, 3.5, name="bdt_of_zh_raw", label="Raw score bdt_of_zh"),
+            #"bdt_sf_zh_raw" : axis.Regular(180, -3.5, 3.5, name="bdt_sf_zh_raw", label="Raw score bdt_sf_zh"),
+            #"bdt_of_wwz": axis.Regular(180, -1, 1, name="bdt_of_wwz", label="Score bdt_of_wwz"),
+            #"bdt_sf_wwz": axis.Regular(180, -1, 1, name="bdt_sf_wwz", label="Score bdt_sf_wwz"),
+            #"bdt_of_zh" : axis.Regular(180, -1, 1, name="bdt_of_zh", label="Score bdt_of_zh"),
+            #"bdt_sf_zh" : axis.Regular(180, -1, 1, name="bdt_sf_zh", label="Score bdt_sf_zh"),
 
         }
 
@@ -225,7 +225,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         if "2022" not in year:
             ele["topmva"] = os_ec.get_topmva_score_ele(events, year)
             ele["is_tight_lep_for_wwz"] = ((ele.topmva > get_tc_param("topmva_wp_t_e")) & ele_presl_mask)
-        else: 
+        else:
             ele["is_tight_lep_for_wwz"] = (ele_presl_mask)
 
         # Do the object selection for the WWZ muons
@@ -318,7 +318,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 weights_obj_base.add('PreFiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
                 weights_obj_base.add('PU', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
             if "2022" in year:
-                cor_ec.run3_pu_Attach(pileup,year) 
+                cor_ec.run3_pu_Attach(pileup,year)
                 weights_obj_base.add("PU", pileup.pileup_corr, pileup.pileup_corr_hi, pileup.pileup_corr_lo)
 
             # Lepton SFs and systs
@@ -563,7 +563,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                     ak.fill_none(w_lep0.pt,-9999),
                     ak.fill_none(w_lep1.pt,-9999),
                 ]
-    
+
                 bdt_of_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path("data/wwz_zh_bdt/of_WWZ.json"))
                 bdt_sf_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path("data/wwz_zh_bdt/sf_WWZ.json"))
                 bdt_of_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars,ewkcoffea_path("data/wwz_zh_bdt/of_ZH.json"))
@@ -573,7 +573,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 bdt_sf_wwz = (2.0*((1.0+math.e**(-2*bdt_sf_wwz_raw))**(-1))) - 1.0
                 bdt_of_zh  = (2.0*((1.0+math.e**(-2*bdt_of_zh_raw))**(-1))) - 1.0
                 bdt_sf_zh  = (2.0*((1.0+math.e**(-2*bdt_sf_zh_raw))**(-1))) - 1.0
-    
+
                 ### BDT SRs ###
                 # SF BDT SRs
                 sf_wwz_sr1 = ( (bdt_sf_wwz > 0.9) & (bdt_sf_zh  >  0.8))
@@ -584,7 +584,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 sf_wwz_sr3 = ( ~sf_any & ((bdt_sf_zh > 0.5) & (bdt_sf_wwz > 0.35)))
                 sf_wwz_sr4 = ( ~(sf_any | sf_wwz_sr3) & ( (bdt_sf_zh > 0.85) & (bdt_sf_wwz > -0.5)))
                 sf_zh_sr3  = ( ~(sf_any | sf_wwz_sr3 | sf_wwz_sr4) & ( bdt_sf_wwz > 0.8 ) )
-    
+
                 # OF BDT SRs
                 of_wwz_sr1 = ( (bdt_of_wwz > 0.7) & (bdt_of_zh < -0.3) )
                 of_wwz_sr2 = ( (bdt_of_wwz < 0.7) & (bdt_of_wwz > 0.4) & (bdt_of_zh < -0.6) )
@@ -631,7 +631,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 selections.add("sr_4l_bdt_sf_zh_sr1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_zh_sr1))
                 selections.add("sr_4l_bdt_sf_zh_sr2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_zh_sr2))
                 selections.add("sr_4l_bdt_sf_zh_sr3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & sf_zh_sr3))
-    
+
                 selections.add("sr_4l_bdt_of_wwz_sr1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_wwz_sr1))
                 selections.add("sr_4l_bdt_of_wwz_sr2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_wwz_sr2))
                 selections.add("sr_4l_bdt_of_wwz_sr3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_wwz_sr3))
@@ -661,7 +661,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "sr_4l_bdt_sf_zh_sr1",
                     "sr_4l_bdt_sf_zh_sr2",
                     "sr_4l_bdt_sf_zh_sr3",
-    
+
                     "sr_4l_bdt_of_wwz_sr1",
                     "sr_4l_bdt_of_wwz_sr2",
                     "sr_4l_bdt_of_wwz_sr3",
@@ -756,7 +756,6 @@ class AnalysisProcessor(processor.ProcessorABC):
                 dense_variables_dict["bdt_sf_wwz"] = bdt_sf_wwz
                 dense_variables_dict["bdt_of_zh"] = bdt_of_zh
                 dense_variables_dict["bdt_sf_zh"] = bdt_sf_zh
-            
 
             # List the hists that are only defined for some categories
             analysis_cats = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"] + bdt_sr_names
@@ -817,7 +816,6 @@ class AnalysisProcessor(processor.ProcessorABC):
                 exclude_var_dict["bdt_sf_wwz"] = ["all_events"]
                 exclude_var_dict["bdt_of_zh"] = ["all_events"]
                 exclude_var_dict["bdt_sf_zh"] = ["all_events"]
-            
 
             # Set up the list of weight fluctuations to loop over
             # For now the syst do not depend on the category, so we can figure this out outside of the filling loop

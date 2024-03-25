@@ -23,7 +23,7 @@ def is_tight_Run3_2Lep_ele(ele):
         (abs(ele.eta)                          <  get_param("run3_2lep_pres_e_eta")) &
         (abs(ele.dxy)                          <  get_param("run3_2lep_pres_e_dxy")) &
         (abs(ele.dz)                           <  get_param("run3_2lep_pres_e_dz")) &
-        (ele.cutBased                          >= get_param("run3_2lep_pres_e_cutBasedID_med")) 
+        (ele.cutBased                          >= get_param("run3_2lep_pres_e_cutBasedID_med"))
     )
     return mask
 
