@@ -90,6 +90,38 @@ data_UL18 = {
 ############################ Bkg samples ############################
 
 
+# Get some from TOP-22-006 skims #
+central_UL16APV_22006_dict = {
+    "UL16APV_tWZ4l" : {
+        "path" : "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p7/TWZToLL/v1/UL16APV_TWZToLL_tlept_Wlept/",
+        "histAxisName": "UL16APV_tWZ4l",
+        "xsecName": "TWZToLL_tlept_Wlept",
+    }
+}
+central_UL16_22006_dict = {
+    "UL16_tWZ4l" : {
+        "path" : "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p7/TWZToLL/v1/UL16_TWZToLL_tlept_Wlept/",
+        "histAxisName": "UL16_tWZ4l",
+        "xsecName": "TWZToLL_tlept_Wlept",
+    }
+}
+central_UL17_22006_dict = {
+    "UL17_tWZ4l" : {
+        "path" : "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p7/TWZToLL/v1/UL17_TWZToLL_tlept_Wlept/",
+        "histAxisName": "UL17_tWZ4l",
+        "xsecName": "TWZToLL_tlept_Wlept",
+    }
+}
+central_UL18_22006_dict = {
+    "UL18_tWZ4l" : {
+        "path" : "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p7/TWZToLL/v1/UL18_TWZToLL_tlept_Wlept/",
+        "histAxisName": "UL18_tWZ4l",
+        "xsecName": "TWZToLL_tlept_Wlept",
+    }
+}
+
+
+# All the rest of the backgrounds (located at ucsd)
 central_UL16APV_bkg_dict = {
 
     "UL16APV_ZZTo4L" : {
@@ -386,7 +418,7 @@ def main():
 
     # A simple example
     #make_jsons_for_dict_of_samples(test_wwz_dict, "/ceph/cms/","2017",".",on_das=False) # An example
-    make_jsons_for_dict_of_samples(ci_dict, "","2017","../../input_samples/sample_jsons/test_samples/",on_das=False) # For CI json
+    #make_jsons_for_dict_of_samples(ci_dict, "","2017","../../input_samples/sample_jsons/test_samples/",on_das=False) # For CI json
 
     # Specify output paths
     jsons_path = "../../input_samples/sample_jsons/"
@@ -404,6 +436,10 @@ def main():
     #make_jsons_for_dict_of_samples(data_UL18, "/ceph/cms/","2018", out_dir_data_18,on_das=False)
 
     # Make configs for bkg samples
+    #make_jsons_for_dict_of_samples(central_UL16APV_22006_dict, "/cmsuf/data/","2016APV", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL16_22006_dict, "/cmsuf/data/","2016", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL17_22006_dict, "/cmsuf/data/","2017", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL18_22006_dict, "/cmsuf/data/","2018", out_dir_bkg,on_das=False)
     make_jsons_for_dict_of_samples(central_UL16APV_bkg_dict, "/ceph/cms/","2016APV", out_dir_bkg,on_das=False)
     make_jsons_for_dict_of_samples(central_UL16_bkg_dict, "/ceph/cms/","2016", out_dir_bkg,on_das=False)
     make_jsons_for_dict_of_samples(central_UL17_bkg_dict, "/ceph/cms/","2017", out_dir_bkg,on_das=False)

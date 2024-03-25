@@ -10,7 +10,7 @@ get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
 
 # Clean collection b (e.g. jets) with collection a (e.g. leps)
 def get_cleaned_collection(obj_collection_a,obj_collection_b,drcut=0.4):
-    obj_b_nearest_to_any_in_a , dr = obj_collection_b.nearest(obj_collection_a,return_metric=True)
+    obj_a_nearest_to_any_in_b , dr = obj_collection_b.nearest(obj_collection_a,return_metric=True)
     mask = ak.fill_none(dr>drcut,True)
     return obj_collection_b[mask]
 

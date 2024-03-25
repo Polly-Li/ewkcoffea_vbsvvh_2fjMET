@@ -40,14 +40,6 @@
             1861.0,
             null
         ],
-        "sr_4l_sf_presel_counts": [
-            1836.0,
-            null
-        ],
-        "sr_4l_of_presel_counts": [
-            3433.0,
-            null
-        ],
         "all_events_counts": [
             54868.0,
             null
@@ -56,24 +48,24 @@
             9865.0,
             null
         ],
+        "sr_4l_sf_incl_counts": [
+            1836.0,
+            null
+        ],
+        "sr_4l_of_incl_counts": [
+            3433.0,
+            null
+        ],
         "cr_4l_btag_of_counts": [
             919.0,
             null
         ],
-        "cr_4l_sf_counts": [
-            393.0,
-            null
-        ],
-        "cr_4l_btag_sf_counts": [
-            955.0,
-            null
-        ],
-        "cr_4l_btag_sf_offZ_counts": [
-            847.0,
-            null
-        ],
         "cr_4l_btag_sf_offZ_met80_counts": [
             447.0,
+            null
+        ],
+        "cr_4l_sf_counts": [
+            393.0,
             null
         ],
         "sr_4l_sf_A": [
@@ -104,14 +96,6 @@
             1.2574913943885722,
             null
         ],
-        "sr_4l_sf_presel": [
-            1.193888668142479,
-            null
-        ],
-        "sr_4l_of_presel": [
-            2.2967307064423976,
-            null
-        ],
         "all_events": [
             44.554542092725235,
             null
@@ -120,24 +104,24 @@
             7.062864594060521,
             null
         ],
+        "sr_4l_sf_incl": [
+            1.193888668142479,
+            null
+        ],
+        "sr_4l_of_incl": [
+            2.2967307064423976,
+            null
+        ],
         "cr_4l_btag_of": [
             0.8712045054150901,
             null
         ],
-        "cr_4l_sf": [
-            0.2633144810331567,
-            null
-        ],
-        "cr_4l_btag_sf": [
-            0.8585255699670182,
-            null
-        ],
-        "cr_4l_btag_sf_offZ": [
-            0.7511458992925877,
-            null
-        ],
         "cr_4l_btag_sf_offZ_met80": [
             0.39497905244658593,
+            null
+        ],
+        "cr_4l_sf": [
+            0.2633144810331567,
             null
         ]
     }
