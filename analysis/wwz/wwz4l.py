@@ -57,9 +57,9 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Create the dense axes for the histograms
         self._dense_axes_dict = {
-            "mt2"   : axis.Regular(180, 0, 250, name="mt2",  label="mt2"),
+            "mt2"   : axis.Regular(180, 0, 100, name="mt2",  label="mt2"),
             "met"   : axis.Regular(180, 0, 300, name="met",  label="met"),
-            "metphi": axis.Regular(180, -3.1416, 3.1416, name="metphi", label="met phi"),
+            "metphi": axis.Regular(180, -4, 4, name="metphi", label="met phi"),
             "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
             "scalarptsum_lep" : axis.Regular(180, 0, 600, name="scalarptsum_lep", label="S_T"),
             "scalarptsum_lepmet" : axis.Regular(180, 0, 600, name="scalarptsum_lepmet", label="S_T + metpt"),
@@ -78,11 +78,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             "w_lep1_eta" : axis.Regular(180, -3, 3, name="w_lep1_eta", label="Subleading W lep eta"),
             "z_lep0_eta" : axis.Regular(180, -3, 3, name="z_lep0_eta", label="Leading Z lep eta"),
             "z_lep1_eta" : axis.Regular(180, -3, 3, name="z_lep1_eta", label="Subleading Z lep eta"),
-            "w_lep0_phi" : axis.Regular(180, -3.1416, 3.1416, name="w_lep0_phi", label="Leading W lep phi"),
-            "w_lep1_phi" : axis.Regular(180, -3.1416, 3.1416, name="w_lep1_phi", label="Subleading W lep phi"),
-            "z_lep0_phi" : axis.Regular(180, -3.1416, 3.1416, name="z_lep0_phi", label="Leading Z lep phi"),
-            "z_lep1_phi" : axis.Regular(180, -3.1416, 3.1416, name="z_lep1_phi", label="Subleading Z lep phi"),
-            "mll_wl0_wl1" : axis.Regular(180, 0, 350, name="mll_wl0_wl1", label="mll(W lep0, W lep1)"),
+            "w_lep0_phi" : axis.Regular(180, -4, 4, name="w_lep0_phi", label="Leading W lep phi"),
+            "w_lep1_phi" : axis.Regular(180, -4, 4, name="w_lep1_phi", label="Subleading W lep phi"),
+            "z_lep0_phi" : axis.Regular(180, -4, 4, name="z_lep0_phi", label="Leading Z lep phi"),
+            "z_lep1_phi" : axis.Regular(180, -4, 4, name="z_lep1_phi", label="Subleading Z lep phi"),
+            "mll_wl0_wl1" : axis.Regular(180, 0, 200, name="mll_wl0_wl1", label="mll(W lep0, W lep1)"),
             "mll_zl0_zl1" : axis.Regular(180, 0, 200, name="mll_zl0_zl1", label="mll(Z lep0, Z lep1)"),
 
             "pt_zl0_zl1" : axis.Regular(180, 0, 300, name="pt_zl0_zl1", label="pt(Zl0 + Zl1)"),
@@ -107,9 +107,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             "absdphi_wl0_met": axis.Regular(180, 0, 3.1416, name="absdphi_wl0_met", label="abs dphi(Wl0,met)"),
             "absdphi_wl1_met": axis.Regular(180, 0, 3.1416, name="absdphi_wl1_met", label="abs dphi(Wl1,met)"),
 
-            "absdphi_min_afas" : axis.Regular(180, 0, 3.1416, name="absdphi_min_afas",  label="min(abs(delta phi of all pairs))"),
-            "absdphi_min_afos" : axis.Regular(180, 0, 3.1416, name="absdphi_min_afos",  label="min(abs(delta phi of OS pairs))"),
-            "absdphi_min_sfos" : axis.Regular(180, 0, 3.1416, name="absdphi_min_sfos",  label="min(abs(delta phi of SFOS pairs))"),
+            "absdphi_min_afas" : axis.Regular(180, 0, 4, name="absdphi_min_afas",  label="min(abs(delta phi of all pairs))"),
+            "absdphi_min_afos" : axis.Regular(180, 0, 4, name="absdphi_min_afos",  label="min(abs(delta phi of OS pairs))"),
+            "absdphi_min_sfos" : axis.Regular(180, 0, 4, name="absdphi_min_sfos",  label="min(abs(delta phi of SFOS pairs))"),
             "mll_min_afas" : axis.Regular(180, 0, 150, name="mll_min_afas",  label="min mll of all pairs"),
             "mll_min_afos" : axis.Regular(180, 0, 150, name="mll_min_afos",  label="min mll of OF pairs"),
             "mll_min_sfos" : axis.Regular(180, 0, 150, name="mll_min_sfos",  label="min mll of SFOF pairs"),
@@ -117,7 +117,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             "cos_helicity_x" : axis.Regular(180, 0, 1, name="cos_helicity_x",  label="cos_helicity_x"),
 
             "mlb_min" : axis.Regular(180, 0, 300, name="mlb_min",  label="min mass(b+l)"),
-            "mlb_max" : axis.Regular(180, 0, 1000, name="mlb_max",  label="max mass(b+l)"),
+            "mlb_max" : axis.Regular(180, 0, 500, name="mlb_max",  label="max mass(b+l)"),
 
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
@@ -206,13 +206,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             sow_factDown       = -1
 
 
-        datasets = ["SingleMuon", "SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG","Muon"]
+        datasets = ["SingleMuon", "SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG"]
         for d in datasets:
-            if d in dataset:
-                if (d == "Muon") and (("SingleMuon" in dataset) or ("DoubleMuon" in dataset) or ("MuonEG" in dataset)):
-                    continue
-                else:
-                    dataset = dataset.split('_')[0]
+            if d in dataset: dataset = dataset.split('_')[0]
 
         # Initialize objects
         #met  = events.MET
@@ -221,8 +217,6 @@ class AnalysisProcessor(processor.ProcessorABC):
         mu   = events.Muon
         tau  = events.Tau
         jets = events.Jet
-        if ("2022" in year) and (not isData):
-            pileup = events.Pileup
 
         # An array of lenght events that is just 1 for each event
         # Probably there's a better way to do this, but we use this method elsewhere so I guess why not..
@@ -235,41 +229,30 @@ class AnalysisProcessor(processor.ProcessorABC):
             golden_json_path = topcoffea_path("data/goldenJsons/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt")
         elif year == "2018":
             golden_json_path = topcoffea_path("data/goldenJsons/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt")
-        elif year == "2022" or year == "2022EE":
-            golden_json_path = topcoffea_path("data/goldenJsons/Cert_Collisions2022_355100_362760_Golden.txt")
         else:
             raise ValueError(f"Error: Unknown year \"{year}\".")
         lumi_mask = LumiMask(golden_json_path)(events.run,events.luminosityBlock)
 
+
         ################### Lepton selection ####################
 
         # Do the object selection for the WWZ eleectrons
-        ele_presl_mask = os_ec.is_presel_wwz_ele(ele,year,tight=True)
-        if "2022" not in year:
-            ele["topmva"] = os_ec.get_topmva_score_ele(events, year)
-            ele["is_tight_lep_for_wwz"] = ((ele.topmva > get_tc_param("topmva_wp_t_e")) & ele_presl_mask)
-        else:
-            ele["is_tight_lep_for_wwz"] = (ele_presl_mask)
+        ele_presl_mask = os_ec.is_presel_wwz_ele(ele,tight=True)
+        ele["topmva"] = os_ec.get_topmva_score_ele(events, year)
+        ele["is_tight_lep_for_wwz"] = ((ele.topmva > get_tc_param("topmva_wp_t_e")) & ele_presl_mask)
 
         # Do the object selection for the WWZ muons
-        mu_presl_mask = os_ec.is_presel_wwz_mu(mu, year)
-        if "2022" not in year:
-            mu["topmva"] = os_ec.get_topmva_score_mu(events, year)
-            mu["is_tight_lep_for_wwz"] = ((mu.topmva > get_tc_param("topmva_wp_t_m")) & mu_presl_mask)
-        else:
-            mu["is_tight_lep_for_wwz"] = (mu_presl_mask)
+        mu_presl_mask = os_ec.is_presel_wwz_mu(mu)
+        mu["topmva"] = os_ec.get_topmva_score_mu(events, year)
+        mu["is_tight_lep_for_wwz"] = ((mu.topmva > get_tc_param("topmva_wp_t_m")) & mu_presl_mask)
 
         # Get tight leptons for WWZ selection
         ele_wwz_t = ele[ele.is_tight_lep_for_wwz]
         mu_wwz_t = mu[mu.is_tight_lep_for_wwz]
 
         # Attach the lepton SFs to the electron and muons collections
-        if "2022" in year:
-            cor_ec.run3_muons_sf_Attach(mu_wwz_t,year,"NUM_MediumID_DEN_TrackerMuons","NUM_TightPFIso_DEN_MediumID")
-            cor_ec.run3_electrons_sf_Attach(ele_wwz_t,year,"wp80iso")
-        else:
-            cor_ec.AttachElectronSF(ele_wwz_t,year=year)
-            cor_ec.AttachMuonSF(mu_wwz_t,year=year)
+        cor_ec.AttachElectronSF(ele_wwz_t,year=year)
+        cor_ec.AttachMuonSF(mu_wwz_t,year=year)
 
         l_wwz_t = ak.with_name(ak.concatenate([ele_wwz_t,mu_wwz_t],axis=1),'PtEtaPhiMCandidate')
         l_wwz_t = l_wwz_t[ak.argsort(l_wwz_t.pt, axis=-1,ascending=False)] # Sort by pt
@@ -336,13 +319,10 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Renorm/fact scale
             weights_obj_base.add('renorm', events.nom, events.renormUp*(sow/sow_renormUp), events.renormDown*(sow/sow_renormDown))
             weights_obj_base.add('fact', events.nom, events.factUp*(sow/sow_factUp), events.factDown*(sow/sow_factDown))
-            if "2022" not in year:
-                # Misc other experimental SFs and systs
-                weights_obj_base.add('PreFiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
-                weights_obj_base.add('PU', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
-            if "2022" in year:
-                cor_ec.run3_pu_Attach(pileup,year)
-                weights_obj_base.add("PU", pileup.pileup_corr, pileup.pileup_corr_hi, pileup.pileup_corr_lo)
+
+            # Misc other experimental SFs and systs
+            weights_obj_base.add('PreFiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
+            weights_obj_base.add('PU', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
 
             # Lepton SFs and systs
             weights_obj_base.add("lepSF_muon", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
@@ -352,11 +332,9 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Set up the list of systematics that are handled via event weight variations
         wgt_correction_syst_lst = [
             "btagSFlight_correlated", "btagSFbc_correlated", f"btagSFlight_uncorrelated_{year}", f"btagSFbc_uncorrelated_{year}",
-            "lepSF_elec", "lepSF_muon", "PU",
+            "lepSF_elec", "lepSF_muon", "PreFiring", "PU",
             "renorm", "fact", "ISR", "FSR",
         ]
-        if "2022" not in year:
-            wgt_correction_syst_lst = wgt_correction_syst_lst + ["PreFiring"]
         wgt_correction_syst_lst = append_up_down_to_sys_base(wgt_correction_syst_lst)
 
 
@@ -407,12 +385,6 @@ class AnalysisProcessor(processor.ProcessorABC):
             elif year=="2016APV":
                 btagwpl = get_tc_param(f"{btagger}_wp_loose_UL16APV")
                 btagwpm = get_tc_param(f"{btagger}_wp_medium_UL16APV")
-            elif year=="2022":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_2022")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_2022")
-            elif year=="2022EE":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_2022EE")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_2022EE")
             else:
                 raise ValueError(f"Error: Unknown year \"{year}\".")
 
@@ -432,7 +404,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             ######### Apply SFs #########
 
-            if (not isData):
+            if not isData:
 
                 ### Evaluate btag weights ###
                 jets_light = goodJets[goodJets.hadronFlavour==0]
@@ -442,17 +414,14 @@ class AnalysisProcessor(processor.ProcessorABC):
                 year_light = year
                 if year == "2016": year_light = "2016APV"
 
-                if "2022" not in year:
-                    btag_sf_light = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl","central")
-                if "2022" in year:
-                    btag_sf_light = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_light","central")
-                btag_sf_bc = cor_tc.btag_sf_eval(jets_bc,"L",year,"deepJet_comb","central")
+                btag_sf_light = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl","central")
+                btag_sf_bc    = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb","central")
 
                 btag_eff_light = cor_ec.btag_eff_eval(jets_light,"L",year)
                 btag_eff_bc = cor_ec.btag_eff_eval(jets_bc,"L",year)
 
-                wgt_light = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light,jets_light.btagDeepFlavB>btagwpl)
-                wgt_bc    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,btag_sf_bc,jets_bc.btagDeepFlavB>btagwpl)
+                wgt_light = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light, jets_light.btagDeepFlavB>btagwpl)
+                wgt_bc    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc,    jets_bc.btagDeepFlavB>btagwpl)
 
                 wgt_btag_nom = wgt_light*wgt_bc
                 weights_obj_base_for_kinematic_syst.add("btagSF", wgt_btag_nom)
@@ -995,3 +964,4 @@ class AnalysisProcessor(processor.ProcessorABC):
 
     def postprocess(self, accumulator):
         return accumulator
+
