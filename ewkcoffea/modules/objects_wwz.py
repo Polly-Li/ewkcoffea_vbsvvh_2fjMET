@@ -10,7 +10,7 @@ get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
 
 # Clean collection b (e.g. jets) with collection a (e.g. leps)
 def get_cleaned_collection(obj_collection_a,obj_collection_b,drcut=0.4):
-    obj_b_nearest_to_any_in_a , dr = obj_collection_b.nearest(obj_collection_a,return_metric=True)
+    obj_a_nearest_to_any_in_b , dr = obj_collection_b.nearest(obj_collection_a,return_metric=True)
     mask = ak.fill_none(dr>drcut,True)
     return obj_collection_b[mask]
 
@@ -23,13 +23,20 @@ def is_presel_wwz_ele(ele,year,tight):
         (abs(ele.eta)         <  get_ec_param("wwz_pres_e_eta")) &
         (abs(ele.dxy)         <  get_ec_param("wwz_pres_e_dxy")) &
         (abs(ele.dz)          <  get_ec_param("wwz_pres_e_dz")) &
+        (ele.miniPFRelIso_all < get_ec_param("wwz_pres_e_miniPFRelIso_all")) &
         (abs(ele.sip3d)       <  get_ec_param("wwz_pres_e_sip3d")) &
-        (ele.miniPFRelIso_all <  get_ec_param("wwz_pres_e_miniPFRelIso_all")) &
         (ele.lostHits         <= get_ec_param("wwz_pres_e_lostHits"))
     )
-    if tight: mask = (mask & ele.convVeto & (ele.tightCharge == get_ec_param("wwz_pres_e_tightCharge")))
-    if "2022" in year: mask = (mask & (ele.cutBased >= get_ec_param("Run3_pres_e_cutBased_med")))
-    return mask
+    mask_2022 = (
+        (ele.pt               >  10.0) &
+        (abs(ele.eta)         <  2.5) &
+        (abs(ele.dxy)         <  0.05) &
+        (abs(ele.dz)          <  0.1)
+    )
+    if ("2022" in year): mask_return = (mask_2022 & ele.mvaIso_WP80)
+    if ("2022" not in year): mask_return = mask
+    if tight: mask_return = (mask_return & ele.convVeto & (ele.tightCharge == get_ec_param("wwz_pres_e_tightCharge")))
+    return mask_return
 
 
 # WWZ preselection for muons
@@ -38,15 +45,22 @@ def is_presel_wwz_mu(mu,year):
         (mu.pt               >  get_ec_param("wwz_pres_m_pt")) &
         (abs(mu.eta)         <  get_ec_param("wwz_pres_m_eta")) &
         (abs(mu.dxy)         <  get_ec_param("wwz_pres_m_dxy")) &
+        (mu.miniPFRelIso_all < get_ec_param("wwz_pres_m_miniPFRelIso_all")) &
         (abs(mu.dz)          <  get_ec_param("wwz_pres_m_dz")) &
         (abs(mu.sip3d)       <  get_ec_param("wwz_pres_m_sip3d")) &
         (mu.mediumId)
     )
-    if "2022" not in year:
-        mask = (mask & (ele.miniPFRelIso_all <  get_ec_param("wwz_pres_e_miniPFRelIso_all")))
-    else:
-        mask = (mask & (mu.pfIsoId >=  get_ec_param("Run3_pres_m_pfIsoId_Tight")))
-    return mask
+    mask_2022 = (
+        (mu.pt               >  10.0) &
+        (abs(mu.eta)         <  2.4) &
+        (abs(mu.dxy)         <  0.05) &
+        (abs(mu.dz)          <  0.1) &
+        (mu.pfIsoId          >=  4) &
+        (mu.mediumId)
+    )
+    if ("2022" not in year): return_mask = mask
+    if ("2022" in year): return_mask = mask_2022
+    return return_mask
 
 
 # Get MVA score from TOP MVA for electrons
