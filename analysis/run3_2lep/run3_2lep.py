@@ -195,8 +195,8 @@ class AnalysisProcessor(processor.ProcessorABC):
         mu_Run3_2Lep_veto = mu_Run3_2Lep_veto[ak.argsort(mu_Run3_2Lep_veto.pt, axis=-1,ascending=False)] # Sort by pt
 
         #Attach the SF
-        ewk_corrections.run3_muons_sf_Attach(mu_Run3_2Lep_veto,year,"NUM_MediumID_DEN_TrackerMuons","NUM_TightPFIso_DEN_MediumID")
-        ewk_corrections.run3_electrons_sf_Attach(ele_Run3_2Lep_veto,year,"Medium")
+        ewk_corrections.run3_muons_sf_attach(mu_Run3_2Lep_veto,year,"NUM_MediumID_DEN_TrackerMuons","NUM_TightPFIso_DEN_MediumID")
+        ewk_corrections.run3_electrons_sf_attach(ele_Run3_2Lep_veto,year,"Medium")
 
         # Create a List of Leptons from the Muons and Electrons
         l_Run3_2Lep_veto = ak.with_name(ak.concatenate([ele_Run3_2Lep_veto,mu_Run3_2Lep_veto],axis=1),'PtEtaPhiMCandidate')
@@ -283,7 +283,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             events["jets_Run3_2Lep"] = jets_Run3_2Lep
             weights_obj_base_for_kinematics_syst = copy.deepcopy(weights_obj_base)
             if not isData:
-                ewk_corrections.run3_pu_Attach(pileup,year)
+                ewk_corrections.run3_pu_attach(pileup,year)
                 weights_obj_base_for_kinematics_syst.add("pu_corr", pileup.pileup_corr)
                 weights_obj_base_for_kinematics_syst.add("lepSF_muon", events.muon_sf)
                 weights_obj_base_for_kinematics_syst.add("lepSF_ele", events.ele_sf)
