@@ -134,7 +134,7 @@ def btag_eff_eval(jets,wp,year):
 
     return eff
 
-def run3_muons_sf_Attach(muons,year,id_method,iso_method):
+def run3_muons_sf_attach(muons,year,id_method,iso_method):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":
@@ -180,7 +180,7 @@ def run3_muons_sf_Attach(muons,year,id_method,iso_method):
     muons['sf_lo_elec']  = ak.ones_like(sf_nom)
 
 
-def run3_electrons_sf_Attach(electrons,year,wp):
+def run3_electrons_sf_attach(electrons,year,wp):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":
@@ -241,7 +241,7 @@ def run3_electrons_sf_Attach(electrons,year,wp):
     electrons['sf_hi_elec']  = hi
     electrons['sf_lo_elec']  = lo
 
-def run3_pu_Attach(pileup,year):
+def run3_pu_attach(pileup,year):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":
