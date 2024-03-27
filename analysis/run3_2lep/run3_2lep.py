@@ -11,7 +11,7 @@ from coffea.lumi_tools import LumiMask
 from topcoffea.modules.paths import topcoffea_path
 import topcoffea.modules.event_selection as es_tc
 from ewkcoffea.modules.paths import ewkcoffea_path as ewkcoffea_path
-import ewkcoffea.modules.selection_Run3_2Lep as selrun3_2lep
+import ewkcoffea.modules.selection_run3_2lep as selrun3_2lep
 import ewkcoffea.modules.corrections as ewk_corrections
 import ewkcoffea.modules.objects_wwz as objrun3_2lep
 from topcoffea.modules.get_param_from_jsons import GetParam
