@@ -139,3 +139,48 @@ def get_topmva_score_mu(events, year):
     counts = ak.num(mu.pt)
     score = ak.unflatten(score,counts)
     return score
+
+def is_veto_run3_2lep_ele(ele):
+    mask = (
+        (ele.pt                 >  get_ec_param("run3_2lep_pres_e_pt")) &
+        (abs(ele.eta)           <  get_ec_param("run3_2lep_pres_e_eta")) &
+        (ele.cutBased           >= get_ec_param("run3_2lep_pres_e_cutBasedID_veto")) &
+        (ele.convVeto)
+    )
+    return mask
+
+def is_tight_run3_2lep_ele(ele):
+    mask = (
+        (ele.pt                                >  get_ec_param("run3_2lep_pres_e_pt")) &
+        (abs(ele.eta)                          <  get_ec_param("run3_2lep_pres_e_eta")) &
+        (abs(ele.dxy)                          <  get_ec_param("run3_2lep_pres_e_dxy")) &
+        (abs(ele.dz)                           <  get_ec_param("run3_2lep_pres_e_dz")) &
+        (ele.cutBased                          >= get_ec_param("run3_2lep_pres_e_cutBasedID_med"))
+    )
+    return mask
+
+def is_veto_run3_2lep_mu(mu):
+    mask = (
+        (mu.pt               >  get_ec_param("run3_2lep_pres_m_pt")) &
+        (abs(mu.eta)         <  get_ec_param("run3_2lep_pres_m_eta")) &
+        (mu.looseId)
+    )
+    return mask
+
+def is_tight_run3_2lep_mu(mu):
+    mask = (
+        (mu.pt               >  get_ec_param("run3_2lep_pres_m_pt")) &
+        (abs(mu.eta)         <  get_ec_param("run3_2lep_pres_m_eta")) &
+        (abs(mu.dxy)         <  get_ec_param("run3_2lep_pres_m_dxy")) &
+        (abs(mu.dz)          <  get_ec_param("run3_2lep_pres_m_dz")) &
+        (mu.pfIsoId          >= get_ec_param("run3_2lep_pres_m_pfIsoId_Tight")) &
+        (mu.mediumId)
+    )
+    return mask
+
+def is_presel_run3_2lep_jets(jets):
+    mask = (
+        (jets.pt               >  get_ec_param("run3_2lep_pres_jets_pt")) &
+        (abs(jets.eta)         <  get_ec_param("run3_2lep_pres_jets_eta"))
+    )
+    return mask

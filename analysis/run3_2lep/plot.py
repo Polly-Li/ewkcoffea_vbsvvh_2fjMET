@@ -39,8 +39,9 @@ p.dump_plot(
     extraoptions={
         "no_overflow": True,
         "print_yield": True,
-        "yield_prec": 4,
+        "yield_prec": 5,
         "lumi_value": 35.1,
+        "nbins": 39,
         #"yaxis_log": True,
         "ratio_range": [0.5, 1.5],
     },

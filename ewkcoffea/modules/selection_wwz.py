@@ -57,6 +57,41 @@ dataset_dict = {
             "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
             "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ",
         ]
+    },
+
+    "2022" : {
+        "EGamma" : [
+            "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
+            "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL",
+            "Ele30_WPTight_Gsf",
+            "Ele32_WPTight_Gsf",
+            "Ele32_WPTight_Gsf_L1DoubleEG",
+            "Ele35_WPTight_Gsf",
+            "Ele115_CaloIdVT_GsfTrkIdT",
+            "DoubleEle25_CaloIdL_MW",
+        ],
+        "Muon" : [
+            "IsoMu24",
+            "IsoMu27",
+            "Mu50",
+            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
+            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8",
+        ],
+        "SingleMuon" : [
+            "IsoMu24",
+            "IsoMu27",
+            "Mu50",
+        ],
+        "DoubleMuon" : [
+            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
+            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8",
+        ],
+        "MuonEG" : [
+            "Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ",
+            "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL",
+            "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
+            "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ",
+        ]
     }
 
 }
@@ -148,6 +183,7 @@ def trg_matching(events,year):
 
     # The trigger for 2016 and 2016APV are the same
     if year == "2016APV": year = "2016"
+    if year == "2022EE": year = "2022"
 
     # Initialize return array to be True array with same shape as events
     ret_arr = ak.zeros_like(np.array(events.event), dtype=bool)
