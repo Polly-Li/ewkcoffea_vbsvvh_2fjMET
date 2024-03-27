@@ -54,6 +54,7 @@ dataset_dict = {
 
 # Note: The reason for era dependency in 2022 is the change from having a SingleMuon and DoubleMuon dataset to just a Muon dataset in era C
 # For Era C which has both, the events in (SingleMuon, DoubleMuon) and (Muon) are exclusive so we do not perform duplicate removal between these sets
+# For Era C, SingleMuon and DoubleMuon fall in the run ranges of [355800,357399] while Muon falls in [356400,357400] 
 exclude_dict = {
     "B": {
         "SingleMuon"     : [],

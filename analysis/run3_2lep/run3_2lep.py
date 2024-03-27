@@ -13,7 +13,7 @@ import topcoffea.modules.event_selection as es_tc
 from ewkcoffea.modules.paths import ewkcoffea_path as ewkcoffea_path
 import ewkcoffea.modules.selection_Run3_2Lep as selrun3_2lep
 import ewkcoffea.modules.corrections as ewk_corrections
-import ewkcoffea.modules.objects_Run3_2Lep as objrun3_2lep
+import ewkcoffea.modules.objects_wwz as objrun3_2lep
 from topcoffea.modules.get_param_from_jsons import GetParam
 get_tc_param = GetParam(topcoffea_path("params/params.json"))
 get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
@@ -234,9 +234,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         #################### Jet selection ######################
 
         # Do the object selection for the Run3 jets
-        jets_cleaned_mask = objrun3_2lep.get_cleaned_collection(l_run3_2lep_veto,jets)
-        jets["cleaned_jets"] = (jets_cleaned_mask)
-        jets_cleaned = jets[jets.cleaned_jets]
+        jets_cleaned= objrun3_2lep.get_cleaned_collection(l_run3_2lep_veto,jets)
 
         jets_presl_mask = objrun3_2lep.is_presel_run3_2lep_jets(jets_cleaned)
         jets_cleaned["is_jets_for_run3_2lep"] = (jets_presl_mask)

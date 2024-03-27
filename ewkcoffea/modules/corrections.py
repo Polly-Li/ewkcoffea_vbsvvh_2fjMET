@@ -213,6 +213,7 @@ def run3_electrons_sf_attach(electrons,year,wp):
     sf_flat_75 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","RecoAbove75",eta_flat,pt_flat_75)
 
     # Remove the unwanted Reco SF
+    # We assigned values in the correct pT range in order to obtain the SF. We now need to remove the unwanted SF based on the original pt_flat
     reco_sf_flat_20 = ak.where(pt_flat >= 20.0, 0, sf_flat_20)
     reco_sf_flat_2075 = ak.where(pt_flat < 20.0, 0, ak.where(pt_flat >= 75.0, 0, sf_flat_2075))
     reco_sf_flat_75 = ak.where(pt_flat < 75.0, 0, sf_flat_75)
