@@ -177,11 +177,6 @@ def run3_muons_sf_attach(muons,year,id_method,iso_method):
     sf_hi = ak.unflatten(sf_flat_hi,ak.num(muons.pt))
     sf_lo = ak.unflatten(sf_flat_lo,ak.num(muons.pt))
 
-    print("original: ",muons.pt)
-    print("flattened: ", pt_flat)
-    print("sf flat: ", sf_flat_nom)
-    print("sf unflattened: ", sf_nom)
-
     muons['sf_nom_muon'] = sf_nom
     muons['sf_hi_muon']  = sf_hi
     muons['sf_lo_muon']  = sf_lo
