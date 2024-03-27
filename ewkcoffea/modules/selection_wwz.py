@@ -151,24 +151,6 @@ trgs_for_matching = {
             "trg_lst" : ["Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ"],
             "offline_thresholds" : [25.0,10.0],
         },
-    },
-    "2022" : {
-        "m_m" : {
-            "trg_lst" : dataset_dict["2022"]["Muon"],
-            "offline_thresholds" : [20.0,10.0],
-        },
-        "e_e" : {
-            "trg_lst" : dataset_dict["2022"]["EGamma"],
-            "offline_thresholds" : [25.0,15.0],
-        },
-        "m_e" : {
-            "trg_lst" : dataset_dict["2022"]["MuonEG"],
-            "offline_thresholds" : [25.0,15.0],
-        },
-        "e_m" : {
-            "trg_lst" : dataset_dict["2022"]["MuonEG"],
-            "offline_thresholds" : [25.0,10.0],
-        },
     }
 }
 
@@ -192,13 +174,6 @@ exclude_dict = {
         "DoubleMuon"     : [],
         "EGamma"         : dataset_dict["2018"]["DoubleMuon"],
         "MuonEG"         : dataset_dict["2018"]["DoubleMuon"] + dataset_dict["2018"]["EGamma"],
-    },
-    "2022": {
-        "Muon"           : [],
-        "EGamma"         : dataset_dict["2022"]["Muon"],
-        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
-        "SingleMuon"     : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"] + dataset_dict["2022"]["MuonEG"],
-        "DoubleMuon"     : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"] + dataset_dict["2022"]["MuonEG"] + dataset_dict["2022"]["SingleMuon"],
     },
 }
 

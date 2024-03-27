@@ -144,33 +144,43 @@ def run3_muons_sf_attach(muons,year,id_method,iso_method):
     else:
         raise Exception("Trying to apply run3 SF where they shouldn't be!")
 
-    # Flatten the input (until correctionlib handles jagged data natively)
+    # Flatten the input
     abseta_flat = ak.flatten(abs(muons.eta))
     pt_flat = ak.flatten(muons.pt)
 
-    # For now, cap all pt at 199.9 and min of 15.0 (limits for this particular json)
+    # For now, cap all pt at 199.9 and min of 15.0 TODO: Update so that we have all pt ranges
     pt_flat = ak.where(pt_flat>199.9,199.9,pt_flat)
     pt_flat = ak.where(pt_flat<15.0,15.0,pt_flat)
 
-    # Evaluate the SF
+    # Evaluate the ID SF
     ceval = correctionlib.CorrectionSet.from_file(fname)
     sf_id_flat_nom = ceval[id_method].evaluate(abseta_flat,pt_flat,"nominal")
     sf_id_flat_syst = ceval[id_method].evaluate(abseta_flat,pt_flat,"syst")
+    # Finding the syst uncertaintities 
     sf_id_flat_hi = sf_id_flat_nom + sf_id_flat_syst
     sf_id_flat_lo = sf_id_flat_nom - sf_id_flat_syst
 
+    # Evaluate the Iso SF
     sf_iso_flat_nom = ceval[iso_method].evaluate(abseta_flat,pt_flat,"nominal")
     sf_iso_flat_syst = ceval[iso_method].evaluate(abseta_flat,pt_flat,"syst")
+    # Finding the syst uncertaintities 
     sf_iso_flat_hi = sf_iso_flat_nom + sf_iso_flat_syst
     sf_iso_flat_lo = sf_iso_flat_nom - sf_iso_flat_syst
 
+    # Getting the overall SF (ID * Iso)
     sf_flat_nom = sf_id_flat_nom * sf_iso_flat_nom
     sf_flat_hi = sf_id_flat_hi * sf_iso_flat_hi
     sf_flat_lo = sf_id_flat_lo * sf_iso_flat_lo
 
+    # Unflatten to match the original structure
     sf_nom = ak.unflatten(sf_flat_nom,ak.num(muons.pt))
     sf_hi = ak.unflatten(sf_flat_hi,ak.num(muons.pt))
     sf_lo = ak.unflatten(sf_flat_lo,ak.num(muons.pt))
+
+    print("original: ",muons.pt)
+    print("flattened: ", pt_flat)
+    print("sf flat: ", sf_flat_nom)
+    print("sf unflattened: ", sf_nom)
 
     muons['sf_nom_muon'] = sf_nom
     muons['sf_hi_muon']  = sf_hi
@@ -184,55 +194,47 @@ def run3_electrons_sf_attach(electrons,year,wp):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":
-        n_year = "2022Re-recoE+PromptFG" #key for accessing the 2022EE SFs
+        n_year = "2022Re-recoE+PromptFG" # key for accessing the 2022EE SFs
         fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2022EE_ele/electron.json")
     elif year == "2022":
-        n_year = "2022Re-recoBCD" #key for accessing the 2022 SFs
+        n_year = "2022Re-recoBCD" # key for accessing the 2022 SFs
         fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2022_ele/electron.json")
     else:
         raise Exception("Trying to apply run3 SF where they shouldn't be!")
 
-    # Flatten the input (until correctionlib handles jagged data natively)
+    # Flatten the input 
     eta_flat = ak.flatten(electrons.eta)
     pt_flat = ak.flatten(electrons.pt)
     ceval = correctionlib.CorrectionSet.from_file(fname)
 
-    # Make flat pT for the different pt regions
+    # Create three pT regions (based on the json pT regions for the working points)
     pt_flat_20 = ak.where(pt_flat >= 20.0,19.9,pt_flat)
     pt_flat_2075 = ak.where(pt_flat < 20.0, 20.0, ak.where(pt_flat >= 75.0, 74.9, pt_flat))
     pt_flat_75 = ak.where(pt_flat < 75.0, 75.0,pt_flat)
-    #Flat lists with zeros (to multiply later)
-    wp_selector_20 = ak.where(pt_flat >= 20.0, 0, pt_flat)
-    wp_selector_2075 = ak.where(pt_flat < 20.0, 0, ak.where(pt_flat >= 75.0, 0, pt_flat))
-    wp_selector_75 = ak.where(pt_flat < 75.0, 0, pt_flat)
 
-    wp_selector_20_z = ak.where(wp_selector_20 != 0, 1, wp_selector_20)
-    wp_selector_2075_z = ak.where(wp_selector_2075 != 0, 1, wp_selector_2075)
-    wp_selector_75_z = ak.where(wp_selector_75 != 0, 1, wp_selector_75)
-
-    #Get the appropriate SF
+    #Get the Reco SF for all three region lists
     sf_flat_20 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","RecoBelow20",eta_flat,pt_flat_20)
     sf_flat_2075 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","Reco20to75",eta_flat,pt_flat_2075)
     sf_flat_75 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","RecoAbove75",eta_flat,pt_flat_75)
 
-    #Mutiply the sf by their respective zero lists (gets rid of unwanted values)
-    sf_flat_20_z = sf_flat_20 * wp_selector_20_z
-    sf_flat_2075_z = sf_flat_2075 * wp_selector_2075_z
-    sf_flat_75_z = sf_flat_75 * wp_selector_75_z
+    # Remove the unwanted Reco SF
+    reco_sf_flat_20 = ak.where(pt_flat >= 20.0, 0, sf_flat_20)
+    reco_sf_flat_2075 = ak.where(pt_flat < 20.0, 0, ak.where(pt_flat >= 75.0, 0, sf_flat_2075))
+    reco_sf_flat_75 = ak.where(pt_flat < 75.0, 0, sf_flat_75)
 
     #Add up the sf lists
-    sf_reco = sf_flat_20_z + sf_flat_2075_z + sf_flat_75_z
+    sf_reco = reco_sf_flat_20 + reco_sf_flat_2075 + reco_sf_flat_75
 
-    # Evaluate the SF
-    sf_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sf",wp,eta_flat,pt_flat)
-    hi_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sfup",wp,eta_flat,pt_flat)
-    lo_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown",wp,eta_flat,pt_flat)
+    # Evaluate the ID SF
+    sf_id_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sf",wp,eta_flat,pt_flat)
+    hi_id_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sfup",wp,eta_flat,pt_flat)
+    lo_id_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown",wp,eta_flat,pt_flat)
 
-    sf_return = sf_flat * sf_reco
+    sf_return = sf_id_flat * sf_reco
 
     sf = ak.unflatten(sf_return,ak.num(electrons.pt))
-    hi = ak.unflatten(hi_flat,ak.num(electrons.pt))
-    lo = ak.unflatten(lo_flat,ak.num(electrons.pt))
+    hi = ak.unflatten(hi_id_flat,ak.num(electrons.pt))
+    lo = ak.unflatten(lo_id_flat,ak.num(electrons.pt))
 
     electrons['sf_nom_muon'] = ak.ones_like(sf)
     electrons['sf_hi_muon']  = ak.ones_like(sf)

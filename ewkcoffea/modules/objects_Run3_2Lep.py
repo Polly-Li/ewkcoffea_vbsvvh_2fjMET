@@ -8,7 +8,7 @@ def get_cleaned_collection(obj_collection_a,obj_collection_b,drcut=0.4):
     mask = ak.fill_none(dr>drcut,True)
     return mask
 
-def is_veto_Run3_2Lep_ele(ele):
+def is_veto_run3_2lep_ele(ele):
     mask = (
         (ele.pt                 >  get_param("run3_2lep_pres_e_pt")) &
         (abs(ele.eta)           <  get_param("run3_2lep_pres_e_eta")) &
@@ -17,7 +17,7 @@ def is_veto_Run3_2Lep_ele(ele):
     )
     return mask
 
-def is_tight_Run3_2Lep_ele(ele):
+def is_tight_run3_2lep_ele(ele):
     mask = (
         (ele.pt                                >  get_param("run3_2lep_pres_e_pt")) &
         (abs(ele.eta)                          <  get_param("run3_2lep_pres_e_eta")) &
@@ -27,7 +27,7 @@ def is_tight_Run3_2Lep_ele(ele):
     )
     return mask
 
-def is_veto_Run3_2Lep_mu(mu):
+def is_veto_run3_2lep_mu(mu):
     mask = (
         (mu.pt               >  get_param("run3_2lep_pres_m_pt")) &
         (abs(mu.eta)         <  get_param("run3_2lep_pres_m_eta")) &
@@ -35,7 +35,7 @@ def is_veto_Run3_2Lep_mu(mu):
     )
     return mask
 
-def is_tight_Run3_2Lep_mu(mu):
+def is_tight_run3_2lep_mu(mu):
     mask = (
         (mu.pt               >  get_param("run3_2lep_pres_m_pt")) &
         (abs(mu.eta)         <  get_param("run3_2lep_pres_m_eta")) &
@@ -46,7 +46,7 @@ def is_tight_Run3_2Lep_mu(mu):
     )
     return mask
 
-def is_presel_Run3_2Lep_jets(jets):
+def is_presel_run3_2lep_jets(jets):
     mask = (
         (jets.pt               >  get_param("run3_2lep_pres_jets_pt")) &
         (abs(jets.eta)         <  get_param("run3_2lep_pres_jets_eta"))

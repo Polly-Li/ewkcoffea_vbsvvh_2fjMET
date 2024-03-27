@@ -51,6 +51,9 @@ dataset_dict = {
 #   - No unique way to do this
 #   - Note: In order for this to work properly, you should be processing all of the datastes to be used in the analysis
 #   - Otherwise, you may be removing events that show up in other datasets you're not using
+
+# Note: The reason for era dependency in 2022 is the change from having a SingleMuon and DoubleMuon dataset to just a Muon dataset in era C
+# For Era C which has both, the events in (SingleMuon, DoubleMuon) and (Muon) are exclusive so we do not perform duplicate removal between these sets
 exclude_dict = {
     "B": {
         "SingleMuon"     : [],
@@ -89,14 +92,15 @@ exclude_dict = {
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # 2Lep Selection
-def add2lmask_Run3_2Lep(events, year, isData):
+def add2lmask_run3_2lep(events, year, isData):
 
     # Leptons and padded leptons
-    leps = events.l_Run3_2Lep_veto
+    leps = events.l_run3_2lep_veto
     leps_padded = ak.pad_none(leps,2)
 
     # Filters
     filter_flags = events.Flag
+    # Filters are from AN SMP-24-001
     filters = filter_flags.goodVertices & filter_flags.globalSuperTightHalo2016Filter & filter_flags.EcalDeadCellTriggerPrimitiveFilter & filter_flags.BadPFMuonFilter & filter_flags.ecalBadCalibFilter & filter_flags.BadPFMuonDzFilter & filter_flags.hfNoisyHitsFilter & filter_flags.eeBadScFilter
 
     # Lep multiplicity
@@ -110,8 +114,7 @@ def add2lmask_Run3_2Lep(events, year, isData):
 
 #------------------------------------------------------------------------------------------------------------------------------
 # Do Run3 2Lep pre selection, construct event level mask
-# Convenience function around get_Run3_2Lep_candidates() and get_z_candidate_mask()
-def attach_Run3_2Lep_preselection_mask(events,lep_collection):
+def attach_run3_2lep_preselection_mask(events,lep_collection):
 
     # Pt requirements (assumes lep_collection is pt sorted and padded)
     pt_mask = ak.fill_none((lep_collection[:,0].pt > 25.0),False)
@@ -131,18 +134,18 @@ def attach_Run3_2Lep_preselection_mask(events,lep_collection):
     mumu_mask = ak.fill_none(mumu_mask,False) # Replace the None with False in the mask just to make it easier to think about
 
     # mLL masks
-    z_mass_mask = ak.any((abs(((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) - 91.2) < 15.0),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
+    z_mass_mask = ak.any((abs(((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) - get_ec_param("zmass")) < 15.0),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
     z_mass_mask = ak.fill_none(z_mass_mask,False) # Replace the None with False in the mask just to make it easier to think about
 
     of_mass_mask = ak.any((((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) > 20.0),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
     of_mass_mask = ak.fill_none(of_mass_mask,False) # Replace the None with False in the mask just to make it easier to think about
 
     # The final preselection mask
-    Run3_2Lep_presel_mask = (os_mask & pt_mask)
+    run3_2lep_presel_mask = (os_mask & pt_mask)
 
     # Attach to the lepton objects
-    events["Run3_2Lep_presel_sf_ee"] = (Run3_2Lep_presel_mask & sf_mask & ee_mask & z_mass_mask)
-    events["Run3_2Lep_presel_sf_mumu"] = (Run3_2Lep_presel_mask & sf_mask & mumu_mask & z_mass_mask)
-    events["Run3_2Lep_presel_of"] = (Run3_2Lep_presel_mask & of_mask & of_mass_mask)
+    events["run3_2lep_presel_sf_ee"] = (run3_2lep_presel_mask & sf_mask & ee_mask & z_mass_mask)
+    events["run3_2lep_presel_sf_mumu"] = (run3_2lep_presel_mask & sf_mask & mumu_mask & z_mass_mask)
+    events["run3_2lep_presel_of"] = (run3_2lep_presel_mask & of_mask & of_mass_mask)
 
 
