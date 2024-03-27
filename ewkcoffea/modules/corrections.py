@@ -156,14 +156,14 @@ def run3_muons_sf_attach(muons,year,id_method,iso_method):
     ceval = correctionlib.CorrectionSet.from_file(fname)
     sf_id_flat_nom = ceval[id_method].evaluate(abseta_flat,pt_flat,"nominal")
     sf_id_flat_syst = ceval[id_method].evaluate(abseta_flat,pt_flat,"syst")
-    # Finding the syst uncertaintities 
+    # Finding the syst uncertaintities
     sf_id_flat_hi = sf_id_flat_nom + sf_id_flat_syst
     sf_id_flat_lo = sf_id_flat_nom - sf_id_flat_syst
 
     # Evaluate the Iso SF
     sf_iso_flat_nom = ceval[iso_method].evaluate(abseta_flat,pt_flat,"nominal")
     sf_iso_flat_syst = ceval[iso_method].evaluate(abseta_flat,pt_flat,"syst")
-    # Finding the syst uncertaintities 
+    # Finding the syst uncertaintities
     sf_iso_flat_hi = sf_iso_flat_nom + sf_iso_flat_syst
     sf_iso_flat_lo = sf_iso_flat_nom - sf_iso_flat_syst
 
@@ -202,7 +202,7 @@ def run3_electrons_sf_attach(electrons,year,wp):
     else:
         raise Exception("Trying to apply run3 SF where they shouldn't be!")
 
-    # Flatten the input 
+    # Flatten the input
     eta_flat = ak.flatten(electrons.eta)
     pt_flat = ak.flatten(electrons.pt)
     ceval = correctionlib.CorrectionSet.from_file(fname)
