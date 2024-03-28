@@ -68,6 +68,7 @@ dataset_dict = {
             "Ele32_WPTight_Gsf_L1DoubleEG",
             "Ele35_WPTight_Gsf",
             "Ele115_CaloIdVT_GsfTrkIdT",
+            "DoublePhoton70",
             "DoubleEle25_CaloIdL_MW",
         ],
         "Muon" : [
@@ -151,24 +152,6 @@ trgs_for_matching = {
             "trg_lst" : ["Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ"],
             "offline_thresholds" : [25.0,10.0],
         },
-    },
-    "2022" : {
-        "m_m" : {
-            "trg_lst" : ["Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8"],
-            "offline_thresholds" : [20.0,10.0],
-        },
-        "e_e" : {
-            "trg_lst" : dataset_dict["2018"]["EGamma"],
-            "offline_thresholds" : [25.0,15.0],
-        },
-        "m_e" : {
-            "trg_lst" : ["Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ"],
-            "offline_thresholds" : [25.0,15.0],
-        },
-        "e_m" : {
-            "trg_lst" : ["Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ"],
-            "offline_thresholds" : [25.0,10.0],
-        },
     }
 }
 
@@ -193,13 +176,39 @@ exclude_dict = {
         "EGamma"         : dataset_dict["2018"]["DoubleMuon"],
         "MuonEG"         : dataset_dict["2018"]["DoubleMuon"] + dataset_dict["2018"]["EGamma"],
     },
-    "2022": {
-        "Muon"           : [],
-        "DoubleMuon"     : dataset_dict["2022"]["Muon"],
-        "SingleMuon"     : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"],
+    "B": {
+        "SingleMuon"     : [], 
+        "DoubleMuon"     : dataset_dict["2022"]["SingleMuon"],
+        "EGamma"         : dataset_dict["2022"]["SingleMuon"] + dataset_dict["2022"]["DoubleMuon"],
+        "MuonEG"         : dataset_dict["2022"]["SingleMuon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["EGamma"],
+    },  
+    "C": {
+        "Muon"           : [], 
+        "SingleMuon"     : [], 
+        "DoubleMuon"     : dataset_dict["2022"]["SingleMuon"],
         "EGamma"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["SingleMuon"],
-        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["SingleMuon"] + dataset_dict["2022"]["EGamma"],
-    },
+        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["SingleMuon"] + da
+    },  
+    "D": {
+        "Muon"     : [], 
+        "EGamma"         : dataset_dict["2022"]["Muon"],
+        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
+    },  
+    "E": {
+        "Muon"     : [], 
+        "EGamma"         : dataset_dict["2022"]["Muon"],
+        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
+    },  
+    "F": {
+        "Muon"     : [], 
+        "EGamma"         : dataset_dict["2022"]["Muon"],
+        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
+    },  
+    "G": {
+        "Muon"     : [], 
+        "EGamma"         : dataset_dict["2022"]["Muon"],
+        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
+    }, 
 }
 
 
@@ -208,7 +217,6 @@ def trg_matching(events,year):
 
     # The trigger for 2016 and 2016APV are the same
     if year == "2016APV": year = "2016"
-    if year == "2022EE": year = "2022"
 
     # Initialize return array to be True array with same shape as events
     ret_arr = ak.zeros_like(np.array(events.event), dtype=bool)
@@ -252,6 +260,7 @@ def add4lmask_wwz(events, year, isData, sample_name):
 
     # Filters
     filter_flags = events.Flag
+    # TODO: Should we have a different list of filters for Run3? Filter effect seems to be quite small
     filters = filter_flags.goodVertices & filter_flags.globalSuperTightHalo2016Filter & filter_flags.HBHENoiseFilter & filter_flags.HBHENoiseIsoFilter & filter_flags.EcalDeadCellTriggerPrimitiveFilter & filter_flags.BadPFMuonFilter & (((year == "2016")|(year == "2016APV")) | filter_flags.ecalBadCalibFilter) & (isData | filter_flags.eeBadScFilter)
 
     # Lep multiplicity

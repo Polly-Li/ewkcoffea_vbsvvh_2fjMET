@@ -176,6 +176,8 @@ class AnalysisProcessor(processor.ProcessorABC):
         year               = self._samples[dataset]["year"]
         xsec               = self._samples[dataset]["xsec"]
         sow                = self._samples[dataset]["nSumOfWeights"]
+        if isData and ("2022" in year):
+            era = self._samples[dataset]["era"]
 
         # Get up down weights from input dict
         if (self._do_systematics and not isData):
@@ -383,6 +385,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Selecting jets and cleaning them
             jetptname = "pt_nom" if hasattr(cleanedJets, "pt_nom") else "pt"
+            # TODO: Check there are no Run3 issues with this
             cleanedJets["is_good"] = os_tc.is_tight_jet(getattr(cleanedJets, jetptname), cleanedJets.eta, cleanedJets.jetId, pt_cut=20., eta_cut=get_ec_param("wwz_eta_j_cut"), id_cut=get_ec_param("wwz_jet_id_cut"))
             goodJets = cleanedJets[cleanedJets.is_good]
 
@@ -481,8 +484,12 @@ class AnalysisProcessor(processor.ProcessorABC):
             ######### Masks we need for the selection ##########
 
             # Pass trigger mask
-            pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict)
-            pass_trg = (pass_trg & es_ec.trg_matching(events,year))
+            if isData and ("2022" in year):
+                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=str(era))
+            else:
+                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict)
+            if "2022" not in year:
+                pass_trg = (pass_trg & es_ec.trg_matching(events,year))
 
             # b jet masks
             bmask_atleast1med_atleast2loose = ((nbtagsm>=1)&(nbtagsl>=2)) # Used for 2lss and 4l
@@ -673,71 +680,72 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             ######### Evaluate all four BDTs (WWZ and ZH for SF and OF) #########
 
-            # Get BDT values
-            bdt_vars = [
-                ak.fill_none(mll_wl0_wl1,-9999),
-                ak.fill_none(absdphi_4l_met,-9999),
-                ak.fill_none(absdphi_zleps_met,-9999),
-                ak.fill_none(absdphi_wleps_met,-9999),
-                ak.fill_none(dr_wl0_wl1,-9999),
-                ak.fill_none(dr_zl0_zl1,-9999),
-                ak.fill_none(dr_wleps_zleps,-9999),
-                ak.fill_none(met.pt,-9999),
-                ak.fill_none(mt2_val,-9999),
-                ak.fill_none(ptl4,-9999),
-                ak.fill_none(scalarptsum_lepmet,-9999),
-                ak.fill_none(scalarptsum_lepmetjet,-9999),
-                ak.fill_none(z_lep0.pt,-9999),
-                ak.fill_none(z_lep1.pt,-9999),
-                ak.fill_none(w_lep0.pt,-9999),
-                ak.fill_none(w_lep1.pt,-9999),
-            ]
-
-
-            # Get the list of variables for the BDTs (and fill None with -9999 to not cause problems), and eval
-            bdt_vars_sf_wwz = fill_none_in_list(get_ec_param("sf_wwz_bdt_var_lst"),dense_variables_dict,-9999)
-            bdt_vars_sf_zh  = fill_none_in_list(get_ec_param("sf_zh_bdt_var_lst"),dense_variables_dict,-9999)
-            bdt_vars_of_wwz = fill_none_in_list(get_ec_param("of_wwz_bdt_var_lst"),dense_variables_dict,-9999)
-            bdt_vars_of_zh  = fill_none_in_list(get_ec_param("of_zh_bdt_var_lst"),dense_variables_dict,-9999)
-            bdt_sf_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars_sf_wwz,ewkcoffea_path("data/wwz_zh_bdt/sf_WWZ.json"))
-            bdt_sf_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars_sf_zh, ewkcoffea_path("data/wwz_zh_bdt/sf_ZH.json"))
-            bdt_of_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars_of_wwz,ewkcoffea_path("data/wwz_zh_bdt/of_WWZ.json"))
-            bdt_of_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars_of_zh, ewkcoffea_path("data/wwz_zh_bdt/of_ZH.json"))
-            # Match TMVA's scaling https://root.cern.ch/doc/v606/MethodBDT_8cxx_source.html
-            bdt_sf_wwz = (2.0*((1.0+math.e**(-2*bdt_sf_wwz_raw))**(-1))) - 1.0
-            bdt_sf_zh  = (2.0*((1.0+math.e**(-2*bdt_sf_zh_raw))**(-1))) - 1.0
-            bdt_of_wwz = (2.0*((1.0+math.e**(-2*bdt_of_wwz_raw))**(-1))) - 1.0
-            bdt_of_zh  = (2.0*((1.0+math.e**(-2*bdt_of_zh_raw))**(-1))) - 1.0
-
-            ### BDT SRs ###
-            # SF BDT SRs
-            bdt_sf_1 = ((bdt_sf_wwz > 0.8) & (bdt_sf_zh < -0.6))
-            bdt_sf_2 = ((bdt_sf_wwz >= 0.6) & (bdt_sf_wwz <= 0.8) & (bdt_sf_zh < -0.6))
-            bdt_sf_3 = ((bdt_sf_wwz > 0.8) & (bdt_sf_zh > 0.9))
-            bdt_sf_4 = ((bdt_sf_wwz >= 0.5) & (bdt_sf_wwz <= 0.8) & (bdt_sf_zh > 0.9))
-            bdt_sf_5 = ((bdt_sf_wwz >= 0.0) & (bdt_sf_wwz < 0.6) & (bdt_sf_zh < -0.8))
-            bdt_sf_1or2or3or4or5 = (bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4 | bdt_sf_5)
-            bdt_sf_6 = ((bdt_sf_wwz > 0.0) & ~(bdt_sf_1or2or3or4or5) & (bdt_sf_zh > -0.8))
-            bdt_sf_7 = (bdt_sf_wwz < 0.0)
-            # SF BDT SRs
-            bdt_of_1 = ((bdt_of_wwz > 0.8) & (bdt_of_zh < -0.6))
-            bdt_of_2 = ((bdt_of_wwz >= 0.5) & (bdt_of_wwz <= 0.8) & (bdt_of_zh < -0.6))
-            bdt_of_3 = ((bdt_of_wwz > 0.6) & (bdt_of_zh > 0.8))
-            bdt_of_4 = ((bdt_of_wwz >= 0.2) & (bdt_of_wwz <= 0.6) & (bdt_of_zh > 0.8))
-            bdt_of_5 = ((bdt_of_wwz > 0.0) & ~bdt_of_1 & ~bdt_of_2 & (bdt_of_zh < 0.0))
-            bdt_of_6 = ((bdt_of_wwz >= -0.4) & (bdt_of_wwz < 0) & (bdt_of_zh < -0.8))
-            bdt_of_7 = (~bdt_of_3 & ~bdt_of_4 & (bdt_of_zh > 0))
-            bdt_of_8 = ((bdt_of_wwz < 0) & ~bdt_of_6 & (bdt_of_zh < 0.0))
-
-            # Put the bdt variables into the dict of variables too
-            dense_variables_dict["bdt_of_wwz_raw"] = bdt_of_wwz_raw
-            dense_variables_dict["bdt_sf_wwz_raw"] = bdt_sf_wwz_raw
-            dense_variables_dict["bdt_of_zh_raw"]  = bdt_of_zh_raw
-            dense_variables_dict["bdt_sf_zh_raw"]  = bdt_sf_zh_raw
-            dense_variables_dict["bdt_of_wwz"]     = bdt_of_wwz
-            dense_variables_dict["bdt_sf_wwz"]     = bdt_sf_wwz
-            dense_variables_dict["bdt_of_zh"]      = bdt_of_zh
-            dense_variables_dict["bdt_sf_zh"]      = bdt_sf_zh
+            if "2022" not in year:
+                # Get BDT values
+                bdt_vars = [
+                    ak.fill_none(mll_wl0_wl1,-9999),
+                    ak.fill_none(absdphi_4l_met,-9999),
+                    ak.fill_none(absdphi_zleps_met,-9999),
+                    ak.fill_none(absdphi_wleps_met,-9999),
+                    ak.fill_none(dr_wl0_wl1,-9999),
+                    ak.fill_none(dr_zl0_zl1,-9999),
+                    ak.fill_none(dr_wleps_zleps,-9999),
+                    ak.fill_none(met.pt,-9999),
+                    ak.fill_none(mt2_val,-9999),
+                    ak.fill_none(ptl4,-9999),
+                    ak.fill_none(scalarptsum_lepmet,-9999),
+                    ak.fill_none(scalarptsum_lepmetjet,-9999),
+                    ak.fill_none(z_lep0.pt,-9999),
+                    ak.fill_none(z_lep1.pt,-9999),
+                    ak.fill_none(w_lep0.pt,-9999),
+                    ak.fill_none(w_lep1.pt,-9999),
+                ]
+    
+    
+                # Get the list of variables for the BDTs (and fill None with -9999 to not cause problems), and eval
+                bdt_vars_sf_wwz = fill_none_in_list(get_ec_param("sf_wwz_bdt_var_lst"),dense_variables_dict,-9999)
+                bdt_vars_sf_zh  = fill_none_in_list(get_ec_param("sf_zh_bdt_var_lst"),dense_variables_dict,-9999)
+                bdt_vars_of_wwz = fill_none_in_list(get_ec_param("of_wwz_bdt_var_lst"),dense_variables_dict,-9999)
+                bdt_vars_of_zh  = fill_none_in_list(get_ec_param("of_zh_bdt_var_lst"),dense_variables_dict,-9999)
+                bdt_sf_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars_sf_wwz,ewkcoffea_path("data/wwz_zh_bdt/sf_WWZ.json"))
+                bdt_sf_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars_sf_zh, ewkcoffea_path("data/wwz_zh_bdt/sf_ZH.json"))
+                bdt_of_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars_of_wwz,ewkcoffea_path("data/wwz_zh_bdt/of_WWZ.json"))
+                bdt_of_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars_of_zh, ewkcoffea_path("data/wwz_zh_bdt/of_ZH.json"))
+                # Match TMVA's scaling https://root.cern.ch/doc/v606/MethodBDT_8cxx_source.html
+                bdt_sf_wwz = (2.0*((1.0+math.e**(-2*bdt_sf_wwz_raw))**(-1))) - 1.0
+                bdt_sf_zh  = (2.0*((1.0+math.e**(-2*bdt_sf_zh_raw))**(-1))) - 1.0
+                bdt_of_wwz = (2.0*((1.0+math.e**(-2*bdt_of_wwz_raw))**(-1))) - 1.0
+                bdt_of_zh  = (2.0*((1.0+math.e**(-2*bdt_of_zh_raw))**(-1))) - 1.0
+    
+                ### BDT SRs ###
+                # SF BDT SRs
+                bdt_sf_1 = ((bdt_sf_wwz > 0.8) & (bdt_sf_zh < -0.6))
+                bdt_sf_2 = ((bdt_sf_wwz >= 0.6) & (bdt_sf_wwz <= 0.8) & (bdt_sf_zh < -0.6))
+                bdt_sf_3 = ((bdt_sf_wwz > 0.8) & (bdt_sf_zh > 0.9))
+                bdt_sf_4 = ((bdt_sf_wwz >= 0.5) & (bdt_sf_wwz <= 0.8) & (bdt_sf_zh > 0.9))
+                bdt_sf_5 = ((bdt_sf_wwz >= 0.0) & (bdt_sf_wwz < 0.6) & (bdt_sf_zh < -0.8))
+                bdt_sf_1or2or3or4or5 = (bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4 | bdt_sf_5)
+                bdt_sf_6 = ((bdt_sf_wwz > 0.0) & ~(bdt_sf_1or2or3or4or5) & (bdt_sf_zh > -0.8))
+                bdt_sf_7 = (bdt_sf_wwz < 0.0)
+                # SF BDT SRs
+                bdt_of_1 = ((bdt_of_wwz > 0.8) & (bdt_of_zh < -0.6))
+                bdt_of_2 = ((bdt_of_wwz >= 0.5) & (bdt_of_wwz <= 0.8) & (bdt_of_zh < -0.6))
+                bdt_of_3 = ((bdt_of_wwz > 0.6) & (bdt_of_zh > 0.8))
+                bdt_of_4 = ((bdt_of_wwz >= 0.2) & (bdt_of_wwz <= 0.6) & (bdt_of_zh > 0.8))
+                bdt_of_5 = ((bdt_of_wwz > 0.0) & ~bdt_of_1 & ~bdt_of_2 & (bdt_of_zh < 0.0))
+                bdt_of_6 = ((bdt_of_wwz >= -0.4) & (bdt_of_wwz < 0) & (bdt_of_zh < -0.8))
+                bdt_of_7 = (~bdt_of_3 & ~bdt_of_4 & (bdt_of_zh > 0))
+                bdt_of_8 = ((bdt_of_wwz < 0) & ~bdt_of_6 & (bdt_of_zh < 0.0))
+    
+                # Put the bdt variables into the dict of variables too
+                dense_variables_dict["bdt_of_wwz_raw"] = bdt_of_wwz_raw
+                dense_variables_dict["bdt_sf_wwz_raw"] = bdt_sf_wwz_raw
+                dense_variables_dict["bdt_of_zh_raw"]  = bdt_of_zh_raw
+                dense_variables_dict["bdt_sf_zh_raw"]  = bdt_sf_zh_raw
+                dense_variables_dict["bdt_of_wwz"]     = bdt_of_wwz
+                dense_variables_dict["bdt_sf_wwz"]     = bdt_sf_wwz
+                dense_variables_dict["bdt_of_zh"]      = bdt_of_zh
+                dense_variables_dict["bdt_sf_zh"]      = bdt_sf_zh
 
 
             ######### Store boolean masks with PackedSelection ##########
@@ -776,59 +784,68 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # For BDT SRs
 
-            sr_4l_bdt_sf_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z)
-            sr_4l_bdt_sf_trn    = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & mt2_mask)
-            sr_4l_bdt_of_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)
-            sr_4l_bdt_of_trn    = sr_4l_bdt_of_presel # For OF, presel and trn regions are the same
-            selections.add("sr_4l_bdt_sf_presel", sr_4l_bdt_sf_presel)
-            selections.add("sr_4l_bdt_sf_trn"   , sr_4l_bdt_sf_trn)
-            selections.add("sr_4l_bdt_of_presel", sr_4l_bdt_of_presel)
-            selections.add("sr_4l_bdt_of_trn"   , sr_4l_bdt_of_trn)
-
-            selections.add("sr_4l_bdt_sf_1", (sr_4l_bdt_sf_trn & bdt_sf_1))
-            selections.add("sr_4l_bdt_sf_2", (sr_4l_bdt_sf_trn & bdt_sf_2))
-            selections.add("sr_4l_bdt_sf_3", (sr_4l_bdt_sf_trn & bdt_sf_3))
-            selections.add("sr_4l_bdt_sf_4", (sr_4l_bdt_sf_trn & bdt_sf_4))
-            selections.add("sr_4l_bdt_sf_5", (sr_4l_bdt_sf_trn & bdt_sf_5))
-            selections.add("sr_4l_bdt_sf_6", (sr_4l_bdt_sf_trn & bdt_sf_6))
-            selections.add("sr_4l_bdt_sf_7", (sr_4l_bdt_sf_trn & bdt_sf_7))
-
-            selections.add("sr_4l_bdt_of_1", (sr_4l_bdt_of_trn & bdt_of_1))
-            selections.add("sr_4l_bdt_of_2", (sr_4l_bdt_of_trn & bdt_of_2))
-            selections.add("sr_4l_bdt_of_3", (sr_4l_bdt_of_trn & bdt_of_3))
-            selections.add("sr_4l_bdt_of_4", (sr_4l_bdt_of_trn & bdt_of_4))
-            selections.add("sr_4l_bdt_of_5", (sr_4l_bdt_of_trn & bdt_of_5))
-            selections.add("sr_4l_bdt_of_6", (sr_4l_bdt_of_trn & bdt_of_6))
-            selections.add("sr_4l_bdt_of_7", (sr_4l_bdt_of_trn & bdt_of_7))
-            selections.add("sr_4l_bdt_of_8", (sr_4l_bdt_of_trn & bdt_of_8))
-
-            bdt_sr_names = [
-                "sr_4l_bdt_sf_1",
-                "sr_4l_bdt_sf_2",
-                "sr_4l_bdt_sf_3",
-                "sr_4l_bdt_sf_4",
-                "sr_4l_bdt_sf_5",
-                "sr_4l_bdt_sf_6",
-                "sr_4l_bdt_sf_7",
-
-                "sr_4l_bdt_of_1",
-                "sr_4l_bdt_of_2",
-                "sr_4l_bdt_of_3",
-                "sr_4l_bdt_of_4",
-                "sr_4l_bdt_of_5",
-                "sr_4l_bdt_of_6",
-                "sr_4l_bdt_of_7",
-                "sr_4l_bdt_of_8",
-            ]
+            if "2022" not in year:
+                sr_4l_bdt_sf_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z)
+                sr_4l_bdt_sf_trn    = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & mt2_mask)
+                sr_4l_bdt_of_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)
+                sr_4l_bdt_of_trn    = sr_4l_bdt_of_presel # For OF, presel and trn regions are the same
+                selections.add("sr_4l_bdt_sf_presel", sr_4l_bdt_sf_presel)
+                selections.add("sr_4l_bdt_sf_trn"   , sr_4l_bdt_sf_trn)
+                selections.add("sr_4l_bdt_of_presel", sr_4l_bdt_of_presel)
+                selections.add("sr_4l_bdt_of_trn"   , sr_4l_bdt_of_trn)
+    
+                selections.add("sr_4l_bdt_sf_1", (sr_4l_bdt_sf_trn & bdt_sf_1))
+                selections.add("sr_4l_bdt_sf_2", (sr_4l_bdt_sf_trn & bdt_sf_2))
+                selections.add("sr_4l_bdt_sf_3", (sr_4l_bdt_sf_trn & bdt_sf_3))
+                selections.add("sr_4l_bdt_sf_4", (sr_4l_bdt_sf_trn & bdt_sf_4))
+                selections.add("sr_4l_bdt_sf_5", (sr_4l_bdt_sf_trn & bdt_sf_5))
+                selections.add("sr_4l_bdt_sf_6", (sr_4l_bdt_sf_trn & bdt_sf_6))
+                selections.add("sr_4l_bdt_sf_7", (sr_4l_bdt_sf_trn & bdt_sf_7))
+    
+                selections.add("sr_4l_bdt_of_1", (sr_4l_bdt_of_trn & bdt_of_1))
+                selections.add("sr_4l_bdt_of_2", (sr_4l_bdt_of_trn & bdt_of_2))
+                selections.add("sr_4l_bdt_of_3", (sr_4l_bdt_of_trn & bdt_of_3))
+                selections.add("sr_4l_bdt_of_4", (sr_4l_bdt_of_trn & bdt_of_4))
+                selections.add("sr_4l_bdt_of_5", (sr_4l_bdt_of_trn & bdt_of_5))
+                selections.add("sr_4l_bdt_of_6", (sr_4l_bdt_of_trn & bdt_of_6))
+                selections.add("sr_4l_bdt_of_7", (sr_4l_bdt_of_trn & bdt_of_7))
+                selections.add("sr_4l_bdt_of_8", (sr_4l_bdt_of_trn & bdt_of_8))
+    
+                bdt_sr_names = [
+                    "sr_4l_bdt_sf_1",
+                    "sr_4l_bdt_sf_2",
+                    "sr_4l_bdt_sf_3",
+                    "sr_4l_bdt_sf_4",
+                    "sr_4l_bdt_sf_5",
+                    "sr_4l_bdt_sf_6",
+                    "sr_4l_bdt_sf_7",
+    
+                    "sr_4l_bdt_of_1",
+                    "sr_4l_bdt_of_2",
+                    "sr_4l_bdt_of_3",
+                    "sr_4l_bdt_of_4",
+                    "sr_4l_bdt_of_5",
+                    "sr_4l_bdt_of_6",
+                    "sr_4l_bdt_of_7",
+                    "sr_4l_bdt_of_8",
+                ]
+                bdt_misc_names = [
+                    "sr_4l_bdt_sf_presel",
+                    "sr_4l_bdt_sf_trn",
+                    "sr_4l_bdt_of_trn",
+                    "sr_4l_bdt_of_presel",
+                ]
 
             cat_dict = {
                 "lep_chan_lst" : [
                     "sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4",
                     "all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl",
                     "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf",
-                    "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn", "sr_4l_bdt_of_presel",
-                ] + bdt_sr_names
+                ]
             }
+
+            if "2022" not in year:
+                cat_dict["lep_chan_lst"] = cat_dict["lep_chan_lst"] + bdt_sr_names + bdt_misc_names
 
             ######### Fill histos #########
 
@@ -836,11 +853,13 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
             # List the hists that are only defined for some categories
-            analysis_cats = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"] + bdt_sr_names
+            analysis_cats = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
+            if "2022" not in year:
+                analysis_cats = analysis_cats + bdt_sr_names
             exclude_var_dict = {
                 "mt2" : ["all_events"],
                 "ptl4" : ["all_events"],
-                "j0pt" : ["all_events", "4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn", "sr_4l_bdt_of_presel", "cr_4l_sf"] + analysis_cats,
+                "j0pt" : ["all_events", "4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf"] + analysis_cats,
                 "l0pt" : ["all_events"],
                 "mll_01" : ["all_events"],
                 "mllll" : ["all_events"],
@@ -892,18 +911,22 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mll_min_afos" : ["all_events"],
                 "mll_min_sfos" : ["all_events"],
 
-                "mlb_min" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn", "sr_4l_bdt_of_presel", "cr_4l_sf"] + analysis_cats,
-                "mlb_max" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn", "sr_4l_bdt_of_presel", "cr_4l_sf"] + analysis_cats,
-
-                "bdt_of_wwz_raw": ["all_events"],
-                "bdt_sf_wwz_raw": ["all_events"],
-                "bdt_of_zh_raw" : ["all_events"],
-                "bdt_sf_zh_raw" : ["all_events"],
-                "bdt_of_wwz": ["all_events"],
-                "bdt_sf_wwz": ["all_events"],
-                "bdt_of_zh" : ["all_events"],
-                "bdt_sf_zh" : ["all_events"],
+                "mlb_min" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf"] + analysis_cats,
+                "mlb_max" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf"] + analysis_cats,
             }
+
+            if "2022" not in year:
+                exclude_var_dict["bdt_of_wwz_raw"] = ["all_events"]
+                exclude_var_dict["bdt_sf_wwz_raw"] = ["all_events"]
+                exclude_var_dict["bdt_of_zh_raw"] = ["all_events"]
+                exclude_var_dict["bdt_sf_zh_raw"] = ["all_events"]
+                exclude_var_dict["bdt_of_wwz"] = ["all_events"]
+                exclude_var_dict["bdt_sf_wwz"] = ["all_events"]
+                exclude_var_dict["bdt_of_zh"] = ["all_events"]
+                exclude_var_dict["bdt_sf_zh"] = ["all_events"]
+                exclude_var_dict["j0pt"] = exclude_var_dict["j0pt"] + bdt_misc_names 
+                exclude_var_dict["mlb_max"] = exclude_var_dict["mlb_max"] + bdt_misc_names 
+                exclude_var_dict["mlb_min"] = exclude_var_dict["mlb_min"] + bdt_misc_names
 
             # Set up the list of weight fluctuations to loop over
             # For now the syst do not depend on the category, so we can figure this out outside of the filling loop
