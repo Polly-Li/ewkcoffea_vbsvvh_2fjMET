@@ -700,8 +700,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                     ak.fill_none(w_lep0.pt,-9999),
                     ak.fill_none(w_lep1.pt,-9999),
                 ]
-    
-    
+
+
                 # Get the list of variables for the BDTs (and fill None with -9999 to not cause problems), and eval
                 bdt_vars_sf_wwz = fill_none_in_list(get_ec_param("sf_wwz_bdt_var_lst"),dense_variables_dict,-9999)
                 bdt_vars_sf_zh  = fill_none_in_list(get_ec_param("sf_zh_bdt_var_lst"),dense_variables_dict,-9999)
@@ -716,7 +716,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 bdt_sf_zh  = (2.0*((1.0+math.e**(-2*bdt_sf_zh_raw))**(-1))) - 1.0
                 bdt_of_wwz = (2.0*((1.0+math.e**(-2*bdt_of_wwz_raw))**(-1))) - 1.0
                 bdt_of_zh  = (2.0*((1.0+math.e**(-2*bdt_of_zh_raw))**(-1))) - 1.0
-    
+
                 ### BDT SRs ###
                 # SF BDT SRs
                 bdt_sf_1 = ((bdt_sf_wwz > 0.8) & (bdt_sf_zh < -0.6))
@@ -736,7 +736,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 bdt_of_6 = ((bdt_of_wwz >= -0.4) & (bdt_of_wwz < 0) & (bdt_of_zh < -0.8))
                 bdt_of_7 = (~bdt_of_3 & ~bdt_of_4 & (bdt_of_zh > 0))
                 bdt_of_8 = ((bdt_of_wwz < 0) & ~bdt_of_6 & (bdt_of_zh < 0.0))
-    
+
                 # Put the bdt variables into the dict of variables too
                 dense_variables_dict["bdt_of_wwz_raw"] = bdt_of_wwz_raw
                 dense_variables_dict["bdt_sf_wwz_raw"] = bdt_sf_wwz_raw
@@ -793,7 +793,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 selections.add("sr_4l_bdt_sf_trn"   , sr_4l_bdt_sf_trn)
                 selections.add("sr_4l_bdt_of_presel", sr_4l_bdt_of_presel)
                 selections.add("sr_4l_bdt_of_trn"   , sr_4l_bdt_of_trn)
-    
+
                 selections.add("sr_4l_bdt_sf_1", (sr_4l_bdt_sf_trn & bdt_sf_1))
                 selections.add("sr_4l_bdt_sf_2", (sr_4l_bdt_sf_trn & bdt_sf_2))
                 selections.add("sr_4l_bdt_sf_3", (sr_4l_bdt_sf_trn & bdt_sf_3))
@@ -801,7 +801,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 selections.add("sr_4l_bdt_sf_5", (sr_4l_bdt_sf_trn & bdt_sf_5))
                 selections.add("sr_4l_bdt_sf_6", (sr_4l_bdt_sf_trn & bdt_sf_6))
                 selections.add("sr_4l_bdt_sf_7", (sr_4l_bdt_sf_trn & bdt_sf_7))
-    
+
                 selections.add("sr_4l_bdt_of_1", (sr_4l_bdt_of_trn & bdt_of_1))
                 selections.add("sr_4l_bdt_of_2", (sr_4l_bdt_of_trn & bdt_of_2))
                 selections.add("sr_4l_bdt_of_3", (sr_4l_bdt_of_trn & bdt_of_3))
@@ -810,7 +810,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 selections.add("sr_4l_bdt_of_6", (sr_4l_bdt_of_trn & bdt_of_6))
                 selections.add("sr_4l_bdt_of_7", (sr_4l_bdt_of_trn & bdt_of_7))
                 selections.add("sr_4l_bdt_of_8", (sr_4l_bdt_of_trn & bdt_of_8))
-    
+
                 bdt_sr_names = [
                     "sr_4l_bdt_sf_1",
                     "sr_4l_bdt_sf_2",
@@ -819,7 +819,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "sr_4l_bdt_sf_5",
                     "sr_4l_bdt_sf_6",
                     "sr_4l_bdt_sf_7",
-    
+
                     "sr_4l_bdt_of_1",
                     "sr_4l_bdt_of_2",
                     "sr_4l_bdt_of_3",
@@ -924,8 +924,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 exclude_var_dict["bdt_sf_wwz"] = ["all_events"]
                 exclude_var_dict["bdt_of_zh"] = ["all_events"]
                 exclude_var_dict["bdt_sf_zh"] = ["all_events"]
-                exclude_var_dict["j0pt"] = exclude_var_dict["j0pt"] + bdt_misc_names 
-                exclude_var_dict["mlb_max"] = exclude_var_dict["mlb_max"] + bdt_misc_names 
+                exclude_var_dict["j0pt"] = exclude_var_dict["j0pt"] + bdt_misc_names
+                exclude_var_dict["mlb_max"] = exclude_var_dict["mlb_max"] + bdt_misc_names
                 exclude_var_dict["mlb_min"] = exclude_var_dict["mlb_min"] + bdt_misc_names
 
             # Set up the list of weight fluctuations to loop over

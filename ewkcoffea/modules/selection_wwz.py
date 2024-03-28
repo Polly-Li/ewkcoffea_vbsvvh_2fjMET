@@ -177,38 +177,38 @@ exclude_dict = {
         "MuonEG"         : dataset_dict["2018"]["DoubleMuon"] + dataset_dict["2018"]["EGamma"],
     },
     "B": {
-        "SingleMuon"     : [], 
+        "SingleMuon"     : [],
         "DoubleMuon"     : dataset_dict["2022"]["SingleMuon"],
         "EGamma"         : dataset_dict["2022"]["SingleMuon"] + dataset_dict["2022"]["DoubleMuon"],
         "MuonEG"         : dataset_dict["2022"]["SingleMuon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["EGamma"],
-    },  
+    },
     "C": {
-        "Muon"           : [], 
-        "SingleMuon"     : [], 
+        "Muon"           : [],
+        "SingleMuon"     : [],
         "DoubleMuon"     : dataset_dict["2022"]["SingleMuon"],
         "EGamma"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["SingleMuon"],
-        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["SingleMuon"] + da
-    },  
+        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["SingleMuon"] + dataset_dict["2022"]["EGamma"],
+    },
     "D": {
-        "Muon"     : [], 
+        "Muon"     : [],
         "EGamma"         : dataset_dict["2022"]["Muon"],
         "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
-    },  
+    },
     "E": {
-        "Muon"     : [], 
+        "Muon"     : [],
         "EGamma"         : dataset_dict["2022"]["Muon"],
         "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
-    },  
+    },
     "F": {
-        "Muon"     : [], 
+        "Muon"     : [],
         "EGamma"         : dataset_dict["2022"]["Muon"],
         "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
-    },  
+    },
     "G": {
-        "Muon"     : [], 
+        "Muon"     : [],
         "EGamma"         : dataset_dict["2022"]["Muon"],
         "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
-    }, 
+    },
 }
 
 
