@@ -61,18 +61,34 @@ dataset_dict = {
 
     "2022" : {
         "EGamma" : [
+            "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
             "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL",
+            "Ele30_WPTight_Gsf",
+            "Ele32_WPTight_Gsf",
+            "Ele32_WPTight_Gsf_L1DoubleEG",
+            "Ele35_WPTight_Gsf",
+            "Ele115_CaloIdVT_GsfTrkIdT",
+            "DoubleEle25_CaloIdL_MW",
         ],
         "Muon" : [
+            "IsoMu24",
+            "IsoMu27",
+            "Mu50",
             "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
+            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8",
         ],
         "SingleMuon" : [
-            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
+            "IsoMu24",
+            "IsoMu27",
+            "Mu50",
         ],
         "DoubleMuon" : [
             "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
+            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8",
         ],
         "MuonEG" : [
+            "Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ",
+            "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL",
             "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
             "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ",
         ]
@@ -193,6 +209,7 @@ def trg_matching(events,year):
     # The trigger for 2016 and 2016APV are the same
     if year == "2016APV": year = "2016"
     if year == "2022EE": year = "2022"
+
     # Initialize return array to be True array with same shape as events
     ret_arr = ak.zeros_like(np.array(events.event), dtype=bool)
 
@@ -364,6 +381,11 @@ def attach_wwz_preselection_mask(events,lep_collection):
     events["wwz_presel_of"] = (wwz_presel_mask & ~sf_mask)
 
 
+# Get the MT variable
+# See also https://en.wikipedia.org/wiki/Transverse_mass#Transverse_mass_in_two-particle_systems
+def get_mt(p1,p2):
+    return np.sqrt(2*p1.pt*p2.pt*(1 - np.cos(p1.delta_phi(p2))))
+
 # Get MT2 for WW
 def get_mt2(w_lep0,w_lep1,met):
 
@@ -401,6 +423,18 @@ def get_mt2(w_lep0,w_lep1,met):
     )
 
     return mt2_var
+
+
+# Helicity function as defined here:
+# https://github.com/cmstas/VVVNanoLooper/blob/46ee6437978e8be46a903f8f075e4d50c55f1573/analysis/process.cc#L2326-L2344
+def helicity(p1,p2):
+    parent = p1+p2
+    boost_to_parent = parent.boostvec.negative()
+    p1_new = p1.boost(boost_to_parent)
+    p1_new_3 = p1_new.pvec # 3 vector
+    parent_3 = parent.pvec # 3 vector
+    cos_theta_1 = p1_new_3.dot(parent_3) / (p1_new_3.absolute()*parent_3.absolute())
+    return abs(cos_theta_1)
 
 
 # Evaluate the BDTs from Keegan

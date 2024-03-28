@@ -11,9 +11,9 @@ from coffea.lumi_tools import LumiMask
 from topcoffea.modules.paths import topcoffea_path
 import topcoffea.modules.event_selection as es_tc
 from ewkcoffea.modules.paths import ewkcoffea_path as ewkcoffea_path
-import ewkcoffea.modules.selection_Run3_2Lep as selRun3_2Lep
+import ewkcoffea.modules.selection_run3_2lep as selrun3_2lep
 import ewkcoffea.modules.corrections as ewk_corrections
-import ewkcoffea.modules.objects_Run3_2Lep as objRun3_2Lep
+import ewkcoffea.modules.objects_wwz as objrun3_2lep
 from topcoffea.modules.get_param_from_jsons import GetParam
 get_tc_param = GetParam(topcoffea_path("params/params.json"))
 get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
@@ -25,8 +25,9 @@ class AnalysisProcessor(processor.ProcessorABC):
         self._dtype = dtype
         # Create the histograms
         self._dense_axes_dict = {
+            "run": axis.Regular(40, 355800, 356399, name="run", label="run number"),
             "mLL": axis.Regular(180, 0, 160, name="mLL", label="mLL for sf Channel"),
-            "pt0": axis.Regular(180, 0, 160, name="pt0", label="Leading Lep pt for sf Channel"),
+            "pt0": axis.Regular(39, 25, 220, name="pt0", label="Leading Lep pt for sf Channel"),
             "pt1": axis.Regular(180, 0, 160, name="pt1", label="SubLeading Lep pt for sf Channel"),
             "eta0": axis.Regular(180, -2.4, 2.4, name="eta0", label="Leading Lep eta for sf Channel"),
             "eta1": axis.Regular(180, -2.4, 2.4, name="eta1", label="SubLeading Lep eta for sf Channel"),
@@ -100,7 +101,8 @@ class AnalysisProcessor(processor.ProcessorABC):
         year               = self._samples[dataset]["year"]
         xsec               = self._samples[dataset]["xsec"]
         sow                = self._samples[dataset]["nSumOfWeights"]
-
+        if isData and ("2022" in year):
+            era            = self._samples[dataset]["era"]
         # Get up down weights from input dict
         if (self._do_systematics and not isData):
             if histAxisName in get_ec_param("lo_xsec_samples"):
@@ -142,14 +144,16 @@ class AnalysisProcessor(processor.ProcessorABC):
             sow_factDown       = -1
             sow_renormfactUp   = -1
             sow_renormfactDown = -1
-        datasets = ["EGamma", "MuonEG", "Muon"]
+        datasets = ["EGamma", "MuonEG", "DoubleMuon", "SingleMuon","Muon"]
         for d in datasets:
             if d in dataset:
-                if d == "Muon" and "MuonEG" in dataset:
-                    continue  # Skip MuonEG when the dataset is Muon
-                dataset = d
+                if d == "Muon" and (("MuonEG" in dataset) or ("SingleMuon" in dataset) or ("DoubleMuon" in dataset)):
+                    continue  #
+                else:
+                    dataset = d
 
         # Initialize objects
+        run  = events.run
         met  = events.MET
         pv  = events.PV
         ele  = events.Electron
@@ -171,7 +175,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         elif year == "2018":
             golden_json_path = topcoffea_path("data/goldenJsons/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt")
         elif year == "2022" or year == "2022EE":
-            golden_json_path = topcoffea_path("data/goldenJsons/Cert_Collisions2022_355100_362760_Golden.txt")
+            golden_json_path = topcoffea_path("data/goldenJsons/Cert_Collisions2022_355100_362760_Golden.json")
         else:
             raise ValueError(f"Error: Unknown year \"{year}\".")
         lumi_mask = LumiMask(golden_json_path)(events.run,events.luminosityBlock)
@@ -179,66 +183,83 @@ class AnalysisProcessor(processor.ProcessorABC):
         ################### Object Selections ####################
 
         # Get the pre-selected electrons and sort by PT
-        ele_presl_mask = objRun3_2Lep.is_presel_Run3_2Lep_ele(ele)
-        ele["is_tight_lep_for_Run3_2Lep"] = (ele_presl_mask)
-        ele_Run3_2Lep_t = ele[ele.is_tight_lep_for_Run3_2Lep]
-        ele_Run3_2Lep_t = ele_Run3_2Lep_t[ak.argsort(ele_Run3_2Lep_t.pt, axis=-1,ascending=False)] # Sort by pt
+        ele_veto_mask = objrun3_2lep.is_veto_run3_2lep_ele(ele)
+        ele["is_veto_lep_for_run3_2lep"] = (ele_veto_mask)
+        ele_run3_2lep_veto = ele[ele.is_veto_lep_for_run3_2lep]
+        ele_run3_2lep_veto = ele_run3_2lep_veto[ak.argsort(ele_run3_2lep_veto.pt, axis=-1,ascending=False)] # Sort by pt
 
         # Grab the pre-selected muons and sort by PT
-        mu_presl_mask = objRun3_2Lep.is_presel_Run3_2Lep_mu(mu)
-        mu["is_tight_lep_for_Run3_2Lep"] = (mu_presl_mask)
-        mu_Run3_2Lep_t = mu[mu.is_tight_lep_for_Run3_2Lep]
-        mu_Run3_2Lep_t = mu_Run3_2Lep_t[ak.argsort(mu_Run3_2Lep_t.pt, axis=-1,ascending=False)] # Sort by pt
+        mu_veto_mask = objrun3_2lep.is_veto_run3_2lep_mu(mu)
+        mu["is_veto_lep_for_run3_2lep"] = (mu_veto_mask)
+        mu_run3_2lep_veto = mu[mu.is_veto_lep_for_run3_2lep]
+        mu_run3_2lep_veto = mu_run3_2lep_veto[ak.argsort(mu_run3_2lep_veto.pt, axis=-1,ascending=False)] # Sort by pt
 
         #Attach the SF
-        ewk_corrections.run3_muons_sf_Attach(mu_Run3_2Lep_t,year,"NUM_MediumID_DEN_TrackerMuons","NUM_TightPFIso_DEN_MediumID")
-        ewk_corrections.run3_electrons_sf_Attach(ele_Run3_2Lep_t,year,"sf","wp90iso")
+        ewk_corrections.run3_muons_sf_attach(mu_run3_2lep_veto,year,"NUM_MediumID_DEN_TrackerMuons","NUM_TightPFIso_DEN_MediumID")
+        ewk_corrections.run3_electrons_sf_attach(ele_run3_2lep_veto,year,"Medium")
 
         # Create a List of Leptons from the Muons and Electrons
-        l_Run3_2Lep_t = ak.with_name(ak.concatenate([ele_Run3_2Lep_t,mu_Run3_2Lep_t],axis=1),'PtEtaPhiMCandidate')
-        l_Run3_2Lep_t = l_Run3_2Lep_t[ak.argsort(l_Run3_2Lep_t.pt, axis=-1,ascending=False)] # Sort by pt
+        l_run3_2lep_veto = ak.with_name(ak.concatenate([ele_run3_2lep_veto,mu_run3_2lep_veto],axis=1),'PtEtaPhiMCandidate')
+        l_run3_2lep_veto = l_run3_2lep_veto[ak.argsort(l_run3_2lep_veto.pt, axis=-1,ascending=False)] # Sort by pt
 
-        # Get Leading Lep, Mu, and Ele
-        l_Run3_2Lep_t_padded = ak.pad_none(l_Run3_2Lep_t, 2)
-        mu_Run3_2Lep_t_padded = ak.pad_none(mu_Run3_2Lep_t, 1)
-        ele_Run3_2Lep_t_padded = ak.pad_none(ele_Run3_2Lep_t, 1)
-        l0 = l_Run3_2Lep_t_padded[:,0]
-        l1 = l_Run3_2Lep_t_padded[:,1]
+        events["l_run3_2lep_veto"] = l_run3_2lep_veto
+        selrun3_2lep.add2lmask_run3_2lep(events, year, isData)
+
+        #Tighter Ele Selection
+        ele_tight_mask = objrun3_2lep.is_tight_run3_2lep_ele(ele_run3_2lep_veto)
+        ele_run3_2lep_veto["is_tight_lep_for_run3_2lep"] = (ele_tight_mask)
+        ele_run3_2lep_tight = ele_run3_2lep_veto[ele_run3_2lep_veto.is_tight_lep_for_run3_2lep]
+        ele_run3_2lep_tight = ele_run3_2lep_tight[ak.argsort(ele_run3_2lep_tight.pt, axis=-1,ascending=False)] # Sort by pt
+
+        #Tighter Muon Selection
+        mu_tight_mask = objrun3_2lep.is_tight_run3_2lep_mu(mu_run3_2lep_veto)
+        mu_run3_2lep_veto["is_tight_lep_for_run3_2lep"] = (mu_tight_mask)
+        mu_run3_2lep_tight = mu_run3_2lep_veto[mu_run3_2lep_veto.is_tight_lep_for_run3_2lep]
+        mu_run3_2lep_tight = mu_run3_2lep_tight[ak.argsort(mu_run3_2lep_tight.pt, axis=-1,ascending=False)] # Sort by pt
+
+        # Create a List of Leptons from the Tight Muons and Electrons
+        l_run3_2lep_tight = ak.with_name(ak.concatenate([ele_run3_2lep_tight,mu_run3_2lep_tight],axis=1),'PtEtaPhiMCandidate')
+        l_run3_2lep_tight = l_run3_2lep_tight[ak.argsort(l_run3_2lep_tight.pt, axis=-1,ascending=False)] # Sort by pt
+        events["l_run3_2lep_tight"] = l_run3_2lep_tight
+
+        # Get Leps and important values
+        l_run3_2lep_tight_padded = ak.pad_none(l_run3_2lep_tight, 2)
+        l0 = l_run3_2lep_tight_padded[:,0]
+        l1 = l_run3_2lep_tight_padded[:,1]
         mll = (l0+l1).mass
-        nleps = ak.num(l_Run3_2Lep_t)
-        mu0 = mu_Run3_2Lep_t_padded[:,0]
-        ele0 = ele_Run3_2Lep_t_padded[:,0]
+        nleps = ak.num(l_run3_2lep_tight)
+
+
 
         #################### Jet selection ######################
 
         # Do the object selection for the Run3 jets
-        jets_cleaned_mask = objRun3_2Lep.get_cleaned_collection(l_Run3_2Lep_t,jets)
-        jets["cleaned_jets"] = (jets_cleaned_mask)
-        jets_cleaned = jets[jets.cleaned_jets]
+        jets_cleaned= objrun3_2lep.get_cleaned_collection(l_run3_2lep_veto,jets)
 
-        jets_presl_mask = objRun3_2Lep.is_presel_Run3_2Lep_jets(jets_cleaned)
-        jets_cleaned["is_jets_for_Run3_2Lep"] = (jets_presl_mask)
-        jets_Run3_2Lep = jets_cleaned[jets_cleaned.is_jets_for_Run3_2Lep]
-        jets_Run3_2Lep = jets_Run3_2Lep[ak.argsort(jets_Run3_2Lep.pt, axis=-1,ascending=False)] # Sort by pt
-        njets = ak.num(jets_Run3_2Lep)
+        jets_presl_mask = objrun3_2lep.is_presel_run3_2lep_jets(jets_cleaned)
+        jets_cleaned["is_jets_for_run3_2lep"] = (jets_presl_mask)
+        jets_run3_2lep = jets_cleaned[jets_cleaned.is_jets_for_run3_2lep]
+        jets_run3_2lep = jets_run3_2lep[ak.argsort(jets_run3_2lep.pt, axis=-1,ascending=False)] # Sort by pt
+        njets = ak.num(jets_run3_2lep)
 
         #Do Some B-Tagging
 
-        btagwpl = get_tc_param("btag_wp_loose_22EE")
-        btagwpm = get_tc_param("btag_wp_medium_22EE")
+        #btagwpl = get_tc_param("btag_wp_loose_22EE")
+        #btagwpm = get_tc_param("btag_wp_medium_22EE")
 
-        isBtagJetsLoose = (jets_Run3_2Lep.btagDeepFlavB > btagwpl)
-        isBtagJetsMedium = (jets_Run3_2Lep.btagDeepFlavB > btagwpm)
+        #isBtagJetsLoose = (jets_run3_2lep.btagDeepFlavB > btagwpl)
+        #isBtagJetsMedium = (jets_run3_2lep.btagDeepFlavB > btagwpm)
 
-        nbtagsl = ak.num(jets_Run3_2Lep[isBtagJetsLoose])
-        nbtagsm = ak.num(jets_Run3_2Lep[isBtagJetsMedium])
+        #nbtagsl = ak.num(jets_run3_2lep[isBtagJetsLoose])
+        #nbtagsm = ak.num(jets_run3_2lep[isBtagJetsMedium])
 
-        jets_Run3_2Lep_padded = ak.pad_none(jets_Run3_2Lep, 2)
-        jet0 = jets_Run3_2Lep_padded[:,0]
-        jet1 = jets_Run3_2Lep_padded[:,1]
+        #jets_run3_2lep_padded = ak.pad_none(jets_run3_2lep, 2)
+        #jet0 = jets_run3_2lep_padded[:,0]
+        #jet1 = jets_run3_2lep_padded[:,1]
+        #selrun3_2lep.addjetispresent_run3_2lep(jet0, jet1, jets_run3_2lep)
 
-        selRun3_2Lep.addjetispresent_Run3_2Lep(jet0, jet1, jets_Run3_2Lep)
-        # Do the object selection for the Run3  muons
+
+
         ######### Systematics ###########
 
         # These weights can go outside of the outside sys loop since they do not depend on pt of mu or jets
@@ -257,44 +278,45 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Loop over the list of systematic variations we've constructed
         for syst_var in syst_var_list:
 
-            events["l_Run3_2Lep_t"] = l_Run3_2Lep_t
-            events["jets_Run3_2Lep"] = jets_Run3_2Lep
-            selRun3_2Lep.add2lmask_Run3_2Lep(events, year, isData)
+            events["jets_run3_2lep"] = jets_run3_2lep
             weights_obj_base_for_kinematics_syst = copy.deepcopy(weights_obj_base)
             if not isData:
-                ewk_corrections.run3_pu_Attach(pileup,year,"nominal")
+                ewk_corrections.run3_pu_attach(pileup,year)
                 weights_obj_base_for_kinematics_syst.add("pu_corr", pileup.pileup_corr)
                 weights_obj_base_for_kinematics_syst.add("lepSF_muon", events.muon_sf)
                 weights_obj_base_for_kinematics_syst.add("lepSF_ele", events.ele_sf)
 
             #################### Add variables into event object so that they persist ####################
-            selRun3_2Lep.addjetmask_Run3_2Lep(events, year, isData)
-            selRun3_2Lep.addmetmask_Run3_2Lep(events, year, isData)
+            #selrun3_2lep.addjetmask_run3_2lep(events, year, isData)
+            #selrun3_2lep.addmetmask_run3_2lep(events, year, isData)
 
             ######### Masks we need for the selection ##########
             # Pass trigger mask
-            pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=selRun3_2Lep.dataset_dict,exclude_dict=selRun3_2Lep.exclude_dict)
-            pass_trg = (pass_trg & selRun3_2Lep.trg_matching(events,year))
+            if isData:
+                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=selrun3_2lep.dataset_dict,exclude_dict=selrun3_2lep.exclude_dict,era=str(era))
+            else:
+                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=selrun3_2lep.dataset_dict,exclude_dict=selrun3_2lep.exclude_dict)
+            #pass_trg = (pass_trg & selrun3_2lep.trg_matching(events,year))
 
             #BTag Mask
-            bmask_atleast1med = (nbtagsm>=1)
+            #bmask_atleast1med = (nbtagsm>=1)
 
             ######### Run3 2Lep event selection stuff #########
 
-            selRun3_2Lep.attach_Run3_2Lep_preselection_mask(events,l_Run3_2Lep_t_padded[:,0:2])                                              # Attach preselection sf and of flags to the events
+            selrun3_2lep.attach_run3_2lep_preselection_mask(events,l_run3_2lep_tight_padded[:,0:2]) # Attach preselection sf and of flags to the events
             selections = PackedSelection(dtype='uint64')
 
             # Lumi mask (for data)
             selections.add("is_good_lumi",lumi_mask)
 
             # For Run3 2Lep selection
-            selections.add("2l_sf_ee", (pass_trg & events.is2l & events.Run3_2Lep_presel_sf_ee))
-            selections.add("2l_sf_mumu", (pass_trg & events.is2l & events.Run3_2Lep_presel_sf_mumu))
-            selections.add("2l_of", (pass_trg & events.is2l & events.has2jets & events.Run3_2Lep_presel_of))
-            selections.add("2l_of_btag", (bmask_atleast1med & pass_trg & events.is2l & events.Run3_2Lep_presel_of))
+            selections.add("2l_sf_ee", (pass_trg & events.is2l & events.run3_2lep_presel_sf_ee))
+            selections.add("2l_sf_mumu", (pass_trg & events.is2l & events.run3_2lep_presel_sf_mumu))
+            #selections.add("2l_of", (pass_trg & events.is2l & events.has2jets & events.run3_2lep_presel_of))
+            #selections.add("2l_of_btag", (bmask_atleast1med & pass_trg & events.is2l & events.run3_2lep_presel_of))
 
             sr_cat_dict = {
-                "lep_chan_lst" : ["2l_sf_mumu", "2l_sf_ee", "2l_of", "2l_of_btag"],
+                "lep_chan_lst" : ["2l_sf_mumu", "2l_sf_ee"]#, "2l_of", "2l_of_btag"],
             }
 
             ######### Fill histos #########
@@ -302,10 +324,11 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             dense_variables_dict = {
                 "2l_sf_mumu" : {
+                    "run" : run,
                     "nleps" : nleps,
                     "njets" : njets,
-                    "nBjets_loose" : nbtagsl,
-                    "nBjets_medium" : nbtagsm,
+                    #"nBjets_loose" : nbtagsl,
+                    #"nBjets_medium" : nbtagsm,
                     "mLL" : mll,
                     "pt0" : l0.pt,
                     "pt1" : l1.pt,
@@ -325,10 +348,11 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "npvsGood": pv.npvsGood,
                 },
                 "2l_sf_ee" : {
+                    "run" : run,
                     "nleps" : nleps,
                     "njets" : njets,
-                    "nBjets_loose" : nbtagsl,
-                    "nBjets_medium" : nbtagsm,
+                    #"nBjets_loose" : nbtagsl,
+                    #"nBjets_medium" : nbtagsm,
                     "mLL" : mll,
                     "pt0" : l0.pt,
                     "pt1" : l1.pt,
@@ -344,61 +368,6 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "phi_met": met.phi,
                     "phi_0": l0.phi,
                     "phi_1": l1.phi,
-                    "npvs": pv.npvs,
-                    "npvsGood": pv.npvsGood,
-                },
-                "2l_of" : {
-                    "nleps" : nleps,
-                    "njets" : njets,
-                    "nBjets_loose" : nbtagsl,
-                    "nBjets_medium" : nbtagsm,
-                    "mLL" : mll,
-                    "pt_mu" : mu0.pt,
-                    "pt_e" : ele0.pt,
-                    "eta_mu": mu0.eta,
-                    "eta_e": ele0.eta,
-                    "reliso_mu": mu0.pfRelIso03_all,
-                    "reliso_e": ele0.pfRelIso03_all,
-                    "dxy_mu": mu0.dxy,
-                    "dxy_e": ele0.dxy,
-                    "dz_mu": mu0.dz,
-                    "dz_e": ele0.dz,
-                    "met": met.pt,
-                    "phi_met": met.phi,
-                    "eta_jet0": jet0.eta,
-                    "pt_jet0": jet0.pt,
-                    "eta_jet1": jet1.eta,
-                    "pt_jet1": jet1.pt,
-                    "phi_jet0": jet0.phi,
-                    "phi_jet1": jet1.phi,
-                    "phi_mu": mu0.phi,
-                    "phi_e": ele0.phi,
-                    "npvs": pv.npvs,
-                    "npvsGood": pv.npvsGood,
-                },
-                "2l_of_btag" : {
-                    "nleps" : nleps,
-                    "njets" : njets,
-                    "nBjets_loose" : nbtagsl,
-                    "nBjets_medium" : nbtagsm,
-                    "mLL" : mll,
-                    "pt_mu" : mu0.pt,
-                    "pt_e" : ele0.pt,
-                    "eta_mu": mu0.eta,
-                    "eta_e": ele0.eta,
-                    "reliso_mu": mu0.pfRelIso03_all,
-                    "reliso_e": ele0.pfRelIso03_all,
-                    "dxy_mu": mu0.dxy,
-                    "dxy_e": ele0.dxy,
-                    "dz_mu": mu0.dz,
-                    "dz_e": ele0.dz,
-                    "met": met.pt,
-                    "phi_met": met.phi,
-                    "eta_jet0": jet0.eta,
-                    "pt_jet0": jet0.pt,
-                    "phi_jet0": jet0.phi,
-                    "phi_mu": mu0.phi,
-                    "phi_e": ele0.phi,
                     "npvs": pv.npvs,
                     "npvsGood": pv.npvsGood,
                 },

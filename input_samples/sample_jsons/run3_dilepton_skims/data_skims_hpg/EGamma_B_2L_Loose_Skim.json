@@ -1,0 +1,30 @@
+{
+    "xsec": 1.0,
+    "year": "2022",
+    "treeName": "Events",
+    "era": "B",
+    "histAxisName": "",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_2L_02162024_Loose/EGamma_Run2022B-22Sep2023-v2_NANOAOD_Run3_Data_2L_02162024_Loose/output_7.root",
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_2L_02162024_Loose/EGamma_Run2022B-22Sep2023-v2_NANOAOD_Run3_Data_2L_02162024_Loose/output_8.root",
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_2L_02162024_Loose/EGamma_Run2022B-22Sep2023-v2_NANOAOD_Run3_Data_2L_02162024_Loose/output_9.root",
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_2L_02162024_Loose/EGamma_Run2022B-22Sep2023-v2_NANOAOD_Run3_Data_2L_02162024_Loose/output_2.root",
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_2L_02162024_Loose/EGamma_Run2022B-22Sep2023-v2_NANOAOD_Run3_Data_2L_02162024_Loose/output_11.root",
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_2L_02162024_Loose/EGamma_Run2022B-22Sep2023-v2_NANOAOD_Run3_Data_2L_02162024_Loose/output_3.root",
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_2L_02162024_Loose/EGamma_Run2022B-22Sep2023-v2_NANOAOD_Run3_Data_2L_02162024_Loose/output_13.root",
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_2L_02162024_Loose/EGamma_Run2022B-22Sep2023-v2_NANOAOD_Run3_Data_2L_02162024_Loose/output_6.root",
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_2L_02162024_Loose/EGamma_Run2022B-22Sep2023-v2_NANOAOD_Run3_Data_2L_02162024_Loose/output_1.root",
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_2L_02162024_Loose/EGamma_Run2022B-22Sep2023-v2_NANOAOD_Run3_Data_2L_02162024_Loose/output_12.root",
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_2L_02162024_Loose/EGamma_Run2022B-22Sep2023-v2_NANOAOD_Run3_Data_2L_02162024_Loose/output_4.root",
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_2L_02162024_Loose/EGamma_Run2022B-22Sep2023-v2_NANOAOD_Run3_Data_2L_02162024_Loose/output_10.root",
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_2L_02162024_Loose/EGamma_Run2022B-22Sep2023-v2_NANOAOD_Run3_Data_2L_02162024_Loose/output_14.root",
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_2L_02162024_Loose/EGamma_Run2022B-22Sep2023-v2_NANOAOD_Run3_Data_2L_02162024_Loose/output_5.root"
+    ],
+    "nEvents": 377627,
+    "nGenEvents": 377627,
+    "nSumOfWeights": 377627,
+    "isData": true,
+    "path": "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_2L_02162024_Loose/EGamma_Run2022B-22Sep2023-v2_NANOAOD_Run3_Data_2L_02162024_Loose/"
+}

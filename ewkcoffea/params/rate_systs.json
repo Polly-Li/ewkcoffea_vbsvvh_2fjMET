@@ -1,0 +1,15 @@
+{
+    "rate_uncertainties_all_proc" : {
+        "lumi": 1.016
+    },
+    "rate_uncertainties_some_proc" : {
+        "qcd_scale": {
+            "procs": ["ttZ"],
+            "val": "0.898/1.117"
+        },
+        "fake_fake": {
+            "procs": ["WZ"],
+            "val": "1.3"
+        }
+    }
+}
