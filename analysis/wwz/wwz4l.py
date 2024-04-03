@@ -267,8 +267,8 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Attach the lepton SFs to the electron and muons collections
         if "2022" in year:
-            cor_ec.run3_muons_sf_Attach(mu_wwz_t,year,"NUM_MediumID_DEN_TrackerMuons","NUM_TightPFIso_DEN_MediumID")
-            cor_ec.run3_electrons_sf_Attach(ele_wwz_t,year,"wp80iso")
+            cor_ec.run3_muons_sf_attach(mu_wwz_t,year,"NUM_MediumID_DEN_TrackerMuons","NUM_TightPFIso_DEN_MediumID")
+            cor_ec.run3_electrons_sf_attach(ele_wwz_t,year,"wp80iso")
         else:
             cor_ec.AttachElectronSF(ele_wwz_t,year=year)
             cor_ec.AttachMuonSF(mu_wwz_t,year=year)
