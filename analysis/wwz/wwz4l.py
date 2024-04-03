@@ -343,7 +343,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 weights_obj_base.add('PreFiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
                 weights_obj_base.add('PU', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
             if "2022" in year:
-                cor_ec.run3_pu_Attach(pileup,year)
+                cor_ec.run3_pu_attach(pileup,year)
                 weights_obj_base.add("PU", pileup.pileup_corr, pileup.pileup_corr_hi, pileup.pileup_corr_lo)
 
             # Lepton SFs and systs
