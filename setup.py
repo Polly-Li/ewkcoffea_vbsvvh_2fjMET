@@ -13,9 +13,9 @@ setuptools.setup(
             "data/topmva_lep_sf/*json",
             "data/wwz_zh_bdt/*json",
             "data/btag_eff/*.pkl.gz",
-            "data/run3_pu/pu_2022EE/*json",
-            "data/run3_lep_sf/electron_sf/*json",
-            "data/run3_lep_sf/muon_sf/*json",
+            "data/run3_pu/*/*json",
+            "data/run3_lep_sf/electron_sf/*/*json",
+            "data/run3_lep_sf/muon_sf/*/*json",
         ],
     }
 )
