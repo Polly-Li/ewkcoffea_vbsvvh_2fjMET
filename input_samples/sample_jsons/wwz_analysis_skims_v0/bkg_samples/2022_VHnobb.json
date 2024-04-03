@@ -1,0 +1,29 @@
+{
+    "xsec": 0.9561,
+    "year": "2022",
+    "treeName": "Events",
+    "histAxisName": "2022_VHnobb",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/VH_HtoNonbb_M-125_TuneCP5_13p6TeV_amcatnloFXFX-madspin-pythia8_Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v1_NANOAODSIM_Run3_MC_4L_04022024_Loose/output_2.root",
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/VH_HtoNonbb_M-125_TuneCP5_13p6TeV_amcatnloFXFX-madspin-pythia8_Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v1_NANOAODSIM_Run3_MC_4L_04022024_Loose/output_3.root",
+        "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/VH_HtoNonbb_M-125_TuneCP5_13p6TeV_amcatnloFXFX-madspin-pythia8_Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v1_NANOAODSIM_Run3_MC_4L_04022024_Loose/output_1.root"
+    ],
+    "nEvents": 488,
+    "nGenEvents": 147250,
+    "nSumOfWeights": 884706.480812,
+    "isData": false,
+    "path": "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/VH_HtoNonbb_M-125_TuneCP5_13p6TeV_amcatnloFXFX-madspin-pythia8_Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v1_NANOAODSIM_Run3_MC_4L_04022024_Loose",
+    "nSumOfLheWeights": [
+        910973.633121556,
+        919806.3975295541,
+        931571.5318520148,
+        876360.2881023751,
+        884706.480812,
+        894277.4994433895,
+        839234.195993828,
+        847470.4807150094,
+        855871.3153712382
+    ]
+}
