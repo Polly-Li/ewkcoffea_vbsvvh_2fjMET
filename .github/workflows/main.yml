@@ -113,14 +113,26 @@ jobs:
           conda install -y -n coffea-env -c conda-forge pytest pytest-cov root_base
           mkdir histos
 
-      - name: Run WWZ processors over test files with futures executor
+      - name: Run WWZ processors over test R2 file
         run: |
           conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append tests/test_futures_wwz.py
 
-      - name: Get WWZ yields 
+      - name: Get WWZ yields R2
         run: |
           conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_make_yields_after_processor_wwz
 
-      - name: Check WWZ yields 
+      - name: Check WWZ yields R2
         run: |
           conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_compare_yields_after_processor_wwz
+
+      - name: Run WWZ processors over test R3 file
+        run: |
+          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append tests/test_futures_wwz_r3.py
+
+      - name: Get WWZ yields R3
+        run: |
+          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_make_yields_after_processor_wwz_r3
+
+      - name: Check WWZ yields R3
+        run: |
+          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_compare_yields_after_processor_wwz_r3
