@@ -115,15 +115,15 @@ jobs:
 
       - name: Run WWZ processors over test R2 file
         run: |
-          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append tests/test_futures_wwz.py
+          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append tests/test_futures_wwz_r2.py
 
       - name: Get WWZ yields R2
         run: |
-          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_make_yields_after_processor_wwz
+          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_make_yields_after_processor_wwz_r2
 
       - name: Check WWZ yields R2
         run: |
-          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_compare_yields_after_processor_wwz
+          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_compare_yields_after_processor_wwz_r2
 
       - name: Run WWZ processors over test R3 file
         run: |
