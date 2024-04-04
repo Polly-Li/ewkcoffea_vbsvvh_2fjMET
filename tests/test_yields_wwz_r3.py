@@ -3,7 +3,7 @@ from os.path import exists
 
 ### Test for a R3 sample ###
 
-def test_make_yields_after_processor_wwz_2022():
+def test_make_yields_after_processor_wwz_r3():
     assert (exists('analysis/wwz/histos/output_check_yields_2022.pkl.gz')) # Make sure the input pkl file exists
 
     args = [
@@ -21,7 +21,7 @@ def test_make_yields_after_processor_wwz_2022():
     subprocess.run(args)
     assert (exists('analysis/wwz/output_check_yields.json'))
 
-def test_compare_yields_after_processor_wwz_2022():
+def test_compare_yields_after_processor_wwz_r3():
     args = [
         "python",
         "analysis/wwz/comp_json_yields.py",
