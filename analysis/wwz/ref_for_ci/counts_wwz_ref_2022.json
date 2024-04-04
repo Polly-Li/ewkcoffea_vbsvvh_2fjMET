@@ -1,0 +1,128 @@
+{
+    "2022_WWZJetsTo4L2Nu": {
+        "nleps_counts": [
+            1891.0,
+            null
+        ],
+        "njets_counts": [
+            942.0,
+            null
+        ],
+        "nbtagsl_counts": [
+            163.0,
+            null
+        ],
+        "sr_4l_sf_A_counts": [
+            12.0,
+            null
+        ],
+        "sr_4l_sf_B_counts": [
+            10.0,
+            null
+        ],
+        "sr_4l_sf_C_counts": [
+            5.0,
+            null
+        ],
+        "sr_4l_of_1_counts": [
+            3.0,
+            null
+        ],
+        "sr_4l_of_2_counts": [
+            10.0,
+            null
+        ],
+        "sr_4l_of_3_counts": [
+            9.0,
+            null
+        ],
+        "sr_4l_of_4_counts": [
+            34.0,
+            null
+        ],
+        "all_events_counts": [
+            612.0,
+            null
+        ],
+        "4l_presel_counts": [
+            177.0,
+            null
+        ],
+        "sr_4l_sf_incl_counts": [
+            27.0,
+            null
+        ],
+        "sr_4l_of_incl_counts": [
+            62.0,
+            null
+        ],
+        "cr_4l_btag_of_counts": [
+            15.0,
+            null
+        ],
+        "cr_4l_btag_sf_offZ_met80_counts": [
+            2.0,
+            null
+        ],
+        "cr_4l_sf_counts": [
+            9.0,
+            null
+        ],
+        "sr_4l_sf_A": [
+            0.06820510057460019,
+            null
+        ],
+        "sr_4l_sf_B": [
+            0.06858823207718137,
+            null
+        ],
+        "sr_4l_sf_C": [
+            0.01721851432475016,
+            null
+        ],
+        "sr_4l_of_1": [
+            0.012528899286496472,
+            null
+        ],
+        "sr_4l_of_2": [
+            0.053899457262475095,
+            null
+        ],
+        "sr_4l_of_3": [
+            0.04187418369669121,
+            null
+        ],
+        "sr_4l_of_4": [
+            0.16482363075363968,
+            null
+        ],
+        "all_events": [
+            3.435773740016976,
+            null
+        ],
+        "4l_presel": [
+            0.9295182574589815,
+            null
+        ],
+        "sr_4l_sf_incl": [
+            0.15401184697653175,
+            null
+        ],
+        "sr_4l_of_incl": [
+            0.3146582719017665,
+            null
+        ],
+        "cr_4l_btag_of": [
+            0.10209484217123979,
+            null
+        ],
+        "cr_4l_btag_sf_offZ_met80": [
+            0.019770235912578843,
+            null
+        ],
+        "cr_4l_sf": [
+            0.040423294988048135,
+            null
+        ]
+    }
+}
