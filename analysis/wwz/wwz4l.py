@@ -344,7 +344,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 weights_obj_base.add('PreFiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
                 weights_obj_base.add('PU', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
             else:
-                cor_ec.run3_pu_attach(events.Pileup,year)
+                cor_ec.run3_pu_attach(events,year)
                 weights_obj_base.add("PU", events.Pileup.pileup_corr, events.Pileup.pileup_corr_hi, events.Pileup.pileup_corr_lo)
 
             # Lepton SFs and systs

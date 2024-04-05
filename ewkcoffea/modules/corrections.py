@@ -238,7 +238,7 @@ def run3_electrons_sf_attach(electrons,year,wp):
     electrons['sf_hi_elec']  = hi
     electrons['sf_lo_elec']  = lo
 
-def run3_pu_attach(pileup,year):
+def run3_pu_attach(events,year):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":
@@ -251,14 +251,14 @@ def run3_pu_attach(pileup,year):
     # Evaluate the SF
     ceval = correctionlib.CorrectionSet.from_file(fname)
     if year == "2022EE":
-        pu_corr = ceval["Collisions2022_359022_362760_eraEFG_GoldenJson"].evaluate(pileup.nTrueInt,"nominal")
-        pu_corr_hi = ceval["Collisions2022_359022_362760_eraEFG_GoldenJson"].evaluate(pileup.nTrueInt,"up")
-        pu_corr_lo = ceval["Collisions2022_359022_362760_eraEFG_GoldenJson"].evaluate(pileup.nTrueInt,"down")
+        pu_corr = ceval["Collisions2022_359022_362760_eraEFG_GoldenJson"].evaluate(events.Pileup.nTrueInt,"nominal")
+        pu_corr_hi = ceval["Collisions2022_359022_362760_eraEFG_GoldenJson"].evaluate(events.Pileup.nTrueInt,"up")
+        pu_corr_lo = ceval["Collisions2022_359022_362760_eraEFG_GoldenJson"].evaluate(events.Pileup.nTrueInt,"down")
     if year == "2022":
-        pu_corr = ceval["Collisions2022_355100_357900_eraBCD_GoldenJson"].evaluate(pileup.nTrueInt,"nominal")
-        pu_corr_hi = ceval["Collisions2022_355100_357900_eraBCD_GoldenJson"].evaluate(pileup.nTrueInt,"up")
-        pu_corr_lo = ceval["Collisions2022_355100_357900_eraBCD_GoldenJson"].evaluate(pileup.nTrueInt,"down")
+        pu_corr = ceval["Collisions2022_355100_357900_eraBCD_GoldenJson"].evaluate(events.Pileup.nTrueInt,"nominal")
+        pu_corr_hi = ceval["Collisions2022_355100_357900_eraBCD_GoldenJson"].evaluate(events.Pileup.nTrueInt,"up")
+        pu_corr_lo = ceval["Collisions2022_355100_357900_eraBCD_GoldenJson"].evaluate(events.Pileup.nTrueInt,"down")
 
-    pileup['pileup_corr'] = pu_corr
-    pileup['pileup_corr_hi'] = pu_corr_hi
-    pileup['pileup_corr_lo'] = pu_corr_lo
+    events.Pileup['pileup_corr'] = pu_corr
+    events.Pileup['pileup_corr_hi'] = pu_corr_hi
+    events.Pileup['pileup_corr_lo'] = pu_corr_lo
