@@ -23,7 +23,7 @@ def is_presel_wwz_ele(ele,year,is2022):
         (abs(ele.eta)         <  get_ec_param("wwz_pres_e_eta")) &
         (abs(ele.dxy)         <  get_ec_param("wwz_pres_e_dxy")) &
         (abs(ele.dz)          <  get_ec_param("wwz_pres_e_dz"))  &
-        (ele.conVeto)
+        (ele.convVeto)
     )
     mask_run2 = (
         (ele.miniPFRelIso_all < get_ec_param("wwz_pres_e_miniPFRelIso_all")) &
