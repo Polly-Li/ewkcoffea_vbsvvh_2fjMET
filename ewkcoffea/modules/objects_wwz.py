@@ -17,29 +17,29 @@ def get_cleaned_collection(obj_collection_a,obj_collection_b,drcut=0.4):
 ######### WWZ 4l analysis object selection #########
 
 # WWZ preselection for electrons
-def is_presel_wwz_ele(ele,year,tight):
+def is_presel_wwz_ele(ele,year,is2022):
     mask = (
-        (ele.pt               >  get_ec_param("wwz_pres_e_pt")) &
+        (ele.pt               >  get_ec_param("wwz_pres_e_pt"))  &
         (abs(ele.eta)         <  get_ec_param("wwz_pres_e_eta")) &
         (abs(ele.dxy)         <  get_ec_param("wwz_pres_e_dxy")) &
-        (abs(ele.dz)          <  get_ec_param("wwz_pres_e_dz"))
+        (abs(ele.dz)          <  get_ec_param("wwz_pres_e_dz"))  &
+        (ele.conVeto)
     )
     mask_run2 = (
         (ele.miniPFRelIso_all < get_ec_param("wwz_pres_e_miniPFRelIso_all")) &
         (abs(ele.sip3d)       <  get_ec_param("wwz_pres_e_sip3d")) &
-        (ele.lostHits         <= get_ec_param("wwz_pres_e_lostHits"))
+        (ele.lostHits         <= get_ec_param("wwz_pres_e_lostHits"))&
+        (ele.tightCharge == get_ec_param("wwz_pres_e_tightCharge"))
     )
-    if ("2022" in year): 
-        mask_return = (mask & ele.mvaIso_WP80 & ele.convVeto)
+    if is2022: 
+        mask_return = (mask & ele.mvaIso_WP80)
     else: 
         mask_return = (mask & mask_run2)
-    if tight and ("2022" not in year): 
-        mask_return = (mask_return & ele.convVeto & (ele.tightCharge == get_ec_param("wwz_pres_e_tightCharge")))
     return mask_return
 
 
 # WWZ preselection for muons
-def is_presel_wwz_mu(mu,year):
+def is_presel_wwz_mu(mu,year,is2022):
     mask = (
         (mu.pt               >  get_ec_param("wwz_pres_m_pt")) &
         (abs(mu.eta)         <  get_ec_param("wwz_pres_m_eta")) &
@@ -51,7 +51,7 @@ def is_presel_wwz_mu(mu,year):
         (mu.miniPFRelIso_all < get_ec_param("wwz_pres_m_miniPFRelIso_all")) &
         (abs(mu.sip3d)       <  get_ec_param("wwz_pres_m_sip3d"))
     )
-    if ("2022" not in year): 
+    if not is2022: 
         mask_return = (mask & mask_run2)
     else: 
         mask_return = (mask & (mu.pfIsoId >= get_ec_param("run3_2lep_pres_m_pfIsoId_Tight")))

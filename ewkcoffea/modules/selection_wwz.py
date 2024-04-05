@@ -253,7 +253,7 @@ def trg_matching(events,year):
 
 
 # 4l selection # SYNC
-def add4lmask_wwz(events, year, isData, sample_name):
+def add4lmask_wwz(events, year, isData, sample_name,is2022):
 
     # Leptons and padded leptons
     leps = events.l_wwz_t
@@ -261,7 +261,7 @@ def add4lmask_wwz(events, year, isData, sample_name):
 
     # Filters
     filter_flags = events.Flag
-    if "2022" in year:
+    if is2022:
         filters = filter_flags.goodVertices & filter_flags.globalSuperTightHalo2016Filter & filter_flags.EcalDeadCellTriggerPrimitiveFilter & filter_flags.BadPFMuonFilter & filter_flags.ecalBadCalibFilter & filter_flags.BadPFMuonDzFilter & filter_flags.hfNoisyHitsFilter & filter_flags.eeBadScFilter
     else:
         filters = filter_flags.goodVertices & filter_flags.globalSuperTightHalo2016Filter & filter_flags.HBHENoiseFilter & filter_flags.HBHENoiseIsoFilter & filter_flags.EcalDeadCellTriggerPrimitiveFilter & filter_flags.BadPFMuonFilter & (((year == "2016")|(year == "2016APV")) | filter_flags.ecalBadCalibFilter) & (isData | filter_flags.eeBadScFilter)
