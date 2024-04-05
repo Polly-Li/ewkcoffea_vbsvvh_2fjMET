@@ -264,5 +264,5 @@ def run3_pu_attach(pileup,year,sys):
         return pu_corr_hi
     if sys == "lo":
         return pu_corr_lo
-    if sys not in ["nominal","hi","lo"]
+    if sys not in ["nominal","hi","lo"]:
         raise Exception("ERROR: Not a recognized parameter.")
