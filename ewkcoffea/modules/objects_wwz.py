@@ -29,9 +29,12 @@ def is_presel_wwz_ele(ele,year,tight):
         (abs(ele.sip3d)       <  get_ec_param("wwz_pres_e_sip3d")) &
         (ele.lostHits         <= get_ec_param("wwz_pres_e_lostHits"))
     )
-    if ("2022" in year): mask_return = (mask & ele.mvaIso_WP80)
-    if ("2022" not in year): mask_return = (mask & mask_run2)
-    if tight: mask_return = (mask_return & ele.convVeto & (ele.tightCharge == get_ec_param("wwz_pres_e_tightCharge")))
+    if ("2022" in year): 
+        mask_return = (mask & ele.mvaIso_WP80 & ele.convVeto)
+    else: 
+        mask_return = (mask & mask_run2)
+    if tight and ("2022" not in year): 
+        mask_return = (mask_return & ele.convVeto & (ele.tightCharge == get_ec_param("wwz_pres_e_tightCharge")))
     return mask_return
 
 
@@ -48,8 +51,10 @@ def is_presel_wwz_mu(mu,year):
         (mu.miniPFRelIso_all < get_ec_param("wwz_pres_m_miniPFRelIso_all")) &
         (abs(mu.sip3d)       <  get_ec_param("wwz_pres_m_sip3d"))
     )
-    if ("2022" not in year): mask_return = (mask & mask_run2)
-    if ("2022" in year): mask_return = (mask & (mu.pfIsoId >= get_ec_param("run3_2lep_pres_m_pfIsoId_Tight")))
+    if ("2022" not in year): 
+        mask_return = (mask & mask_run2)
+    else: 
+        mask_return = (mask & (mu.pfIsoId >= get_ec_param("run3_2lep_pres_m_pfIsoId_Tight")))
     return mask_return
 
 

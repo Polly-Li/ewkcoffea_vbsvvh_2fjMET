@@ -12,6 +12,7 @@ from topcoffea.modules.paths import topcoffea_path
 import topcoffea.modules.event_selection as es_tc
 from ewkcoffea.modules.paths import ewkcoffea_path as ewkcoffea_path
 import ewkcoffea.modules.selection_run3_2lep as selrun3_2lep
+import ewkcoffea.modules.selection_wwz as selwwz
 import ewkcoffea.modules.corrections as ewk_corrections
 import ewkcoffea.modules.objects_wwz as objrun3_2lep
 from topcoffea.modules.get_param_from_jsons import GetParam
@@ -293,9 +294,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             ######### Masks we need for the selection ##########
             # Pass trigger mask
             if isData:
-                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=selrun3_2lep.dataset_dict,exclude_dict=selrun3_2lep.exclude_dict,era=str(era))
+                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=selwwz.dataset_dict,exclude_dict=selwwz.exclude_dict,era=str(era))
             else:
-                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=selrun3_2lep.dataset_dict,exclude_dict=selrun3_2lep.exclude_dict)
+                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=selwwz.dataset_dict,exclude_dict=selwwz.exclude_dict)
             #pass_trg = (pass_trg & selrun3_2lep.trg_matching(events,year))
 
             #BTag Mask

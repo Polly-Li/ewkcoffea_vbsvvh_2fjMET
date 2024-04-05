@@ -68,7 +68,6 @@ dataset_dict = {
             "Ele32_WPTight_Gsf_L1DoubleEG",
             "Ele35_WPTight_Gsf",
             "Ele115_CaloIdVT_GsfTrkIdT",
-            "DoublePhoton70",
             "DoubleEle25_CaloIdL_MW",
         ],
         "Muon" : [
@@ -160,6 +159,8 @@ trgs_for_matching = {
 #   - No unique way to do this
 #   - Note: In order for this to work properly, you should be processing all of the datastes to be used in the analysis
 #   - Otherwise, you may be removing events that show up in other datasets you're not using
+# For Era C which has both, the events in (SingleMuon, DoubleMuon) and (Muon) are exclusive so we do not perform duplicate removal bet
+# For Era C, SingleMuon and DoubleMuon fall in the run ranges of [355800,357399] while Muon falls in [356400,357400]
 exclude_dict = {
     "2016": {
         "DoubleMuon"     : [],
@@ -260,8 +261,10 @@ def add4lmask_wwz(events, year, isData, sample_name):
 
     # Filters
     filter_flags = events.Flag
-    # TODO: Should we have a different list of filters for Run3? Filter effect seems to be quite small
-    filters = filter_flags.goodVertices & filter_flags.globalSuperTightHalo2016Filter & filter_flags.HBHENoiseFilter & filter_flags.HBHENoiseIsoFilter & filter_flags.EcalDeadCellTriggerPrimitiveFilter & filter_flags.BadPFMuonFilter & (((year == "2016")|(year == "2016APV")) | filter_flags.ecalBadCalibFilter) & (isData | filter_flags.eeBadScFilter)
+    if "2022" in year:
+        filters = filter_flags.goodVertices & filter_flags.globalSuperTightHalo2016Filter & filter_flags.EcalDeadCellTriggerPrimitiveFilter & filter_flags.BadPFMuonFilter & filter_flags.ecalBadCalibFilter & filter_flags.BadPFMuonDzFilter & filter_flags.hfNoisyHitsFilter & filter_flags.eeBadScFilter
+    else:
+        filters = filter_flags.goodVertices & filter_flags.globalSuperTightHalo2016Filter & filter_flags.HBHENoiseFilter & filter_flags.HBHENoiseIsoFilter & filter_flags.EcalDeadCellTriggerPrimitiveFilter & filter_flags.BadPFMuonFilter & (((year == "2016")|(year == "2016APV")) | filter_flags.ecalBadCalibFilter) & (isData | filter_flags.eeBadScFilter)
 
     # Lep multiplicity
     nlep_4 = (ak.num(leps) == 4)
