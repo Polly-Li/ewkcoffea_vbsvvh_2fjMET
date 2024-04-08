@@ -215,8 +215,8 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         datasets = ["SingleMuon", "SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG","Muon"]
         # Get the dataset name (used for duplicate removal) and check to make sure it is an expected name
+        dataset = json_name.split('_')[0]
         if isData:
-            dataset = json_name.split('_')[0]
             if dataset not in datasets:
                 raise Exception("ERROR: Unexpected dataset name for data file.")
 
