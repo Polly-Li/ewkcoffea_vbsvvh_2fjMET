@@ -214,8 +214,9 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
         datasets = ["SingleMuon", "SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG","Muon"]
-        dataset = json_name.split('_')[0]
+        # Get the dataset name (used for duplicate removal) and check to make sure it is an expected name
         if isData:
+            dataset = json_name.split('_')[0]
             if dataset not in datasets:
                 raise Exception("ERROR: Unexpected dataset name for data file.")
 
@@ -247,7 +248,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         ################### Lepton selection ####################
 
         # Do the object selection for the WWZ eleectrons
-        ele_presl_mask = os_ec.is_presel_wwz_ele(ele,year,is2022)
+        ele_presl_mask = os_ec.is_presel_wwz_ele(ele,is2022)
         if not is2022:
             ele["topmva"] = os_ec.get_topmva_score_ele(events, year)
             ele["is_tight_lep_for_wwz"] = ((ele.topmva > get_tc_param("topmva_wp_t_e")) & ele_presl_mask)
@@ -255,7 +256,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             ele["is_tight_lep_for_wwz"] = (ele_presl_mask)
 
         # Do the object selection for the WWZ muons
-        mu_presl_mask = os_ec.is_presel_wwz_mu(mu, year, is2022)
+        mu_presl_mask = os_ec.is_presel_wwz_mu(mu, is2022)
         if not is2022:
             mu["topmva"] = os_ec.get_topmva_score_mu(events, year)
             mu["is_tight_lep_for_wwz"] = ((mu.topmva > get_tc_param("topmva_wp_t_m")) & mu_presl_mask)
