@@ -213,10 +213,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             sow_factDown       = -1
 
 
-        datasets = ["SingleMuon", "SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG","Muon"]
         # Get the dataset name (used for duplicate removal) and check to make sure it is an expected name
+        # Get name for MC cases too, since "dataset" is passed to overlap removal function in all cases (though it's not actually used in the MC case)
         dataset = json_name.split('_')[0]
         if isData:
+            datasets = ["SingleMuon", "SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG","Muon"]
             if dataset not in datasets:
                 raise Exception("ERROR: Unexpected dataset name for data file.")
 
