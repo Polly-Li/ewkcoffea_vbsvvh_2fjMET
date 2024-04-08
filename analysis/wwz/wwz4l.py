@@ -176,13 +176,16 @@ class AnalysisProcessor(processor.ProcessorABC):
         year               = self._samples[json_name]["year"]
         xsec               = self._samples[json_name]["xsec"]
         sow                = self._samples[json_name]["nSumOfWeights"]
-        if year in ["2022","2022EE"]:
-            is2022 = True
-        else:
-            is2022 = False
 
+        # Set a flag if this is a 2022 year
+        is2022 = year in ["2022","2022EE"]
+
+        # If this is a 2022 sample, get the era info
         if isData and is2022:
             era = self._samples[json_name]["era"]
+        else:
+            era = None
+
 
         # Get up down weights from input dict
         if (self._do_systematics and not isData):
@@ -486,10 +489,8 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Pass trigger mask
             if isData and is2022:
-                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=str(era))
-            else:
-                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict)
-
+                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=era)
+            # Skip trigger matching requirementmes for R3 for now
             if not is2022:
                 pass_trg = (pass_trg & es_ec.trg_matching(events,year))
 
