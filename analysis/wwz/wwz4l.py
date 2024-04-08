@@ -488,8 +488,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             ######### Masks we need for the selection ##########
 
             # Pass trigger mask
-            if isData and is2022:
-                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=era)
+            pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=era)
             # Skip trigger matching requirementmes for R3 for now
             if not is2022:
                 pass_trg = (pass_trg & es_ec.trg_matching(events,year))
