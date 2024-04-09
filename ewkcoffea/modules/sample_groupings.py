@@ -133,6 +133,49 @@ SAMPLE_DICT_BASE = {
     ],
 }
 
+# The Run3 groupings
+SAMPLE_DICT_BASE_RUN3 = {
+    "WWZ" : ["WWZJetsTo4L2Nu"],
+#    "ZH"  : ["GluGluZHTo2WTo2L2Nu","qqToZHTo2WTo2L2Nu"],
+
+    "ZZ"  : ["ZZTo4l", "ggToZZTo2e2mu", "ggToZZTo2e2tau", "ggToZZTo2mu2tau", "ggToZZTo4e", "ggToZZTo4mu", "ggToZZTo4tau"],
+
+    "ttZ" : [
+        "TTZToLL_M_4to50",
+        "TTZToLL_M_50",
+#        "TTZToQQ",
+    ],
+
+    "tWZ" : ["tWZ4l"], 
+
+    "WZ" : ["WZTo3LNu"],
+
+    "other" : [
+
+        "DYJetsToLL_M_10to50_MLM",
+        "DYJetsToLL_M_50_MLM",
+        #"SSWW",
+        #"ST_antitop_t-channel",
+        #"ST_top_s-channel",
+        #"ST_top_t-channel",
+        "tbarW_noFullHad",
+        "ttHnobb",
+        #"TTTo2L2Nu",
+        #"TTWJetsToLNu",
+        #"TTWJetsToQQ",
+        "tW_noFullHad",
+        #"tZq",
+        "VHnobb",
+        "WJetsToLNu",
+        "WWTo2L2Nu",
+        "WZTo3LNu",
+
+        "WWW",
+        "WZZ",
+        #"ZZZ",
+    ],
+}
+
 # Processes indiviudally
 SAMPLE_DICT_BASE_INDIV = {
     "WWZJetsTo4L2Nu":            ["WWZJetsTo4L2Nu"],
@@ -173,16 +216,71 @@ SAMPLE_DICT_BASE_INDIV = {
     "ZZZ" : ["ZZZ"],
 }
 
+SAMPLE_DICT_BASE_INDIV_RUN3 = {
+    "WWZJetsTo4L2Nu"          : ["WWZJetsTo4L2Nu"],
+#    "GluGluZHTo2WTo2L2Nu"     : ["GluGluZHTo2WTo2L2Nu"],
+#    "qqToZHTo2WTo2L2Nu"       : ["qqToZHTo2WTo2L2Nu"],
+    "ZZTo4l"                  : ["ZZTo4l"],
+    "ggToZZTo2e2mu"           : ["ggToZZTo2e2mu"],
+    "ggToZZTo2e2tau"          : ["ggToZZTo2e2tau"],
+    "ggToZZTo2mu2tau"         : ["ggToZZTo2mu2tau"],
+    "ggToZZTo4e"              : ["ggToZZTo4e"],
+    "ggToZZTo4mu"             : ["ggToZZTo4mu"],
+    "ggToZZTo4tau"            : ["ggToZZTo4tau"],
+    "TTZToLL_M_4to50"         : ["TTZToLL_M_4to50"],
+    "TTZToLL_M_50"            : ["TTZToLL_M_50"],
+    #"TTZToQQ"                 : ["TTZToQQ"],
+    "tWZ4l"                   : ["tWZ4l"], 
+    "WZTo3LNu"                : ["WZTo3LNu"],
+
+    "DYJetsToLL_M_10to50_MLM" : ["DYJetsToLL_M_10to50_MLM"],
+    "DYJetsToLL_M_50_MLM"     : ["DYJetsToLL_M_50_MLM"],
+    #"SSWW"                    : ["SSWW"],
+    #"ST_antitop_t-channel"    : ["ST_antitop_t-channel"],
+    #"ST_top_s-channel"        : ["ST_top_s-channel"],
+    #"ST_top_t-channel"        : ["ST_top_t-channel"],
+    "tbarW_noFullHad"         : ["tbarW_noFullHad"],
+    "ttHnobb"                 : ["ttHnobb"],
+    #"TTTo2L2Nu"               : ["TTTo2L2Nu"],
+    #"TTWJetsToLNu"            : ["TTWJetsToLNu"],
+    #"TTWJetsToQQ"             : ["TTWJetsToQQ"],
+    "tW_noFullHad"            : ["tW_noFullHad"],
+    #"tZq"                     : ["tZq"],
+    "VHnobb"                  : ["VHnobb"],
+    "WJetsToLNu"              : ["WJetsToLNu"],
+    "WWTo2L2Nu"               : ["WWTo2L2Nu"],
+    "WZTo3LNu"                : ["WZTo3LNu"],
+    "WWW"                     : ["WWW"],
+    "WZZ"                     : ["WZZ"],
+    #"ZZZ"                     : ["ZZZ"],
+}
+
 
 ######################## Tools ########################
 
 # Pass dictionary with the base names for the samples, and return with full list for 4 years
-def create_mc_sample_dict(in_dict,year):
+def create_mc_sample_dict(year):
     out_dict = {}
     if year == "all":
+        raise Exception("ERROR: We are not ready to run over Run2 and Run3.")
+        #years = ["UL16APV","UL16","UL17","UL18","2022","2022EE"]
+    if year == "run2":
         years = ["UL16APV","UL16","UL17","UL18"]
+    if year == "run3":
+        years = ["2022","2022EE"]
     else:
         years = [year]
+
+    if ("2022" in years) and ("UL" in years):
+        raise Exception("ERROR: We are not ready to run over a mix of Run2 and Run3")
+    elif "2022" in years:
+        in_dict = SAMPLE_DICT_BASE_RUN3
+    elif "UL" in years:
+        in_dict = SAMPLE_DICT_BASE
+    else:
+        raise Exception("ERROR: Unrecognized year! How exciting.")
+
+
     for proc_group in in_dict.keys():
         out_dict[proc_group] = []
         for proc_base_name in in_dict[proc_group]:
@@ -194,8 +292,12 @@ def create_mc_sample_dict(in_dict,year):
 # Get data sampel dict
 def create_data_sample_dict(year):
     if year == "all":
+        raise Exception("ERROR: We are not ready to run over Run2 and Run3.")
+        #grouping_data = {'data': ["UL16APV_data","UL16_data","UL17_data","UL18_data","2022_data","2022EE_data"]}
+    if year == "run2":
         grouping_data = {'data': ["UL16APV_data","UL16_data","UL17_data","UL18_data"]}
-        #grouping_data = {'data': ["dataUL16APV","dataUL16","dataUL17","dataUL18"]} # TOP22006 format
+    if year == "run3":
+        grouping_data = {'data': ["2022_data","2022EE_data"]}
     else:
         grouping_data = {'data': [f"{year}_data"]}
         #grouping_data = {'data': [f"data{year}"]} # TOP22006 format

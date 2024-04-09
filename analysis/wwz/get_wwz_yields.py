@@ -28,10 +28,9 @@ import yld_dicts_for_comp as yd
 #WZ    = (163, 155, 47) #A39B2F
 #tWZ   = (205, 240, 155) #CDF09B
 #Other = (205, 205, 205) #CDCDCD
-CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"]
+CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F"]
+#CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"]
 #CLR_LST = ["#F09B9B","#00D091","#CDF09B"]
-
-SAMPLE_DICT_BASE = sg.SAMPLE_DICT_BASE
 
 # Names of the cut-based and BDT SRs
 SR_SF_CB = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C"]
@@ -221,7 +220,7 @@ def put_cat_col_sums(yld_dict,sr_sf_lst,sr_of_lst,metrics_names_lst=["Zmetric",S
 
 
 # Print yields
-def print_yields(yld_dict_in,cats_to_print,procs_to_print,ref_dict=yd.EWK_REF_NOSF,print_fom=True,hlines=[]):
+def print_yields(ul_year,yld_dict_in,cats_to_print,procs_to_print,ref_dict=yd.EWK_REF_NOSF,print_fom=True,hlines=[]):
 
     # Get err from var
     def get_err_from_var(in_dict):
@@ -235,6 +234,19 @@ def print_yields(yld_dict_in,cats_to_print,procs_to_print,ref_dict=yd.EWK_REF_NO
         return out_dict
 
     yld_dict = get_err_from_var(yld_dict_in)
+
+    if ul_year == "all":
+        raise Exception("Error: We are not ready to run over Run2 and Run3")
+    if ul_year == "run2":
+        SAMPLE_DICT_BASE = sg.SAMPLE_DICT_BASE
+    if ul_year == "run3":
+        SAMPLE_DICT_BASE = sg.SAMPLE_DICT_BASE_RUN3
+    if ("2022" in ul_year) and ("UL" in ul_year):
+        raise Exception("ERROR: We are not ready to run over a mix of Run2 and Run3")
+    if ("2022" in ul_year):
+        SAMPLE_DICT_BASE = sg.SAMPLE_DICT_BASE_RUN3
+    if ("UL" in ul_year):
+        SAMPLE_DICT_BASE = sg.SAMPLE_DICT_BASE
 
     # Print the yields directly
     mlt.print_latex_yield_table(
@@ -554,10 +566,12 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 if "renorm" not in syst and "fact" not in syst: continue
 
                 # Skip the variations that don't apply (TODO: why are these in the hist to begin with??)
-                if year == "UL16APV": blacklist_years = ["2016","2017","2018"]
-                if year == "UL16": blacklist_years = ["2016APV","2017","2018"]
-                if year == "UL17": blacklist_years = ["2016APV","2016","2018"]
-                if year == "UL18": blacklist_years = ["2016APV","2016","2017"]
+                if year == "UL16APV": blacklist_years = ["2016","2017","2018","2022","2022EE"]
+                if year == "UL16": blacklist_years = ["2016APV","2017","2018","2022","2022EE"]
+                if year == "UL17": blacklist_years = ["2016APV","2016","2018","2022","2022EE"]
+                if year == "UL18": blacklist_years = ["2016APV","2016","2017","2022","2022EE"]
+                if year == "2022": blacklist_years = ["2016APV","2016","2017","2018","2022EE"]
+                if year == "2022EE": blacklist_years = ["2016APV","2016","2017","2018","2022"]
                 if year == "all": blacklist_years = []
                 skip = False
                 for y in blacklist_years:
@@ -680,7 +694,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
         if "counts" in var_name: continue
         if var_name == "nbtagsm": continue
         #if var_name not in BDT_INPUT_LST: continue
-        if var_name != "nleps" and "bdt" not in var_name: continue
+        #if var_name != "nleps" and "bdt" not in var_name: continue
 
         # Get the relevant histogram from the input dict
         #print(f"\n{var_name}")
@@ -694,7 +708,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
             # Skip some of the cats if you want to
             #if "bdt" in cat_name: continue
             #if cat_name not in ["sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn"]: continue # TMP
-            if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]: continue
+            #if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]: continue
             #print(cat_name)
 
             # Make a copy so changes to binning do not propagate to next loop
@@ -790,7 +804,7 @@ def get_background_dict(yld_dict_mc,yld_dict_data,bkg_proc,cr_name,sr_name):
 
 # TODO move to same function as used in datacard maker
 # Wrapper around the background estimation of TFs and yields
-def do_background_estimation(yld_dict_mc,yld_dict_data):
+def do_background_estimation(yld_dict_mc,yld_dict_data,ul_year):
 
     # Map between short name and name to display in table
     kname_dict = {
@@ -812,12 +826,13 @@ def do_background_estimation(yld_dict_mc,yld_dict_data):
     print_dict["ZZ SR_SF"]  = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ","cr_4l_sf","sr_sf_all")
 
     # Do the ttZ and ZZ estimation for BDT SRs
-    for bdt_sr in SR_OF_BDT:
-        print_dict[f"ttZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_of",bdt_sr)
-        print_dict[f"ZZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ","cr_4l_sf",bdt_sr)
-    for bdt_sr in SR_SF_BDT:
-        print_dict[f"ttZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_sf_offZ_met80",bdt_sr)
-        print_dict[f"ZZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ", "cr_4l_sf",bdt_sr)
+    if (ul_year == "run2") or (("UL" in ul_year) and ("2022" not in ul_year)):
+        for bdt_sr in SR_OF_BDT:
+            print_dict[f"ttZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_of",bdt_sr)
+            print_dict[f"ZZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ","cr_4l_sf",bdt_sr)
+        for bdt_sr in SR_SF_BDT:
+            print_dict[f"ttZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_sf_offZ_met80",bdt_sr)
+            print_dict[f"ZZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ", "cr_4l_sf",bdt_sr)
 
     for k in print_dict:
         print(k,"\n",print_dict[k])
@@ -851,13 +866,13 @@ def main():
     parser.add_argument('-y', "--get-yields", action='store_true', help = "Get yields from the pkl file")
     parser.add_argument('-p', "--make-plots", action='store_true', help = "Make plots from the pkl file")
     parser.add_argument('-b', "--get-backgrounds", action='store_true', help = "Get background estimations")
-    parser.add_argument('-u', "--ul-year", default='all', help = "Which year to process", choices=["all","UL16APV","UL16","UL17","UL18"])
+    parser.add_argument('-u', "--ul-year", default='all', help = "Which year to process", choices=["all","UL16APV","UL16","UL17","UL18","2022","2022EE","run3","run2"])
     args = parser.parse_args()
 
     # Get the counts from the input hiso
     histo_dict = pickle.load(gzip.open(args.pkl_file_path))
 
-    sample_dict_mc = sg.create_mc_sample_dict(SAMPLE_DICT_BASE,args.ul_year)
+    sample_dict_mc = sg.create_mc_sample_dict(args.ul_year)
     sample_dict_data = sg.create_data_sample_dict(args.ul_year)
     out_path = "plots" # Could make this an argument
 
@@ -874,7 +889,7 @@ def main():
         yld_dict_data = get_yields(histo_dict,sample_dict_data,quiet=True,blind=True)
         yld_dict_mc   = get_yields(histo_dict,sample_dict_mc,quiet=True)
         put_cat_col_sums(yld_dict_mc, sr_sf_lst=SR_SF_CB, sr_of_lst=SR_OF_CB)
-        do_background_estimation(yld_dict_mc,yld_dict_data)
+        do_background_estimation(yld_dict_mc,yld_dict_data,args.ul_year)
 
 
     # Wrapper around the code for getting the yields for sr and bkg samples
@@ -883,9 +898,10 @@ def main():
         # Get the yield dict and put the extra columns and rows into it
         yld_dict = get_yields(histo_dict,sample_dict_mc)
         put_proc_row_sums(yld_dict, SR_SF_CB+SR_OF_CB)
-        put_proc_row_sums(yld_dict, SR_SF_BDT+SR_OF_BDT)
         put_cat_col_sums(yld_dict, sr_sf_lst=SR_SF_CB, sr_of_lst=SR_OF_CB, tag="_cutbased")
-        put_cat_col_sums(yld_dict, sr_sf_lst=SR_SF_BDT, sr_of_lst=SR_OF_BDT, tag="_bdt")
+        if (args.ul_year == "run2") or (("UL" in args.ul_year) and ("2022" not in args.ul_year)):
+            put_proc_row_sums(yld_dict, SR_SF_BDT+SR_OF_BDT)
+            put_cat_col_sums(yld_dict, sr_sf_lst=SR_SF_BDT, sr_of_lst=SR_OF_BDT, tag="_bdt")
         #print(yld_dict)
         #exit()
 
@@ -894,19 +910,19 @@ def main():
         sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
         #sr_cats_to_print = ["sr_sf_all_cutbased" , "sr_of_all_cutbased" , "sr_all_cutbased" , "sr_4l_sf_presel" , "sr_4l_sf_trn" , "sr_4l_of_presel"] # Preselection SR categories
         procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
-        print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines,ref_dict=yd.EWK_REF_NOSF)
+        print_yields(args.ul_year,yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines,ref_dict=yd.EWK_REF_NOSF)
 
         # Dump latex table for BDT
         #hlines = [6,7,15,16]
         #sr_cats_to_print = SR_SF_BDT + ["sr_sf_all_bdt"] + SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"]
         #procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
-        #print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
+        #print_yields(args.ul_year,yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
 
         # Compare BDT yields against Keegan ref yields
         #keegan_ref = utils.put_none_errs(copy.deepcopy(yd.KEEGAN_BDT_YLDS))
         #sr_cats_to_print = SR_SF_BDT + SR_OF_BDT
         #procs_to_print = ["WWZ","ZH","ZZ","ttZ","tWZ","WZ","other"]
-        #print_yields(yld_dict,sr_cats_to_print,procs_to_print,ref_dict=keegan_ref,print_fom=False)
+        #print_yields(args.ul_year,yld_dict,sr_cats_to_print,procs_to_print,ref_dict=keegan_ref,print_fom=False)
 
 
         # Dump yield dict to json
