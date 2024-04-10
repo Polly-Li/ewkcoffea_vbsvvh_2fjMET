@@ -143,10 +143,10 @@ SAMPLE_DICT_BASE_RUN3 = {
     "ttZ" : [
         "TTZToLL_M_4to50",
         "TTZToLL_M_50",
-#        "TTZToQQ",
+        #"TTZToQQ",
     ],
 
-    "tWZ" : ["tWZ4l"], 
+    "tWZ" : ["tWZ4l"],
 
     "WZ" : ["WZTo3LNu"],
 
@@ -230,7 +230,7 @@ SAMPLE_DICT_BASE_INDIV_RUN3 = {
     "TTZToLL_M_4to50"         : ["TTZToLL_M_4to50"],
     "TTZToLL_M_50"            : ["TTZToLL_M_50"],
     #"TTZToQQ"                 : ["TTZToQQ"],
-    "tWZ4l"                   : ["tWZ4l"], 
+    "tWZ4l"                   : ["tWZ4l"],
     "WZTo3LNu"                : ["WZTo3LNu"],
 
     "DYJetsToLL_M_10to50_MLM" : ["DYJetsToLL_M_10to50_MLM"],
@@ -249,7 +249,6 @@ SAMPLE_DICT_BASE_INDIV_RUN3 = {
     "VHnobb"                  : ["VHnobb"],
     "WJetsToLNu"              : ["WJetsToLNu"],
     "WWTo2L2Nu"               : ["WWTo2L2Nu"],
-    "WZTo3LNu"                : ["WZTo3LNu"],
     "WWW"                     : ["WWW"],
     "WZZ"                     : ["WZZ"],
     #"ZZZ"                     : ["ZZZ"],
