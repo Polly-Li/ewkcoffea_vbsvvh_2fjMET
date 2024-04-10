@@ -136,7 +136,7 @@ SAMPLE_DICT_BASE = {
 # The Run3 groupings
 SAMPLE_DICT_BASE_RUN3 = {
     "WWZ" : ["WWZJetsTo4L2Nu"],
-#    "ZH"  : ["GluGluZHTo2WTo2L2Nu","qqToZHTo2WTo2L2Nu"],
+    "ZH"  : ["GluGluZHTo2WTo2L2Nu","qqToZHTo2WTo2L2Nu"],
 
     "ZZ"  : ["ZZTo4l", "ggToZZTo2e2mu", "ggToZZTo2e2tau", "ggToZZTo2mu2tau", "ggToZZTo4e", "ggToZZTo4mu", "ggToZZTo4tau"],
 
@@ -218,8 +218,8 @@ SAMPLE_DICT_BASE_INDIV = {
 
 SAMPLE_DICT_BASE_INDIV_RUN3 = {
     "WWZJetsTo4L2Nu"          : ["WWZJetsTo4L2Nu"],
-#    "GluGluZHTo2WTo2L2Nu"     : ["GluGluZHTo2WTo2L2Nu"],
-#    "qqToZHTo2WTo2L2Nu"       : ["qqToZHTo2WTo2L2Nu"],
+    "GluGluZHTo2WTo2L2Nu"     : ["GluGluZHTo2WTo2L2Nu"],
+    "qqToZHTo2WTo2L2Nu"       : ["qqToZHTo2WTo2L2Nu"],
     "ZZTo4l"                  : ["ZZTo4l"],
     "ggToZZTo2e2mu"           : ["ggToZZTo2e2mu"],
     "ggToZZTo2e2tau"          : ["ggToZZTo2e2tau"],

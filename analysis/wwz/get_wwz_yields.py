@@ -28,8 +28,7 @@ import yld_dicts_for_comp as yd
 #WZ    = (163, 155, 47) #A39B2F
 #tWZ   = (205, 240, 155) #CDF09B
 #Other = (205, 205, 205) #CDCDCD
-CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F"]
-#CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"]
+CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"]
 #CLR_LST = ["#F09B9B","#00D091","#CDF09B"]
 
 # Names of the cut-based and BDT SRs

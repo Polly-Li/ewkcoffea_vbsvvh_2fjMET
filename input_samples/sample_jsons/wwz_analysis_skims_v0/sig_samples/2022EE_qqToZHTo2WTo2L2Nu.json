@@ -1,8 +1,8 @@
 {
-    "xsec": 0.00461,
+    "xsec": 0.0018639,
     "year": "2022EE",
     "treeName": "Events",
-    "histAxisName": "2022EE_ZH",
+    "histAxisName": "2022EE_qqToZHTo2WTo2L2Nu",
     "options": "",
     "WCnames": [],
     "files": [

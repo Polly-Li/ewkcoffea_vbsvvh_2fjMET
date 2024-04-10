@@ -484,16 +484,16 @@ central_2022_sig_dict = {
         "histAxisName": "2022_WWZJetsTo4L2Nu",
         "xsecName": "WWZ4l_13p6TeV",
     },
-#    "2022_qqToZHTo2WTo2L2Nu" : {
-#        "path" : "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/ZH_ZtoAll_Hto2Wto2L2Nu_M-125_TuneCP5_13p6TeV_powheg-minlo-HZJ-jhugenv752-pythia8_Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2_NANOAODSIM_Run3_MC_4L_04022024_Loose",
-#        "histAxisName": "2022_qqToZHTo2WTo2L2Nu",
-#        "xsecName": "ZHToHtoWWto2L2Nu_13p6TeV",
-#    },
-#    "2022_GluGluZHTo2WTo2L2Nu" : {
-#        "path" : "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/....",
-#        "histAxisName": "2022_GluGluZHTo2WTo2L2Nu",
-#        "xsecName": "PUT XSEC HERE",
-#    },
+    "2022_qqToZHTo2WTo2L2Nu" : {
+        "path" : "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/ZH_ZtoAll_Hto2Wto2L2Nu_M-125_TuneCP5_13p6TeV_powheg-minlo-HZJ-jhugenv752-pythia8_Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2_NANOAODSIM_Run3_MC_4L_04022024_Loose",
+        "histAxisName": "2022_qqToZHTo2WTo2L2Nu",
+        "xsecName": "ZHToHtoWWto2L2Nu_13p6TeV",
+    },
+    "2022_GluGluZHTo2WTo2L2Nu" : {
+        "path" : "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/GluGluZH_ZtoAll_Hto2Wto2L2Nu_M-125_TuneCP5_13p6TeV_powheg-jhugenv752-pythia8_Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2_NANOAODSIM_Run3_MC_4L_04022024_Loose/",
+        "histAxisName": "2022_GluGluZHTo2WTo2L2Nu",
+        "xsecName": "GluGluZHToHtoWWto2L2Nu_13p6TeV",
+    },
 }
 
 central_2022EE_sig_dict = {
@@ -502,16 +502,16 @@ central_2022EE_sig_dict = {
         "histAxisName": "2022EE_WWZJetsTo4L2Nu",
         "xsecName": "WWZ4l_13p6TeV",
     },
-#    "2022EE_qqToZHTo2WTo2L2Nu" : {
-#        "path" : "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/ZH_ZtoAll_Hto2Wto2L2Nu_M-125_TuneCP5_13p6TeV_powheg-minlo-HZJ-jhugenv752-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_Run3_MC_4L_04022024_Loose",
-#        "histAxisName": "2022EE_qqToZHTo2WTo2L2Nu",
-#        "xsecName": "ZHToHtoWWto2L2Nu_13p6TeV",
-#    },
-#    "2022EE_GluGluZHTo2WTo2L2Nu" : {
-#        "path" : "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/....",
-#        "histAxisName": "2022EE_GluGluZHTo2WTo2L2Nu",
-#        "xsecName": "PUT XSEC HERE",
-#    },
+    "2022EE_qqToZHTo2WTo2L2Nu" : {
+        "path" : "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/ZH_ZtoAll_Hto2Wto2L2Nu_M-125_TuneCP5_13p6TeV_powheg-minlo-HZJ-jhugenv752-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_Run3_MC_4L_04022024_Loose",
+        "histAxisName": "2022EE_qqToZHTo2WTo2L2Nu",
+        "xsecName": "ZHToHtoWWto2L2Nu_13p6TeV",
+    },
+    "2022EE_GluGluZHTo2WTo2L2Nu" : {
+        "path" : "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/GluGluZH_ZtoAll_Hto2Wto2L2Nu_M-125_TuneCP5_13p6TeV_powheg-jhugenv752-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_Run3_MC_4L_04022024_Loose/",
+        "histAxisName": "2022EE_GluGluZHTo2WTo2L2Nu",
+        "xsecName": "GluGluZHToHtoWWto2L2Nu_13p6TeV",
+    },
 }
 
 
@@ -602,22 +602,22 @@ def main():
     #make_jsons_for_dict_of_samples(data_UL16, "/ceph/cms/","2016", out_dir_data_16,on_das=False)
     #make_jsons_for_dict_of_samples(data_UL17, "/ceph/cms/","2017", out_dir_data_17,on_das=False)
     #make_jsons_for_dict_of_samples(data_UL18, "/ceph/cms/","2018", out_dir_data_18,on_das=False)
-    make_jsons_for_dict_of_samples(data_2022, "/cmsuf/data/","2022", out_dir_data_22,era_op=1,on_das=False)
-    make_jsons_for_dict_of_samples(data_2022EE, "/cmsuf/data/","2022EE", out_dir_data_22EE,era_op=1,on_das=False)
+    #make_jsons_for_dict_of_samples(data_2022, "/cmsuf/data/","2022", out_dir_data_22,era_op=1,on_das=False)
+    #make_jsons_for_dict_of_samples(data_2022EE, "/cmsuf/data/","2022EE", out_dir_data_22EE,era_op=1,on_das=False)
 
     # Make configs for bkg samples
     #make_jsons_for_dict_of_samples(central_UL16APV_22006_dict, "/cmsuf/data/","2016APV", out_dir_bkg,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL16_22006_dict, "/cmsuf/data/","2016", out_dir_bkg,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL17_22006_dict, "/cmsuf/data/","2017", out_dir_bkg,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL18_22006_dict, "/cmsuf/data/","2018", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_2022_dict, "/cmsuf/data/","2022", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_2022EE_dict, "/cmsuf/data/","2022EE", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_2022_dict, "/cmsuf/data/","2022", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_2022EE_dict, "/cmsuf/data/","2022EE", out_dir_bkg,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL16APV_bkg_dict, "/ceph/cms/","2016APV", out_dir_bkg,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL16_bkg_dict, "/ceph/cms/","2016", out_dir_bkg,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL17_bkg_dict, "/ceph/cms/","2017", out_dir_bkg,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL18_bkg_dict, "/ceph/cms/","2018", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_2022_bkg_dict, "/cmsuf/data/","2022", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_2022EE_bkg_dict, "/cmsuf/data/","2022EE", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_2022_bkg_dict, "/cmsuf/data/","2022", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_2022EE_bkg_dict, "/cmsuf/data/","2022EE", out_dir_bkg,on_das=False)
 
     # Make configs for sig samples
     #make_jsons_for_dict_of_samples(central_UL16APV_sig_dict, "/ceph/cms/","2016APV", out_dir_sig,on_das=False)
