@@ -847,7 +847,7 @@ def main():
     # Set up the command line parser
     parser = argparse.ArgumentParser()
     parser.add_argument("pkl_file_path", help = "The path to the pkl file")
-    parser.add_argument("-o", "--output-path", default=".", help = "The path the output files should be saved to")
+    parser.add_argument("-o", "--output-path", default="plots", help = "The path the output files should be saved to")
     parser.add_argument('-y', "--get-yields", action='store_true', help = "Get yields from the pkl file")
     parser.add_argument('-p', "--make-plots", action='store_true', help = "Make plots from the pkl file")
     parser.add_argument('-b', "--get-backgrounds", action='store_true', help = "Get background estimations")
@@ -859,7 +859,7 @@ def main():
 
     sample_dict_mc = sg.create_mc_sample_dict(args.ul_year)
     sample_dict_data = sg.create_data_sample_dict(args.ul_year)
-    out_path = "plots" # Could make this an argument
+    out_path = args.output_path
 
 
     # Wrapper around the code for getting the raw counts and dump to latex table
