@@ -274,7 +274,7 @@ def create_mc_sample_dict(year):
         years = [year]
         if year in r2_years:
             sample_dict_base = SAMPLE_DICT_BASE_RUN2
-        elif yeaer in r3_years:
+        elif year in r3_years:
             sample_dict_base = SAMPLE_DICT_BASE_RUN3
         else:
             raise Exception(f"ERROR: Unrecognized year \"{year}\". Exiting.")
