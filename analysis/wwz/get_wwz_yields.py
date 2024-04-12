@@ -234,24 +234,11 @@ def print_yields(ul_year,yld_dict_in,cats_to_print,procs_to_print,ref_dict=yd.EW
 
     yld_dict = get_err_from_var(yld_dict_in)
 
-    if ul_year == "all":
-        raise Exception("Error: We are not ready to run over Run2 and Run3")
-    if ul_year == "run2":
-        SAMPLE_DICT_BASE = sg.SAMPLE_DICT_BASE
-    if ul_year == "run3":
-        SAMPLE_DICT_BASE = sg.SAMPLE_DICT_BASE_RUN3
-    if ("2022" in ul_year) and ("UL" in ul_year):
-        raise Exception("ERROR: We are not ready to run over a mix of Run2 and Run3")
-    if ("2022" in ul_year):
-        SAMPLE_DICT_BASE = sg.SAMPLE_DICT_BASE_RUN3
-    if ("UL" in ul_year):
-        SAMPLE_DICT_BASE = sg.SAMPLE_DICT_BASE
-
     # Print the yields directly
     mlt.print_latex_yield_table(
         yld_dict,
         tag="All yields",
-        key_order=SAMPLE_DICT_BASE.keys(),
+        key_order=procs_to_print,
         subkey_order=cats_to_print,
         print_begin_info=True,
         print_end_info=True,
@@ -617,7 +604,7 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
 
 
 # A function for making a summary plot of SR yields
-def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data,ana_type="cb"):
+def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data,year,ana_type="cb"):
 
     # Set variables based on cut based or bdt
     if ana_type == "cb":
@@ -642,9 +629,8 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data,ana_type="cb"):
     )
 
     # Get the yield dict
-    year = "all"
     histo = histo_dict["njets"]
-    sample_names_dict_mc   = sg.create_mc_sample_dict(sg.SAMPLE_DICT_BASE,"all")
+    sample_names_dict_mc   = sg.create_mc_sample_dict(year)
     sample_names_dict_data = sg.create_data_sample_dict(year)
     yld_dict_mc   = yt.get_yields(histo,sample_names_dict_mc)
     yld_dict_data = yt.get_yields(histo,sample_names_dict_data)
@@ -865,7 +851,7 @@ def main():
     parser.add_argument('-y', "--get-yields", action='store_true', help = "Get yields from the pkl file")
     parser.add_argument('-p', "--make-plots", action='store_true', help = "Make plots from the pkl file")
     parser.add_argument('-b', "--get-backgrounds", action='store_true', help = "Get background estimations")
-    parser.add_argument('-u', "--ul-year", default='all', help = "Which year to process", choices=["all","UL16APV","UL16","UL17","UL18","2022","2022EE","run3","run2"])
+    parser.add_argument('-u', "--ul-year", default='run2', help = "Which year to process", choices=["all","run2","run3","UL16APV","UL16","UL17","UL18","2022","2022EE"])
     args = parser.parse_args()
 
     # Get the counts from the input hiso
@@ -935,7 +921,7 @@ def main():
     if args.make_plots:
         make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path,apply_nsf_to_cr=False)
         #make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
-        #make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data,ana_type="cb") # Make plot of all SR yields in one plot
+        #make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data,args.ul_year,ana_type="cb") # Make plot of all SR yields in one plot
 
 
 

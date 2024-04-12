@@ -83,7 +83,7 @@ BKG_TF_MAP = {
 
 
 # The "official" groupings
-SAMPLE_DICT_BASE = {
+SAMPLE_DICT_BASE_RUN2 = {
     "WWZ" : ["WWZJetsTo4L2Nu"],
     "ZH"  : ["GluGluZH","qqToZHToZTo2L"],
 
@@ -260,32 +260,31 @@ SAMPLE_DICT_BASE_INDIV_RUN3 = {
 # Pass dictionary with the base names for the samples, and return with full list for 4 years
 def create_mc_sample_dict(year):
     out_dict = {}
+    r2_years = ["UL16APV","UL16","UL17","UL18"]
+    r3_years = ["2022","2022EE"]
     if year == "all":
-        raise Exception("ERROR: We are not ready to run over Run2 and Run3.")
-        #years = ["UL16APV","UL16","UL17","UL18","2022","2022EE"]
-    if year == "run2":
-        years = ["UL16APV","UL16","UL17","UL18"]
-    if year == "run3":
-        years = ["2022","2022EE"]
+        raise Exception("ERROR: We are not ready to sum Run2 and Run3.")
+    elif year == "run2":
+        years = r2_years
+        sample_dict_base = SAMPLE_DICT_BASE_RUN2
+    elif year == "run3":
+        years = r3_years
+        sample_dict_base = SAMPLE_DICT_BASE_RUN3
     else:
         years = [year]
+        if year in r2_years:
+            sample_dict_base = SAMPLE_DICT_BASE_RUN2
+        elif yeaer in r3_years:
+            sample_dict_base = SAMPLE_DICT_BASE_RUN3
+        else:
+            raise Exception(f"ERROR: Unrecognized year \"{year}\". Exiting.")
 
-    if ("2022" in years) and ("UL" in years):
-        raise Exception("ERROR: We are not ready to run over a mix of Run2 and Run3")
-    elif "2022" in years:
-        in_dict = SAMPLE_DICT_BASE_RUN3
-    elif "UL" in years:
-        in_dict = SAMPLE_DICT_BASE
-    else:
-        raise Exception("ERROR: Unrecognized year! How exciting.")
-
-
-    for proc_group in in_dict.keys():
+    for proc_group in sample_dict_base.keys():
         out_dict[proc_group] = []
-        for proc_base_name in in_dict[proc_group]:
+        for proc_base_name in sample_dict_base[proc_group]:
             for year_str in years:
                 out_dict[proc_group].append(f"{year_str}_{proc_base_name}")
-                #out_dict[proc_group].append(f"{proc_base_name}{year_str}") # TOP22006 format
+
     return out_dict
 
 # Get data sampel dict
@@ -293,12 +292,11 @@ def create_data_sample_dict(year):
     if year == "all":
         raise Exception("ERROR: We are not ready to run over Run2 and Run3.")
         #grouping_data = {'data': ["UL16APV_data","UL16_data","UL17_data","UL18_data","2022_data","2022EE_data"]}
-    if year == "run2":
+    elif year == "run2":
         grouping_data = {'data': ["UL16APV_data","UL16_data","UL17_data","UL18_data"]}
-    if year == "run3":
+    elif year == "run3":
         grouping_data = {'data': ["2022_data","2022EE_data"]}
     else:
         grouping_data = {'data': [f"{year}_data"]}
-        #grouping_data = {'data': [f"data{year}"]} # TOP22006 format
     return grouping_data
 
