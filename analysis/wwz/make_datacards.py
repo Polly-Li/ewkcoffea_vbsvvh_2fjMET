@@ -347,7 +347,7 @@ def main():
     parser.add_argument("--no-tf",action="store_true",help="Skip doing the data-driven background estimation")
     parser.add_argument("--bdt",action="store_true",help="Use BDT SR bins")
     parser.add_argument("--unblind",action="store_true",help="If set, use real data, otherwise use asimov data")
-    parser.add_argument('-u', "--year", default='run2', help = "Which years to process", choices=["run2","run3"])
+    parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["run2","run3"])
 
     args = parser.parse_args()
     in_file = args.in_file_name
@@ -356,13 +356,13 @@ def main():
     skip_tf = args.no_tf
     use_bdt_sr = args.bdt
     unblind = args.unblind
-    year = args.year
+    run = args.run
 
     # Check args
     if out_dir != "." and not os.path.exists(out_dir):
         print(f"Making dir \"{out_dir}\"")
         os.makedirs(out_dir)
-    if year == "run3" and do_nuis:
+    if run == "run3" and do_nuis:
         raise Exception("Systematics are not ready for R3 yet.")
 
     # Get the histo
@@ -370,14 +370,13 @@ def main():
     histo = f["njets"] # Let's use njets
 
     # Get the dictionary defining the mc sample grouping
-    sample_names_dict_data = {"FR" : sg.create_data_sample_dict(year)}
-    sample_names_dict_mc = {
-        "UL16APV" : sg.create_mc_sample_dict("UL16APV"),
-        "UL16"    : sg.create_mc_sample_dict("UL16"),
-        "UL17"    : sg.create_mc_sample_dict("UL17"),
-        "UL18"    : sg.create_mc_sample_dict("UL18"),
-        "FR"     : sg.create_mc_sample_dict(year),
-    }
+    sample_names_dict_data = {"FR" : sg.create_data_sample_dict(run)}
+    sample_names_dict_mc   = {"FR" : sg.create_mc_sample_dict(run)}
+    if run == "run2":
+        sample_names_dict_mc["UL16APV"] = sg.create_mc_sample_dict("UL16APV")
+        sample_names_dict_mc["UL16"]    = sg.create_mc_sample_dict("UL16")
+        sample_names_dict_mc["UL17"]    = sg.create_mc_sample_dict("UL17")
+        sample_names_dict_mc["UL18"]    = sg.create_mc_sample_dict("UL18")
 
     # Get yield dictionary (nested in the order: year,cat,syst,proc)
     yld_dict_mc_allyears = {}
