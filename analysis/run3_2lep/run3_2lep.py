@@ -282,8 +282,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             events["jets_run3_2lep"] = jets_run3_2lep
             weights_obj_base_for_kinematics_syst = copy.deepcopy(weights_obj_base)
             if not isData:
-                ewk_corrections.run3_pu_attach(pileup,year)
-                weights_obj_base_for_kinematics_syst.add("pu_corr", pileup.pileup_corr)
+                weights_obj_base_for_kinematics_syst.add("pu_corr", ewk_corrections.run3_pu_attach(pileup,year,"nominal"))
                 weights_obj_base_for_kinematics_syst.add("lepSF_muon", events.muon_sf)
                 weights_obj_base_for_kinematics_syst.add("lepSF_ele", events.ele_sf)
 
