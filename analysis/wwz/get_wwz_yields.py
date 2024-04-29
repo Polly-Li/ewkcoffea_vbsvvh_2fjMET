@@ -928,7 +928,7 @@ def main():
 
 
     # Make plots
-    if args.make_plots:
+    #if args.make_plots:
         #make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path,apply_nsf_to_cr=False)
         #make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
         #make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data,args.ul_year,ana_type="cb") # Make plot of all SR yields in one plot
