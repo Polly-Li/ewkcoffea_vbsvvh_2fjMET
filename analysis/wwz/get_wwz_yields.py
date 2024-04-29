@@ -921,10 +921,10 @@ def main():
 
 
         # Dump yield dict to json
-        #json_name = "process_yields.json" # Could be an argument
-        #json_name = os.path.join(out_path,json_name)
-        #with open(json_name,"w") as out_file: json.dump(yld_dict, out_file, indent=4)
-        #print(f"\nSaved json file: {json_name}\n")
+        json_name = "process_yields.json" # Could be an argument
+        json_name = os.path.join(out_path,json_name)
+        with open(json_name,"w") as out_file: json.dump(yld_dict, out_file, indent=4)
+        print(f"\nSaved json file: {json_name}\n")
 
 
     # Make plots
