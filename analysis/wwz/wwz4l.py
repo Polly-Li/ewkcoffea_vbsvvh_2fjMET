@@ -721,23 +721,26 @@ class AnalysisProcessor(processor.ProcessorABC):
 
                 ### BDT SRs ###
                 # SF BDT SRs
-                bdt_sf_1 = ((bdt_sf_wwz > 0.8) & (bdt_sf_zh < -0.6))
-                bdt_sf_2 = ((bdt_sf_wwz >= 0.6) & (bdt_sf_wwz <= 0.8) & (bdt_sf_zh < -0.6))
-                bdt_sf_3 = ((bdt_sf_wwz > 0.8) & (bdt_sf_zh > 0.9))
-                bdt_sf_4 = ((bdt_sf_wwz >= 0.5) & (bdt_sf_wwz <= 0.8) & (bdt_sf_zh > 0.9))
-                bdt_sf_5 = ((bdt_sf_wwz >= 0.0) & (bdt_sf_wwz < 0.6) & (bdt_sf_zh < -0.8))
-                bdt_sf_1or2or3or4or5 = (bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4 | bdt_sf_5)
-                bdt_sf_6 = ((bdt_sf_wwz > 0.0) & ~(bdt_sf_1or2or3or4or5) & (bdt_sf_zh > -0.8))
-                bdt_sf_7 = (bdt_sf_wwz < 0.0)
+                xax = bdt_sf_wwz
+                yax = bdt_sf_zh
+                bdt_sf_1 = (xax > 0.8)  & (yax < -0.6)
+                bdt_sf_2 = (xax > 0.8)  & (yax < 0.8)  & ~(bdt_sf_1)
+                bdt_sf_3 = (xax > 0.6)  & (yax < -0.3) & ~(bdt_sf_1 | bdt_sf_2)
+                bdt_sf_4 = (xax > 0.7)  & (yax > 0.8)  & ~(bdt_sf_1 | bdt_sf_2 | bdt_sf_3)
+                bdt_sf_5 = (xax > -1.0) & (yax > 0.8)  & ~(bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4)
+                bdt_sf_6 = (xax > -0.2) & (yax > -0.3) & ~(bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4 | bdt_sf_5)
+                bdt_sf_7 = ~(bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4 | bdt_sf_5 | bdt_sf_6)
                 # SF BDT SRs
-                bdt_of_1 = ((bdt_of_wwz > 0.8) & (bdt_of_zh < -0.6))
-                bdt_of_2 = ((bdt_of_wwz >= 0.5) & (bdt_of_wwz <= 0.8) & (bdt_of_zh < -0.6))
-                bdt_of_3 = ((bdt_of_wwz > 0.6) & (bdt_of_zh > 0.8))
-                bdt_of_4 = ((bdt_of_wwz >= 0.2) & (bdt_of_wwz <= 0.6) & (bdt_of_zh > 0.8))
-                bdt_of_5 = ((bdt_of_wwz > 0.0) & ~bdt_of_1 & ~bdt_of_2 & (bdt_of_zh < 0.0))
-                bdt_of_6 = ((bdt_of_wwz >= -0.4) & (bdt_of_wwz < 0) & (bdt_of_zh < -0.8))
-                bdt_of_7 = (~bdt_of_3 & ~bdt_of_4 & (bdt_of_zh > 0))
-                bdt_of_8 = ((bdt_of_wwz < 0) & ~bdt_of_6 & (bdt_of_zh < 0.0))
+                xax = bdt_of_wwz
+                yax = bdt_of_zh
+                bdt_of_1 = (xax > 0.5)  & (yax < -0.5)
+                bdt_of_2 = (xax > 0.5)  & (yax < 0.7)  & ~(bdt_of_1)
+                bdt_of_3 = (xax > -1.0) & (yax > 0.7)  & ~(bdt_of_1 | bdt_of_2)
+                bdt_of_4 = (xax > -0.1) & (yax < -0.9) & ~(bdt_of_1 | bdt_of_2 | bdt_of_3)
+                bdt_of_5 = (xax > -0.1) & (yax < -0.7) & ~(bdt_of_1 | bdt_of_2 | bdt_of_3 | bdt_of_4)
+                bdt_of_6 = (xax > -0.1) & (yax < 0.7)  & ~(bdt_of_1 | bdt_of_2 | bdt_of_3 | bdt_of_4 | bdt_of_5)
+                bdt_of_7 = (xax > -0.5) & (yax < 0.7)  & ~(bdt_of_1 | bdt_of_2 | bdt_of_3 | bdt_of_4 | bdt_of_5 | bdt_of_6)
+                bdt_of_8 = ~(bdt_of_1 | bdt_of_2 | bdt_of_3 | bdt_of_4 | bdt_of_5 | bdt_of_6 | bdt_of_7)
 
                 # Put the bdt variables into the dict of variables too
                 dense_variables_dict["bdt_of_wwz_raw"] = bdt_of_wwz_raw

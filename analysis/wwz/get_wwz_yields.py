@@ -610,7 +610,7 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data,year,ana_type="cb"):
     if ana_type == "cb":
         sr_lst  = sg.CAT_LST_CB
         hist_label = "Cut-based SRs"
-        y_max = 9
+        y_max = 4
         fig_size = (12,7)
     elif ana_type == "bdt":
         sr_lst  = sg.CAT_LST_BDT
@@ -727,12 +727,21 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
             ######
             # Print stuff if you want to
             #if (cat_name == "cr_4l_sf" or cat_name == "cr_4l_btag_of" or cat_name=="cr_4l_btag_sf_offZ_met80") and var_name == "nleps":
-            #    print(f"\n{cat_name} {var_name}:")
-            #    print("Yields")
-            #    print("mc:",sum(sum(histo_grouped_mc.values(flow=True))))
-            #    print("data:",sum(sum(histo_grouped_data.values(flow=True))))
-            #    print("data/mc:",sum(sum(histo_grouped_data.values(flow=True))) / sum(sum(histo_grouped_mc.values(flow=True))) )
-            #continue
+                #print(f"\n{cat_name} {var_name}:")
+                #print("Yields")
+                #data = sum(sum(histo_grouped_data.values(flow=True)))
+                #data_error = sum(sum(histo_grouped_data.variances(flow=True))) ** 0.5
+                #mc = sum(sum(histo_grouped_mc.values(flow=True)))
+                #mc_error = sum(sum(histo_grouped_mc.variances(flow=True))) ** 0.5
+                #data_over_mc_ratio = data / mc
+                #data_over_mc_ratio_error = data_over_mc_ratio * ((data_error / data)**2 + (mc_error / mc)**2)**0.5
+                #print("mc:",mc)
+                #print("mc Error:",mc_error)
+                #print("data:",data)
+                #print("data Error:",data_error)
+                #print("data/mc:", data_over_mc_ratio)
+                #print("data/mc Error:", data_over_mc_ratio_error)
+            continue
             #####
 
             # Merge overflow into last bin (so it shows up in the plot)
@@ -741,6 +750,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
 
             # Make figure
             title = f"{cat_name}_{var_name}"
+            print("Trying to Make: ",title)
             if "cr" in title:
                 fig = make_cr_fig(histo_grouped_mc,histo_grouped_data,title=title)
             else:
@@ -887,15 +897,15 @@ def main():
         if (args.ul_year == "run2") or (("UL" in args.ul_year) and ("2022" not in args.ul_year)):
             put_proc_row_sums(yld_dict, SR_SF_BDT+SR_OF_BDT)
             put_cat_col_sums(yld_dict, sr_sf_lst=SR_SF_BDT, sr_of_lst=SR_OF_BDT, tag="_bdt")
-        #print(yld_dict)
-        #exit()
+        print(yld_dict)
+        exit()
 
         # Dump latex table for cut based
-        hlines = [2,3,7,8]
-        sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
+        #hlines = [2,3,7,8]
+        #sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
         #sr_cats_to_print = ["sr_sf_all_cutbased" , "sr_of_all_cutbased" , "sr_all_cutbased" , "sr_4l_sf_presel" , "sr_4l_sf_trn" , "sr_4l_of_presel"] # Preselection SR categories
-        procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
-        print_yields(args.ul_year,yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines,ref_dict=yd.EWK_REF_NOSF)
+        #procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
+        #print_yields(args.ul_year,yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines,ref_dict=yd.EWK_REF)
 
         # Dump latex table for BDT
         #hlines = [6,7,15,16]
@@ -911,15 +921,15 @@ def main():
 
 
         # Dump yield dict to json
-        json_name = "process_yields.json" # Could be an argument
-        json_name = os.path.join(out_path,json_name)
-        with open(json_name,"w") as out_file: json.dump(yld_dict, out_file, indent=4)
-        print(f"\nSaved json file: {json_name}\n")
+        #json_name = "process_yields.json" # Could be an argument
+        #json_name = os.path.join(out_path,json_name)
+        #with open(json_name,"w") as out_file: json.dump(yld_dict, out_file, indent=4)
+        #print(f"\nSaved json file: {json_name}\n")
 
 
     # Make plots
     if args.make_plots:
-        make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path,apply_nsf_to_cr=False)
+        #make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path,apply_nsf_to_cr=False)
         #make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
         #make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data,args.ul_year,ana_type="cb") # Make plot of all SR yields in one plot
 
