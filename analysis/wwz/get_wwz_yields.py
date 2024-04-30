@@ -897,15 +897,15 @@ def main():
         if (args.ul_year == "run2") or (("UL" in args.ul_year) and ("2022" not in args.ul_year)):
             put_proc_row_sums(yld_dict, SR_SF_BDT+SR_OF_BDT)
             put_cat_col_sums(yld_dict, sr_sf_lst=SR_SF_BDT, sr_of_lst=SR_OF_BDT, tag="_bdt")
-        print(yld_dict)
-        exit()
+        #print(yld_dict)
+        #exit()
 
         # Dump latex table for cut based
-        #hlines = [2,3,7,8]
-        #sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
+        hlines = [2,3,7,8]
+        sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
         #sr_cats_to_print = ["sr_sf_all_cutbased" , "sr_of_all_cutbased" , "sr_all_cutbased" , "sr_4l_sf_presel" , "sr_4l_sf_trn" , "sr_4l_of_presel"] # Preselection SR categories
-        #procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
-        #print_yields(args.ul_year,yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines,ref_dict=yd.EWK_REF)
+        procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
+        print_yields(args.ul_year,yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines,ref_dict=yd.EWK_REF)
 
         # Dump latex table for BDT
         #hlines = [6,7,15,16]
