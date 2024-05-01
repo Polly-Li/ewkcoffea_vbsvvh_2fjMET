@@ -56,10 +56,7 @@ Then submit the workers:
 ```
 slurm_submit_workers --cores 64 --memory 500000 -M ${USER}-workqueue-coffea -p  "--account avery --qos avery-b --time 1:00:00" 6
 ```
-To run the processor at scale with work queue, run the following command from the `ewkcoffea/analysis/wwz` directory:
-```
-source full_run_wq.sh
-``` 
+To run the processor at scale with work queue, try one of the example commands in `full_run2_run.sh` or in `full_run3_run.sh`. 
 
 
 ### Run at scale with futures 
@@ -67,7 +64,7 @@ Note, DO NOT run with futures at scale on the login node. First srun:
 ```
 srun -t 600 --qos=avery --account=avery --cpus-per-task=128 --mem=512gb --pty bash -i
 ```
-Then make sure your grid proxy is activated. Then run the `full_run_futures.sh` script: 
-```
-source full_run_futures.sh
-```
+Then make sure your grid proxy is activated. To run the processor at scale, try one of the example commands in `full_run2_run.sh` or in `full_run3_run.sh`. 
+
+## Statistical analysis
+Please see the [FITTING.md]() readme. 
