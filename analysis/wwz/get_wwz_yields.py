@@ -610,7 +610,7 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data,year,ana_type="cb"):
     if ana_type == "cb":
         sr_lst  = sg.CAT_LST_CB
         hist_label = "Cut-based SRs"
-        y_max = 4
+        y_max = 9 # 9 is good for R2, 4 is good for R3
         fig_size = (12,7)
     elif ana_type == "bdt":
         sr_lst  = sg.CAT_LST_BDT
@@ -741,7 +741,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
                 #print("data Error:",data_error)
                 #print("data/mc:", data_over_mc_ratio)
                 #print("data/mc Error:", data_over_mc_ratio_error)
-            continue
+            #continue
             #####
 
             # Merge overflow into last bin (so it shows up in the plot)
@@ -750,7 +750,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
 
             # Make figure
             title = f"{cat_name}_{var_name}"
-            print("Trying to Make: ",title)
+            print("Making: ",title)
             if "cr" in title:
                 fig = make_cr_fig(histo_grouped_mc,histo_grouped_data,title=title)
             else:
@@ -797,6 +797,7 @@ def get_background_dict(yld_dict_mc,yld_dict_data,bkg_proc,cr_name,sr_name):
     }
     return out_dict
 
+# CAUTION This function should probably not be used, just use the version in the datacard maker
 # TODO move to same function as used in datacard maker
 # Wrapper around the background estimation of TFs and yields
 def do_background_estimation(yld_dict_mc,yld_dict_data,ul_year):
