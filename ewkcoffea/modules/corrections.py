@@ -142,7 +142,7 @@ def run3_muons_sf_attach(muons,year,id_method,iso_method):
     elif year == "2022":
         fname = ewkcoffea_path("data/run3_lep_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_schemaV2.json")
     else:
-        raise Exception("Trying to apply run3 SF where they shouldn't be!")
+        raise Exception("Trying to apply Run3 Muon SF where they shouldn't be!")
 
     # Flatten the input
     abseta_flat = ak.flatten(abs(muons.eta))
@@ -183,7 +183,6 @@ def run3_muons_sf_attach(muons,year,id_method,iso_method):
     muons['sf_nom_elec'] = ak.ones_like(sf_nom)
     muons['sf_hi_elec']  = ak.ones_like(sf_nom)
     muons['sf_lo_elec']  = ak.ones_like(sf_nom)
-
 
 def run3_electrons_sf_attach(electrons,year,wp):
 
@@ -239,7 +238,7 @@ def run3_electrons_sf_attach(electrons,year,wp):
     electrons['sf_hi_elec']  = hi
     electrons['sf_lo_elec']  = lo
 
-def run3_pu_attach(pileup,year):
+def run3_pu_attach(pileup,year,sys):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":
@@ -259,7 +258,11 @@ def run3_pu_attach(pileup,year):
         pu_corr = ceval["Collisions2022_355100_357900_eraBCD_GoldenJson"].evaluate(pileup.nTrueInt,"nominal")
         pu_corr_hi = ceval["Collisions2022_355100_357900_eraBCD_GoldenJson"].evaluate(pileup.nTrueInt,"up")
         pu_corr_lo = ceval["Collisions2022_355100_357900_eraBCD_GoldenJson"].evaluate(pileup.nTrueInt,"down")
-
-    pileup['pileup_corr'] = pu_corr
-    pileup['pileup_corr_hi'] = pu_corr_hi
-    pileup['pileup_corr_lo'] = pu_corr_lo
+    if sys == "nominal":
+        return pu_corr
+    if sys == "hi":
+        return pu_corr_hi
+    if sys == "lo":
+        return pu_corr_lo
+    if sys not in ["nominal","hi","lo"]:
+        raise Exception("ERROR: Not a recognized parameter.")

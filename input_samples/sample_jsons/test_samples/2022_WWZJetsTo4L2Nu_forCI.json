@@ -1,0 +1,27 @@
+{
+    "xsec": 0.002067,
+    "year": "2022",
+    "treeName": "Events",
+    "histAxisName": "2022_WWZJetsTo4L2Nu",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "output_7.root"
+    ],
+    "nEvents": 612,
+    "nGenEvents": 2952,
+    "nSumOfWeights": 6.572661127400002,
+    "isData": false,
+    "path": "/cmsuf/data/store/user/kmohrman/test/ci_for_wwz/WWZto4L2Nu_4F_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_Run3_MC_4L_04022024_Loose/",
+    "nSumOfLheWeights": [
+        6.917291745430003,
+        6.840878412000002,
+        6.781909097390002,
+        6.644971653610002,
+        6.572661127400002,
+        6.515026749020001,
+        6.419520121730001,
+        6.3506677206500015,
+        6.294222149150001
+    ]
+}

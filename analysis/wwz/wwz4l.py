@@ -57,9 +57,9 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Create the dense axes for the histograms
         self._dense_axes_dict = {
-            "mt2"   : axis.Regular(180, 0, 100, name="mt2",  label="mt2"),
+            "mt2"   : axis.Regular(180, 0, 250, name="mt2",  label="mt2"),
             "met"   : axis.Regular(180, 0, 300, name="met",  label="met"),
-            "metphi": axis.Regular(180, -4, 4, name="metphi", label="met phi"),
+            "metphi": axis.Regular(180, -3.1416, 3.1416, name="metphi", label="met phi"),
             "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
             "scalarptsum_lep" : axis.Regular(180, 0, 600, name="scalarptsum_lep", label="S_T"),
             "scalarptsum_lepmet" : axis.Regular(180, 0, 600, name="scalarptsum_lepmet", label="S_T + metpt"),
@@ -78,11 +78,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             "w_lep1_eta" : axis.Regular(180, -3, 3, name="w_lep1_eta", label="Subleading W lep eta"),
             "z_lep0_eta" : axis.Regular(180, -3, 3, name="z_lep0_eta", label="Leading Z lep eta"),
             "z_lep1_eta" : axis.Regular(180, -3, 3, name="z_lep1_eta", label="Subleading Z lep eta"),
-            "w_lep0_phi" : axis.Regular(180, -4, 4, name="w_lep0_phi", label="Leading W lep phi"),
-            "w_lep1_phi" : axis.Regular(180, -4, 4, name="w_lep1_phi", label="Subleading W lep phi"),
-            "z_lep0_phi" : axis.Regular(180, -4, 4, name="z_lep0_phi", label="Leading Z lep phi"),
-            "z_lep1_phi" : axis.Regular(180, -4, 4, name="z_lep1_phi", label="Subleading Z lep phi"),
-            "mll_wl0_wl1" : axis.Regular(180, 0, 200, name="mll_wl0_wl1", label="mll(W lep0, W lep1)"),
+            "w_lep0_phi" : axis.Regular(180, -3.1416, 3.1416, name="w_lep0_phi", label="Leading W lep phi"),
+            "w_lep1_phi" : axis.Regular(180, -3.1416, 3.1416, name="w_lep1_phi", label="Subleading W lep phi"),
+            "z_lep0_phi" : axis.Regular(180, -3.1416, 3.1416, name="z_lep0_phi", label="Leading Z lep phi"),
+            "z_lep1_phi" : axis.Regular(180, -3.1416, 3.1416, name="z_lep1_phi", label="Subleading Z lep phi"),
+            "mll_wl0_wl1" : axis.Regular(180, 0, 350, name="mll_wl0_wl1", label="mll(W lep0, W lep1)"),
             "mll_zl0_zl1" : axis.Regular(180, 0, 200, name="mll_zl0_zl1", label="mll(Z lep0, Z lep1)"),
 
             "pt_zl0_zl1" : axis.Regular(180, 0, 300, name="pt_zl0_zl1", label="pt(Zl0 + Zl1)"),
@@ -107,9 +107,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             "absdphi_wl0_met": axis.Regular(180, 0, 3.1416, name="absdphi_wl0_met", label="abs dphi(Wl0,met)"),
             "absdphi_wl1_met": axis.Regular(180, 0, 3.1416, name="absdphi_wl1_met", label="abs dphi(Wl1,met)"),
 
-            "absdphi_min_afas" : axis.Regular(180, 0, 4, name="absdphi_min_afas",  label="min(abs(delta phi of all pairs))"),
-            "absdphi_min_afos" : axis.Regular(180, 0, 4, name="absdphi_min_afos",  label="min(abs(delta phi of OS pairs))"),
-            "absdphi_min_sfos" : axis.Regular(180, 0, 4, name="absdphi_min_sfos",  label="min(abs(delta phi of SFOS pairs))"),
+            "absdphi_min_afas" : axis.Regular(180, 0, 3.1416, name="absdphi_min_afas",  label="min(abs(delta phi of all pairs))"),
+            "absdphi_min_afos" : axis.Regular(180, 0, 3.1416, name="absdphi_min_afos",  label="min(abs(delta phi of OS pairs))"),
+            "absdphi_min_sfos" : axis.Regular(180, 0, 3.1416, name="absdphi_min_sfos",  label="min(abs(delta phi of SFOS pairs))"),
             "mll_min_afas" : axis.Regular(180, 0, 150, name="mll_min_afas",  label="min mll of all pairs"),
             "mll_min_afos" : axis.Regular(180, 0, 150, name="mll_min_afos",  label="min mll of OF pairs"),
             "mll_min_sfos" : axis.Regular(180, 0, 150, name="mll_min_sfos",  label="min mll of SFOF pairs"),
@@ -117,7 +117,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             "cos_helicity_x" : axis.Regular(180, 0, 1, name="cos_helicity_x",  label="cos_helicity_x"),
 
             "mlb_min" : axis.Regular(180, 0, 300, name="mlb_min",  label="min mass(b+l)"),
-            "mlb_max" : axis.Regular(180, 0, 500, name="mlb_max",  label="max mass(b+l)"),
+            "mlb_max" : axis.Regular(180, 0, 1000, name="mlb_max",  label="max mass(b+l)"),
 
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
@@ -169,17 +169,27 @@ class AnalysisProcessor(processor.ProcessorABC):
     def process(self, events):
 
         # Dataset parameters
-        dataset = events.metadata["dataset"]
+        json_name = events.metadata["dataset"]
 
-        isData             = self._samples[dataset]["isData"]
-        histAxisName       = self._samples[dataset]["histAxisName"]
-        year               = self._samples[dataset]["year"]
-        xsec               = self._samples[dataset]["xsec"]
-        sow                = self._samples[dataset]["nSumOfWeights"]
+        isData             = self._samples[json_name]["isData"]
+        histAxisName       = self._samples[json_name]["histAxisName"]
+        year               = self._samples[json_name]["year"]
+        xsec               = self._samples[json_name]["xsec"]
+        sow                = self._samples[json_name]["nSumOfWeights"]
+
+        # Set a flag if this is a 2022 year
+        is2022 = year in ["2022","2022EE"]
+
+        # If this is a 2022 sample, get the era info
+        if isData and is2022:
+            era = self._samples[json_name]["era"]
+        else:
+            era = None
+
 
         # Get up down weights from input dict
         if (self._do_systematics and not isData):
-            lhe_sow = self._samples[dataset]["nSumOfLheWeights"]
+            lhe_sow = self._samples[json_name]["nSumOfLheWeights"]
             # This assumes we have an NLO xsec, so for these systs we will have e.g. xsec_NLO*(N_pass_up/N_gen_up)
             # Thus these systs should only affect acceptance and effeciency and shape
             # The uncty on xsec comes from NLO and is applied as a rate uncty in the text datacard
@@ -206,9 +216,13 @@ class AnalysisProcessor(processor.ProcessorABC):
             sow_factDown       = -1
 
 
-        datasets = ["SingleMuon", "SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG"]
-        for d in datasets:
-            if d in dataset: dataset = dataset.split('_')[0]
+        # Get the dataset name (used for duplicate removal) and check to make sure it is an expected name
+        # Get name for MC cases too, since "dataset" is passed to overlap removal function in all cases (though it's not actually used in the MC case)
+        dataset = json_name.split('_')[0]
+        if isData:
+            datasets = ["SingleMuon", "SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG","Muon"]
+            if dataset not in datasets:
+                raise Exception("ERROR: Unexpected dataset name for data file.")
 
         # Initialize objects
         #met  = events.MET
@@ -229,30 +243,41 @@ class AnalysisProcessor(processor.ProcessorABC):
             golden_json_path = topcoffea_path("data/goldenJsons/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt")
         elif year == "2018":
             golden_json_path = topcoffea_path("data/goldenJsons/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt")
+        elif year == "2022" or year == "2022EE":
+            golden_json_path = topcoffea_path("data/goldenJsons/Cert_Collisions2022_355100_362760_Golden.txt")
         else:
             raise ValueError(f"Error: Unknown year \"{year}\".")
         lumi_mask = LumiMask(golden_json_path)(events.run,events.luminosityBlock)
 
-
         ################### Lepton selection ####################
 
         # Do the object selection for the WWZ eleectrons
-        ele_presl_mask = os_ec.is_presel_wwz_ele(ele,tight=True)
-        ele["topmva"] = os_ec.get_topmva_score_ele(events, year)
-        ele["is_tight_lep_for_wwz"] = ((ele.topmva > get_tc_param("topmva_wp_t_e")) & ele_presl_mask)
+        ele_presl_mask = os_ec.is_presel_wwz_ele(ele,is2022)
+        if not is2022:
+            ele["topmva"] = os_ec.get_topmva_score_ele(events, year)
+            ele["is_tight_lep_for_wwz"] = ((ele.topmva > get_tc_param("topmva_wp_t_e")) & ele_presl_mask)
+        else:
+            ele["is_tight_lep_for_wwz"] = (ele_presl_mask)
 
         # Do the object selection for the WWZ muons
-        mu_presl_mask = os_ec.is_presel_wwz_mu(mu)
-        mu["topmva"] = os_ec.get_topmva_score_mu(events, year)
-        mu["is_tight_lep_for_wwz"] = ((mu.topmva > get_tc_param("topmva_wp_t_m")) & mu_presl_mask)
+        mu_presl_mask = os_ec.is_presel_wwz_mu(mu, is2022)
+        if not is2022:
+            mu["topmva"] = os_ec.get_topmva_score_mu(events, year)
+            mu["is_tight_lep_for_wwz"] = ((mu.topmva > get_tc_param("topmva_wp_t_m")) & mu_presl_mask)
+        else:
+            mu["is_tight_lep_for_wwz"] = (mu_presl_mask)
 
         # Get tight leptons for WWZ selection
         ele_wwz_t = ele[ele.is_tight_lep_for_wwz]
         mu_wwz_t = mu[mu.is_tight_lep_for_wwz]
 
         # Attach the lepton SFs to the electron and muons collections
-        cor_ec.AttachElectronSF(ele_wwz_t,year=year)
-        cor_ec.AttachMuonSF(mu_wwz_t,year=year)
+        if is2022:
+            cor_ec.run3_muons_sf_attach(mu_wwz_t,year,"NUM_MediumID_DEN_TrackerMuons","NUM_TightPFIso_DEN_MediumID")
+            cor_ec.run3_electrons_sf_attach(ele_wwz_t,year,"wp80iso")
+        else:
+            cor_ec.AttachElectronSF(ele_wwz_t,year=year)
+            cor_ec.AttachMuonSF(mu_wwz_t,year=year)
 
         l_wwz_t = ak.with_name(ak.concatenate([ele_wwz_t,mu_wwz_t],axis=1),'PtEtaPhiMCandidate')
         l_wwz_t = l_wwz_t[ak.argsort(l_wwz_t.pt, axis=-1,ascending=False)] # Sort by pt
@@ -283,7 +308,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Put njets and l_fo_conept_sorted into events and get 4l event selection mask
         events["l_wwz_t"] = l_wwz_t
-        es_ec.add4lmask_wwz(events, year, isData, histAxisName)
+        es_ec.add4lmask_wwz(events, year, isData, histAxisName, is2022)
 
 
         ######### Normalization and weights ###########
@@ -319,10 +344,12 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Renorm/fact scale
             weights_obj_base.add('renorm', events.nom, events.renormUp*(sow/sow_renormUp), events.renormDown*(sow/sow_renormDown))
             weights_obj_base.add('fact', events.nom, events.factUp*(sow/sow_factUp), events.factDown*(sow/sow_factDown))
-
-            # Misc other experimental SFs and systs
-            weights_obj_base.add('PreFiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
-            weights_obj_base.add('PU', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
+            if not is2022:
+                # Misc other experimental SFs and systs
+                weights_obj_base.add('PreFiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
+                weights_obj_base.add('PU', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
+            else:
+                weights_obj_base.add("PU", cor_ec.run3_pu_attach(events.Pileup,year,"nominal"), cor_ec.run3_pu_attach(events.Pileup,year,"hi"), cor_ec.run3_pu_attach(events.Pileup,year,"lo"))
 
             # Lepton SFs and systs
             weights_obj_base.add("lepSF_muon", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
@@ -332,9 +359,11 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Set up the list of systematics that are handled via event weight variations
         wgt_correction_syst_lst = [
             "btagSFlight_correlated", "btagSFbc_correlated", f"btagSFlight_uncorrelated_{year}", f"btagSFbc_uncorrelated_{year}",
-            "lepSF_elec", "lepSF_muon", "PreFiring", "PU",
+            "lepSF_elec", "lepSF_muon", "PU",
             "renorm", "fact", "ISR", "FSR",
         ]
+        if not is2022:
+            wgt_correction_syst_lst = wgt_correction_syst_lst + ["PreFiring"]
         wgt_correction_syst_lst = append_up_down_to_sys_base(wgt_correction_syst_lst)
 
 
@@ -385,6 +414,12 @@ class AnalysisProcessor(processor.ProcessorABC):
             elif year=="2016APV":
                 btagwpl = get_tc_param(f"{btagger}_wp_loose_UL16APV")
                 btagwpm = get_tc_param(f"{btagger}_wp_medium_UL16APV")
+            elif year=="2022":
+                btagwpl = get_tc_param(f"{btagger}_wp_loose_2022")
+                btagwpm = get_tc_param(f"{btagger}_wp_medium_2022")
+            elif year=="2022EE":
+                btagwpl = get_tc_param(f"{btagger}_wp_loose_2022EE")
+                btagwpm = get_tc_param(f"{btagger}_wp_medium_2022EE")
             else:
                 raise ValueError(f"Error: Unknown year \"{year}\".")
 
@@ -414,8 +449,11 @@ class AnalysisProcessor(processor.ProcessorABC):
                 year_light = year
                 if year == "2016": year_light = "2016APV"
 
-                btag_sf_light = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl","central")
-                btag_sf_bc    = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb","central")
+                if not is2022:
+                    btag_sf_light = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl","central")
+                else:
+                    btag_sf_light = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_light","central")
+                btag_sf_bc = cor_tc.btag_sf_eval(jets_bc,"L",year,"deepJet_comb","central")
 
                 btag_eff_light = cor_ec.btag_eff_eval(jets_light,"L",year)
                 btag_eff_bc = cor_ec.btag_eff_eval(jets_bc,"L",year)
@@ -450,8 +488,10 @@ class AnalysisProcessor(processor.ProcessorABC):
             ######### Masks we need for the selection ##########
 
             # Pass trigger mask
-            pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict)
-            pass_trg = (pass_trg & es_ec.trg_matching(events,year))
+            pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=era)
+            # Skip trigger matching requirementmes for R3 for now
+            if not is2022:
+                pass_trg = (pass_trg & es_ec.trg_matching(events,year))
 
             # b jet masks
             bmask_atleast1med_atleast2loose = ((nbtagsm>=1)&(nbtagsl>=2)) # Used for 2lss and 4l
@@ -642,71 +682,75 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             ######### Evaluate all four BDTs (WWZ and ZH for SF and OF) #########
 
-            # Get BDT values
-            bdt_vars = [
-                ak.fill_none(mll_wl0_wl1,-9999),
-                ak.fill_none(absdphi_4l_met,-9999),
-                ak.fill_none(absdphi_zleps_met,-9999),
-                ak.fill_none(absdphi_wleps_met,-9999),
-                ak.fill_none(dr_wl0_wl1,-9999),
-                ak.fill_none(dr_zl0_zl1,-9999),
-                ak.fill_none(dr_wleps_zleps,-9999),
-                ak.fill_none(met.pt,-9999),
-                ak.fill_none(mt2_val,-9999),
-                ak.fill_none(ptl4,-9999),
-                ak.fill_none(scalarptsum_lepmet,-9999),
-                ak.fill_none(scalarptsum_lepmetjet,-9999),
-                ak.fill_none(z_lep0.pt,-9999),
-                ak.fill_none(z_lep1.pt,-9999),
-                ak.fill_none(w_lep0.pt,-9999),
-                ak.fill_none(w_lep1.pt,-9999),
-            ]
+            if not is2022:
+                # Get BDT values
+                bdt_vars = [
+                    ak.fill_none(mll_wl0_wl1,-9999),
+                    ak.fill_none(absdphi_4l_met,-9999),
+                    ak.fill_none(absdphi_zleps_met,-9999),
+                    ak.fill_none(absdphi_wleps_met,-9999),
+                    ak.fill_none(dr_wl0_wl1,-9999),
+                    ak.fill_none(dr_zl0_zl1,-9999),
+                    ak.fill_none(dr_wleps_zleps,-9999),
+                    ak.fill_none(met.pt,-9999),
+                    ak.fill_none(mt2_val,-9999),
+                    ak.fill_none(ptl4,-9999),
+                    ak.fill_none(scalarptsum_lepmet,-9999),
+                    ak.fill_none(scalarptsum_lepmetjet,-9999),
+                    ak.fill_none(z_lep0.pt,-9999),
+                    ak.fill_none(z_lep1.pt,-9999),
+                    ak.fill_none(w_lep0.pt,-9999),
+                    ak.fill_none(w_lep1.pt,-9999),
+                ]
 
 
-            # Get the list of variables for the BDTs (and fill None with -9999 to not cause problems), and eval
-            bdt_vars_sf_wwz = fill_none_in_list(get_ec_param("sf_wwz_bdt_var_lst"),dense_variables_dict,-9999)
-            bdt_vars_sf_zh  = fill_none_in_list(get_ec_param("sf_zh_bdt_var_lst"),dense_variables_dict,-9999)
-            bdt_vars_of_wwz = fill_none_in_list(get_ec_param("of_wwz_bdt_var_lst"),dense_variables_dict,-9999)
-            bdt_vars_of_zh  = fill_none_in_list(get_ec_param("of_zh_bdt_var_lst"),dense_variables_dict,-9999)
-            bdt_sf_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars_sf_wwz,ewkcoffea_path("data/wwz_zh_bdt/sf_WWZ.json"))
-            bdt_sf_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars_sf_zh, ewkcoffea_path("data/wwz_zh_bdt/sf_ZH.json"))
-            bdt_of_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars_of_wwz,ewkcoffea_path("data/wwz_zh_bdt/of_WWZ.json"))
-            bdt_of_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars_of_zh, ewkcoffea_path("data/wwz_zh_bdt/of_ZH.json"))
-            # Match TMVA's scaling https://root.cern.ch/doc/v606/MethodBDT_8cxx_source.html
-            bdt_sf_wwz = (2.0*((1.0+math.e**(-2*bdt_sf_wwz_raw))**(-1))) - 1.0
-            bdt_sf_zh  = (2.0*((1.0+math.e**(-2*bdt_sf_zh_raw))**(-1))) - 1.0
-            bdt_of_wwz = (2.0*((1.0+math.e**(-2*bdt_of_wwz_raw))**(-1))) - 1.0
-            bdt_of_zh  = (2.0*((1.0+math.e**(-2*bdt_of_zh_raw))**(-1))) - 1.0
+                # Get the list of variables for the BDTs (and fill None with -9999 to not cause problems), and eval
+                bdt_vars_sf_wwz = fill_none_in_list(get_ec_param("sf_wwz_bdt_var_lst"),dense_variables_dict,-9999)
+                bdt_vars_sf_zh  = fill_none_in_list(get_ec_param("sf_zh_bdt_var_lst"),dense_variables_dict,-9999)
+                bdt_vars_of_wwz = fill_none_in_list(get_ec_param("of_wwz_bdt_var_lst"),dense_variables_dict,-9999)
+                bdt_vars_of_zh  = fill_none_in_list(get_ec_param("of_zh_bdt_var_lst"),dense_variables_dict,-9999)
+                bdt_sf_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars_sf_wwz,ewkcoffea_path("data/wwz_zh_bdt/sf_WWZ.json"))
+                bdt_sf_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars_sf_zh, ewkcoffea_path("data/wwz_zh_bdt/sf_ZH.json"))
+                bdt_of_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars_of_wwz,ewkcoffea_path("data/wwz_zh_bdt/of_WWZ.json"))
+                bdt_of_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars_of_zh, ewkcoffea_path("data/wwz_zh_bdt/of_ZH.json"))
+                # Match TMVA's scaling https://root.cern.ch/doc/v606/MethodBDT_8cxx_source.html
+                bdt_sf_wwz = (2.0*((1.0+math.e**(-2*bdt_sf_wwz_raw))**(-1))) - 1.0
+                bdt_sf_zh  = (2.0*((1.0+math.e**(-2*bdt_sf_zh_raw))**(-1))) - 1.0
+                bdt_of_wwz = (2.0*((1.0+math.e**(-2*bdt_of_wwz_raw))**(-1))) - 1.0
+                bdt_of_zh  = (2.0*((1.0+math.e**(-2*bdt_of_zh_raw))**(-1))) - 1.0
 
-            ### BDT SRs ###
-            # SF BDT SRs
-            bdt_sf_1 = ((bdt_sf_wwz > 0.8) & (bdt_sf_zh < -0.6))
-            bdt_sf_2 = ((bdt_sf_wwz >= 0.6) & (bdt_sf_wwz <= 0.8) & (bdt_sf_zh < -0.6))
-            bdt_sf_3 = ((bdt_sf_wwz > 0.8) & (bdt_sf_zh > 0.9))
-            bdt_sf_4 = ((bdt_sf_wwz >= 0.5) & (bdt_sf_wwz <= 0.8) & (bdt_sf_zh > 0.9))
-            bdt_sf_5 = ((bdt_sf_wwz >= 0.0) & (bdt_sf_wwz < 0.6) & (bdt_sf_zh < -0.8))
-            bdt_sf_1or2or3or4or5 = (bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4 | bdt_sf_5)
-            bdt_sf_6 = ((bdt_sf_wwz > 0.0) & ~(bdt_sf_1or2or3or4or5) & (bdt_sf_zh > -0.8))
-            bdt_sf_7 = (bdt_sf_wwz < 0.0)
-            # SF BDT SRs
-            bdt_of_1 = ((bdt_of_wwz > 0.8) & (bdt_of_zh < -0.6))
-            bdt_of_2 = ((bdt_of_wwz >= 0.5) & (bdt_of_wwz <= 0.8) & (bdt_of_zh < -0.6))
-            bdt_of_3 = ((bdt_of_wwz > 0.6) & (bdt_of_zh > 0.8))
-            bdt_of_4 = ((bdt_of_wwz >= 0.2) & (bdt_of_wwz <= 0.6) & (bdt_of_zh > 0.8))
-            bdt_of_5 = ((bdt_of_wwz > 0.0) & ~bdt_of_1 & ~bdt_of_2 & (bdt_of_zh < 0.0))
-            bdt_of_6 = ((bdt_of_wwz >= -0.4) & (bdt_of_wwz < 0) & (bdt_of_zh < -0.8))
-            bdt_of_7 = (~bdt_of_3 & ~bdt_of_4 & (bdt_of_zh > 0))
-            bdt_of_8 = ((bdt_of_wwz < 0) & ~bdt_of_6 & (bdt_of_zh < 0.0))
+                ### BDT SRs ###
+                # SF BDT SRs
+                xax = bdt_sf_wwz
+                yax = bdt_sf_zh
+                bdt_sf_1 = (xax > 0.8)  & (yax < -0.6)
+                bdt_sf_2 = (xax > 0.8)  & (yax < 0.8)  & ~(bdt_sf_1)
+                bdt_sf_3 = (xax > 0.6)  & (yax < -0.3) & ~(bdt_sf_1 | bdt_sf_2)
+                bdt_sf_4 = (xax > 0.7)  & (yax > 0.8)  & ~(bdt_sf_1 | bdt_sf_2 | bdt_sf_3)
+                bdt_sf_5 = (xax > -1.0) & (yax > 0.8)  & ~(bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4)
+                bdt_sf_6 = (xax > -0.2) & (yax > -0.3) & ~(bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4 | bdt_sf_5)
+                bdt_sf_7 = ~(bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4 | bdt_sf_5 | bdt_sf_6)
+                # SF BDT SRs
+                xax = bdt_of_wwz
+                yax = bdt_of_zh
+                bdt_of_1 = (xax > 0.5)  & (yax < -0.5)
+                bdt_of_2 = (xax > 0.5)  & (yax < 0.7)  & ~(bdt_of_1)
+                bdt_of_3 = (xax > -1.0) & (yax > 0.7)  & ~(bdt_of_1 | bdt_of_2)
+                bdt_of_4 = (xax > -0.1) & (yax < -0.9) & ~(bdt_of_1 | bdt_of_2 | bdt_of_3)
+                bdt_of_5 = (xax > -0.1) & (yax < -0.7) & ~(bdt_of_1 | bdt_of_2 | bdt_of_3 | bdt_of_4)
+                bdt_of_6 = (xax > -0.1) & (yax < 0.7)  & ~(bdt_of_1 | bdt_of_2 | bdt_of_3 | bdt_of_4 | bdt_of_5)
+                bdt_of_7 = (xax > -0.5) & (yax < 0.7)  & ~(bdt_of_1 | bdt_of_2 | bdt_of_3 | bdt_of_4 | bdt_of_5 | bdt_of_6)
+                bdt_of_8 = ~(bdt_of_1 | bdt_of_2 | bdt_of_3 | bdt_of_4 | bdt_of_5 | bdt_of_6 | bdt_of_7)
 
-            # Put the bdt variables into the dict of variables too
-            dense_variables_dict["bdt_of_wwz_raw"] = bdt_of_wwz_raw
-            dense_variables_dict["bdt_sf_wwz_raw"] = bdt_sf_wwz_raw
-            dense_variables_dict["bdt_of_zh_raw"]  = bdt_of_zh_raw
-            dense_variables_dict["bdt_sf_zh_raw"]  = bdt_sf_zh_raw
-            dense_variables_dict["bdt_of_wwz"]     = bdt_of_wwz
-            dense_variables_dict["bdt_sf_wwz"]     = bdt_sf_wwz
-            dense_variables_dict["bdt_of_zh"]      = bdt_of_zh
-            dense_variables_dict["bdt_sf_zh"]      = bdt_sf_zh
+                # Put the bdt variables into the dict of variables too
+                dense_variables_dict["bdt_of_wwz_raw"] = bdt_of_wwz_raw
+                dense_variables_dict["bdt_sf_wwz_raw"] = bdt_sf_wwz_raw
+                dense_variables_dict["bdt_of_zh_raw"]  = bdt_of_zh_raw
+                dense_variables_dict["bdt_sf_zh_raw"]  = bdt_sf_zh_raw
+                dense_variables_dict["bdt_of_wwz"]     = bdt_of_wwz
+                dense_variables_dict["bdt_sf_wwz"]     = bdt_sf_wwz
+                dense_variables_dict["bdt_of_zh"]      = bdt_of_zh
+                dense_variables_dict["bdt_sf_zh"]      = bdt_sf_zh
 
 
             ######### Store boolean masks with PackedSelection ##########
@@ -745,59 +789,68 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # For BDT SRs
 
-            sr_4l_bdt_sf_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z)
-            sr_4l_bdt_sf_trn    = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & mt2_mask)
-            sr_4l_bdt_of_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)
-            sr_4l_bdt_of_trn    = sr_4l_bdt_of_presel # For OF, presel and trn regions are the same
-            selections.add("sr_4l_bdt_sf_presel", sr_4l_bdt_sf_presel)
-            selections.add("sr_4l_bdt_sf_trn"   , sr_4l_bdt_sf_trn)
-            selections.add("sr_4l_bdt_of_presel", sr_4l_bdt_of_presel)
-            selections.add("sr_4l_bdt_of_trn"   , sr_4l_bdt_of_trn)
+            if not is2022:
+                sr_4l_bdt_sf_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z)
+                sr_4l_bdt_sf_trn    = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & mt2_mask)
+                sr_4l_bdt_of_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)
+                sr_4l_bdt_of_trn    = sr_4l_bdt_of_presel # For OF, presel and trn regions are the same
+                selections.add("sr_4l_bdt_sf_presel", sr_4l_bdt_sf_presel)
+                selections.add("sr_4l_bdt_sf_trn"   , sr_4l_bdt_sf_trn)
+                selections.add("sr_4l_bdt_of_presel", sr_4l_bdt_of_presel)
+                selections.add("sr_4l_bdt_of_trn"   , sr_4l_bdt_of_trn)
 
-            selections.add("sr_4l_bdt_sf_1", (sr_4l_bdt_sf_trn & bdt_sf_1))
-            selections.add("sr_4l_bdt_sf_2", (sr_4l_bdt_sf_trn & bdt_sf_2))
-            selections.add("sr_4l_bdt_sf_3", (sr_4l_bdt_sf_trn & bdt_sf_3))
-            selections.add("sr_4l_bdt_sf_4", (sr_4l_bdt_sf_trn & bdt_sf_4))
-            selections.add("sr_4l_bdt_sf_5", (sr_4l_bdt_sf_trn & bdt_sf_5))
-            selections.add("sr_4l_bdt_sf_6", (sr_4l_bdt_sf_trn & bdt_sf_6))
-            selections.add("sr_4l_bdt_sf_7", (sr_4l_bdt_sf_trn & bdt_sf_7))
+                selections.add("sr_4l_bdt_sf_1", (sr_4l_bdt_sf_trn & bdt_sf_1))
+                selections.add("sr_4l_bdt_sf_2", (sr_4l_bdt_sf_trn & bdt_sf_2))
+                selections.add("sr_4l_bdt_sf_3", (sr_4l_bdt_sf_trn & bdt_sf_3))
+                selections.add("sr_4l_bdt_sf_4", (sr_4l_bdt_sf_trn & bdt_sf_4))
+                selections.add("sr_4l_bdt_sf_5", (sr_4l_bdt_sf_trn & bdt_sf_5))
+                selections.add("sr_4l_bdt_sf_6", (sr_4l_bdt_sf_trn & bdt_sf_6))
+                selections.add("sr_4l_bdt_sf_7", (sr_4l_bdt_sf_trn & bdt_sf_7))
 
-            selections.add("sr_4l_bdt_of_1", (sr_4l_bdt_of_trn & bdt_of_1))
-            selections.add("sr_4l_bdt_of_2", (sr_4l_bdt_of_trn & bdt_of_2))
-            selections.add("sr_4l_bdt_of_3", (sr_4l_bdt_of_trn & bdt_of_3))
-            selections.add("sr_4l_bdt_of_4", (sr_4l_bdt_of_trn & bdt_of_4))
-            selections.add("sr_4l_bdt_of_5", (sr_4l_bdt_of_trn & bdt_of_5))
-            selections.add("sr_4l_bdt_of_6", (sr_4l_bdt_of_trn & bdt_of_6))
-            selections.add("sr_4l_bdt_of_7", (sr_4l_bdt_of_trn & bdt_of_7))
-            selections.add("sr_4l_bdt_of_8", (sr_4l_bdt_of_trn & bdt_of_8))
+                selections.add("sr_4l_bdt_of_1", (sr_4l_bdt_of_trn & bdt_of_1))
+                selections.add("sr_4l_bdt_of_2", (sr_4l_bdt_of_trn & bdt_of_2))
+                selections.add("sr_4l_bdt_of_3", (sr_4l_bdt_of_trn & bdt_of_3))
+                selections.add("sr_4l_bdt_of_4", (sr_4l_bdt_of_trn & bdt_of_4))
+                selections.add("sr_4l_bdt_of_5", (sr_4l_bdt_of_trn & bdt_of_5))
+                selections.add("sr_4l_bdt_of_6", (sr_4l_bdt_of_trn & bdt_of_6))
+                selections.add("sr_4l_bdt_of_7", (sr_4l_bdt_of_trn & bdt_of_7))
+                selections.add("sr_4l_bdt_of_8", (sr_4l_bdt_of_trn & bdt_of_8))
 
-            bdt_sr_names = [
-                "sr_4l_bdt_sf_1",
-                "sr_4l_bdt_sf_2",
-                "sr_4l_bdt_sf_3",
-                "sr_4l_bdt_sf_4",
-                "sr_4l_bdt_sf_5",
-                "sr_4l_bdt_sf_6",
-                "sr_4l_bdt_sf_7",
+                bdt_sr_names = [
+                    "sr_4l_bdt_sf_1",
+                    "sr_4l_bdt_sf_2",
+                    "sr_4l_bdt_sf_3",
+                    "sr_4l_bdt_sf_4",
+                    "sr_4l_bdt_sf_5",
+                    "sr_4l_bdt_sf_6",
+                    "sr_4l_bdt_sf_7",
 
-                "sr_4l_bdt_of_1",
-                "sr_4l_bdt_of_2",
-                "sr_4l_bdt_of_3",
-                "sr_4l_bdt_of_4",
-                "sr_4l_bdt_of_5",
-                "sr_4l_bdt_of_6",
-                "sr_4l_bdt_of_7",
-                "sr_4l_bdt_of_8",
-            ]
+                    "sr_4l_bdt_of_1",
+                    "sr_4l_bdt_of_2",
+                    "sr_4l_bdt_of_3",
+                    "sr_4l_bdt_of_4",
+                    "sr_4l_bdt_of_5",
+                    "sr_4l_bdt_of_6",
+                    "sr_4l_bdt_of_7",
+                    "sr_4l_bdt_of_8",
+                ]
+                bdt_misc_names = [
+                    "sr_4l_bdt_sf_presel",
+                    "sr_4l_bdt_sf_trn",
+                    "sr_4l_bdt_of_trn",
+                    "sr_4l_bdt_of_presel",
+                ]
 
             cat_dict = {
                 "lep_chan_lst" : [
                     "sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4",
                     "all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl",
                     "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf",
-                    "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn", "sr_4l_bdt_of_presel",
-                ] + bdt_sr_names
+                ]
             }
+
+            if not is2022:
+                cat_dict["lep_chan_lst"] = cat_dict["lep_chan_lst"] + bdt_sr_names + bdt_misc_names
 
             ######### Fill histos #########
 
@@ -805,11 +858,13 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
             # List the hists that are only defined for some categories
-            analysis_cats = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"] + bdt_sr_names
+            analysis_cats = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
+            if not is2022:
+                analysis_cats = analysis_cats + bdt_sr_names
             exclude_var_dict = {
                 "mt2" : ["all_events"],
                 "ptl4" : ["all_events"],
-                "j0pt" : ["all_events", "4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn", "sr_4l_bdt_of_presel", "cr_4l_sf"] + analysis_cats,
+                "j0pt" : ["all_events", "4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf"] + analysis_cats,
                 "l0pt" : ["all_events"],
                 "mll_01" : ["all_events"],
                 "mllll" : ["all_events"],
@@ -861,18 +916,22 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mll_min_afos" : ["all_events"],
                 "mll_min_sfos" : ["all_events"],
 
-                "mlb_min" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn", "sr_4l_bdt_of_presel", "cr_4l_sf"] + analysis_cats,
-                "mlb_max" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn", "sr_4l_bdt_of_presel", "cr_4l_sf"] + analysis_cats,
-
-                "bdt_of_wwz_raw": ["all_events"],
-                "bdt_sf_wwz_raw": ["all_events"],
-                "bdt_of_zh_raw" : ["all_events"],
-                "bdt_sf_zh_raw" : ["all_events"],
-                "bdt_of_wwz": ["all_events"],
-                "bdt_sf_wwz": ["all_events"],
-                "bdt_of_zh" : ["all_events"],
-                "bdt_sf_zh" : ["all_events"],
+                "mlb_min" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf"] + analysis_cats,
+                "mlb_max" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf"] + analysis_cats,
             }
+
+            if not is2022:
+                exclude_var_dict["bdt_of_wwz_raw"] = ["all_events"]
+                exclude_var_dict["bdt_sf_wwz_raw"] = ["all_events"]
+                exclude_var_dict["bdt_of_zh_raw"] = ["all_events"]
+                exclude_var_dict["bdt_sf_zh_raw"] = ["all_events"]
+                exclude_var_dict["bdt_of_wwz"] = ["all_events"]
+                exclude_var_dict["bdt_sf_wwz"] = ["all_events"]
+                exclude_var_dict["bdt_of_zh"] = ["all_events"]
+                exclude_var_dict["bdt_sf_zh"] = ["all_events"]
+                exclude_var_dict["j0pt"] = exclude_var_dict["j0pt"] + bdt_misc_names
+                exclude_var_dict["mlb_max"] = exclude_var_dict["mlb_max"] + bdt_misc_names
+                exclude_var_dict["mlb_min"] = exclude_var_dict["mlb_min"] + bdt_misc_names
 
             # Set up the list of weight fluctuations to loop over
             # For now the syst do not depend on the category, so we can figure this out outside of the filling loop
@@ -964,4 +1023,3 @@ class AnalysisProcessor(processor.ProcessorABC):
 
     def postprocess(self, accumulator):
         return accumulator
-

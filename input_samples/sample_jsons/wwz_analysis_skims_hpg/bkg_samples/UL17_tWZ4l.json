@@ -1,0 +1,28 @@
+{
+    "xsec": 0.0015,
+    "year": "2017",
+    "treeName": "Events",
+    "histAxisName": "UL17_tWZ4l",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/cmsuf/data/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p7/TWZToLL/v1/UL17_TWZToLL_tlept_Wlept/output_166.root",
+        "/cmsuf/data/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p7/TWZToLL/v1/UL17_TWZToLL_tlept_Wlept/output_147.root"
+    ],
+    "nEvents": 609454,
+    "nGenEvents": 708000,
+    "nSumOfWeights": 1064.3458483420002,
+    "isData": false,
+    "path": "/store/user/rucio/kmohrman/skims/mc/new-lepMVA-v2/central_bkgd_p7/TWZToLL/v1/UL17_TWZToLL_tlept_Wlept/",
+    "nSumOfLheWeights": [
+        1099.5862859687265,
+        1104.757884751641,
+        1119.8829802553514,
+        1056.402575836048,
+        1064.3458483420002,
+        1077.9117287077881,
+        1011.7264402952122,
+        1021.4784259301069,
+        1033.7728601688923
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "xsec": 1.0,
+    "year": "2016APV",
+    "treeName": "Events",
+    "histAxisName": "UL16APV_data",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/blue/avery/p.chang/3LepTau_4Lep/DoubleEG_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep/output_6.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/DoubleEG_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep/output_5.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/DoubleEG_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep/output_7.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/DoubleEG_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep/output_1.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/DoubleEG_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep/output_4.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/DoubleEG_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep/output_3.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/DoubleEG_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep/output_2.root"
+    ],
+    "nEvents": 810,
+    "nGenEvents": 810,
+    "nSumOfWeights": 810,
+    "isData": true,
+    "path": "/blue/avery/p.chang/3LepTau_4Lep/DoubleEG_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_3LepTau_4Lep"
+}

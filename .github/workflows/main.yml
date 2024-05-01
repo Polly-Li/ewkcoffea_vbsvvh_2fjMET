@@ -106,20 +106,33 @@ jobs:
       - name: Download root files
         run: |
           wget --no-verbose http://uaf-10.t2.ucsd.edu/~kmohrman/for_ci/for_wwz/WWZJetsTo4L2Nu_4F_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_3LepTau_4Lep/output_1.root
+          wget --no-verbose http://uaf-10.t2.ucsd.edu/~kmohrman/for_ci/for_wwz/WWZto4L2Nu_4F_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_Run3_MC_4L_04022024_Loose/output_7.root
 
       - name: Pytest setup
         run: |
           conda install -y -n coffea-env -c conda-forge pytest pytest-cov root_base
           mkdir histos
 
-      - name: Run WWZ processors over test files with futures executor
+      - name: Run WWZ processors over test R2 file
         run: |
-          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append tests/test_futures_wwz.py
+          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append tests/test_futures_wwz_r2.py
 
-      - name: Get WWZ yields 
+      - name: Get WWZ yields R2
         run: |
-          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_make_yields_after_processor_wwz
+          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_make_yields_after_processor_wwz_r2
 
-      - name: Check WWZ yields 
+      - name: Check WWZ yields R2
         run: |
-          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_compare_yields_after_processor_wwz
+          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_compare_yields_after_processor_wwz_r2
+
+      - name: Run WWZ processors over test R3 file
+        run: |
+          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append tests/test_futures_wwz_r3.py
+
+      - name: Get WWZ yields R3
+        run: |
+          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_make_yields_after_processor_wwz_r3
+
+      - name: Check WWZ yields R3
+        run: |
+          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_compare_yields_after_processor_wwz_r3

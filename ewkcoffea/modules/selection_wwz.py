@@ -93,7 +93,6 @@ dataset_dict = {
             "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ",
         ]
     }
-
 }
 
 trgs_for_matching = {
@@ -159,6 +158,8 @@ trgs_for_matching = {
 #   - No unique way to do this
 #   - Note: In order for this to work properly, you should be processing all of the datastes to be used in the analysis
 #   - Otherwise, you may be removing events that show up in other datasets you're not using
+# For Era C which has both, the events in (SingleMuon, DoubleMuon) and (Muon) are exclusive so we do not perform duplicate removal bet
+# For Era C, SingleMuon and DoubleMuon fall in the run ranges of [355800,357399] while Muon falls in [356400,357400]
 exclude_dict = {
     "2016": {
         "DoubleMuon"     : [],
@@ -175,6 +176,39 @@ exclude_dict = {
         "EGamma"         : dataset_dict["2018"]["DoubleMuon"],
         "MuonEG"         : dataset_dict["2018"]["DoubleMuon"] + dataset_dict["2018"]["EGamma"],
     },
+    "B": {
+        "SingleMuon"     : [],
+        "DoubleMuon"     : dataset_dict["2022"]["SingleMuon"],
+        "EGamma"         : dataset_dict["2022"]["SingleMuon"] + dataset_dict["2022"]["DoubleMuon"],
+        "MuonEG"         : dataset_dict["2022"]["SingleMuon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["EGamma"],
+    },
+    "C": {
+        "Muon"           : [],
+        "SingleMuon"     : [],
+        "DoubleMuon"     : dataset_dict["2022"]["SingleMuon"],
+        "EGamma"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["SingleMuon"],
+        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["SingleMuon"] + dataset_dict["2022"]["EGamma"],
+    },
+    "D": {
+        "Muon"     : [],
+        "EGamma"         : dataset_dict["2022"]["Muon"],
+        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
+    },
+    "E": {
+        "Muon"     : [],
+        "EGamma"         : dataset_dict["2022"]["Muon"],
+        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
+    },
+    "F": {
+        "Muon"     : [],
+        "EGamma"         : dataset_dict["2022"]["Muon"],
+        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
+    },
+    "G": {
+        "Muon"     : [],
+        "EGamma"         : dataset_dict["2022"]["Muon"],
+        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
+    },
 }
 
 
@@ -183,7 +217,6 @@ def trg_matching(events,year):
 
     # The trigger for 2016 and 2016APV are the same
     if year == "2016APV": year = "2016"
-    if year == "2022EE": year = "2022"
 
     # Initialize return array to be True array with same shape as events
     ret_arr = ak.zeros_like(np.array(events.event), dtype=bool)
@@ -219,7 +252,7 @@ def trg_matching(events,year):
 
 
 # 4l selection # SYNC
-def add4lmask_wwz(events, year, isData, sample_name):
+def add4lmask_wwz(events, year, isData, sample_name,is2022):
 
     # Leptons and padded leptons
     leps = events.l_wwz_t
@@ -227,12 +260,15 @@ def add4lmask_wwz(events, year, isData, sample_name):
 
     # Filters
     filter_flags = events.Flag
-    filters = filter_flags.goodVertices & filter_flags.globalSuperTightHalo2016Filter & filter_flags.HBHENoiseFilter & filter_flags.HBHENoiseIsoFilter & filter_flags.EcalDeadCellTriggerPrimitiveFilter & filter_flags.BadPFMuonFilter & (((year == "2016")|(year == "2016APV")) | filter_flags.ecalBadCalibFilter) & (isData | filter_flags.eeBadScFilter)
+    if is2022:
+        filters = filter_flags.goodVertices & filter_flags.globalSuperTightHalo2016Filter & filter_flags.EcalDeadCellTriggerPrimitiveFilter & filter_flags.BadPFMuonFilter & filter_flags.ecalBadCalibFilter & filter_flags.BadPFMuonDzFilter & filter_flags.hfNoisyHitsFilter & filter_flags.eeBadScFilter
+    else:
+        filters = filter_flags.goodVertices & filter_flags.globalSuperTightHalo2016Filter & filter_flags.HBHENoiseFilter & filter_flags.HBHENoiseIsoFilter & filter_flags.EcalDeadCellTriggerPrimitiveFilter & filter_flags.BadPFMuonFilter & (((year == "2016")|(year == "2016APV")) | filter_flags.ecalBadCalibFilter) & (isData | filter_flags.eeBadScFilter)
 
     # Lep multiplicity
     nlep_4 = (ak.num(leps) == 4)
 
-    # Check if the leading lep associated with Z has pt>25
+    # Check if the leading lep associated with Z has pt>25 TODO Does this method actually do this?
     on_z = ak.fill_none(tc_es.get_Z_peak_mask(leps_padded[:,0:4],pt_window=10.0,zmass=get_ec_param("zmass")),False)
 
     # Remove low mass resonances

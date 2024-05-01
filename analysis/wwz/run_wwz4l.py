@@ -8,12 +8,42 @@ import gzip
 import os
 from coffea import processor
 from coffea.nanoevents import NanoAODSchema
-
+NanoAODSchema.warn_missing_crossrefs = False
 import topcoffea.modules.remote_environment as remote_environment
 
 import wwz4l
 
 LST_OF_KNOWN_EXECUTORS = ["futures","work_queue","iterative"]
+
+BDT_VAR_NAMES = [
+    "mll_wl0_wl1",
+    "mllll",
+    "absdphi_4l_met",
+    "absdphi_zleps_met",
+    "absdphi_wleps_met",
+    "absdphi_wl0_met",
+    "absdphi_wl1_met",
+    "dr_wl0_wl1",
+    "dr_zl0_zl1",
+    "dr_wleps_zleps",
+    "met",
+    "mt2",
+    "ptl4",
+    "scalarptsum_jet",
+    "scalarptsum_lepmet",
+    "z_lep0_pt",
+    "z_lep1_pt",
+    "w_lep0_pt",
+    "w_lep1_pt",
+    "njets",
+    "cos_helicity_x",
+    "mt_wl0_met",
+    "mt_wl1_met",
+    "mt_wleps_met",
+    "mt_4l_met",
+    "dr_wl0_j_min",
+    "dr_wl1_j_min"
+]
 
 if __name__ == '__main__':
 
@@ -89,7 +119,7 @@ if __name__ == '__main__':
     # Figure out which hists to include
     if args.hist_list == ["few"]:
         # Here we hardcode a reduced list of a few hists
-        hist_lst = ["j0pt", "njets", "nbtagsl", "nleps", "met", "l0pt"]
+        hist_lst = ["j0pt", "njets", "nbtagsl", "nleps", "met", "l0pt"] + BDT_VAR_NAMES
     elif args.hist_list == ["cr"]:
         # Here we hardcode a list of hists used for the CRs
         hist_lst = ["lj0pt", "ptz", "met", "ljptsum", "l0pt", "l0eta", "l1pt", "l1eta", "j0pt", "j0eta", "njets", "nbtagsl", "invmass"]

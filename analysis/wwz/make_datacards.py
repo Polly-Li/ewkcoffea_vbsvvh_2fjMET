@@ -131,7 +131,7 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,out_dir="."):
 #   - So this function adds the nominal yields from the other three years to the up/down variation for the relevant year
 #   - Note the in_dict is modifed in place (we do not return a copy of the dict)
 def handle_per_year_systs_for_fr2(in_dict, systs_special=SYSTS_SPECIAL):
-    for cat in in_dict["FR2"].keys():
+    for cat in in_dict["FR"].keys():
         for sys in systs_special:
             # Find up/down variation for the year relevant to that syst
             yrrel = systs_special[sys]["yr_rel"] # The relevant year for this special syst
@@ -139,13 +139,13 @@ def handle_per_year_systs_for_fr2(in_dict, systs_special=SYSTS_SPECIAL):
             yld_yrrel_do = in_dict[yrrel][cat][f"{sys}Down"]
             # Get nominal yld for all years other than the relevant one
             yld_yrrel_nom = in_dict[yrrel][cat]["nominal"]
-            yld_yrall_nom = in_dict["FR2"][cat]["nominal"]
+            yld_yrall_nom = in_dict["FR"][cat]["nominal"]
             yld_allbutyrrel_nom = utils.get_diff_between_dicts(yld_yrall_nom,yld_yrrel_nom,difftype="absolute_diff") # This is: x = sum(nom yld for all years except relevant year)
             # Get the yield with just the relevant year's up/down variation varied (with nominal yld for all other years)
             yld_up = utils.get_diff_between_dicts(yld_allbutyrrel_nom, yld_yrrel_up, difftype="sum") # This is: x + (up   yld for relevant year)
             yld_do = utils.get_diff_between_dicts(yld_allbutyrrel_nom, yld_yrrel_do, difftype="sum") # This is: x + (down yld for relevant year)
-            in_dict["FR2"][cat][f"{sys}Up"] = yld_up
-            in_dict["FR2"][cat][f"{sys}Down"] = yld_do
+            in_dict["FR"][cat][f"{sys}Up"] = yld_up
+            in_dict["FR"][cat][f"{sys}Down"] = yld_do
 
 
 # Get rid of negative values in the yld dict
@@ -347,6 +347,7 @@ def main():
     parser.add_argument("--no-tf",action="store_true",help="Skip doing the data-driven background estimation")
     parser.add_argument("--bdt",action="store_true",help="Use BDT SR bins")
     parser.add_argument("--unblind",action="store_true",help="If set, use real data, otherwise use asimov data")
+    parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["run2","run3"])
 
     args = parser.parse_args()
     in_file = args.in_file_name
@@ -355,25 +356,27 @@ def main():
     skip_tf = args.no_tf
     use_bdt_sr = args.bdt
     unblind = args.unblind
+    run = args.run
 
     # Check args
     if out_dir != "." and not os.path.exists(out_dir):
         print(f"Making dir \"{out_dir}\"")
         os.makedirs(out_dir)
+    if run == "run3" and do_nuis:
+        raise Exception("Systematics are not ready for R3 yet.")
 
     # Get the histo
     f = pickle.load(gzip.open(in_file))
     histo = f["njets"] # Let's use njets
 
     # Get the dictionary defining the mc sample grouping
-    sample_names_dict_data = {"FR2" : sg.create_data_sample_dict("all")}
-    sample_names_dict_mc = {
-        "UL16APV" : sg.create_mc_sample_dict(sg.SAMPLE_DICT_BASE,"UL16APV"),
-        "UL16"    : sg.create_mc_sample_dict(sg.SAMPLE_DICT_BASE,"UL16"),
-        "UL17"    : sg.create_mc_sample_dict(sg.SAMPLE_DICT_BASE,"UL17"),
-        "UL18"    : sg.create_mc_sample_dict(sg.SAMPLE_DICT_BASE,"UL18"),
-        "FR2"     : sg.create_mc_sample_dict(sg.SAMPLE_DICT_BASE,"all"),
-    }
+    sample_names_dict_data = {"FR" : sg.create_data_sample_dict(run)}
+    sample_names_dict_mc   = {"FR" : sg.create_mc_sample_dict(run)}
+    if run == "run2":
+        sample_names_dict_mc["UL16APV"] = sg.create_mc_sample_dict("UL16APV")
+        sample_names_dict_mc["UL16"]    = sg.create_mc_sample_dict("UL16")
+        sample_names_dict_mc["UL17"]    = sg.create_mc_sample_dict("UL17")
+        sample_names_dict_mc["UL18"]    = sg.create_mc_sample_dict("UL18")
 
     # Get yield dictionary (nested in the order: year,cat,syst,proc)
     yld_dict_mc_allyears = {}
@@ -382,9 +385,9 @@ def main():
     if do_nuis:
         handle_per_year_systs_for_fr2(yld_dict_mc_allyears)
 
-    # We're only looking at Full R2 for now
-    yld_dict_mc = yld_dict_mc_allyears["FR2"]
-    yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR2"])
+    # We're only looking at Full R2 (run2) or 2022 (run3) for now
+    yld_dict_mc = yld_dict_mc_allyears["FR"]
+    yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR"])
 
     ####################################################################################
     # Dump some info about a bin (just raw numbers, more or less)
@@ -439,7 +442,7 @@ def main():
             kappa_for_dc_ch = get_kappa_for_dc(kappa_dict,ch)
             kappa_for_dc_ch.update(get_rate_systs(sg.PROC_LST)) # Append in the ones from rate json
         if do_nuis and not skip_tf:
-            gmn_for_dc_ch = get_gmn_for_dc(gmn_dict[ch],proc_lst=list(sg.SAMPLE_DICT_BASE.keys()))
+            gmn_for_dc_ch = get_gmn_for_dc(gmn_dict[ch],proc_lst=sg.PROC_LST)
 
 
         # Make the card for this chan

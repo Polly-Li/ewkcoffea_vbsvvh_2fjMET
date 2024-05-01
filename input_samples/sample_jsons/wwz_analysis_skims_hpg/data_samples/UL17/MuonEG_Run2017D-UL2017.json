@@ -1,0 +1,28 @@
+{
+    "xsec": 1.0,
+    "year": "2017",
+    "treeName": "Events",
+    "histAxisName": "UL17_data",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/blue/avery/p.chang/3LepTau_4Lep/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_8.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_6.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_11.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_13.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_5.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_7.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_10.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_12.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_1.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_4.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_3.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_9.root",
+        "/blue/avery/p.chang/3LepTau_4Lep/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep/output_2.root"
+    ],
+    "nEvents": 93919,
+    "nGenEvents": 93919,
+    "nSumOfWeights": 93919,
+    "isData": true,
+    "path": "/blue/avery/p.chang/3LepTau_4Lep/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_3LepTau_4Lep"
+}

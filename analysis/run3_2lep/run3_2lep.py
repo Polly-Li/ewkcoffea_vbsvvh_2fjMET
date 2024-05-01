@@ -12,6 +12,7 @@ from topcoffea.modules.paths import topcoffea_path
 import topcoffea.modules.event_selection as es_tc
 from ewkcoffea.modules.paths import ewkcoffea_path as ewkcoffea_path
 import ewkcoffea.modules.selection_run3_2lep as selrun3_2lep
+import ewkcoffea.modules.selection_wwz as selwwz
 import ewkcoffea.modules.corrections as ewk_corrections
 import ewkcoffea.modules.objects_wwz as objrun3_2lep
 from topcoffea.modules.get_param_from_jsons import GetParam
@@ -281,8 +282,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             events["jets_run3_2lep"] = jets_run3_2lep
             weights_obj_base_for_kinematics_syst = copy.deepcopy(weights_obj_base)
             if not isData:
-                ewk_corrections.run3_pu_attach(pileup,year)
-                weights_obj_base_for_kinematics_syst.add("pu_corr", pileup.pileup_corr)
+                weights_obj_base_for_kinematics_syst.add("pu_corr", ewk_corrections.run3_pu_attach(pileup,year,"nominal"))
                 weights_obj_base_for_kinematics_syst.add("lepSF_muon", events.muon_sf)
                 weights_obj_base_for_kinematics_syst.add("lepSF_ele", events.ele_sf)
 
@@ -293,9 +293,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             ######### Masks we need for the selection ##########
             # Pass trigger mask
             if isData:
-                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=selrun3_2lep.dataset_dict,exclude_dict=selrun3_2lep.exclude_dict,era=str(era))
+                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=selwwz.dataset_dict,exclude_dict=selwwz.exclude_dict,era=str(era))
             else:
-                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=selrun3_2lep.dataset_dict,exclude_dict=selrun3_2lep.exclude_dict)
+                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=selwwz.dataset_dict,exclude_dict=selwwz.exclude_dict)
             #pass_trg = (pass_trg & selrun3_2lep.trg_matching(events,year))
 
             #BTag Mask
@@ -303,7 +303,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             ######### Run3 2Lep event selection stuff #########
 
-            selrun3_2lep.attach_run3_2lep_preselection_mask(events,l_run3_2lep_tight_padded[:,0:2])                                              # Attach preselection sf and of flags to the events
+            selrun3_2lep.attach_run3_2lep_preselection_mask(events,l_run3_2lep_tight_padded[:,0:2]) # Attach preselection sf and of flags to the events
             selections = PackedSelection(dtype='uint64')
 
             # Lumi mask (for data)

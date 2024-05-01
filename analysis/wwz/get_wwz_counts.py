@@ -9,10 +9,10 @@ import gzip
 
 
 # Get number of evens in SRs
-def get_counts(histos_dict):
+def get_counts(histos_dict,sample_name):
 
-    wwz_sync_sample = 'UL17_WWZJetsTo4L2Nu'
-    wwz_sync_sample_lst = ['UL17_WWZJetsTo4L2Nu']
+    wwz_sync_sample = sample_name
+    wwz_sync_sample_lst = [sample_name]
     #wwz_sync_sample_lst = ['UL16_WWZJetsTo4L2Nu','UL16APV_WWZJetsTo4L2Nu','UL17_WWZJetsTo4L2Nu','UL18_WWZJetsTo4L2Nu']
     #wwz_sync_sample_lst = ['UL16_VHnobb','UL16APV_VHnobb','UL17_VHnobb','UL18_VHnobb']
 
@@ -54,12 +54,13 @@ def main():
     parser.add_argument("-f", "--pkl-file-path", default="histos/plotsTopEFT.pkl.gz", help = "The path to the pkl file")
     parser.add_argument("-o", "--output-path", default=".", help = "The path the output files should be saved to")
     parser.add_argument("-n", "--output-name", default="counts_wwz_sync", help = "A name for the output directory")
+    parser.add_argument("-s", "--sample-name", default="UL17_WWZJetsTo4L2Nu", help = "The name of the sample to grab from the samples axis")
     args = parser.parse_args()
 
     # Get the counts from the input hiso
     histo_dict = pickle.load(gzip.open(args.pkl_file_path))
 
-    counts_dict = get_counts(histo_dict)
+    counts_dict = get_counts(histo_dict,args.sample_name)
 
     # Print the counts
     print("\nCounts:")
