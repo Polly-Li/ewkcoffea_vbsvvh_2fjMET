@@ -951,7 +951,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Loop over the hists we want to fill
             for dense_axis_name, dense_axis_vals in dense_variables_dict.items():
                 if dense_axis_name not in self._hist_lst:
-                    print(f"Skipping \"{dense_axis_name}\", it is not in the list of hists to include.")
+                    # print(f"Skipping \"{dense_axis_name}\", it is not in the list of hists to include.")
                     continue
                 #print("\ndense_axis_name,vals",dense_axis_name)
                 #print("\ndense_axis_name,vals",vals)

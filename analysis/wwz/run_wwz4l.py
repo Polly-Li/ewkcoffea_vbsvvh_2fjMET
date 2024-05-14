@@ -320,7 +320,7 @@ if __name__ == '__main__':
     tstart = time.time()
 
     if executor == "futures":
-        exec_instance = processor.FuturesExecutor(workers=nworkers)
+        exec_instance = processor.FuturesExecutor(workers=nworkers, merging=(1, 1, 10000))
         runner = processor.Runner(exec_instance, schema=NanoAODSchema, chunksize=chunksize, maxchunks=nchunks)
     elif executor == "iterative":
         exec_instance = processor.IterativeExecutor()

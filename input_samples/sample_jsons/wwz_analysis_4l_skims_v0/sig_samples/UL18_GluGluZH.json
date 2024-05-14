@@ -1,0 +1,27 @@
+{
+    "xsec": 0.00275,
+    "year": "2018",
+    "treeName": "Events",
+    "histAxisName": "UL18_GluGluZH",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M125_13TeV_powheg_pythia8_TuneCP5_PSweights_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/merged.root"
+    ],
+    "nEvents": 38572,
+    "nGenEvents": 1955168,
+    "nSumOfWeights": 120434.04743040001,
+    "isData": false,
+    "path": "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M125_13TeV_powheg_pythia8_TuneCP5_PSweights_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/",
+    "nSumOfLheWeights": [
+        152843.79632500003,
+        145822.29858299997,
+        138727.17800100005,
+        126233.24922099999,
+        120434.438464,
+        114574.37480100001,
+        106087.36909800002,
+        101213.18123400003,
+        96289.164135
+    ]
+}

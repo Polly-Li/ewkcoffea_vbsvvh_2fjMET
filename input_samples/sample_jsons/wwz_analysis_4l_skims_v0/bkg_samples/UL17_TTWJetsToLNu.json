@@ -1,0 +1,27 @@
+{
+    "xsec": 0.23529979999999998,
+    "year": "2017",
+    "treeName": "Events",
+    "histAxisName": "UL17_TTWJetsToLNu",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/skim4l_v5/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_skim4l_v5/merged/merged.root"
+    ],
+    "nEvents": 11289,
+    "nGenEvents": 7140411,
+    "nSumOfWeights": 2392831.795265399,
+    "isData": false,
+    "path": "/skim4l_v5/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_skim4l_v5/merged/",
+    "nSumOfLheWeights": [
+        2637416.833060858,
+        2612543.746685044,
+        2599253.3451368893,
+        2438977.8463957077,
+        2392831.795265399,
+        2357821.596551662,
+        2210238.8907045415,
+        2155950.0749102957,
+        2111831.593554463
+    ]
+}

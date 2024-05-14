@@ -1,0 +1,17 @@
+{
+    "xsec": 1.0,
+    "year": "2016APV",
+    "treeName": "Events",
+    "histAxisName": "UL16APV_data",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/skim4l_v5/DoubleMuon_Run2016D-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/merged.root"
+    ],
+    "nEvents": 661,
+    "nGenEvents": 661,
+    "nSumOfWeights": 661,
+    "isData": true,
+    "path": "/skim4l_v5/DoubleMuon_Run2016D-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/",
+    "nSumOfLheWeights": null
+}
