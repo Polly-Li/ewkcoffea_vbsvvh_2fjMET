@@ -6,12 +6,7 @@ import ewkcoffea.modules.yield_tools as yt
 
 import argparse
 import pickle
-import json
 import gzip
-import os
-import sys
-
-from pprint import pprint
 
 # Get the yields in the SR
 def get_yields(histos_dict,sample_dict,raw_counts=False,quiet=True,blind=True,systematic_name="nominal"):
@@ -64,74 +59,100 @@ def main():
     out_path = args.output_path
 
     yields_dict = yt.get_yields(histo_dict["njets_counts"],sample_dict_mc)
-    kt.print_table(yields_dict,
-            sigs=["WWZ", "ZH"],
-            bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
-            options={
-                "output_name": "raw",
-                "yield_prec": 0, # to print raw counts
-                })
+    kt.print_table(
+        yields_dict,
+        options={
+            "output_name": "raw",
+            "yield_prec": 0, # to print raw counts
+        },
+        sigs=["WWZ", "ZH"],
+        bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
+    )
 
     yields_dict = yt.get_yields(histo_dict["njets"],sample_dict_mc)
     yields_data_dict = yt.get_yields(histo_dict["njets"],sample_dict_data)
 
-    kt.print_table(yields_dict,
-            sigs=["WWZ", "ZH"],
-            bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
-            options={
-                "output_name": "cutflow_cutbased",
-                "regions": ["all_events", "4l_presel", "sr_4l_of_incl", "sr_4l_sf_incl"],
-                })
 
-    kt.print_table(yields_dict,
-            sigs=["WWZ", "ZH"],
-            bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
-            options={
-                "output_name": "sr_4l_sf",
-                "regions": ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C"],
-                })
+    kt.print_table(
+        yields_dict,
+        options={
+            "output_name": "all",
+        },
+        sigs=["WWZ", "ZH"],
+        bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
+    )
 
-    kt.print_table(yields_dict,
-            sigs=["WWZ", "ZH"],
-            bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
-            options={
-                "output_name": "sr_4l_of",
-                "regions": ["sr_4l_of_1", "sr_4l_of_2", "sr_4l_of_3", "sr_4l_of_4"],
-                })
+    kt.print_table(
+        yields_dict,
+        options={
+            "output_name": "cutflow_cutbased",
+            "regions": ["all_events", "4l_presel", "sr_4l_of_incl", "sr_4l_sf_incl"],
+        },
+        sigs=["WWZ", "ZH"],
+        bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
+    )
 
-    kt.print_table(yields_dict,
-            sigs=["WWZ", "ZH"],
-            bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
-            yields_dict_data=yields_data_dict,
-            data="data",
-            options={
-                "output_name": "cr",
-                "regions": ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"],
-                })
+    kt.print_table(
+        yields_dict,
+        options={
+            "output_name": "sr_4l_sf",
+            "regions": ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C"],
+        },
+        sigs=["WWZ", "ZH"],
+        bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
+    )
 
-    kt.print_table(yields_dict,
-            sigs=["WWZ", "ZH"],
-            bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
-            options={
-                "output_name": "cutflow_bdt",
-                "regions": ["all_events", "4l_presel", "sr_4l_bdt_of_presel", "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn"],
-                })
+    kt.print_table(
+        yields_dict,
+        options={
+            "output_name": "sr_4l_of",
+            "regions": ["sr_4l_of_1", "sr_4l_of_2", "sr_4l_of_3", "sr_4l_of_4"],
+        },
+        sigs=["WWZ", "ZH"],
+        bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
+    )
 
-    kt.print_table(yields_dict,
-            sigs=["WWZ", "ZH"],
-            bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
-            options={
-                "output_name": "sr_4l_bdt_sf",
-                "regions": [f"sr_4l_bdt_sf_{i}" for i in range(1, 8)],
-                })
+    kt.print_table(
+        yields_dict,
+        options={
+            "output_name": "cr",
+            "regions": ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"],
+        },
+        sigs=["WWZ", "ZH"],
+        bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
+        yields_dict_data=yields_data_dict,
+        data="data",
+    )
 
-    kt.print_table(yields_dict,
-            sigs=["WWZ", "ZH"],
-            bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
-            options={
-                "output_name": "sr_4l_bdt_of",
-                "regions": [f"sr_4l_bdt_of_{i}" for i in range(1, 9)],
-                })
+    kt.print_table(
+        yields_dict,
+        options={
+            "output_name": "cutflow_bdt",
+            "regions": ["all_events", "4l_presel", "sr_4l_bdt_of_presel", "sr_4l_bdt_sf_presel", "sr_4l_bdt_sf_trn"],
+        },
+        sigs=["WWZ", "ZH"],
+        bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
+    )
+
+    kt.print_table(
+        yields_dict,
+        options={
+            "output_name": "sr_4l_bdt_sf",
+            "regions": [f"sr_4l_bdt_sf_{i}" for i in range(1, 8)],
+        },
+        sigs=["WWZ", "ZH"],
+        bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
+    )
+
+    kt.print_table(
+        yields_dict,
+        options={
+            "output_name": "sr_4l_bdt_of",
+            "regions": [f"sr_4l_bdt_of_{i}" for i in range(1, 9)],
+        },
+        sigs=["WWZ", "ZH"],
+        bkgs=['ZZ', 'ttZ', 'tWZ', 'WZ', 'other'],
+    )
 
 if __name__ == "__main__":
     main()

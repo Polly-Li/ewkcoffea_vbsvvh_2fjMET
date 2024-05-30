@@ -73,7 +73,7 @@ class E:
         return E(-1.*self.val, self.err)
 
     def __lt__(self, other):
-         return self.val < other.val
+        return self.val < other.val
 
     def get_val(self, other):
         other_val, other_err = other, 0.0
@@ -155,9 +155,8 @@ class Table():
         val = str(val)
         # lenval = len(val.decode("utf-8"))
         lenval = len(val)
-            
         if lenval > length: val = self.shorten_string(val, length)
-        if justify == "l": 
+        if justify == "l":
             nr = (length-lenval-1)
             ret = " " + val + fill_char*nr
             # ret = " "+val.ljust(length-1, fill_char)
@@ -275,7 +274,7 @@ class Table():
 
 
     def add_line(self):
-        # draw hlines by making list of the row 
+        # draw hlines by making list of the row
         # indices, which we will check when drawing
         # the matrix
         self.hlines.append(len(self.matrix))
@@ -286,22 +285,15 @@ class Table():
                 self.colnames = range(1,len(self.matrix[0])+1)
         if self.matrix:
             for ic, cname in enumerate(self.colnames):
-                self.colsizes.append( max(
+                self.colsizes.append(max(
                     max([len(str(r[ic])) for r in self.matrix])+2,
-                    len(str(cname))+2
-                    ) )
+                    len(str(cname))+2))
 
     def sort(self, column=None, descending=True):
         self.update()
         icol = self.colnames.index(column)
         # sort matrix and range of numbers to get sorted indices for later use
-        self.matrix, self.sortedidxs = zip(
-                *sorted(
-                    zip(
-                        self.matrix,range(len(self.matrix))
-                        ), key=lambda x: x[0][icol], reverse=descending
-                    )
-                )
+        self.matrix, self.sortedidxs = zip( *sorted( zip( self.matrix,range(len(self.matrix))), key=lambda x: x[0][icol], reverse=descending))
         self.matrix = list(self.matrix)
 
         # now update row colors and hlines to match sorted matrix
@@ -381,30 +373,6 @@ class Table():
 
 
 #______________________________________________________________________________________________________________________
-def get_total_hist(hists):
-    """
-    Sum all histograms and return a new copy of total bkg hist.
-    """
-    if len(hists) == 0:
-        print("ERROR - the number of histograms are zero, while you asked me to sum them up.")
-    totalhist = cloneTH1(hists[0])
-    totalhist.Reset()
-    for hist in hists:
-        totalhist.Add(hist)
-    return totalhist
-
-
-#______________________________________________________________________________________________________________________
-def makedir(dirpath):
-    try:
-        os.makedirs(dirpath)
-    except:  # Python >2.5
-        if exc.errno == errno.EEXIST and os.path.isdir(dirpath):
-            pass
-        else:
-            raise
-
-#______________________________________________________________________________________________________________________
 def human_format(num):
     is_fraction = False
     if num < 1:
@@ -448,52 +416,6 @@ def yield_str(nominal, error, options={}):
             return "%s %s %s" % ('{{:.{}g}}'.format(precuse).format(e.val), sep, '{{:.{}g}}'.format(precuse).format(e.err))
 
 #______________________________________________________________________________________________________________________
-def print_yield_table(hdata, hbkgs, hsigs, hsyst, options):
-    hists = []
-    hists.extend(hbkgs)
-    htotal = None
-    if len(hbkgs) != 0:
-        htotal = get_total_hist(hbkgs)
-        htotal.SetName("Total")
-        htotal.SetTitle("Total")
-        hists.append(htotal)
-    if hdata and len(hbkgs) != 0:
-        #print(hdata)
-        #hratio = makeRatioHist(hdata, hbkgs)
-        hratio = hdata.Clone("Ratio")
-        hratio.SetTitle("Ratio")
-        hratio.Divide(htotal)
-        #hists.append(htotal)
-        hists.append(hdata)
-        hists.append(hratio)
-    hists.extend(hsigs)
-    prec = 2
-    if "yield_prec" in options:
-        prec = options["yield_prec"]
-        del options["yield_prec"]
-    print_yield_table_from_list(hists, options["output_name"], prec, options=options)
-
-    # Re arranging for tex
-    histstex = []
-
-    histstexsummary = []
-    histstexindivid = []
-    if len(hbkgs) == 0:
-        histstexsummary = [] # do nothing
-    else:
-        if hdata:
-            histstexsummary = [hists[-(len(hsigs)+1)], hists[-(len(hsigs)+2)], hists[-(len(hsigs)+3)]] # ratio data total
-            histstexsummary[0].SetTitle("\\Nobs / \\Ntotal")
-            histstexsummary[1].SetTitle("\\Nobs")
-            histstexsummary[2].SetTitle("\\Ntotal")
-        else:
-            histstexsummary = [hists[-(len(hsigs)+1)]] # just total
-    histstexsummary.extend(hsigs)
-    histstexindivid.extend(hbkgs)
-    print_yield_tex_table_from_list_v2(histstexsummary, histstexindivid, options["output_name"], prec, options["yield_table_caption"] if "yield_table_caption" in options else "PUT YOUR CAPTION HERE")
-    if "yield_table_caption" in options: del options["yield_table_caption"]
-
-#______________________________________________________________________________________________________________________
 def check_regions_exists(yields_dict, reference, proc):
     if reference != yields_dict.keys():
         print("ewkcoffea.modules.keynote_tools.print_table(...): List of regions do not agree!")
@@ -501,7 +423,7 @@ def check_regions_exists(yields_dict, reference, proc):
         for reg in yields_dict[proc].keys():
             print("  {}", reg)
         print("while for reference process there are following regions:")
-        for reg in regions:
+        for reg in reference:
             print("  {}", reg)
         sys.exit()
 
