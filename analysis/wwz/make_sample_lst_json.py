@@ -587,25 +587,33 @@ data_UL18_4l_skim_dict = {
 ## Signal
 central_UL16APV_sig_4l_skim_dict = {
     "UL16APV_WWZJetsTo4L2Nu" : {"path" : "/skim4l_v5/WWZJetsTo4L2Nu_4F_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_skim4l_v5/merged/"                    , "histAxisName" : "UL16APV_WWZJetsTo4L2Nu" , "xsecName" : "WWZ4l"                , } ,
-    "UL16APV_GluGluZH"       : {"path" : "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M125_13TeV_powheg_pythia8_TuneCP5_PSweights_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_skim4l_v5/merged/"   , "histAxisName" : "UL16APV_GluGluZH"       , "xsecName" : "ggToZHToHToWWTo2L2Nu" , } ,
+    # PSWeight sample that has more stats but isn't the one we use.
+    # "UL16APV_GluGluZH"       : {"path" : "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M125_13TeV_powheg_pythia8_TuneCP5_PSweights_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_skim4l_v5/merged/"   , "histAxisName" : "UL16APV_GluGluZH"       , "xsecName" : "ggToZHToHToWWTo2L2Nu" , } ,
+    "UL16APV_GluGluZH"       : {"path" : "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M-125_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_skim4l_v5/merged/"            , "histAxisName" : "UL16APV_GluGluZH"       , "xsecName" : "ggToZHToHToWWTo2L2Nu" , } ,
     "UL16APV_qqToZHToZTo2L"  : {"path" : "/skim4l_v5/HZJ_HToWWTo2L2Nu_ZTo2L_M-125_TuneCP5_13TeV-powheg-jhugen727-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_skim4l_v5/merged/" , "histAxisName" : "UL16APV_qqToZHToZTo2L"  , "xsecName" : "qqToZHToZTo2L"        , } ,
 }
 
 central_UL16_sig_4l_skim_dict = {
     "UL16_WWZJetsTo4L2Nu" : {"path" : "/skim4l_v5/WWZJetsTo4L2Nu_4F_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v2_NANOAODSIM_skim4l_v5/merged/"                    , "histAxisName" : "UL16_WWZJetsTo4L2Nu" , "xsecName" : "WWZ4l"                , } ,
-    "UL16_GluGluZH"       : {"path" : "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M125_13TeV_powheg_pythia8_TuneCP5_PSweights_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v2_NANOAODSIM_skim4l_v5/merged/"   , "histAxisName" : "UL16_GluGluZH"       , "xsecName" : "ggToZHToHToWWTo2L2Nu" , } ,
+    # PSWeight sample that has more stats but isn't the one we use.
+    # "UL16_GluGluZH"       : {"path" : "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M125_13TeV_powheg_pythia8_TuneCP5_PSweights_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v2_NANOAODSIM_skim4l_v5/merged/"   , "histAxisName" : "UL16_GluGluZH"       , "xsecName" : "ggToZHToHToWWTo2L2Nu" , } ,
+    "UL16_GluGluZH"       : {"path" : "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M-125_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v2_NANOAODSIM_skim4l_v5/merged/"            , "histAxisName" : "UL16_GluGluZH"       , "xsecName" : "ggToZHToHToWWTo2L2Nu" , } ,
     "UL16_qqToZHToZTo2L"  : {"path" : "/skim4l_v5/HZJ_HToWWTo2L2Nu_ZTo2L_M-125_TuneCP5_13TeV-powheg-jhugen727-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v2_NANOAODSIM_skim4l_v5/merged/" , "histAxisName" : "UL16_qqToZHToZTo2L"  , "xsecName" : "qqToZHToZTo2L"        , } ,
 }
 
 central_UL17_sig_4l_skim_dict = {
     "UL17_WWZJetsTo4L2Nu" : {"path" : "/skim4l_v5/WWZJetsTo4L2Nu_4F_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_skim4l_v5/merged/"                    , "histAxisName" : "UL17_WWZJetsTo4L2Nu" , "xsecName" : "WWZ4l"                , } ,
-    "UL17_GluGluZH"       : {"path" : "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M125_13TeV_powheg_pythia8_TuneCP5_PSweights_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_skim4l_v5/merged/"   , "histAxisName" : "UL17_GluGluZH"       , "xsecName" : "ggToZHToHToWWTo2L2Nu" , } ,
+    # PSWeight sample that has more stats but isn't the one we use.
+    # "UL17_GluGluZH"       : {"path" : "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M125_13TeV_powheg_pythia8_TuneCP5_PSweights_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_skim4l_v5/merged/"   , "histAxisName" : "UL17_GluGluZH"       , "xsecName" : "ggToZHToHToWWTo2L2Nu" , } ,
+    "UL17_GluGluZH"       : {"path" : "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M-125_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_skim4l_v5/merged/"            , "histAxisName" : "UL17_GluGluZH"       , "xsecName" : "ggToZHToHToWWTo2L2Nu" , } ,
     "UL17_qqToZHToZTo2L"  : {"path" : "/skim4l_v5/HZJ_HToWWTo2L2Nu_ZTo2L_M-125_TuneCP5_13TeV-powheg-jhugen727-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_skim4l_v5/merged/" , "histAxisName" : "UL17_qqToZHToZTo2L"  , "xsecName" : "qqToZHToZTo2L"        , } ,
 }
 
 central_UL18_sig_4l_skim_dict = {
     "UL18_WWZJetsTo4L2Nu" : {"path" : "/skim4l_v5/WWZJetsTo4L2Nu_4F_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/"                    , "histAxisName" : "UL18_WWZJetsTo4L2Nu" , "xsecName" : "WWZ4l"                , } ,
-    "UL18_GluGluZH"       : {"path" : "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M125_13TeV_powheg_pythia8_TuneCP5_PSweights_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/"   , "histAxisName" : "UL18_GluGluZH"       , "xsecName" : "ggToZHToHToWWTo2L2Nu" , } ,
+    # PSWeight sample that has more stats but isn't the one we use.
+    # "UL18_GluGluZH"       : {"path" : "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M125_13TeV_powheg_pythia8_TuneCP5_PSweights_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/"   , "histAxisName" : "UL18_GluGluZH"       , "xsecName" : "ggToZHToHToWWTo2L2Nu" , } ,
+    "UL18_GluGluZH"       : {"path" : "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M-125_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/"            , "histAxisName" : "UL18_GluGluZH"       , "xsecName" : "ggToZHToHToWWTo2L2Nu" , } ,
     "UL18_qqToZHToZTo2L"  : {"path" : "/skim4l_v5/HZJ_HToWWTo2L2Nu_ZTo2L_M-125_TuneCP5_13TeV-powheg-jhugen727-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/" , "histAxisName" : "UL18_qqToZHToZTo2L"  , "xsecName" : "qqToZHToZTo2L"        , } ,
 }
 
@@ -879,10 +887,10 @@ def main():
     out_dir_sig = os.path.join(jsons_path,"wwz_analysis_4l_skims_v0/sig_samples")
     os.makedirs(out_dir_sig, exist_ok=True)
 
-    # make_jsons_for_dict_of_samples(central_UL16APV_sig_4l_skim_dict, "/data/userdata/phchang/", "2016APV", out_dir_sig, on_das=False)
-    # make_jsons_for_dict_of_samples(central_UL16_sig_4l_skim_dict, "/data/userdata/phchang/", "2016", out_dir_sig, on_das=False)
-    # make_jsons_for_dict_of_samples(central_UL17_sig_4l_skim_dict, "/data/userdata/phchang/", "2017", out_dir_sig, on_das=False)
-    # make_jsons_for_dict_of_samples(central_UL18_sig_4l_skim_dict, "/data/userdata/phchang/", "2018", out_dir_sig, on_das=False)
+    make_jsons_for_dict_of_samples(central_UL16APV_sig_4l_skim_dict, "/data/userdata/phchang/", "2016APV", out_dir_sig, on_das=False)
+    make_jsons_for_dict_of_samples(central_UL16_sig_4l_skim_dict, "/data/userdata/phchang/", "2016", out_dir_sig, on_das=False)
+    make_jsons_for_dict_of_samples(central_UL17_sig_4l_skim_dict, "/data/userdata/phchang/", "2017", out_dir_sig, on_das=False)
+    make_jsons_for_dict_of_samples(central_UL18_sig_4l_skim_dict, "/data/userdata/phchang/", "2018", out_dir_sig, on_das=False)
 
     # make_jsons_for_dict_of_samples(central_UL16APV_bkg_4l_skim_dict, "/data/userdata/phchang/", "2016APV", out_dir_bkg, on_das=False)
     # make_jsons_for_dict_of_samples(central_UL16_bkg_4l_skim_dict, "/data/userdata/phchang/", "2016", out_dir_bkg, on_das=False)

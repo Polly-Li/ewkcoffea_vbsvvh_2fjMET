@@ -6,22 +6,22 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M125_13TeV_powheg_pythia8_TuneCP5_PSweights_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v2_NANOAODSIM_skim4l_v5/merged/merged.root"
+        "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M-125_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v2_NANOAODSIM_skim4l_v5/merged/merged.root"
     ],
-    "nEvents": 9367,
-    "nGenEvents": 469733,
-    "nSumOfWeights": 28934.519387400003,
+    "nEvents": 4793,
+    "nGenEvents": 245929,
+    "nSumOfWeights": 15148.6853562,
     "isData": false,
-    "path": "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M125_13TeV_powheg_pythia8_TuneCP5_PSweights_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v2_NANOAODSIM_skim4l_v5/merged/",
+    "path": "/skim4l_v5/GluGluZH_HToWWTo2L2Nu_M-125_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v2_NANOAODSIM_skim4l_v5/merged/",
     "nSumOfLheWeights": [
-        36720.408601,
-        35034.09626600001,
-        33329.924786,
-        30327.280082999987,
-        28934.613333999994,
-        27527.088956000003,
-        25487.27360300001,
-        24316.668193000012,
-        23133.972331
+        19223.904851000003,
+        18342.122487000004,
+        17450.726166000004,
+        15876.967779000004,
+        15148.734542000002,
+        14412.504701000002,
+        13343.122961000001,
+        12731.006541,
+        12112.376931
     ]
 }
