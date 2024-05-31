@@ -216,9 +216,9 @@ def trg_matching(events,year):
     ret_arr = ak.zeros_like(np.array(events.event), dtype=bool)
 
     # Get the leptons, sort and pad
-    el = events.l_wwz_t[abs(events.l_wwz_t.pdgId)==11]
+    el = events.lep_loose[abs(events.lep_loose.pdgId)==11]
     el = ak.pad_none(el[ak.argsort(el.pt,axis=-1,ascending=False)],2)
-    mu = events.l_wwz_t[abs(events.l_wwz_t.pdgId)==13]
+    mu = events.lep_loose[abs(events.lep_loose.pdgId)==13]
     mu = ak.pad_none(mu[ak.argsort(mu.pt,axis=-1,ascending=False)],2)
 
     # Loop over offline cuts, make sure triggers pass the offline cuts for the associated triggers
@@ -245,12 +245,14 @@ def trg_matching(events,year):
     return ret_arr
 
 
-# 2l selection # SYNC
-def add2lmask_wwz(events, year, isData, sample_name,is2022):
+# 2l selection
+def add2lmask(events, year, isData, sample_name,is2022):
 
     # Leptons and padded leptons
-    leps = events.l_wwz_t
-    leps_padded = ak.pad_none(leps,2)
+    leps_tight = events.lep_tight
+    leps_tight_padded = ak.pad_none(leps_tight,2)
+    leps_loose = events.lep_loose
+    leps_loose_padded = ak.pad_none(leps_loose,2)
 
     # Filters
     filter_flags = events.Flag
@@ -259,20 +261,39 @@ def add2lmask_wwz(events, year, isData, sample_name,is2022):
     else:
         filters = filter_flags.goodVertices & filter_flags.globalSuperTightHalo2016Filter & filter_flags.HBHENoiseFilter & filter_flags.HBHENoiseIsoFilter & filter_flags.EcalDeadCellTriggerPrimitiveFilter & filter_flags.BadPFMuonFilter & (((year == "2016")|(year == "2016APV")) | filter_flags.ecalBadCalibFilter) & (isData | filter_flags.eeBadScFilter)
 
-    # Lep multiplicity
-    nlep_2 = (ak.num(leps) == 2)
+    # Conditions for masks
+    n_loose_lep_2 = (ak.num(leps_loose) == 2)
+    n_tight_lep_2 = (ak.num(leps_tight) == 2)
+    n_tight_lep_al1 = (ak.num(leps_tight) >= 1)
+    n_tight_lep_1 = (ak.num(leps_tight) == 1)
+    tight_leading = ak.fill_none(((leps_tight_padded[:,0].pt == leps_loose_padded[:,0].pt) & (leps_tight_padded[:,0].eta == leps_loose_padded[:,0].eta)),False)
+    tight_subleading = ak.fill_none(((leps_tight_padded[:,0].pt == leps_loose_padded[:,1].pt) & (leps_tight_padded[:,0].eta == leps_loose_padded[:,1].eta)),False)
+    tight_leading = ak.fill_none(tight_leading,False)
+    tight_subleading = ak.fill_none(tight_subleading,False)
 
-    mask = filters & nlep_2
+    # Define the masks
+    mask_loose      = filters & n_loose_lep_2
+    mask_2_tight    = filters & n_loose_lep_2 & n_tight_lep_2
+    mask_TnP        = filters & n_loose_lep_2 & n_tight_lep_al1
+    mask_LooseTight = filters & n_loose_lep_2 & n_tight_lep_1 & tight_subleading
+    mask_TightLoose = filters & n_loose_lep_2 & n_tight_lep_1 & tight_leading
+
+    # Apply the masks
+    events['is_2_loose'] = ak.fill_none(mask_loose,False)
+    events['is_loosetight'] = ak.fill_none(mask_LooseTight,False)
+    events['is_tightloose'] = ak.fill_none(mask_TightLoose,False)
+    events['is_2_tight'] = ak.fill_none(mask_2_tight,False)
+    events['is_TnP'] = ak.fill_none(mask_TnP,False)
+
+def addlepSF(events, year, isData, sample_name,is2022):
+
+    # Leptons and padded leptons
+    leps_tight = events.lep_tight
+    leps_tight_padded = ak.pad_none(leps_tight,2)
 
     # SFs:
-    events['sf_2l_muon'] = leps_padded[:,0].sf_nom_muon*leps_padded[:,1].sf_nom_muon
-    events['sf_2l_elec'] = leps_padded[:,0].sf_nom_elec*leps_padded[:,1].sf_nom_elec
-    events['sf_2l_hi_muon'] = leps_padded[:,0].sf_hi_muon*leps_padded[:,1].sf_hi_muon
-    events['sf_2l_hi_elec'] = leps_padded[:,0].sf_hi_elec*leps_padded[:,1].sf_hi_elec
-    events['sf_2l_lo_muon'] = leps_padded[:,0].sf_lo_muon*leps_padded[:,1].sf_lo_muon
-    events['sf_2l_lo_elec'] = leps_padded[:,0].sf_lo_elec*leps_padded[:,1].sf_lo_elec
-
-    events['is2l'] = ak.fill_none(mask,False)
+    events['sf_2l_muon'] = leps_tight_padded[:,0].sf_nom_muon*leps_tight_padded[:,1].sf_nom_muon
+    events['sf_2l_elec'] = leps_tight_padded[:,0].sf_nom_elec*leps_tight_padded[:,1].sf_nom_elec
 
 def attach_dilepton_preselection_mask(events,lep_collection):
     # Pt requirements (assumes lep_collection is pt sorted and padded)

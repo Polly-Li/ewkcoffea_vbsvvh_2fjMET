@@ -23,13 +23,13 @@ def is_presel_wwz_ele(ele,is2022):
         (abs(ele.eta)         <  get_ec_param("wwz_pres_e_eta")) &
         (abs(ele.dxy)         <  get_ec_param("wwz_pres_e_dxy")) &
         (abs(ele.dz)          <  get_ec_param("wwz_pres_e_dz"))  &
+        (abs(ele.sip3d)       <  get_ec_param("wwz_pres_e_sip3d")) &
+        (ele.lostHits         <= get_ec_param("wwz_pres_e_lostHits"))&
+        (ele.tightCharge      == get_ec_param("wwz_pres_e_tightCharge")) &
         (ele.convVeto)
     )
     mask_run2 = (
-        (ele.miniPFRelIso_all < get_ec_param("wwz_pres_e_miniPFRelIso_all")) &
-        (abs(ele.sip3d)       <  get_ec_param("wwz_pres_e_sip3d")) &
-        (ele.lostHits         <= get_ec_param("wwz_pres_e_lostHits"))&
-        (ele.tightCharge == get_ec_param("wwz_pres_e_tightCharge"))
+        (ele.miniPFRelIso_all < get_ec_param("wwz_pres_e_miniPFRelIso_all")) 
     )
     if is2022:
         mask_return = (mask & ele.mvaIso_WP90)
@@ -45,11 +45,11 @@ def is_presel_wwz_mu(mu,is2022):
         (abs(mu.eta)         <  get_ec_param("wwz_pres_m_eta")) &
         (abs(mu.dxy)         <  get_ec_param("wwz_pres_m_dxy")) &
         (abs(mu.dz)          <  get_ec_param("wwz_pres_m_dz")) &
+        (abs(mu.sip3d)       <  get_ec_param("wwz_pres_m_sip3d")) &
         (mu.mediumId)
     )
     mask_run2 = (
-        (mu.miniPFRelIso_all < get_ec_param("wwz_pres_m_miniPFRelIso_all")) &
-        (abs(mu.sip3d)       <  get_ec_param("wwz_pres_m_sip3d"))
+        (mu.miniPFRelIso_all < get_ec_param("wwz_pres_m_miniPFRelIso_all"))
     )
     if not is2022:
         mask_return = (mask & mask_run2)
@@ -197,3 +197,89 @@ def is_presel_run3_2lep_jets(jets):
         (abs(jets.eta)         <  get_ec_param("run3_2lep_pres_jets_eta"))
     )
     return mask
+
+
+
+#################### Run 2 and Run 3 Dilepton Studies #######################
+
+def is_loose_run2_ele(ele):
+    mask = (
+        (ele.pt               >  get_ec_param("wwz_pres_e_pt"))  &
+        (abs(ele.eta)         <  get_ec_param("wwz_pres_e_eta")) &
+        (abs(ele.dxy)         <  get_ec_param("wwz_pres_e_dxy")) &
+        (abs(ele.dz)          <  get_ec_param("wwz_pres_e_dz"))  &
+        (abs(ele.sip3d)       <  get_ec_param("wwz_pres_e_sip3d")) &
+        (ele.lostHits         <= get_ec_param("wwz_pres_e_lostHits"))&
+        (ele.tightCharge      == get_ec_param("wwz_pres_e_tightCharge")) &
+        (ele.miniPFRelIso_all <  get_ec_param("wwz_pres_e_miniPFRelIso_all")) &
+        (ele.convVeto)
+    )
+    return mask
+
+def is_loose_run2_mu(mu):
+    mask = (
+        (mu.pt               >  get_ec_param("wwz_pres_m_pt")) &
+        (abs(mu.eta)         <  get_ec_param("wwz_pres_m_eta")) &
+        (abs(mu.dxy)         <  get_ec_param("wwz_pres_m_dxy")) &
+        (abs(mu.dz)          <  get_ec_param("wwz_pres_m_dz")) &
+        (abs(mu.sip3d)       <  get_ec_param("wwz_pres_m_sip3d")) &
+        (mu.miniPFRelIso_all <  get_ec_param("wwz_pres_m_miniPFRelIso_all")) &
+        (mu.mediumId)
+    )
+    return mask
+
+def is_loose_run3_ele(ele):
+    mask = (
+        (ele.pt               >  get_ec_param("wwz_pres_e_pt"))  &
+        (abs(ele.eta)         <  get_ec_param("wwz_pres_e_eta")) &
+        (abs(ele.dxy)         <  get_ec_param("wwz_pres_e_dxy")) &
+        (abs(ele.dz)          <  get_ec_param("wwz_pres_e_dz"))  &
+        (abs(ele.sip3d)       <  get_ec_param("wwz_pres_e_sip3d")) &
+        (ele.lostHits         <= get_ec_param("wwz_pres_e_lostHits"))&
+        (ele.tightCharge      == get_ec_param("wwz_pres_e_tightCharge")) &
+        (ele.cutBased         >= 1) &
+        (ele.convVeto)
+    )
+    return mask
+
+def is_loose_run3_mu(mu):
+    mask = (
+        (mu.pt               >  get_ec_param("wwz_pres_m_pt")) &
+        (abs(mu.eta)         <  get_ec_param("wwz_pres_m_eta")) &
+        (abs(mu.dxy)         <  get_ec_param("wwz_pres_m_dxy")) &
+        (abs(mu.dz)          <  get_ec_param("wwz_pres_m_dz")) &
+        (abs(mu.sip3d)       <  get_ec_param("wwz_pres_m_sip3d")) &
+        (mu.pfIsoId          >= 1) &
+        (mu.mediumId)
+    )
+    return mask
+
+def is_tight_run3_ele(ele):
+    mask = (
+        (ele.pt               >  get_ec_param("wwz_pres_e_pt"))  &
+        (abs(ele.eta)         <  get_ec_param("wwz_pres_e_eta")) &
+        (abs(ele.dxy)         <  get_ec_param("wwz_pres_e_dxy")) &
+        (abs(ele.dz)          <  get_ec_param("wwz_pres_e_dz"))  &
+        (abs(ele.sip3d)       <  get_ec_param("wwz_pres_e_sip3d")) &
+        (ele.lostHits         <= get_ec_param("wwz_pres_e_lostHits"))&
+        (ele.tightCharge      == get_ec_param("wwz_pres_e_tightCharge")) &
+        (ele.cutBased         >= 1) &
+        (ele.mvaIso_WP90) &
+        (ele.convVeto)
+    )
+    return mask
+
+def is_tight_run3_mu(mu):
+    mask = (
+        (mu.pt               >  get_ec_param("wwz_pres_m_pt")) &
+        (abs(mu.eta)         <  get_ec_param("wwz_pres_m_eta")) &
+        (abs(mu.dxy)         <  get_ec_param("wwz_pres_m_dxy")) &
+        (abs(mu.dz)          <  get_ec_param("wwz_pres_m_dz")) &
+        (abs(mu.sip3d)       <  get_ec_param("wwz_pres_m_sip3d")) &
+        (mu.pfIsoId          >= 2) &
+        (mu.mediumId)
+    )
+    return mask
+
+
+

@@ -221,6 +221,22 @@ def put_cat_col_sums(yld_dict,sr_sf_lst,sr_of_lst,metrics_names_lst=["Zmetric",S
 # Print yields
 def print_yields(ul_year,yld_dict_in,cats_to_print,procs_to_print,ref_dict=yd.EWK_REF_NOSF,print_fom=True,hlines=[]):
 
+    # Scaling reference for run 3
+    def scale_reference(ref_scale_dict,scale):
+        ret_dict = {}
+        for k in ref_scale_dict.keys():
+            ret_dict_small = {}
+            for j in ref_scale_dict[k].keys():
+                v1,e1 = ref_scale_dict[k][j]
+                ret_v = v1/scale
+                if e1 is not None:
+                    ret_e = e1/scale
+                else:
+                    ret_e = None
+                ret_dict_small[j] = [ret_v,ret_e]
+            ret_dict[k] = ret_dict_small
+        return ret_dict
+
     # Get err from var
     def get_err_from_var(in_dict):
         out_dict = {}
@@ -257,7 +273,11 @@ def print_yields(ul_year,yld_dict_in,cats_to_print,procs_to_print,ref_dict=yd.EW
     yld_dict_comp = get_err_from_var(ref_dict)
 
     yld_dict_1 = copy.deepcopy(yld_dict)
-    yld_dict_2 = copy.deepcopy(yld_dict_comp)
+#    yld_dict_1 = copy.deepcopy(yld_dict_comp)
+    if ul_year in ["run3","2022","2022EE"]:
+        yld_dict_2 = scale_reference(yld_dict_comp,3.96)
+    else:
+        yld_dict_2 = copy.deepcopy(yld_dict_comp)
 
     pdiff_dict = utils.get_diff_between_nested_dicts(yld_dict_1,yld_dict_2,difftype="percent_diff",inpercent=True)
     diff_dict  = utils.get_diff_between_nested_dicts(yld_dict_1,yld_dict_2,difftype="absolute_diff")
@@ -922,10 +942,10 @@ def main():
 
 
         # Dump yield dict to json
-        json_name = "process_yields.json" # Could be an argument
-        json_name = os.path.join(out_path,json_name)
-        with open(json_name,"w") as out_file: json.dump(yld_dict, out_file, indent=4)
-        print(f"\nSaved json file: {json_name}\n")
+        #json_name = "process_yields.json" # Could be an argument
+        #json_name = os.path.join(out_path,json_name)
+        #with open(json_name,"w") as out_file: json.dump(yld_dict, out_file, indent=4)
+        #print(f"\nSaved json file: {json_name}\n")
 
 
     # Make plots

@@ -4,10 +4,10 @@
 ######################## Lists ########################
 
 PROC_LST = ["DY"]
-BKG_LST = ["DY"]
-SIG_LST = []
+BKG_LST = []
+SIG_LST = ["DY"]
 
-CAT_LST_CB = ["mumu", "ee"]
+CAT_LST_CB = ["mumu_2Loose_nosf", "mumu_2Tight_nosf","mumu_2Tight","mumu_LooseTight_nosf","mumu_TightLoose_nosf","ee_2Loose_nosf","ee_2Tight_nosf","ee_2Tight","ee_LooseTight_nosf","ee_TightLoose_nosf"]
 
 ######################## Dictionaries ########################
 
