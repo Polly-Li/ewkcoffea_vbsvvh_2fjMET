@@ -1,0 +1,31 @@
+{
+    "xsec": 1.0,
+    "year": "2018",
+    "treeName": "Events",
+    "histAxisName": "UL18_data",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/EGamma_C_UL2018/output_4297.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/EGamma_C_UL2018/output_2396.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/EGamma_C_UL2018/output_2668.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/EGamma_C_UL2018/output_2706.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/EGamma_C_UL2018/output_3803.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/EGamma_C_UL2018/output_1399.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/EGamma_C_UL2018/output_3306.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/EGamma_C_UL2018/output_3561.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/EGamma_C_UL2018/output_2232.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/EGamma_C_UL2018/output_1761.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/EGamma_C_UL2018/output_1185.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/EGamma_C_UL2018/output_4734.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/EGamma_C_UL2018/output_2961.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/EGamma_C_UL2018/output_4165.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/EGamma_C_UL2018/output_4681.root"
+    ],
+    "nEvents": 6351638,
+    "nGenEvents": 6351638,
+    "nSumOfWeights": 6351638,
+    "isData": true,
+    "path": "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/EGamma_C_UL2018",
+    "nSumOfLheWeights": null
+}

@@ -32,7 +32,7 @@ def is_presel_wwz_ele(ele,is2022):
         (ele.tightCharge == get_ec_param("wwz_pres_e_tightCharge"))
     )
     if is2022:
-        mask_return = (mask & ele.mvaIso_WP80)
+        mask_return = (mask & ele.mvaIso_WP90)
     else:
         mask_return = (mask & mask_run2)
     return mask_return
@@ -54,7 +54,7 @@ def is_presel_wwz_mu(mu,is2022):
     if not is2022:
         mask_return = (mask & mask_run2)
     else:
-        mask_return = (mask & (mu.pfIsoId >= get_ec_param("run3_2lep_pres_m_pfIsoId_Tight")))
+        mask_return = (mask & (mu.pfIsoId >= 2))
     return mask_return
 
 

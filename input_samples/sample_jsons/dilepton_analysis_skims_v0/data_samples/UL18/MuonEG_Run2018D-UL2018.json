@@ -1,0 +1,32 @@
+{
+    "xsec": 1.0,
+    "year": "2018",
+    "treeName": "Events",
+    "histAxisName": "UL18_data",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018/output_3202.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018/output_1187.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018/output_2537.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018/output_1290.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018/output_3437.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018/output_1186.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018/output_3201.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018/output_2916.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018/output_1724.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018/output_2180.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018/output_2322.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018/output_2579.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018/output_3509.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018/output_3666.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018/output_1601.root",
+        "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018/output_2048.root"
+    ],
+    "nEvents": 6729867,
+    "nGenEvents": 6729867,
+    "nSumOfWeights": 6729867,
+    "isData": true,
+    "path": "/store/user/rucio/kmohrman/skims/data/NAOD_ULv9_new-lepMVA-v2/FullRun2/v3/MuonEG_D_UL2018",
+    "nSumOfLheWeights": null
+}
