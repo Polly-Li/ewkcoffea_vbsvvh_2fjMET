@@ -249,7 +249,7 @@ def is_loose_run3_mu(mu):
         (abs(mu.dxy)         <  get_ec_param("wwz_pres_m_dxy")) &
         (abs(mu.dz)          <  get_ec_param("wwz_pres_m_dz")) &
         (abs(mu.sip3d)       <  get_ec_param("wwz_pres_m_sip3d")) &
-        (mu.pfIsoId          >= 1) &
+#        (mu.pfIsoId          >= 1) &
         (mu.mediumId)
     )
     return mask
@@ -263,7 +263,7 @@ def is_tight_run3_ele(ele):
         (abs(ele.sip3d)       <  get_ec_param("wwz_pres_e_sip3d")) &
         (ele.lostHits         <= get_ec_param("wwz_pres_e_lostHits"))&
         (ele.tightCharge      == get_ec_param("wwz_pres_e_tightCharge")) &
-        (ele.cutBased         >= 1) &
+#        (ele.cutBased         >= 1) &
         (ele.mvaIso_WP90) &
         (ele.convVeto)
     )

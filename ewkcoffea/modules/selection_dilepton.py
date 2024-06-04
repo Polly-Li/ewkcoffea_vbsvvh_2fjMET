@@ -285,15 +285,15 @@ def add2lmask(events, year, isData, sample_name,is2022):
     events['is_2_tight'] = ak.fill_none(mask_2_tight,False)
     events['is_TnP'] = ak.fill_none(mask_TnP,False)
 
-def addlepSF(events, year, isData, sample_name,is2022):
-
-    # Leptons and padded leptons
-    leps_tight = events.lep_tight
-    leps_tight_padded = ak.pad_none(leps_tight,2)
-
-    # SFs:
-    events['sf_2l_muon'] = leps_tight_padded[:,0].sf_nom_muon*leps_tight_padded[:,1].sf_nom_muon
-    events['sf_2l_elec'] = leps_tight_padded[:,0].sf_nom_elec*leps_tight_padded[:,1].sf_nom_elec
+#def addlepSF(events, year, isData, sample_name,is2022):
+#
+#    # Leptons and padded leptons
+#    leps_tight = events.lep_tight
+#    leps_tight_padded = ak.pad_none(leps_tight,2)
+#
+#    # SFs:
+#    events['sf_2l_muon'] = leps_tight_padded[:,0].sf_nom_muon*leps_tight_padded[:,1].sf_nom_muon
+#    events['sf_2l_elec'] = leps_tight_padded[:,0].sf_nom_elec*leps_tight_padded[:,1].sf_nom_elec
 
 def attach_dilepton_preselection_mask(events,lep_collection):
     # Pt requirements (assumes lep_collection is pt sorted and padded)
