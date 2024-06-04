@@ -9,7 +9,7 @@ BKG_LST = ["ZZ","ttZ","tWZ","WZ","other"]
 
 CAT_LST_CB = ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C", "sr_4l_of_1", "sr_4l_of_2", "sr_4l_of_3", "sr_4l_of_4"]
 
-SR_SF_BDT = ["sr_4l_bdt_sf_1", "sr_4l_bdt_sf_2", "sr_4l_bdt_sf_3", "sr_4l_bdt_sf_4", "sr_4l_bdt_sf_5", "sr_4l_bdt_sf_6", "sr_4l_bdt_sf_7"]
+SR_SF_BDT = ["sr_4l_bdt_sf_1", "sr_4l_bdt_sf_2", "sr_4l_bdt_sf_3", "sr_4l_bdt_sf_4", "sr_4l_bdt_sf_5", "sr_4l_bdt_sf_6", "sr_4l_bdt_sf_7", "sr_4l_bdt_sf_8"]
 SR_OF_BDT = ["sr_4l_bdt_of_1", "sr_4l_bdt_of_2", "sr_4l_bdt_of_3", "sr_4l_bdt_of_4", "sr_4l_bdt_of_5", "sr_4l_bdt_of_6", "sr_4l_bdt_of_7", "sr_4l_bdt_of_8"]
 CAT_LST_BDT = SR_SF_BDT + SR_OF_BDT
 
@@ -86,6 +86,7 @@ BKG_TF_MAP = {
 SAMPLE_DICT_BASE_RUN2 = {
     "WWZ" : ["WWZJetsTo4L2Nu"],
     "ZH"  : ["GluGluZH","qqToZHToZTo2L"],
+    "SIG" : ["WWZJetsTo4L2Nu", "GluGluZH", "qqToZHToZTo2L"],
 
     #"qqZZ": ["ZZTo4l"],
     #"ggZZ": ["ggToZZTo2e2mu", "ggToZZTo2e2tau", "ggToZZTo2mu2tau", "ggToZZTo4e", "ggToZZTo4mu", "ggToZZTo4tau"],

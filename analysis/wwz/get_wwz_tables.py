@@ -38,6 +38,32 @@ def get_yields(histos_dict,sample_dict,raw_counts=False,quiet=True,blind=True,sy
 
     return yld_dict
 
+# Regroup categories (e.g. processes)
+def group(h, oldname, newname, grouping):
+
+    # Build up a grouping dict that drops any proc that is not in our h
+    grouping_slim = {}
+    proc_lst = get_axis_cats(h,oldname)
+    for grouping_name in grouping.keys():
+        for proc in grouping[grouping_name]:
+            if proc in proc_lst:
+                if grouping_name not in grouping_slim:
+                    grouping_slim[grouping_name] = []
+                grouping_slim[grouping_name].append(proc)
+            #else:
+            #    print(f"WARNING: process {proc} not in this hist")
+
+    # From Nick: https://github.com/CoffeaTeam/coffea/discussions/705#discussioncomment-4604211
+    hnew = hist.Hist(
+        hist.axis.StrCategory(grouping_slim, name=newname),
+        *(ax for ax in h.axes if ax.name != oldname),
+        storage=h.storage_type(),
+    )
+    for i, indices in enumerate(grouping_slim.values()):
+        hnew.view(flow=True)[i] = h[{oldname: indices}][{oldname: sum}].view(flow=True)
+
+    return hnew
+
 
 def main():
 

@@ -128,14 +128,16 @@ class AnalysisProcessor(processor.ProcessorABC):
             "nleps_counts"   : axis.Regular(30, 0, 30, name="nleps_counts",   label="Lep multiplicity counts"),
             "nbtagsl_counts" : axis.Regular(30, 0, 30, name="nbtagsl_counts", label="Loose btag multiplicity counts"),
 
-            "bdt_of_wwz_raw": axis.Regular(180, -3.5, 3.5, name="bdt_of_wwz_raw", label="Raw score bdt_of_wwz"),
-            "bdt_sf_wwz_raw": axis.Regular(180, -3.5, 3.5, name="bdt_sf_wwz_raw", label="Raw score bdt_sf_wwz"),
-            "bdt_of_zh_raw" : axis.Regular(180, -3.5, 3.5, name="bdt_of_zh_raw", label="Raw score bdt_of_zh"),
-            "bdt_sf_zh_raw" : axis.Regular(180, -3.5, 3.5, name="bdt_sf_zh_raw", label="Raw score bdt_sf_zh"),
-            "bdt_of_wwz": axis.Regular(180, -1, 1, name="bdt_of_wwz", label="Score bdt_of_wwz"),
-            "bdt_sf_wwz": axis.Regular(180, -1, 1, name="bdt_sf_wwz", label="Score bdt_sf_wwz"),
-            "bdt_of_zh" : axis.Regular(180, -1, 1, name="bdt_of_zh", label="Score bdt_of_zh"),
-            "bdt_sf_zh" : axis.Regular(180, -1, 1, name="bdt_sf_zh", label="Score bdt_sf_zh"),
+            "bdt_of_wwz": axis.Regular(100, 0, 1, name="bdt_of_wwz", label="Score bdt_of_wwz"),
+            "bdt_sf_wwz": axis.Regular(100, 0, 1, name="bdt_sf_wwz", label="Score bdt_sf_wwz"),
+            "bdt_of_zh" : axis.Regular(100, 0, 1, name="bdt_of_zh", label="Score bdt_of_zh"),
+            "bdt_sf_zh" : axis.Regular(100, 0, 1, name="bdt_sf_zh", label="Score bdt_sf_zh"),
+            "bdt_of_bkg" : axis.Regular(100, 0, 1, name="bdt_of_bkg", label="Score bdt_of_bkg"),
+            "bdt_sf_bkg" : axis.Regular(100, 0, 1, name="bdt_sf_bkg", label="Score bdt_sf_bkg"),
+            "bdt_of_wwz_m_zh" : axis.Regular(100, -1, 1, name="bdt_of_wwz_m_zh", label="Score bdt_of_wwz - bdt_of_zh"),
+            "bdt_sf_wwz_m_zh" : axis.Regular(100, -1, 1, name="bdt_sf_wwz_m_zh", label="Score bdt_sf_wwz - bdt_sf_zh"),
+            "bdt_of_bin" : axis.Regular(8, 0, 8, name="bdt_of_bin", label="Binned bdt_of"),
+            "bdt_sf_bin" : axis.Regular(8, 0, 8, name="bdt_sf_bin", label="Binned bdt_sf"),
 
         }
 
@@ -574,11 +576,11 @@ class AnalysisProcessor(processor.ProcessorABC):
                 with_name="PtEtaPhiMLorentzVector",
                 behavior=vector.behavior,
             )
-            dr_wl0_j_min = w_lep0.delta_r(met4v)
-            dr_wl1_j_min = w_lep1.delta_r(met4v)
+            # dr_wl0_j_min = w_lep0.delta_r(met4v)
+            # dr_wl1_j_min = w_lep1.delta_r(met4v)
 
-            #dr_wl0_j_min = ak.min(w_lep0.delta_r(goodJets),axis=-1) # The actual dr_wl0_j_min, uncomment when updated in next BDT iteration
-            #dr_wl1_j_min = ak.min(w_lep1.delta_r(goodJets),axis=-1) # The actual dr_wl1_j_min, uncomment when updated in next BDT iteration
+            dr_wl0_j_min = ak.min(w_lep0.delta_r(goodJets),axis=-1) # The actual dr_wl0_j_min, uncomment when updated in next BDT iteration
+            dr_wl1_j_min = ak.min(w_lep1.delta_r(goodJets),axis=-1) # The actual dr_wl1_j_min, uncomment when updated in next BDT iteration
             dr_wl0_j_min = ak.where(njets>0,dr_wl0_j_min,0)
             dr_wl1_j_min = ak.where(njets>0,dr_wl1_j_min,0)
 
@@ -709,48 +711,206 @@ class AnalysisProcessor(processor.ProcessorABC):
                 bdt_vars_sf_zh  = fill_none_in_list(get_ec_param("sf_zh_bdt_var_lst"),dense_variables_dict,-9999)
                 bdt_vars_of_wwz = fill_none_in_list(get_ec_param("of_wwz_bdt_var_lst"),dense_variables_dict,-9999)
                 bdt_vars_of_zh  = fill_none_in_list(get_ec_param("of_zh_bdt_var_lst"),dense_variables_dict,-9999)
-                bdt_sf_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars_sf_wwz,ewkcoffea_path("data/wwz_zh_bdt/sf_WWZ.json"))
-                bdt_sf_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars_sf_zh, ewkcoffea_path("data/wwz_zh_bdt/sf_ZH.json"))
-                bdt_of_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars_of_wwz,ewkcoffea_path("data/wwz_zh_bdt/of_WWZ.json"))
-                bdt_of_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars_of_zh, ewkcoffea_path("data/wwz_zh_bdt/of_ZH.json"))
-                # Match TMVA's scaling https://root.cern.ch/doc/v606/MethodBDT_8cxx_source.html
-                bdt_sf_wwz = (2.0*((1.0+math.e**(-2*bdt_sf_wwz_raw))**(-1))) - 1.0
-                bdt_sf_zh  = (2.0*((1.0+math.e**(-2*bdt_sf_zh_raw))**(-1))) - 1.0
-                bdt_of_wwz = (2.0*((1.0+math.e**(-2*bdt_of_wwz_raw))**(-1))) - 1.0
-                bdt_of_zh  = (2.0*((1.0+math.e**(-2*bdt_of_zh_raw))**(-1))) - 1.0
 
-                ### BDT SRs ###
-                # SF BDT SRs
-                xax = bdt_sf_wwz
-                yax = bdt_sf_zh
-                bdt_sf_1 = (xax > 0.8)  & (yax < -0.6)
-                bdt_sf_2 = (xax > 0.8)  & (yax < 0.8)  & ~(bdt_sf_1)
-                bdt_sf_3 = (xax > 0.6)  & (yax < -0.3) & ~(bdt_sf_1 | bdt_sf_2)
-                bdt_sf_4 = (xax > 0.7)  & (yax > 0.8)  & ~(bdt_sf_1 | bdt_sf_2 | bdt_sf_3)
-                bdt_sf_5 = (xax > -1.0) & (yax > 0.8)  & ~(bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4)
-                bdt_sf_6 = (xax > -0.2) & (yax > -0.3) & ~(bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4 | bdt_sf_5)
-                bdt_sf_7 = ~(bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4 | bdt_sf_5 | bdt_sf_6)
-                # SF BDT SRs
-                xax = bdt_of_wwz
-                yax = bdt_of_zh
-                bdt_of_1 = (xax > 0.5)  & (yax < -0.5)
-                bdt_of_2 = (xax > 0.5)  & (yax < 0.7)  & ~(bdt_of_1)
-                bdt_of_3 = (xax > -1.0) & (yax > 0.7)  & ~(bdt_of_1 | bdt_of_2)
-                bdt_of_4 = (xax > -0.1) & (yax < -0.9) & ~(bdt_of_1 | bdt_of_2 | bdt_of_3)
-                bdt_of_5 = (xax > -0.1) & (yax < -0.7) & ~(bdt_of_1 | bdt_of_2 | bdt_of_3 | bdt_of_4)
-                bdt_of_6 = (xax > -0.1) & (yax < 0.7)  & ~(bdt_of_1 | bdt_of_2 | bdt_of_3 | bdt_of_4 | bdt_of_5)
-                bdt_of_7 = (xax > -0.5) & (yax < 0.7)  & ~(bdt_of_1 | bdt_of_2 | bdt_of_3 | bdt_of_4 | bdt_of_5 | bdt_of_6)
-                bdt_of_8 = ~(bdt_of_1 | bdt_of_2 | bdt_of_3 | bdt_of_4 | bdt_of_5 | bdt_of_6 | bdt_of_7)
+                # doBDTv5 = False
+                # if doBDTv5:
+
+                #     bdt_sf_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars_sf_wwz,ewkcoffea_path("data/wwz_zh_bdt/sf_WWZ.json"))
+                #     bdt_sf_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars_sf_zh, ewkcoffea_path("data/wwz_zh_bdt/sf_ZH.json"))
+                #     bdt_of_wwz_raw = es_ec.eval_sig_bdt(events,bdt_vars_of_wwz,ewkcoffea_path("data/wwz_zh_bdt/of_WWZ.json"))
+                #     bdt_of_zh_raw  = es_ec.eval_sig_bdt(events,bdt_vars_of_zh, ewkcoffea_path("data/wwz_zh_bdt/of_ZH.json"))
+                #     # Match TMVA's scaling https://root.cern.ch/doc/v606/MethodBDT_8cxx_source.html
+                #     bdt_sf_wwz = (2.0*((1.0+math.e**(-2*bdt_sf_wwz_raw))**(-1))) - 1.0
+                #     bdt_sf_zh  = (2.0*((1.0+math.e**(-2*bdt_sf_zh_raw))**(-1))) - 1.0
+                #     bdt_of_wwz = (2.0*((1.0+math.e**(-2*bdt_of_wwz_raw))**(-1))) - 1.0
+                #     bdt_of_zh  = (2.0*((1.0+math.e**(-2*bdt_of_zh_raw))**(-1))) - 1.0
+
+                #     ### BDT SRs ###
+                #     # SF BDT SRs
+                #     xax = bdt_sf_wwz
+                #     yax = bdt_sf_zh
+                #     bdt_sf_1 = (xax > 0.8)  & (yax < -0.6)
+                #     bdt_sf_2 = (xax > 0.8)  & (yax < 0.8)  & ~(bdt_sf_1)
+                #     bdt_sf_3 = (xax > 0.6)  & (yax < -0.3) & ~(bdt_sf_1 | bdt_sf_2)
+                #     bdt_sf_4 = (xax > 0.7)  & (yax > 0.8)  & ~(bdt_sf_1 | bdt_sf_2 | bdt_sf_3)
+                #     bdt_sf_5 = (xax > -1.0) & (yax > 0.8)  & ~(bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4)
+                #     bdt_sf_6 = (xax > -0.2) & (yax > -0.3) & ~(bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4 | bdt_sf_5)
+                #     bdt_sf_7 = ~(bdt_sf_1 | bdt_sf_2 | bdt_sf_3 | bdt_sf_4 | bdt_sf_5 | bdt_sf_6)
+                #     # SF BDT SRs
+                #     xax = bdt_of_wwz
+                #     yax = bdt_of_zh
+                #     bdt_of_1 = (xax > 0.5)  & (yax < -0.5)
+                #     bdt_of_2 = (xax > 0.5)  & (yax < 0.7)  & ~(bdt_of_1)
+                #     bdt_of_3 = (xax > -1.0) & (yax > 0.7)  & ~(bdt_of_1 | bdt_of_2)
+                #     bdt_of_4 = (xax > -0.1) & (yax < -0.9) & ~(bdt_of_1 | bdt_of_2 | bdt_of_3)
+                #     bdt_of_5 = (xax > -0.1) & (yax < -0.7) & ~(bdt_of_1 | bdt_of_2 | bdt_of_3 | bdt_of_4)
+                #     bdt_of_6 = (xax > -0.1) & (yax < 0.7)  & ~(bdt_of_1 | bdt_of_2 | bdt_of_3 | bdt_of_4 | bdt_of_5)
+                #     bdt_of_7 = (xax > -0.5) & (yax < 0.7)  & ~(bdt_of_1 | bdt_of_2 | bdt_of_3 | bdt_of_4 | bdt_of_5 | bdt_of_6)
+                #     bdt_of_8 = ~(bdt_of_1 | bdt_of_2 | bdt_of_3 | bdt_of_4 | bdt_of_5 | bdt_of_6 | bdt_of_7)
+
+                doBDTv7 = True
+                if doBDTv7:
+
+                    ##############################
+                    ##### BDT v7
+                    ##
+                    bdt_of_tern = ak.Array(es_ec.eval_of_tern_bdt(bdt_vars_of_wwz))
+                    bdt_of_wwz = bdt_of_tern[:, 0]
+                    bdt_of_zh = bdt_of_tern[:, 1]
+                    bdt_of_bkg = bdt_of_tern[:, 2]
+                    bdt_sf_tern = ak.Array(es_ec.eval_sf_tern_bdt(bdt_vars_sf_wwz))
+                    bdt_sf_wwz = bdt_sf_tern[:, 0]
+                    bdt_sf_zh = bdt_sf_tern[:, 1]
+                    bdt_sf_bkg = bdt_sf_tern[:, 2]
+                    bdt_of_wwz_m_zh = bdt_of_wwz - bdt_of_zh
+                    bdt_sf_wwz_m_zh = bdt_sf_wwz - bdt_sf_zh
+
+                    # bdt_vld_evt_mask  = ((events.run == 1) & (events.luminosityBlock == 1467) & (events.event == 1005691)) | ((events.run == 1) & (events.luminosityBlock == 1467) & (events.event == 1005726)) | ((events.run == 1) & (events.luminosityBlock == 1467) & (events.event == 1005745)) | ((events.run == 1) & (events.luminosityBlock == 1467) & (events.event == 1005793)) | ((events.run == 1) & (events.luminosityBlock == 1467) & (events.event == 1005813)) | ((events.run == 1) & (events.luminosityBlock == 1467) & (events.event == 1005841)) | ((events.run == 1) & (events.luminosityBlock == 1467) & (events.event == 1005912)) | ((events.run == 1) & (events.luminosityBlock == 1467) & (events.event == 1005914)) | ((events.run == 1) & (events.luminosityBlock == 1467) & (events.event == 1005935)) | ((events.run == 1) & (events.luminosityBlock == 1467) & (events.event == 1005948))
+                    # if ak.sum(bdt_vld_evt_mask) >= 1:
+                    #     print()
+                    #     print()
+                    #     print()
+                    #     print("==== Validation ====")
+                    #     print()
+                    #     print(events.event[bdt_vld_evt_mask].to_list())
+                    #     for i in range(26):
+                    #         print(bdt_vars_of_wwz[i][bdt_vld_evt_mask].to_list())
+                    #     print(bdt_of_wwz[bdt_vld_evt_mask].to_list())
+                    #     print(bdt_of_zh[bdt_vld_evt_mask].to_list())
+                    #     print(bdt_of_bkg[bdt_vld_evt_mask].to_list())
+                    #     print()
+                    #     print()
+                    #     print()
+                    #     print()
+                    #     print()
+
+                    of_thr__zh_1 = 0.08
+                    of_thr__zh_2 = 0.14
+                    of_thr__zh_3 = 0.39
+
+                    of_thr_wwz_1 = 0.04
+                    of_thr_wwz_2 = 0.13
+                    of_thr_wwz_3 = 0.29
+
+                    sf_thr__zh_1 = 0.04
+                    sf_thr__zh_2 = 0.11
+                    sf_thr__zh_3 = 0.30
+
+                    sf_thr_wwz_1 = 0.03
+                    sf_thr_wwz_2 = 0.05
+                    sf_thr_wwz_3 = 0.18
+
+                    # of_thr__zh_1 = 0.13
+                    # of_thr__zh_2 = 0.38
+                    # of_thr__zh_3 = 0.59
+
+                    # of_thr_wwz_1 = 0.05
+                    # of_thr_wwz_2 = 0.23
+                    # of_thr_wwz_3 = 0.44
+
+                    # sf_thr__zh_1 = 0.04
+                    # sf_thr__zh_2 = 0.11
+                    # sf_thr__zh_3 = 0.33
+
+                    # sf_thr_wwz_1 = 0.03
+                    # sf_thr_wwz_2 = 0.06
+                    # sf_thr_wwz_3 = 0.23
+
+                    dokeegan = True
+                    if dokeegan:
+                        of_thr__zh_1 = 0.05
+                        of_thr__zh_2 = 0.20
+                        of_thr__zh_3 = 0.50
+
+                        of_thr_wwz_1 = 0.05
+                        of_thr_wwz_2 = 0.20
+                        of_thr_wwz_3 = 0.50
+
+                        sf_thr__zh_1 = 0.05
+                        sf_thr__zh_2 = 0.10
+                        sf_thr__zh_3 = 0.20
+
+                        sf_thr_wwz_1 = 0.05
+                        sf_thr_wwz_2 = 0.10
+                        sf_thr_wwz_3 = 0.20
+
+                    #################################################################################################################
+                    # Calculating the bins and computing bin index for each event
+                    bdt_of_bin_1 =                                (bdt_of_bkg < of_thr_wwz_1) & (bdt_of_wwz_m_zh > 0)
+                    bdt_of_bin_2 = (bdt_of_bkg >= of_thr_wwz_1) & (bdt_of_bkg < of_thr_wwz_2) & (bdt_of_wwz_m_zh > 0)
+                    bdt_of_bin_3 = (bdt_of_bkg >= of_thr_wwz_2) & (bdt_of_bkg < of_thr_wwz_3) & (bdt_of_wwz_m_zh > 0)
+                    bdt_of_bin_4 = (bdt_of_bkg >= of_thr_wwz_3)                               & (bdt_of_wwz_m_zh > 0)
+                    bdt_of_bin_5 =                                (bdt_of_bkg < of_thr__zh_1) & (bdt_of_wwz_m_zh <= 0)
+                    bdt_of_bin_6 = (bdt_of_bkg >= of_thr__zh_1) & (bdt_of_bkg < of_thr__zh_2) & (bdt_of_wwz_m_zh <= 0)
+                    bdt_of_bin_7 = (bdt_of_bkg >= of_thr__zh_2) & (bdt_of_bkg < of_thr__zh_3) & (bdt_of_wwz_m_zh <= 0)
+                    bdt_of_bin_8 = (bdt_of_bkg >= of_thr__zh_3)                               & (bdt_of_wwz_m_zh <= 0)
+                    bdt_of_bin = ak.where(bdt_of_bin_1, 0, bdt_of_bkg)
+                    bdt_of_bin = ak.where(bdt_of_bin_2, 1, bdt_of_bin)
+                    bdt_of_bin = ak.where(bdt_of_bin_3, 2, bdt_of_bin)
+                    bdt_of_bin = ak.where(bdt_of_bin_4, 3, bdt_of_bin)
+                    bdt_of_bin = ak.where(bdt_of_bin_5, 4, bdt_of_bin)
+                    bdt_of_bin = ak.where(bdt_of_bin_6, 5, bdt_of_bin)
+                    bdt_of_bin = ak.where(bdt_of_bin_7, 6, bdt_of_bin)
+                    bdt_of_bin = ak.where(bdt_of_bin_8, 7, bdt_of_bin)
+
+                    # Calculating the bins and computing bin index for each event
+                    bdt_sf_bin_1 =                                (bdt_sf_bkg < sf_thr_wwz_1) & (bdt_sf_wwz_m_zh > 0)
+                    bdt_sf_bin_2 = (bdt_sf_bkg >= sf_thr_wwz_1) & (bdt_sf_bkg < sf_thr_wwz_2) & (bdt_sf_wwz_m_zh > 0)
+                    bdt_sf_bin_3 = (bdt_sf_bkg >= sf_thr_wwz_2) & (bdt_sf_bkg < sf_thr_wwz_3) & (bdt_sf_wwz_m_zh > 0)
+                    bdt_sf_bin_4 = (bdt_sf_bkg >= sf_thr_wwz_3)                               & (bdt_sf_wwz_m_zh > 0)
+                    bdt_sf_bin_5 =                                (bdt_sf_bkg < sf_thr__zh_1) & (bdt_sf_wwz_m_zh <= 0)
+                    bdt_sf_bin_6 = (bdt_sf_bkg >= sf_thr__zh_1) & (bdt_sf_bkg < sf_thr__zh_2) & (bdt_sf_wwz_m_zh <= 0)
+                    bdt_sf_bin_7 = (bdt_sf_bkg >= sf_thr__zh_2) & (bdt_sf_bkg < sf_thr__zh_3) & (bdt_sf_wwz_m_zh <= 0)
+                    bdt_sf_bin_8 = (bdt_sf_bkg >= sf_thr__zh_3)                               & (bdt_sf_wwz_m_zh <= 0)
+                    bdt_sf_bin = ak.where(bdt_sf_bin_1, 0, bdt_sf_bkg)
+                    bdt_sf_bin = ak.where(bdt_sf_bin_2, 1, bdt_sf_bin)
+                    bdt_sf_bin = ak.where(bdt_sf_bin_3, 2, bdt_sf_bin)
+                    bdt_sf_bin = ak.where(bdt_sf_bin_4, 3, bdt_sf_bin)
+                    bdt_sf_bin = ak.where(bdt_sf_bin_5, 4, bdt_sf_bin)
+                    bdt_sf_bin = ak.where(bdt_sf_bin_6, 5, bdt_sf_bin)
+                    bdt_sf_bin = ak.where(bdt_sf_bin_7, 6, bdt_sf_bin)
+                    bdt_sf_bin = ak.where(bdt_sf_bin_8, 7, bdt_sf_bin)
+
+                    # Creating the event mask for each BDT regions
+                    bdt_of_1 = (bdt_of_bin == 0)
+                    bdt_of_2 = (bdt_of_bin == 1)
+                    bdt_of_3 = (bdt_of_bin == 2)
+                    bdt_of_4 = (bdt_of_bin == 3)
+                    bdt_of_5 = (bdt_of_bin == 4)
+                    bdt_of_6 = (bdt_of_bin == 5)
+                    bdt_of_7 = (bdt_of_bin == 6)
+                    bdt_of_8 = (bdt_of_bin == 7)
+
+                    # Creating the event mask for each BDT regions
+                    bdt_sf_1 = (bdt_sf_bin == 0)
+                    bdt_sf_2 = (bdt_sf_bin == 1)
+                    bdt_sf_3 = (bdt_sf_bin == 2)
+                    bdt_sf_4 = (bdt_sf_bin == 3)
+                    bdt_sf_5 = (bdt_sf_bin == 4)
+                    bdt_sf_6 = (bdt_sf_bin == 5)
+                    bdt_sf_7 = (bdt_sf_bin == 6)
+                    bdt_sf_8 = (bdt_sf_bin == 7)
+
+                    # Creating the event mask for BDT regions when split between WWZ vs. ZH
+                    bdt_of_bin_wwz = (bdt_of_wwz_m_zh > 0)
+                    bdt_of_bin_zh  = (bdt_of_wwz_m_zh <= 0)
+
+                    bdt_sf_bin_wwz = (bdt_sf_wwz_m_zh > 0)
+                    bdt_sf_bin_zh  = (bdt_sf_wwz_m_zh <= 0)
+
+
 
                 # Put the bdt variables into the dict of variables too
-                dense_variables_dict["bdt_of_wwz_raw"] = bdt_of_wwz_raw
-                dense_variables_dict["bdt_sf_wwz_raw"] = bdt_sf_wwz_raw
-                dense_variables_dict["bdt_of_zh_raw"]  = bdt_of_zh_raw
-                dense_variables_dict["bdt_sf_zh_raw"]  = bdt_sf_zh_raw
-                dense_variables_dict["bdt_of_wwz"]     = bdt_of_wwz
-                dense_variables_dict["bdt_sf_wwz"]     = bdt_sf_wwz
-                dense_variables_dict["bdt_of_zh"]      = bdt_of_zh
-                dense_variables_dict["bdt_sf_zh"]      = bdt_sf_zh
+                dense_variables_dict["bdt_of_wwz"]      = bdt_of_wwz
+                dense_variables_dict["bdt_sf_wwz"]      = bdt_sf_wwz
+                dense_variables_dict["bdt_of_zh"]       = bdt_of_zh
+                dense_variables_dict["bdt_sf_zh"]       = bdt_sf_zh
+                dense_variables_dict["bdt_of_bkg"]      = bdt_of_bkg
+                dense_variables_dict["bdt_sf_bkg"]      = bdt_sf_bkg
+                dense_variables_dict["bdt_of_wwz_m_zh"] = bdt_of_wwz_m_zh
+                dense_variables_dict["bdt_sf_wwz_m_zh"] = bdt_sf_wwz_m_zh
+                dense_variables_dict["bdt_of_bin"]      = bdt_of_bin
+                dense_variables_dict["bdt_sf_bin"]      = bdt_sf_bin
 
 
             ######### Store boolean masks with PackedSelection ##########
@@ -806,6 +966,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 selections.add("sr_4l_bdt_sf_5", (sr_4l_bdt_sf_trn & bdt_sf_5))
                 selections.add("sr_4l_bdt_sf_6", (sr_4l_bdt_sf_trn & bdt_sf_6))
                 selections.add("sr_4l_bdt_sf_7", (sr_4l_bdt_sf_trn & bdt_sf_7))
+                selections.add("sr_4l_bdt_sf_8", (sr_4l_bdt_sf_trn & bdt_sf_8))
 
                 selections.add("sr_4l_bdt_of_1", (sr_4l_bdt_of_trn & bdt_of_1))
                 selections.add("sr_4l_bdt_of_2", (sr_4l_bdt_of_trn & bdt_of_2))
@@ -816,6 +977,12 @@ class AnalysisProcessor(processor.ProcessorABC):
                 selections.add("sr_4l_bdt_of_7", (sr_4l_bdt_of_trn & bdt_of_7))
                 selections.add("sr_4l_bdt_of_8", (sr_4l_bdt_of_trn & bdt_of_8))
 
+                selections.add("sr_4l_bdt_of_wwz", (sr_4l_bdt_of_trn & bdt_of_bin_wwz))
+                selections.add("sr_4l_bdt_of_zh" , (sr_4l_bdt_of_trn & bdt_of_bin_zh))
+
+                selections.add("sr_4l_bdt_sf_wwz", (sr_4l_bdt_sf_trn & bdt_sf_bin_wwz))
+                selections.add("sr_4l_bdt_sf_zh" , (sr_4l_bdt_sf_trn & bdt_sf_bin_zh))
+
                 bdt_sr_names = [
                     "sr_4l_bdt_sf_1",
                     "sr_4l_bdt_sf_2",
@@ -824,6 +991,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "sr_4l_bdt_sf_5",
                     "sr_4l_bdt_sf_6",
                     "sr_4l_bdt_sf_7",
+                    "sr_4l_bdt_sf_8",
 
                     "sr_4l_bdt_of_1",
                     "sr_4l_bdt_of_2",
@@ -833,6 +1001,12 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "sr_4l_bdt_of_6",
                     "sr_4l_bdt_of_7",
                     "sr_4l_bdt_of_8",
+
+                    "sr_4l_bdt_of_wwz",
+                    "sr_4l_bdt_of_zh",
+
+                    "sr_4l_bdt_sf_wwz",
+                    "sr_4l_bdt_sf_zh",
                 ]
                 bdt_misc_names = [
                     "sr_4l_bdt_sf_presel",
@@ -921,14 +1095,14 @@ class AnalysisProcessor(processor.ProcessorABC):
             }
 
             if not is2022:
-                exclude_var_dict["bdt_of_wwz_raw"] = ["all_events"]
-                exclude_var_dict["bdt_sf_wwz_raw"] = ["all_events"]
-                exclude_var_dict["bdt_of_zh_raw"] = ["all_events"]
-                exclude_var_dict["bdt_sf_zh_raw"] = ["all_events"]
                 exclude_var_dict["bdt_of_wwz"] = ["all_events"]
                 exclude_var_dict["bdt_sf_wwz"] = ["all_events"]
                 exclude_var_dict["bdt_of_zh"] = ["all_events"]
                 exclude_var_dict["bdt_sf_zh"] = ["all_events"]
+                exclude_var_dict["bdt_of_bkg"] = ["all_events"]
+                exclude_var_dict["bdt_sf_bkg"] = ["all_events"]
+                exclude_var_dict["bdt_of_wwz_m_zh"] = ["all_events"]
+                exclude_var_dict["bdt_sf_wwz_m_zh"] = ["all_events"]
                 exclude_var_dict["j0pt"] = exclude_var_dict["j0pt"] + bdt_misc_names
                 exclude_var_dict["mlb_max"] = exclude_var_dict["mlb_max"] + bdt_misc_names
                 exclude_var_dict["mlb_min"] = exclude_var_dict["mlb_min"] + bdt_misc_names
