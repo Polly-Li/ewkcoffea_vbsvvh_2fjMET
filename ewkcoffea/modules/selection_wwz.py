@@ -15,7 +15,7 @@ get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
 import ROOT as r
 import os
 dirpath = os.path.dirname(os.path.abspath(__file__))
-r.gROOT.ProcessLine(".L {}/tmva_multiclassifier.C".format(dirpath))
+r.gROOT.ProcessLine(".L {}".format(ewkcoffea_path("data/wwz_zh_ternary_bdt/tmva_multiclassifier.C")))
 
 bdt_of_v7 = r.ewkcoffea.BDT_OF_v7(ewkcoffea_path("data/wwz_zh_ternary_bdt/BDT_OF_v7__050124_Ternary_BDTG_LR0p1.weights.xml"))
 bdt_sf_v7 = r.ewkcoffea.BDT_SF_v7(ewkcoffea_path("data/wwz_zh_ternary_bdt/BDT_SF_v7__050124_Ternary_BDTG_LR0p1.weights.xml"))

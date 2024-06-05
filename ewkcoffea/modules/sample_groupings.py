@@ -39,6 +39,7 @@ BKG_TF_MAP = {
         "sr_4l_bdt_sf_5" : "cr_4l_sf",
         "sr_4l_bdt_sf_6" : "cr_4l_sf",
         "sr_4l_bdt_sf_7" : "cr_4l_sf",
+        "sr_4l_bdt_sf_8" : "cr_4l_sf",
 
         "sr_4l_bdt_of_1" : "cr_4l_sf",
         "sr_4l_bdt_of_2" : "cr_4l_sf",
@@ -69,6 +70,7 @@ BKG_TF_MAP = {
         "sr_4l_bdt_sf_5" : "cr_4l_btag_sf_offZ_met80",
         "sr_4l_bdt_sf_6" : "cr_4l_btag_sf_offZ_met80",
         "sr_4l_bdt_sf_7" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_bdt_sf_8" : "cr_4l_btag_sf_offZ_met80",
 
         "sr_4l_bdt_of_1" : "cr_4l_btag_of",
         "sr_4l_bdt_of_2" : "cr_4l_btag_of",
