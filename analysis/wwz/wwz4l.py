@@ -684,37 +684,14 @@ class AnalysisProcessor(processor.ProcessorABC):
             ######### Evaluate all four BDTs (WWZ and ZH for SF and OF) #########
 
             if not is2022:
-                # Get BDT values
-                bdt_vars = [
-                    ak.fill_none(mll_wl0_wl1,-9999),
-                    ak.fill_none(absdphi_4l_met,-9999),
-                    ak.fill_none(absdphi_zleps_met,-9999),
-                    ak.fill_none(absdphi_wleps_met,-9999),
-                    ak.fill_none(dr_wl0_wl1,-9999),
-                    ak.fill_none(dr_zl0_zl1,-9999),
-                    ak.fill_none(dr_wleps_zleps,-9999),
-                    ak.fill_none(met.pt,-9999),
-                    ak.fill_none(mt2_val,-9999),
-                    ak.fill_none(ptl4,-9999),
-                    ak.fill_none(scalarptsum_lepmet,-9999),
-                    ak.fill_none(scalarptsum_lepmetjet,-9999),
-                    ak.fill_none(z_lep0.pt,-9999),
-                    ak.fill_none(z_lep1.pt,-9999),
-                    ak.fill_none(w_lep0.pt,-9999),
-                    ak.fill_none(w_lep1.pt,-9999),
-                ]
-
 
                 # Get the list of variables for the BDTs (and fill None with -9999 to not cause problems), and eval
-                bdt_vars_sf_wwz = fill_none_in_list(get_ec_param("sf_wwz_bdt_var_lst"),dense_variables_dict,-9999)
-                bdt_vars_sf_zh  = fill_none_in_list(get_ec_param("sf_zh_bdt_var_lst"),dense_variables_dict,-9999)
-                bdt_vars_of_wwz = fill_none_in_list(get_ec_param("of_wwz_bdt_var_lst"),dense_variables_dict,-9999)
-                bdt_vars_of_zh  = fill_none_in_list(get_ec_param("of_zh_bdt_var_lst"),dense_variables_dict,-9999)
+                bdt_vars_sf_wwz = fill_none_in_list(get_ec_param("sf_bdt_var_lst"),dense_variables_dict,-9999)
+                bdt_vars_of_wwz = fill_none_in_list(get_ec_param("of_bdt_var_lst"),dense_variables_dict,-9999)
 
 
                 ##############################
                 ##### BDT v7
-                ##
                 bdt_of_tern = ak.Array(es_ec.eval_of_tern_bdt(bdt_vars_of_wwz))
                 bdt_of_wwz = bdt_of_tern[:, 0]
                 bdt_of_zh = bdt_of_tern[:, 1]
@@ -752,7 +729,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                     bdt_sf_wwz_vs_zh_divider_threshold = 0.5
 
                 else:
-                    # My version of the binning
+                    # Philip's version of the binning
                     of_thr__zh_1 = 0.08
                     of_thr__zh_2 = 0.14
                     of_thr__zh_3 = 0.39
