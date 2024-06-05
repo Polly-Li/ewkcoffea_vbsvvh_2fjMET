@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 #import sys
-import math
 import coffea
 import numpy as np
 import awkward as ak

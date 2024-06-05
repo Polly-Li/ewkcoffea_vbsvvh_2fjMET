@@ -498,7 +498,7 @@ def eval_of_tern_bdt(in_vals):
         in_vals[23].to_list(),
         in_vals[24].to_list(),
         in_vals[25].to_list()
-        )
+    )
     return rtn
 
 def eval_sf_tern_bdt(in_vals):
@@ -530,5 +530,5 @@ def eval_sf_tern_bdt(in_vals):
         in_vals[24].to_list(),
         in_vals[25].to_list(),
         in_vals[26].to_list()
-        )
+    )
     return rtn
