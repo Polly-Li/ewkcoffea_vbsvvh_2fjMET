@@ -14,7 +14,6 @@ setuptools.setup(
             "data/wwz_zh_bdt/*json",
             "data/wwz_zh_ternary_bdt/*xml",
             "data/wwz_zh_ternary_bdt/tmva_multiclassifier.C",
-            "data/wwz_zh_ternary_bdt/tmva_multiclassifier_C.so",
             "data/btag_eff/*.pkl.gz",
             "data/run3_pu/*/*json",
             "data/run3_lep_sf/electron_sf/*/*json",
