@@ -171,7 +171,7 @@ central_UL16APV_bkg_dict = {
     "UL16APV_ZZTo4L" : {
         "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_3LepTau_4Lep",
         "histAxisName": "UL16APV_ZZTo4l",
-        "xsecName": "ZZTo4L",
+        "xsecName": "ZZTo4LK",
     },
 
     "UL16APV_ggToZZTo2e2mu"   : { "histAxisName" : "UL16APV_ggToZZTo2e2mu"    , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/GluGluToContinToZZTo2e2mu_TuneCP5_13TeV-mcfm701-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_3LepTau_4Lep"    , "xsecName" : "ggToZZTo2e2muK" , } ,
@@ -213,7 +213,7 @@ central_UL16_bkg_dict = {
     "UL16_ZZTo4L" : {
         "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep",
         "histAxisName": "UL16_ZZTo4l",
-        "xsecName": "ZZTo4L",
+        "xsecName": "ZZTo4LK",
     },
 
     "UL16_ggToZZTo2e2mu"      : { "histAxisName" : "UL16_ggToZZTo2e2mu"       , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/GluGluToContinToZZTo2e2mu_TuneCP5_13TeV-mcfm701-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_3LepTau_4Lep"              , "xsecName" : "ggToZZTo2e2muK" , } ,
@@ -255,7 +255,7 @@ central_UL17_bkg_dict = {
     "UL17_ZZTo4L" : {
         "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_3LepTau_4Lep",
         "histAxisName": "UL17_ZZTo4l",
-        "xsecName": "ZZTo4L",
+        "xsecName": "ZZTo4LK",
     },
 
     "UL17_ggToZZTo2e2mu"      : { "histAxisName" : "UL17_ggToZZTo2e2mu"       , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/GluGluToContinToZZTo2e2mu_TuneCP5_13TeV-mcfm701-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_3LepTau_4Lep"                , "xsecName" : "ggToZZTo2e2muK" , } ,
@@ -297,7 +297,7 @@ central_UL18_bkg_dict = {
     "UL18_ZZTo4L" : {
         "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_3LepTau_4Lep",
         "histAxisName": "UL18_ZZTo4l",
-        "xsecName": "ZZTo4L",
+        "xsecName": "ZZTo4LK",
     },
 
     "UL18_ggToZZTo2e2mu"      : { "histAxisName" : "UL18_ggToZZTo2e2mu"       , "path" : "/store/user/kdownham/skimOutput/3LepTau_4Lep/GluGluToContinToZZTo2e2mu_TuneCP5_13TeV-mcfm701-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_3LepTau_4Lep"     , "xsecName" : "ggToZZTo2e2muK" , } ,
@@ -619,7 +619,7 @@ central_UL18_sig_4l_skim_dict = {
 
 ## Background
 central_UL16APV_bkg_4l_skim_dict = {
-    "UL16APV_ZZTo4L"                  : {"path" : "/skim4l_v5/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_skim4l_v5/merged/"                                          , "histAxisName" : "UL16APV_ZZTo4l"                  , "xsecName" : "ZZTo4L"                  , } ,
+    "UL16APV_ZZTo4L"                  : {"path" : "/skim4l_v5/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_skim4l_v5/merged/"                                          , "histAxisName" : "UL16APV_ZZTo4l"                  , "xsecName" : "ZZTo4LK"                  , } ,
     "UL16APV_ggToZZTo2e2mu"           : {"path" : "/skim4l_v5/GluGluToContinToZZTo2e2mu_TuneCP5_13TeV-mcfm701-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_skim4l_v5/merged/"                      , "histAxisName" : "UL16APV_ggToZZTo2e2mu"           , "xsecName" : "ggToZZTo2e2muK"          , } ,
     "UL16APV_ggToZZTo2e2tau"          : {"path" : "/skim4l_v5/GluGluToContinToZZTo2e2tau_TuneCP5_13TeV-mcfm701-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_skim4l_v5/merged/"                     , "histAxisName" : "UL16APV_ggToZZTo2e2tau"          , "xsecName" : "ggToZZTo2e2tauK"         , } ,
     "UL16APV_ggToZZTo2mu2tau"         : {"path" : "/skim4l_v5/GluGluToContinToZZTo2mu2tau_TuneCP5_13TeV-mcfm701-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_skim4l_v5/merged/"                    , "histAxisName" : "UL16APV_ggToZZTo2mu2tau"         , "xsecName" : "ggToZZTo2mu2tauK"        , } ,
@@ -654,7 +654,7 @@ central_UL16APV_bkg_4l_skim_dict = {
 }
 
 central_UL16_bkg_4l_skim_dict = {
-    "UL16_ZZTo4L"                  : {"path" : "/skim4l_v5/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_skim4l_v5/merged/"                                          , "histAxisName" : "UL16_ZZTo4l"                  , "xsecName" : "ZZTo4L"                  , } ,
+    "UL16_ZZTo4L"                  : {"path" : "/skim4l_v5/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_skim4l_v5/merged/"                                          , "histAxisName" : "UL16_ZZTo4l"                  , "xsecName" : "ZZTo4LK"                  , } ,
     "UL16_ggToZZTo2e2mu"           : {"path" : "/skim4l_v5/GluGluToContinToZZTo2e2mu_TuneCP5_13TeV-mcfm701-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_skim4l_v5/merged/"                      , "histAxisName" : "UL16_ggToZZTo2e2mu"           , "xsecName" : "ggToZZTo2e2muK"          , } ,
     "UL16_ggToZZTo2e2tau"          : {"path" : "/skim4l_v5/GluGluToContinToZZTo2e2tau_TuneCP5_13TeV-mcfm701-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_skim4l_v5/merged/"                     , "histAxisName" : "UL16_ggToZZTo2e2tau"          , "xsecName" : "ggToZZTo2e2tauK"         , } ,
     "UL16_ggToZZTo2mu2tau"         : {"path" : "/skim4l_v5/GluGluToContinToZZTo2mu2tau_TuneCP5_13TeV-mcfm701-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_skim4l_v5/merged/"                    , "histAxisName" : "UL16_ggToZZTo2mu2tau"         , "xsecName" : "ggToZZTo2mu2tauK"        , } ,
@@ -689,7 +689,7 @@ central_UL16_bkg_4l_skim_dict = {
 }
 
 central_UL17_bkg_4l_skim_dict = {
-    "UL17_ZZTo4L"                  : {"path" : "/skim4l_v5/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_skim4l_v5/merged/"                                          , "histAxisName" : "UL17_ZZTo4l"                  , "xsecName" : "ZZTo4L"                  , } ,
+    "UL17_ZZTo4L"                  : {"path" : "/skim4l_v5/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_skim4l_v5/merged/"                                          , "histAxisName" : "UL17_ZZTo4l"                  , "xsecName" : "ZZTo4LK"                  , } ,
     "UL17_ggToZZTo2e2mu"           : {"path" : "/skim4l_v5/GluGluToContinToZZTo2e2mu_TuneCP5_13TeV-mcfm701-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_skim4l_v5/merged/"                      , "histAxisName" : "UL17_ggToZZTo2e2mu"           , "xsecName" : "ggToZZTo2e2muK"          , } ,
     "UL17_ggToZZTo2e2tau"          : {"path" : "/skim4l_v5/GluGluToContinToZZTo2e2tau_TuneCP5_13TeV-mcfm701-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_skim4l_v5/merged/"                     , "histAxisName" : "UL17_ggToZZTo2e2tau"          , "xsecName" : "ggToZZTo2e2tauK"         , } ,
     "UL17_ggToZZTo2mu2tau"         : {"path" : "/skim4l_v5/GluGluToContinToZZTo2mu2tau_TuneCP5_13TeV-mcfm701-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_skim4l_v5/merged/"                    , "histAxisName" : "UL17_ggToZZTo2mu2tau"         , "xsecName" : "ggToZZTo2mu2tauK"        , } ,
@@ -724,7 +724,7 @@ central_UL17_bkg_4l_skim_dict = {
 }
 
 central_UL18_bkg_4l_skim_dict = {
-    "UL18_ZZTo4L"                  : {"path" : "/skim4l_v5/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/"                                          , "histAxisName" : "UL18_ZZTo4l"                  , "xsecName" : "ZZTo4L"                  , } ,
+    "UL18_ZZTo4L"                  : {"path" : "/skim4l_v5/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/"                                          , "histAxisName" : "UL18_ZZTo4l"                  , "xsecName" : "ZZTo4LK"                  , } ,
     "UL18_ggToZZTo2e2mu"           : {"path" : "/skim4l_v5/GluGluToContinToZZTo2e2mu_TuneCP5_13TeV-mcfm701-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/"                      , "histAxisName" : "UL18_ggToZZTo2e2mu"           , "xsecName" : "ggToZZTo2e2muK"          , } ,
     "UL18_ggToZZTo2e2tau"          : {"path" : "/skim4l_v5/GluGluToContinToZZTo2e2tau_TuneCP5_13TeV-mcfm701-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/"                     , "histAxisName" : "UL18_ggToZZTo2e2tau"          , "xsecName" : "ggToZZTo2e2tauK"         , } ,
     "UL18_ggToZZTo2mu2tau"         : {"path" : "/skim4l_v5/GluGluToContinToZZTo2mu2tau_TuneCP5_13TeV-mcfm701-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/"                    , "histAxisName" : "UL18_ggToZZTo2mu2tau"         , "xsecName" : "ggToZZTo2mu2tauK"        , } ,
@@ -892,15 +892,15 @@ def main():
     make_jsons_for_dict_of_samples(central_UL17_sig_4l_skim_dict, "/data/userdata/phchang/", "2017", out_dir_sig, on_das=False)
     make_jsons_for_dict_of_samples(central_UL18_sig_4l_skim_dict, "/data/userdata/phchang/", "2018", out_dir_sig, on_das=False)
 
-    # make_jsons_for_dict_of_samples(central_UL16APV_bkg_4l_skim_dict, "/data/userdata/phchang/", "2016APV", out_dir_bkg, on_das=False)
-    # make_jsons_for_dict_of_samples(central_UL16_bkg_4l_skim_dict, "/data/userdata/phchang/", "2016", out_dir_bkg, on_das=False)
-    # make_jsons_for_dict_of_samples(central_UL17_bkg_4l_skim_dict, "/data/userdata/phchang/", "2017", out_dir_bkg, on_das=False)
-    # make_jsons_for_dict_of_samples(central_UL18_bkg_4l_skim_dict, "/data/userdata/phchang/", "2018", out_dir_bkg, on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL16APV_bkg_4l_skim_dict, "/data/userdata/phchang/", "2016APV", out_dir_bkg, on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL16_bkg_4l_skim_dict, "/data/userdata/phchang/", "2016", out_dir_bkg, on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL17_bkg_4l_skim_dict, "/data/userdata/phchang/", "2017", out_dir_bkg, on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL18_bkg_4l_skim_dict, "/data/userdata/phchang/", "2018", out_dir_bkg, on_das=False)
 
-    # make_jsons_for_dict_of_samples(data_UL16APV_4l_skim_dict , "/data/userdata/phchang/", "2016APV", out_dir_data, on_das=False)
-    # make_jsons_for_dict_of_samples(data_UL16_4l_skim_dict , "/data/userdata/phchang/", "2016", out_dir_data, on_das=False)
-    # make_jsons_for_dict_of_samples(data_UL17_4l_skim_dict , "/data/userdata/phchang/", "2017", out_dir_data, on_das=False)
-    # make_jsons_for_dict_of_samples(data_UL18_4l_skim_dict , "/data/userdata/phchang/", "2018", out_dir_data, on_das=False)
+    #make_jsons_for_dict_of_samples(data_UL16APV_4l_skim_dict , "/data/userdata/phchang/", "2016APV", out_dir_data, on_das=False)
+    #make_jsons_for_dict_of_samples(data_UL16_4l_skim_dict , "/data/userdata/phchang/", "2016", out_dir_data, on_das=False)
+    #make_jsons_for_dict_of_samples(data_UL17_4l_skim_dict , "/data/userdata/phchang/", "2017", out_dir_data, on_das=False)
+    #make_jsons_for_dict_of_samples(data_UL18_4l_skim_dict , "/data/userdata/phchang/", "2018", out_dir_data, on_das=False)
 
 
 if __name__ == "__main__":
