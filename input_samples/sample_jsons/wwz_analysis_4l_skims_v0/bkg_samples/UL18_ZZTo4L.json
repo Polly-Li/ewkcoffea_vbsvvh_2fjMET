@@ -1,0 +1,32 @@
+{
+    "xsec": 1.256,
+    "year": "2018",
+    "treeName": "Events",
+    "histAxisName": "UL18_ZZTo4l",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/skim4l_v5/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/merged_1.root",
+        "/skim4l_v5/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/merged_2.root",
+        "/skim4l_v5/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/merged_3.root",
+        "/skim4l_v5/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/merged_4.root",
+        "/skim4l_v5/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/merged_5.root",
+        "/skim4l_v5/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/merged_0.root"
+    ],
+    "nEvents": 2906153,
+    "nGenEvents": 98488000,
+    "nSumOfWeights": 130483169.6672,
+    "isData": false,
+    "path": "/skim4l_v5/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_skim4l_v5/merged/",
+    "nSumOfLheWeights": [
+        125181305.4481317,
+        133237843.73562713,
+        137623614.36194775,
+        121668918.90327603,
+        130483169.6672,
+        136066524.87492082,
+        118856413.58470118,
+        128266981.40135327,
+        134777251.6592428
+    ]
+}

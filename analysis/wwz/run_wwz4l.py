@@ -119,7 +119,7 @@ if __name__ == '__main__':
     # Figure out which hists to include
     if args.hist_list == ["few"]:
         # Here we hardcode a reduced list of a few hists
-        hist_lst = ["j0pt", "njets", "nbtagsl", "nleps", "met", "l0pt"] + BDT_VAR_NAMES
+        hist_lst = ["j0pt", "njets", "njets_counts", "nbtagsl", "nleps", "met", "l0pt"] + BDT_VAR_NAMES
     elif args.hist_list == ["cr"]:
         # Here we hardcode a list of hists used for the CRs
         hist_lst = ["lj0pt", "ptz", "met", "ljptsum", "l0pt", "l0eta", "l1pt", "l1eta", "j0pt", "j0eta", "njets", "nbtagsl", "invmass"]
@@ -320,7 +320,7 @@ if __name__ == '__main__':
     tstart = time.time()
 
     if executor == "futures":
-        exec_instance = processor.FuturesExecutor(workers=nworkers)
+        exec_instance = processor.FuturesExecutor(workers=nworkers, merging=(1, 30, 10000))
         runner = processor.Runner(exec_instance, schema=NanoAODSchema, chunksize=chunksize, maxchunks=nchunks)
     elif executor == "iterative":
         exec_instance = processor.IterativeExecutor()

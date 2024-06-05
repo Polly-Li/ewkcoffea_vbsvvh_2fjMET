@@ -1,0 +1,27 @@
+{
+    "xsec": 3.68,
+    "year": "2016",
+    "treeName": "Events",
+    "histAxisName": "UL16_ST_top_s-channel",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/skim4l_v5/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_skim4l_v5/merged/merged.root"
+    ],
+    "nEvents": 66,
+    "nGenEvents": 5471000,
+    "nSumOfWeights": 19433132.409308404,
+    "isData": false,
+    "path": "/skim4l_v5/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_skim4l_v5/merged/",
+    "nSumOfLheWeights": [
+        9863365.732879473,
+        9983756.135818208,
+        10083907.644769652,
+        9581991.095138334,
+        19433132.409308404,
+        9827198.00262825,
+        9352655.042937968,
+        9498791.593486533,
+        9617965.30003149
+    ]
+}
