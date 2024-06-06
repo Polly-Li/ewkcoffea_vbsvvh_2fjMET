@@ -665,7 +665,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             }
 
 
-            ######### Evaluate all four BDTs (WWZ and ZH for SF and OF) #########
+            ######### Evaluate the BDTs (get WWZ, ZH, and WZ scores for SF and OF) #########
 
             if not is2022:
 
@@ -673,9 +673,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 bdt_vars_sf_wwz = fill_none_in_list(get_ec_param("sf_bdt_var_lst"),dense_variables_dict,-9999)
                 bdt_vars_of_wwz = fill_none_in_list(get_ec_param("of_bdt_var_lst"),dense_variables_dict,-9999)
 
-
-                ##############################
-                ##### BDT v7
+                # Evaluate BDT v7
                 bdt_of_tern = ak.Array(es_ec.eval_of_tern_bdt(bdt_vars_of_wwz))
                 bdt_of_wwz = bdt_of_tern[:, 0]
                 bdt_of_zh = bdt_of_tern[:, 1]
@@ -687,65 +685,39 @@ class AnalysisProcessor(processor.ProcessorABC):
                 bdt_of_wwz_m_zh = bdt_of_wwz - bdt_of_zh
                 bdt_sf_wwz_m_zh = bdt_sf_wwz - bdt_sf_zh
 
-                dokeegan = 0
-                if dokeegan:
-                    # keegan's binning
-                    of_thr__zh_1 = 0.05
-                    of_thr__zh_2 = 0.20
-                    of_thr__zh_3 = 0.50
+                # Philip's version of the v7 binning
 
-                    of_thr_wwz_1 = 0.05
-                    of_thr_wwz_2 = 0.20
-                    of_thr_wwz_3 = 0.50
+                of_thr_zh_1 = 0.08
+                of_thr_zh_2 = 0.14
+                of_thr_zh_3 = 0.39
 
-                    sf_thr__zh_1 = 0.05
-                    sf_thr__zh_2 = 0.10
-                    sf_thr__zh_3 = 0.20
+                of_thr_wwz_1 = 0.04
+                of_thr_wwz_2 = 0.13
+                of_thr_wwz_3 = 0.29
 
-                    sf_thr_wwz_1 = 0.05
-                    sf_thr_wwz_2 = 0.10
-                    sf_thr_wwz_3 = 0.20
+                sf_thr_zh_1 = 0.04
+                sf_thr_zh_2 = 0.11
+                sf_thr_zh_3 = 0.30
 
-                    bdt_of_wwz_vs_zh_divider = bdt_of_wwz
-                    bdt_sf_wwz_vs_zh_divider = bdt_sf_wwz
+                sf_thr_wwz_1 = 0.03
+                sf_thr_wwz_2 = 0.05
+                sf_thr_wwz_3 = 0.18
 
-                    bdt_of_wwz_vs_zh_divider_threshold = 0.5
-                    bdt_sf_wwz_vs_zh_divider_threshold = 0.5
+                bdt_of_wwz_vs_zh_divider = bdt_of_wwz_m_zh
+                bdt_sf_wwz_vs_zh_divider = bdt_sf_wwz_m_zh
 
-                else:
-                    # Philip's version of the binning
-                    of_thr__zh_1 = 0.08
-                    of_thr__zh_2 = 0.14
-                    of_thr__zh_3 = 0.39
+                bdt_of_wwz_vs_zh_divider_threshold = 0
+                bdt_sf_wwz_vs_zh_divider_threshold = 0
 
-                    of_thr_wwz_1 = 0.04
-                    of_thr_wwz_2 = 0.13
-                    of_thr_wwz_3 = 0.29
-
-                    sf_thr__zh_1 = 0.04
-                    sf_thr__zh_2 = 0.11
-                    sf_thr__zh_3 = 0.30
-
-                    sf_thr_wwz_1 = 0.03
-                    sf_thr_wwz_2 = 0.05
-                    sf_thr_wwz_3 = 0.18
-
-                    bdt_of_wwz_vs_zh_divider = bdt_of_wwz_m_zh
-                    bdt_sf_wwz_vs_zh_divider = bdt_sf_wwz_m_zh
-
-                    bdt_of_wwz_vs_zh_divider_threshold = 0
-                    bdt_sf_wwz_vs_zh_divider_threshold = 0
-
-                #################################################################################################################
-                # Calculating the bins and computing bin index for each event
+                # Calculating the masks for OF bins
                 bdt_of_bin_1 =                                (bdt_of_bkg < of_thr_wwz_1) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
                 bdt_of_bin_2 = (bdt_of_bkg >= of_thr_wwz_1) & (bdt_of_bkg < of_thr_wwz_2) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
                 bdt_of_bin_3 = (bdt_of_bkg >= of_thr_wwz_2) & (bdt_of_bkg < of_thr_wwz_3) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
                 bdt_of_bin_4 = (bdt_of_bkg >= of_thr_wwz_3)                               & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
-                bdt_of_bin_5 =                                (bdt_of_bkg < of_thr__zh_1) & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
-                bdt_of_bin_6 = (bdt_of_bkg >= of_thr__zh_1) & (bdt_of_bkg < of_thr__zh_2) & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
-                bdt_of_bin_7 = (bdt_of_bkg >= of_thr__zh_2) & (bdt_of_bkg < of_thr__zh_3) & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
-                bdt_of_bin_8 = (bdt_of_bkg >= of_thr__zh_3)                               & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
+                bdt_of_bin_5 =                                (bdt_of_bkg < of_thr_zh_1)  & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
+                bdt_of_bin_6 = (bdt_of_bkg >= of_thr_zh_1)  & (bdt_of_bkg < of_thr_zh_2)  & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
+                bdt_of_bin_7 = (bdt_of_bkg >= of_thr_zh_2)  & (bdt_of_bkg < of_thr_zh_3)  & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
+                bdt_of_bin_8 = (bdt_of_bkg >= of_thr_zh_3)                                & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
                 bdt_of_bin = ak.full_like(events.nom,-999)
                 bdt_of_bin = ak.where(bdt_of_bin_1, 0, bdt_of_bin)
                 bdt_of_bin = ak.where(bdt_of_bin_2, 1, bdt_of_bin)
@@ -761,10 +733,10 @@ class AnalysisProcessor(processor.ProcessorABC):
                 bdt_sf_bin_2 = (bdt_sf_bkg >= sf_thr_wwz_1) & (bdt_sf_bkg < sf_thr_wwz_2) & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
                 bdt_sf_bin_3 = (bdt_sf_bkg >= sf_thr_wwz_2) & (bdt_sf_bkg < sf_thr_wwz_3) & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
                 bdt_sf_bin_4 = (bdt_sf_bkg >= sf_thr_wwz_3)                               & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
-                bdt_sf_bin_5 =                                (bdt_sf_bkg < sf_thr__zh_1) & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
-                bdt_sf_bin_6 = (bdt_sf_bkg >= sf_thr__zh_1) & (bdt_sf_bkg < sf_thr__zh_2) & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
-                bdt_sf_bin_7 = (bdt_sf_bkg >= sf_thr__zh_2) & (bdt_sf_bkg < sf_thr__zh_3) & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
-                bdt_sf_bin_8 = (bdt_sf_bkg >= sf_thr__zh_3)                               & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
+                bdt_sf_bin_5 =                                (bdt_sf_bkg < sf_thr_zh_1)  & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
+                bdt_sf_bin_6 = (bdt_sf_bkg >= sf_thr_zh_1)  & (bdt_sf_bkg < sf_thr_zh_2)  & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
+                bdt_sf_bin_7 = (bdt_sf_bkg >= sf_thr_zh_2)  & (bdt_sf_bkg < sf_thr_zh_3)  & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
+                bdt_sf_bin_8 = (bdt_sf_bkg >= sf_thr_zh_3)                                & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
                 bdt_sf_bin = ak.full_like(events.nom,-999)
                 bdt_sf_bin = ak.where(bdt_sf_bin_1, 0, bdt_sf_bin)
                 bdt_sf_bin = ak.where(bdt_sf_bin_2, 1, bdt_sf_bin)
@@ -798,11 +770,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 # Creating the event mask for BDT regions when split between WWZ vs. ZH
                 bdt_of_bin_wwz = (bdt_of_wwz_m_zh > 0)
                 bdt_of_bin_zh  = (bdt_of_wwz_m_zh <= 0)
-
                 bdt_sf_bin_wwz = (bdt_sf_wwz_m_zh > 0)
                 bdt_sf_bin_zh  = (bdt_sf_wwz_m_zh <= 0)
-
-
 
                 # Put the bdt variables into the dict of variables too
                 dense_variables_dict["bdt_of_wwz"]      = bdt_of_wwz
