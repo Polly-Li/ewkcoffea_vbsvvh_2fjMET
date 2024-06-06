@@ -687,7 +687,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 bdt_of_wwz_m_zh = bdt_of_wwz - bdt_of_zh
                 bdt_sf_wwz_m_zh = bdt_sf_wwz - bdt_sf_zh
 
-                dokeegan = True
+                dokeegan = 0
                 if dokeegan:
                     # keegan's binning
                     of_thr__zh_1 = 0.05
@@ -746,7 +746,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 bdt_of_bin_6 = (bdt_of_bkg >= of_thr__zh_1) & (bdt_of_bkg < of_thr__zh_2) & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
                 bdt_of_bin_7 = (bdt_of_bkg >= of_thr__zh_2) & (bdt_of_bkg < of_thr__zh_3) & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
                 bdt_of_bin_8 = (bdt_of_bkg >= of_thr__zh_3)                               & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
-                bdt_of_bin = ak.where(bdt_of_bin_1, 0, bdt_of_bkg)
+                bdt_of_bin = ak.full_like(events.nom,-999)
+                bdt_of_bin = ak.where(bdt_of_bin_1, 0, bdt_of_bin)
                 bdt_of_bin = ak.where(bdt_of_bin_2, 1, bdt_of_bin)
                 bdt_of_bin = ak.where(bdt_of_bin_3, 2, bdt_of_bin)
                 bdt_of_bin = ak.where(bdt_of_bin_4, 3, bdt_of_bin)
@@ -764,7 +765,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 bdt_sf_bin_6 = (bdt_sf_bkg >= sf_thr__zh_1) & (bdt_sf_bkg < sf_thr__zh_2) & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
                 bdt_sf_bin_7 = (bdt_sf_bkg >= sf_thr__zh_2) & (bdt_sf_bkg < sf_thr__zh_3) & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
                 bdt_sf_bin_8 = (bdt_sf_bkg >= sf_thr__zh_3)                               & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
-                bdt_sf_bin = ak.where(bdt_sf_bin_1, 0, bdt_sf_bkg)
+                bdt_sf_bin = ak.full_like(events.nom,-999)
+                bdt_sf_bin = ak.where(bdt_sf_bin_1, 0, bdt_sf_bin)
                 bdt_sf_bin = ak.where(bdt_sf_bin_2, 1, bdt_sf_bin)
                 bdt_sf_bin = ak.where(bdt_sf_bin_3, 2, bdt_sf_bin)
                 bdt_sf_bin = ak.where(bdt_sf_bin_4, 3, bdt_sf_bin)
@@ -813,6 +815,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 dense_variables_dict["bdt_sf_wwz_m_zh"] = bdt_sf_wwz_m_zh
                 dense_variables_dict["bdt_of_bin"]      = bdt_of_bin
                 dense_variables_dict["bdt_sf_bin"]      = bdt_sf_bin
+
+
 
 
             ######### Store boolean masks with PackedSelection ##########

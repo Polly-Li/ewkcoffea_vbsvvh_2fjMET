@@ -88,7 +88,6 @@ BKG_TF_MAP = {
 SAMPLE_DICT_BASE_RUN2 = {
     "WWZ" : ["WWZJetsTo4L2Nu"],
     "ZH"  : ["GluGluZH","qqToZHToZTo2L"],
-    "SIG" : ["WWZJetsTo4L2Nu", "GluGluZH", "qqToZHToZTo2L"],
 
     #"qqZZ": ["ZZTo4l"],
     #"ggZZ": ["ggToZZTo2e2mu", "ggToZZTo2e2tau", "ggToZZTo2mu2tau", "ggToZZTo4e", "ggToZZTo4mu", "ggToZZTo4tau"],
