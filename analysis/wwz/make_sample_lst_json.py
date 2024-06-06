@@ -151,14 +151,16 @@ central_UL18_22006_dict = {
 }
 central_2022_dict = {
     "2022_tWZ4l" : {
-        "path" : "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/TWZ_TtoLNu_WtoLNu_Zto2L_DR2_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v3_NANOAODSIM_Run3_MC_4L_04022024_Loose/",
+        #"path" : "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/TWZ_TtoLNu_WtoLNu_Zto2L_DR2_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v3_NANOAODSIM_Run3_MC_4L_04022024_Loose/",
+        "path" : "/store/user/t2/users/matthew.dittrich/skims/2022_TWZ_DR1_Loose_v2/TWZ_TtoLNu_WtoLNu_Zto2L_DR1_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v4_NANOAODSIM_2022_TWZ_DR1_Loose_v2/",
         "histAxisName": "2022_tWZ4l",
         "xsecName": "TWZToLL_tlept_Wlept_13p6TeV",
     }
 }
 central_2022EE_dict = {
     "2022EE_tWZ4l" : {
-        "path" : "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/TWZ_TtoLNu_WtoLNu_Zto2L_DR2_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v3_NANOAODSIM_Run3_MC_4L_04022024_Loose/",
+        #"path" : "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/TWZ_TtoLNu_WtoLNu_Zto2L_DR2_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v3_NANOAODSIM_Run3_MC_4L_04022024_Loose/",
+        "path" : "/store/user/t2/users/matthew.dittrich/skims/2022_TWZ_DR1_Loose_v2/TWZ_TtoLNu_WtoLNu_Zto2L_DR1_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v3_NANOAODSIM_2022_TWZ_DR1_Loose_v2/",
         "histAxisName": "2022EE_tWZ4l",
         "xsecName": "TWZToLL_tlept_Wlept_13p6TeV",
     }
@@ -832,45 +834,45 @@ def main():
     #make_jsons_for_dict_of_samples(ci_dict, "","2017","../../input_samples/sample_jsons/test_samples/",on_das=False) # For CI json
 
     # Specify output paths
-    #jsons_path = "../../input_samples/sample_jsons/"
+    jsons_path = "../../input_samples/sample_jsons/"
     #out_dir_data_16APV = os.path.join(jsons_path,"wwz_analysis_skims_v0/data_samples/UL16APV")
     #out_dir_data_16 = os.path.join(jsons_path,"wwz_analysis_skims_v0/data_samples/UL16")
     #out_dir_data_17 = os.path.join(jsons_path,"wwz_analysis_skims_v0/data_samples/UL17")
     #out_dir_data_18 = os.path.join(jsons_path,"wwz_analysis_skims_v0/data_samples/UL18")
-    #out_dir_data_22 = os.path.join(jsons_path,"wwz_analysis_skims_v0/data_samples/2022")
-    #out_dir_data_22EE = os.path.join(jsons_path,"wwz_analysis_skims_v0/data_samples/2022EE")
-    #out_dir_bkg = os.path.join(jsons_path,"wwz_analysis_skims_v0/bkg_samples/")
-    #out_dir_sig = os.path.join(jsons_path,"wwz_analysis_skims_v0/sig_samples/")
+    out_dir_data_22 = os.path.join(jsons_path,"wwz_analysis_skims_v0/data_samples/2022")
+    out_dir_data_22EE = os.path.join(jsons_path,"wwz_analysis_skims_v0/data_samples/2022EE")
+    out_dir_bkg = os.path.join(jsons_path,"wwz_analysis_skims_v0/bkg_samples/")
+    out_dir_sig = os.path.join(jsons_path,"wwz_analysis_skims_v0/sig_samples/")
 
     # Make configs for data samples
     #make_jsons_for_dict_of_samples(data_UL16APV, "/ceph/cms/","2016APV", out_dir_data_16APV,on_das=False)
     #make_jsons_for_dict_of_samples(data_UL16, "/ceph/cms/","2016", out_dir_data_16,on_das=False)
     #make_jsons_for_dict_of_samples(data_UL17, "/ceph/cms/","2017", out_dir_data_17,on_das=False)
     #make_jsons_for_dict_of_samples(data_UL18, "/ceph/cms/","2018", out_dir_data_18,on_das=False)
-    #make_jsons_for_dict_of_samples(data_2022, "/cmsuf/data/","2022", out_dir_data_22,era_op=1,on_das=False)
-    #make_jsons_for_dict_of_samples(data_2022EE, "/cmsuf/data/","2022EE", out_dir_data_22EE,era_op=1,on_das=False)
+    make_jsons_for_dict_of_samples(data_2022, "/cmsuf/data/","2022", out_dir_data_22,era_op=1,on_das=False)
+    make_jsons_for_dict_of_samples(data_2022EE, "/cmsuf/data/","2022EE", out_dir_data_22EE,era_op=1,on_das=False)
 
     # Make configs for bkg samples
     #make_jsons_for_dict_of_samples(central_UL16APV_22006_dict, "/cmsuf/data/","2016APV", out_dir_bkg,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL16_22006_dict, "/cmsuf/data/","2016", out_dir_bkg,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL17_22006_dict, "/cmsuf/data/","2017", out_dir_bkg,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL18_22006_dict, "/cmsuf/data/","2018", out_dir_bkg,on_das=False)
-    #make_jsons_for_dict_of_samples(central_2022_dict, "/cmsuf/data/","2022", out_dir_bkg,on_das=False)
-    #make_jsons_for_dict_of_samples(central_2022EE_dict, "/cmsuf/data/","2022EE", out_dir_bkg,on_das=False)
+    make_jsons_for_dict_of_samples(central_2022_dict, "/cmsuf/data/","2022", out_dir_bkg,on_das=False)
+    make_jsons_for_dict_of_samples(central_2022EE_dict, "/cmsuf/data/","2022EE", out_dir_bkg,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL16APV_bkg_dict, "/ceph/cms/","2016APV", out_dir_bkg,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL16_bkg_dict, "/ceph/cms/","2016", out_dir_bkg,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL17_bkg_dict, "/ceph/cms/","2017", out_dir_bkg,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL18_bkg_dict, "/ceph/cms/","2018", out_dir_bkg,on_das=False)
-    #make_jsons_for_dict_of_samples(central_2022_bkg_dict, "/cmsuf/data/","2022", out_dir_bkg,on_das=False)
-    #make_jsons_for_dict_of_samples(central_2022EE_bkg_dict, "/cmsuf/data/","2022EE", out_dir_bkg,on_das=False)
+    make_jsons_for_dict_of_samples(central_2022_bkg_dict, "/cmsuf/data/","2022", out_dir_bkg,on_das=False)
+    make_jsons_for_dict_of_samples(central_2022EE_bkg_dict, "/cmsuf/data/","2022EE", out_dir_bkg,on_das=False)
 
     # Make configs for sig samples
     #make_jsons_for_dict_of_samples(central_UL16APV_sig_dict, "/ceph/cms/","2016APV", out_dir_sig,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL16_sig_dict, "/ceph/cms/","2016", out_dir_sig,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL17_sig_dict, "/ceph/cms/","2017", out_dir_sig,on_das=False)
     #make_jsons_for_dict_of_samples(central_UL18_sig_dict, "/ceph/cms/","2018", out_dir_sig,on_das=False)
-    #make_jsons_for_dict_of_samples(central_2022_sig_dict, "/cmsuf/data/","2022", out_dir_sig,on_das=False)
-    #make_jsons_for_dict_of_samples(central_2022EE_sig_dict, "/cmsuf/data/","2022EE", out_dir_sig,on_das=False)
+    make_jsons_for_dict_of_samples(central_2022_sig_dict, "/cmsuf/data/","2022", out_dir_sig,on_das=False)
+    make_jsons_for_dict_of_samples(central_2022EE_sig_dict, "/cmsuf/data/","2022EE", out_dir_sig,on_das=False)
 
     # Replace xsec numbers
     #replace_xsec_for_dict_of_samples(central_UL16APV_bkg_dict,out_dir_bkg)
@@ -879,18 +881,18 @@ def main():
     #replace_xsec_for_dict_of_samples(central_UL18_bkg_dict,out_dir_bkg)
 
     # 4L Skim
-    jsons_path = "../../input_samples/sample_jsons/"
-    out_dir_data = os.path.join(jsons_path,"wwz_analysis_4l_skims_v0/data_samples")
-    os.makedirs(out_dir_data, exist_ok=True)
-    out_dir_bkg = os.path.join(jsons_path,"wwz_analysis_4l_skims_v0/bkg_samples")
-    os.makedirs(out_dir_bkg, exist_ok=True)
-    out_dir_sig = os.path.join(jsons_path,"wwz_analysis_4l_skims_v0/sig_samples")
-    os.makedirs(out_dir_sig, exist_ok=True)
+    #jsons_path = "../../input_samples/sample_jsons/"
+    #out_dir_data = os.path.join(jsons_path,"wwz_analysis_4l_skims_v0/data_samples")
+    #os.makedirs(out_dir_data, exist_ok=True)
+    #out_dir_bkg = os.path.join(jsons_path,"wwz_analysis_4l_skims_v0/bkg_samples")
+    #os.makedirs(out_dir_bkg, exist_ok=True)
+    #out_dir_sig = os.path.join(jsons_path,"wwz_analysis_4l_skims_v0/sig_samples")
+    #os.makedirs(out_dir_sig, exist_ok=True)
 
-    make_jsons_for_dict_of_samples(central_UL16APV_sig_4l_skim_dict, "/data/userdata/phchang/", "2016APV", out_dir_sig, on_das=False)
-    make_jsons_for_dict_of_samples(central_UL16_sig_4l_skim_dict, "/data/userdata/phchang/", "2016", out_dir_sig, on_das=False)
-    make_jsons_for_dict_of_samples(central_UL17_sig_4l_skim_dict, "/data/userdata/phchang/", "2017", out_dir_sig, on_das=False)
-    make_jsons_for_dict_of_samples(central_UL18_sig_4l_skim_dict, "/data/userdata/phchang/", "2018", out_dir_sig, on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL16APV_sig_4l_skim_dict, "/data/userdata/phchang/", "2016APV", out_dir_sig, on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL16_sig_4l_skim_dict, "/data/userdata/phchang/", "2016", out_dir_sig, on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL17_sig_4l_skim_dict, "/data/userdata/phchang/", "2017", out_dir_sig, on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL18_sig_4l_skim_dict, "/data/userdata/phchang/", "2018", out_dir_sig, on_das=False)
 
     #make_jsons_for_dict_of_samples(central_UL16APV_bkg_4l_skim_dict, "/data/userdata/phchang/", "2016APV", out_dir_bkg, on_das=False)
     #make_jsons_for_dict_of_samples(central_UL16_bkg_4l_skim_dict, "/data/userdata/phchang/", "2016", out_dir_bkg, on_das=False)
