@@ -42,7 +42,17 @@ BDT_VAR_NAMES = [
     "mt_wleps_met",
     "mt_4l_met",
     "dr_wl0_j_min",
-    "dr_wl1_j_min"
+    "dr_wl1_j_min",
+    "bdt_of_wwz",
+    "bdt_sf_wwz",
+    "bdt_of_zh",
+    "bdt_sf_zh",
+    "bdt_of_bkg",
+    "bdt_sf_bkg",
+    "bdt_of_wwz_m_zh",
+    "bdt_sf_wwz_m_zh",
+    "bdt_of_bin",
+    "bdt_sf_bin",
 ]
 
 if __name__ == '__main__':
@@ -119,10 +129,9 @@ if __name__ == '__main__':
     # Figure out which hists to include
     if args.hist_list == ["few"]:
         # Here we hardcode a reduced list of a few hists
+        hist_lst = ["j0pt", "njets", "njets_counts", "nbtagsl", "nleps", "met", "l0pt"]
+    elif args.hist_list == ["bdt"]:
         hist_lst = ["j0pt", "njets", "njets_counts", "nbtagsl", "nleps", "met", "l0pt"] + BDT_VAR_NAMES
-    elif args.hist_list == ["cr"]:
-        # Here we hardcode a list of hists used for the CRs
-        hist_lst = ["lj0pt", "ptz", "met", "ljptsum", "l0pt", "l0eta", "l1pt", "l1eta", "j0pt", "j0eta", "njets", "nbtagsl", "invmass"]
     else:
         # We want to specify a custom list
         # If we don't specify this argument, it will be None, and the processor will fill all hists
@@ -254,6 +263,7 @@ if __name__ == '__main__':
             'tasks_accum_log': 'tasks.log',
 
             'environment_file': remote_environment.get_environment(
+                extra_conda=["root"],
                 extra_pip=["mt2","xgboost"],
                 extra_pip_local = {"ewkcoffea": ["ewkcoffea", "setup.py"]},
             ),
