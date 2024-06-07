@@ -20,5 +20,5 @@
 # time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim.cfg -x futures -n 200 -s 100000000 -o wwz_histos --hist-list njets --do-systs
 
 # Run at scale with wq
-#time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim.cfg -o wwz_histos --hist-list few
-time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim.cfg -o wwz_histos --hist-list njets njets_counts --do-systs
+#time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim.cfg -o wwz_histos_noSys --hist-list bdt
+time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim.cfg -o wwz_histos_withSys --hist-list njets njets_counts --do-systs
