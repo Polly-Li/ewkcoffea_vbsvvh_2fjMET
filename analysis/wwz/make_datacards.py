@@ -27,6 +27,10 @@ SYSTS_SPECIAL = {
     "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
     "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
 }
+SYSTS_SPECIAL_RUN3 = {
+    "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+    "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+}
 
 
 ########### Writing the datacard ###########
@@ -362,8 +366,6 @@ def main():
     if out_dir != "." and not os.path.exists(out_dir):
         print(f"Making dir \"{out_dir}\"")
         os.makedirs(out_dir)
-    if run == "run3" and do_nuis:
-        raise Exception("Systematics are not ready for R3 yet.")
 
     # Get the histo
     f = pickle.load(gzip.open(in_file))
@@ -377,13 +379,16 @@ def main():
         sample_names_dict_mc["UL16"]    = sg.create_mc_sample_dict("UL16")
         sample_names_dict_mc["UL17"]    = sg.create_mc_sample_dict("UL17")
         sample_names_dict_mc["UL18"]    = sg.create_mc_sample_dict("UL18")
+    if run == "run3":
+        sample_names_dict_mc["2022"] = sg.create_mc_sample_dict("2022")
+        sample_names_dict_mc["2022EE"] = sg.create_mc_sample_dict("2022EE")
 
     # Get yield dictionary (nested in the order: year,cat,syst,proc)
     yld_dict_mc_allyears = {}
     for year in sample_names_dict_mc:
         yld_dict_mc_allyears[year] = yt.get_yields(histo,sample_names_dict_mc[year])
     if do_nuis:
-        handle_per_year_systs_for_fr2(yld_dict_mc_allyears)
+        handle_per_year_systs_for_fr2(yld_dict_mc_allyears,SYSTS_SPECIAL_RUN3)
 
     # We're only looking at Full R2 (run2) or 2022 (run3) for now
     yld_dict_mc = yld_dict_mc_allyears["FR"]

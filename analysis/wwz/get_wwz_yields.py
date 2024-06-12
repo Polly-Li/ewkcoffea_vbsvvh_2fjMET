@@ -527,8 +527,8 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
             #"cr_4l_sf",
             #"cr_4l_btag_sf_offZ_met80",
             #"cr_4l_btag_of",
-            #"sr_4l_of_incl",
-            #"sr_4l_sf_incl",
+            "sr_4l_of_incl",
+            "sr_4l_sf_incl",
         ]
 
         # Rebin if continous variable
@@ -557,12 +557,12 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
 
             for syst in syst_var_lst:
                 #if "btag" not in syst: continue
-                #if "uncorrelated" not in syst: continue
+                if "uncorrelated" not in syst: continue
                 #if "lepSF" not in syst: continue
                 #if "PreFiring" not in syst: continue
                 #if "PU" not in syst: continue
                 #if "ISR" not in syst and "FSR" not in syst: continue
-                if "renorm" not in syst and "fact" not in syst: continue
+                #if "renorm" not in syst and "fact" not in syst: continue
 
                 # Skip the variations that don't apply (TODO: why are these in the hist to begin with??)
                 if year == "UL16APV": blacklist_years = ["2016","2017","2018","2022","2022EE"]
@@ -571,6 +571,7 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 if year == "UL18": blacklist_years = ["2016APV","2016","2017","2022","2022EE"]
                 if year == "2022": blacklist_years = ["2016APV","2016","2017","2018","2022EE"]
                 if year == "2022EE": blacklist_years = ["2016APV","2016","2017","2018","2022"]
+                if year == "run3": blacklist_years = ["2016APV","2016","2017","2018"]
                 if year == "all": blacklist_years = []
                 skip = False
                 for y in blacklist_years:
@@ -590,22 +591,22 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 mc_down_arr = mc_down[{"process_grp":sum}].values()
 
                 # Print individual syst numbers
-                #if var_name != "nleps": continue
-                #n = sum(sum(mc_nom.values()))
-                #u = sum(mc_up_arr)
-                #d = sum(mc_down_arr)
-                #print("\n",syst)
-                #print("nom",n)
-                #print("up",u)
-                #print("do",d)
-                #r_up = abs((n-u)/n)
-                #r_do = abs((n-d)/n)
-                #r = (r_up+r_do)/2
-                #print("err",np.round(100*abs(n-u)/n,1),"%")
-                #print("err up",np.round(100*r_up,1),"%")
-                #print("err do",np.round(100*r_do,1),"%")
+                if var_name != "nleps": continue
+                n = sum(sum(mc_nom.values()))
+                u = sum(mc_up_arr)
+                d = sum(mc_down_arr)
+                print("\n",syst)
+                print("nom",n)
+                print("up",u)
+                print("do",d)
+                r_up = abs((n-u)/n)
+                r_do = abs((n-d)/n)
+                r = (r_up+r_do)/2
+                print("err",np.round(100*abs(n-u)/n,1),"%")
+                print("err up",np.round(100*r_up,1),"%")
+                print("err do",np.round(100*r_do,1),"%")
                 #print("err do",np.round(100*r,1),"%")
-                #continue
+                continue
 
                 fig = make_syst_fig(mc_nom,mc_up_arr,mc_down_arr,syst,title=f"{var_name}_{yeartag}_{cat}_{syst}")
 
@@ -613,7 +614,7 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 if not os.path.exists(out_path_for_this_cat): os.makedirs(out_path_for_this_cat)
                 fig.savefig(f"{out_path_for_this_cat}/{var_name}_{yeartag}_{cat}_{syst}.png")
 
-            make_html(os.path.join(os.getcwd(),out_path_for_this_cat))
+            #make_html(os.path.join(os.getcwd(),out_path_for_this_cat))
 
 
 # A function for making a summary plot of SR yields
@@ -623,7 +624,7 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data,year,ana_type="cb"):
     if ana_type == "cb":
         sr_lst  = sg.CAT_LST_CB
         hist_label = "Cut-based SRs"
-        y_max = 9 # 9 is good for R2, 4 is good for R3
+        y_max = 4 # 9 is good for R2, 4 is good for R3
         fig_size = (12,7)
     elif ana_type == "bdt":
         sr_lst  = sg.CAT_LST_BDT
@@ -707,7 +708,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
             # Skip some of the cats if you want to
             #if "bdt" in cat_name: continue
             #if cat_name not in ["sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn"]: continue # TMP
-            if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]: continue
+            #if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]: continue
             #print(cat_name)
 
             # Make a copy so changes to binning do not propagate to next loop
@@ -740,22 +741,22 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
 
             ######
             # Print stuff if you want to
-            #if (cat_name == "cr_4l_sf" or cat_name == "cr_4l_btag_of" or cat_name=="cr_4l_btag_sf_offZ_met80") and var_name == "nleps":
-                #print(f"\n{cat_name} {var_name}:")
-                #print("Yields")
-                #data = sum(sum(histo_grouped_data.values(flow=True)))
-                #data_error = sum(sum(histo_grouped_data.variances(flow=True))) ** 0.5
-                #mc = sum(sum(histo_grouped_mc.values(flow=True)))
-                #mc_error = sum(sum(histo_grouped_mc.variances(flow=True))) ** 0.5
-                #data_over_mc_ratio = data / mc
-                #data_over_mc_ratio_error = data_over_mc_ratio * ((data_error / data)**2 + (mc_error / mc)**2)**0.5
-                #print("mc:",mc)
-                #print("mc Error:",mc_error)
-                #print("data:",data)
-                #print("data Error:",data_error)
-                #print("data/mc:", data_over_mc_ratio)
-                #print("data/mc Error:", data_over_mc_ratio_error)
-            #continue
+            if (cat_name == "cr_4l_sf" or cat_name == "cr_4l_btag_of" or cat_name=="cr_4l_btag_sf_offZ_met80") and var_name == "nleps":
+                print(f"\n{cat_name} {var_name}:")
+                print("Yields")
+                data = sum(sum(histo_grouped_data.values(flow=True)))
+                data_error = sum(sum(histo_grouped_data.variances(flow=True))) ** 0.5
+                mc = sum(sum(histo_grouped_mc.values(flow=True)))
+                mc_error = sum(sum(histo_grouped_mc.variances(flow=True))) ** 0.5
+                data_over_mc_ratio = data / mc
+                data_over_mc_ratio_error = data_over_mc_ratio * ((data_error / data)**2 + (mc_error / mc)**2)**0.5
+                print("mc:",mc)
+                print("mc Error:",mc_error)
+                print("data:",data)
+                print("data Error:",data_error)
+                print("data/mc:", data_over_mc_ratio)
+                print("data/mc Error:", data_over_mc_ratio_error)
+            continue
             #####
 
             # Merge overflow into last bin (so it shows up in the plot)
@@ -943,8 +944,8 @@ def main():
 
 
     # Make plots
-    if args.make_plots:
-        make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path,apply_nsf_to_cr=False)
+    #if args.make_plots:
+        #make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path,apply_nsf_to_cr=False)
         #make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
         #make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data,args.ul_year,ana_type="cb") # Make plot of all SR yields in one plot
 

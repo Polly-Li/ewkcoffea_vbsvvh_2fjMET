@@ -155,8 +155,8 @@ def run3_muons_sf_attach(muons,year,id_method,iso_method):
     # Evaluate the ID SF
     ceval = correctionlib.CorrectionSet.from_file(fname)
     sf_id_flat_nom = ceval[id_method].evaluate(abseta_flat,pt_flat,"nominal")
-    sf_id_flat_hi  = ceval[id_emthod].evaluate(abseta_flat,pt_flat,"systup")
-    sf_id_flat_lo  = ceval[id_emthod].evaluate(abseta_flat,pt_flat,"systdown")
+    sf_id_flat_hi  = ceval[id_method].evaluate(abseta_flat,pt_flat,"systup")
+    sf_id_flat_lo  = ceval[id_method].evaluate(abseta_flat,pt_flat,"systdown")
 
     # Evaluate the Iso SF
     sf_iso_flat_nom = ceval[iso_method].evaluate(abseta_flat,pt_flat,"nominal")
