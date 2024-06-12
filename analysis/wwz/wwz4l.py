@@ -48,7 +48,7 @@ def fill_none_in_list(var_names,var_names_vals_map,none_val):
 
 class AnalysisProcessor(processor.ProcessorABC):
 
-    def __init__(self, samples, wc_names_lst=[], hist_lst=None, ecut_threshold=None, do_errors=False, do_systematics=False, split_by_lepton_flavor=False, skip_signal_regions=False, skip_control_regions=False, muonSyst='nominal', dtype=np.float32):
+    def __init__(self, samples, wc_names_lst=[], hist_lst=None, ecut_threshold=None, do_errors=False, do_systematics=False, split_by_lepton_flavor=False, skip_signal_regions=False, skip_control_regions=False, muonSyst='nominal', dtype=np.float32, siphon_bdt_data=False):
 
         self._samples = samples
         self._wc_names_lst = wc_names_lst
@@ -140,14 +140,54 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         }
 
+        # Add histograms to dictionary that will be passed on to dict_accumulator
+        dout = {}
+        for dense_axis_name in self._dense_axes_dict.keys():
+            dout[dense_axis_name] = hist.Hist(
+                hist.axis.StrCategory([], growth=True, name="process", label="process"),
+                hist.axis.StrCategory([], growth=True, name="category", label="category"),
+                hist.axis.StrCategory([], growth=True, name="systematic", label="systematic"),
+                self._dense_axes_dict[dense_axis_name],
+                storage="weight", # Keeps track of sumw2
+                name="Counts",
+            )
+
+        if siphon_bdt_data:
+            # Adding list accumulators for BDT output variables and weights
+            list_output_names = [
+                "bdt_of_wwz_list",
+                "bdt_of_zh_list",
+                "bdt_of_bkg_list",
+                "bdt_of_proc_list",
+                "bdt_of_wgt_list",
+                "bdt_of_evt_list",
+                "bdt_sf_wwz_list",
+                "bdt_sf_zh_list",
+                "bdt_sf_bkg_list",
+                "bdt_sf_proc_list",
+                "bdt_sf_wgt_list",
+                "bdt_sf_evt_list",
+            ]
+            for list_output_name in list_output_names:
+                dout[list_output_name] = processor.list_accumulator([])
+
+            # Also adding BDT input variable list accumulators
+            for of_bdt_var_name in get_ec_param("of_bdt_var_lst"):
+                dout["of_bdt_" + of_bdt_var_name] = processor.list_accumulator([])
+            for sf_bdt_var_name in get_ec_param("sf_bdt_var_lst"):
+                dout["sf_bdt_" + sf_bdt_var_name] = processor.list_accumulator([])
+
+        # Set the accumulator
+        self._accumulator = processor.dict_accumulator(dout)
+
         # Set the list of hists to fill
         if hist_lst is None:
             # If the hist list is none, assume we want to fill all hists
-            self._hist_lst = list(self._dense_axes_dict.keys())
+            self._hist_lst = list(self._accumulator.keys())
         else:
             # Otherwise, just fill the specified subset of hists
             for hist_to_include in hist_lst:
-                if hist_to_include not in self._dense_axes_dict.keys():
+                if hist_to_include not in self._accumulator.keys():
                     raise Exception(f"Error: Cannot specify hist \"{hist_to_include}\", it is not defined in the processor.")
             self._hist_lst = hist_lst # Which hists to fill
 
@@ -160,7 +200,11 @@ class AnalysisProcessor(processor.ProcessorABC):
         self._split_by_lepton_flavor = split_by_lepton_flavor # Whether to keep track of lepton flavors individually
         self._skip_signal_regions = skip_signal_regions # Whether to skip the SR categories
         self._skip_control_regions = skip_control_regions # Whether to skip the CR categories
+        self._siphon_bdt_data = siphon_bdt_data # Whether to write out bdt data or not
 
+    @property
+    def accumulator(self):
+        return self._accumulator
 
     @property
     def columns(self):
@@ -882,9 +926,6 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             ######### Fill histos #########
 
-            hout = {}
-
-
             # List the hists that are only defined for some categories
             analysis_cats = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
             if not is2022:
@@ -984,16 +1025,6 @@ class AnalysisProcessor(processor.ProcessorABC):
                 #print("\ndense_axis_name,vals",dense_axis_name)
                 #print("\ndense_axis_name,vals",vals)
 
-                # Create the hist for this dense axis variable
-                hout[dense_axis_name] = hist.Hist(
-                    hist.axis.StrCategory([], growth=True, name="process", label="process"),
-                    hist.axis.StrCategory([], growth=True, name="category", label="category"),
-                    hist.axis.StrCategory([], growth=True, name="systematic", label="systematic"),
-                    self._dense_axes_dict[dense_axis_name],
-                    storage="weight", # Keeps track of sumw2
-                    name="Counts",
-                )
-
                 # Loop over weight fluctuations
                 for wgt_fluct in wgt_var_lst:
 
@@ -1045,9 +1076,28 @@ class AnalysisProcessor(processor.ProcessorABC):
                             "category"      : sr_cat,
                             "systematic"    : wgt_fluct,
                         }
-                        hout[dense_axis_name].fill(**axes_fill_info_dict)
+                        self.accumulator[dense_axis_name].fill(**axes_fill_info_dict)
 
-        return hout
+            if self._siphon_bdt_data:
+                # Fill the list accumulator
+                self.accumulator["bdt_of_wwz_list"] += bdt_of_wwz[sr_4l_bdt_of_trn].to_list()
+                self.accumulator["bdt_of_zh_list"]  += bdt_of_zh[sr_4l_bdt_of_trn].to_list()
+                self.accumulator["bdt_of_bkg_list"] += bdt_of_bkg[sr_4l_bdt_of_trn].to_list()
+                self.accumulator["bdt_of_proc_list"]+= [histAxisName] * len(bdt_of_bkg[sr_4l_bdt_of_trn])
+                self.accumulator["bdt_of_wgt_list"] += weights_obj_base_for_kinematic_syst.weight(None)[sr_4l_bdt_of_trn]
+                self.accumulator["bdt_of_evt_list"] += events.event[sr_4l_bdt_of_trn].to_list()
+                self.accumulator["bdt_sf_wwz_list"] += bdt_sf_wwz[sr_4l_bdt_sf_trn].to_list()
+                self.accumulator["bdt_sf_zh_list"]  += bdt_sf_zh[sr_4l_bdt_sf_trn].to_list()
+                self.accumulator["bdt_sf_bkg_list"] += bdt_sf_bkg[sr_4l_bdt_sf_trn].to_list()
+                self.accumulator["bdt_sf_proc_list"]+= [histAxisName] * len(bdt_sf_bkg[sr_4l_bdt_sf_trn])
+                self.accumulator["bdt_sf_wgt_list"] += weights_obj_base_for_kinematic_syst.weight(None)[sr_4l_bdt_sf_trn]
+                self.accumulator["bdt_sf_evt_list"] += events.event[sr_4l_bdt_sf_trn].to_list()
+                for ivar, bdt_var_of in enumerate(get_ec_param("of_bdt_var_lst")):
+                    self.accumulator["of_bdt_" + bdt_var_of] += bdt_vars_of_wwz[ivar][sr_4l_bdt_of_trn]
+                for ivar, bdt_var_sf in enumerate(get_ec_param("sf_bdt_var_lst")):
+                    self.accumulator["sf_bdt_" + bdt_var_sf] += bdt_vars_sf_wwz[ivar][sr_4l_bdt_sf_trn]
+
+        return self.accumulator
 
     def postprocess(self, accumulator):
         return accumulator
