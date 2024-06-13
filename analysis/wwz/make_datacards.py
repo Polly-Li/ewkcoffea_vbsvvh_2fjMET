@@ -135,9 +135,9 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,out_dir="."):
 #   - So this function adds the nominal yields from the other three years to the up/down variation for the relevant year
 #   - Note the in_dict is modifed in place (we do not return a copy of the dict)
 def handle_per_year_systs_for_fr2(in_dict,year):
-    if year in ["2022","2022EE","run3"]
+    if year in ["2022","2022EE","run3"]:
         systs_special=SYSTS_SPECIAL_RUN3
-    if year in ["UL16","UL16APV","UL17","UL18","run2"]
+    if year in ["UL16","UL16APV","UL17","UL18","run2"]:
         systs_special=SYSTS_SPECIAL
     for cat in in_dict["FR"].keys():
         for sys in systs_special:
