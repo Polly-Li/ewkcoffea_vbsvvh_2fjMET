@@ -134,7 +134,11 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,out_dir="."):
 #   - Because of how we fill in the processor, the yields for per year systs come _only_ from that year
 #   - So this function adds the nominal yields from the other three years to the up/down variation for the relevant year
 #   - Note the in_dict is modifed in place (we do not return a copy of the dict)
-def handle_per_year_systs_for_fr2(in_dict, systs_special=SYSTS_SPECIAL):
+def handle_per_year_systs_for_fr2(in_dict,year):
+    if year in ["2022","2022EE","run3"]
+        systs_special=SYSTS_SPECIAL_RUN3
+    if year in ["UL16","UL16APV","UL17","UL18","run2"]
+        systs_special=SYSTS_SPECIAL
     for cat in in_dict["FR"].keys():
         for sys in systs_special:
             # Find up/down variation for the year relevant to that syst
@@ -388,7 +392,7 @@ def main():
     for year in sample_names_dict_mc:
         yld_dict_mc_allyears[year] = yt.get_yields(histo,sample_names_dict_mc[year])
     if do_nuis:
-        handle_per_year_systs_for_fr2(yld_dict_mc_allyears,SYSTS_SPECIAL_RUN3)
+        handle_per_year_systs_for_fr2(yld_dict_mc_allyears,run)
 
     # We're only looking at Full R2 (run2) or 2022 (run3) for now
     yld_dict_mc = yld_dict_mc_allyears["FR"]
