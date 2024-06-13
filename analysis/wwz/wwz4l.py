@@ -358,15 +358,15 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
         # Set up the list of systematics that are handled via event weight variations
-        wgt_correction_syst_lst = [
+        wgt_correction_syst_lst_common = [
             "btagSFbc_correlated", f"btagSFbc_uncorrelated_{year}",
             "lepSF_elec", "lepSF_muon", "PU",
             "renorm", "fact", "ISR", "FSR",
         ]
         if not is2022:
-            wgt_correction_syst_lst = wgt_correction_syst_lst + ["PreFiring","btagSFlight_correlated",f"btagSFlight_uncorrelated_{year}"]
+            wgt_correction_syst_lst = wgt_correction_syst_lst_common + ["PreFiring","btagSFlight_correlated",f"btagSFlight_uncorrelated_{year}"]
         else:
-            wgt_correction_syst_lst = wgt_correction_syst_lst + ["btagSFlight"]
+            wgt_correction_syst_lst = wgt_correction_syst_lst_common + ["btagSFlight"]
         wgt_correction_syst_lst = append_up_down_to_sys_base(wgt_correction_syst_lst)
 
 
