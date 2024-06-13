@@ -151,7 +151,7 @@ central_UL18_22006_dict = {
 }
 central_2022_dict = {
     "2022_tWZ4l" : {
-        #Currently using the DR1 sample 
+        #Currently using the DR1 sample
         #"path" : "/store/user/t2/users/matthew.dittrich/skims/Run3_MC_4L_04022024_Loose/TWZ_TtoLNu_WtoLNu_Zto2L_DR2_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v3_NANOAODSIM_Run3_MC_4L_04022024_Loose/",
         "path" : "/store/user/t2/users/matthew.dittrich/skims/2022_TWZ_DR1_Loose_v2/TWZ_TtoLNu_WtoLNu_Zto2L_DR1_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v4_NANOAODSIM_2022_TWZ_DR1_Loose_v2/",
         "histAxisName": "2022_tWZ4l",
