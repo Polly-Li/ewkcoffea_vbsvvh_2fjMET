@@ -1,0 +1,27 @@
+{
+    "xsec": 0.0015,
+    "year": "2017",
+    "treeName": "Events",
+    "histAxisName": "UL17_tWZ4l",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/skim4l_v5/TWZToLL_tlept_Wlept_5f_DR_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_skim4l_v5/merged/merged.root"
+    ],
+    "nEvents": 162481,
+    "nGenEvents": 708000,
+    "nSumOfWeights": 1064.3458483420004,
+    "isData": false,
+    "path": "/skim4l_v5/TWZToLL_tlept_Wlept_5f_DR_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_skim4l_v5/merged/",
+    "nSumOfLheWeights": [
+        1099.5862859687265,
+        1104.757884751641,
+        1119.8829802553512,
+        1056.402575836048,
+        1064.3458483420004,
+        1077.9117287077884,
+        1011.7264402952122,
+        1021.4784259301069,
+        1033.7728601688925
+    ]
+}

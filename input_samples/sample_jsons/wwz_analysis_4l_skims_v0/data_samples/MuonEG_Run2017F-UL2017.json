@@ -1,0 +1,17 @@
+{
+    "xsec": 1.0,
+    "year": "2017",
+    "treeName": "Events",
+    "histAxisName": "UL17_data",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/skim4l_v5/MuonEG_Run2017F-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/merged.root"
+    ],
+    "nEvents": 1806,
+    "nGenEvents": 1806,
+    "nSumOfWeights": 1806,
+    "isData": true,
+    "path": "/skim4l_v5/MuonEG_Run2017F-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/",
+    "nSumOfLheWeights": null
+}

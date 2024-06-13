@@ -1,0 +1,17 @@
+{
+    "xsec": 1.0,
+    "year": "2018",
+    "treeName": "Events",
+    "histAxisName": "UL18_data",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/skim4l_v5/EGamma_Run2018C-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/merged.root"
+    ],
+    "nEvents": 999,
+    "nGenEvents": 999,
+    "nSumOfWeights": 999,
+    "isData": true,
+    "path": "/skim4l_v5/EGamma_Run2018C-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/",
+    "nSumOfLheWeights": null
+}
