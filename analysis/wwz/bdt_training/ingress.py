@@ -194,7 +194,7 @@ def main():
     label_d["Bkg"] = 2
 
     # Remove duplicates and get only unique variable names
-    # Since we looped over multiple categories same variable names were put in 
+    # Since we looped over multiple categories same variable names were put in
     of_variables = list(set(of_variables))
     sf_variables = list(set(sf_variables))
 

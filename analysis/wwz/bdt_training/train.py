@@ -27,14 +27,14 @@ y_test_tmva_of = dd["y_test_tmva_of"]
 y_train_tmva_sf = dd["y_train_tmva_sf"]
 y_test_tmva_sf = dd["y_test_tmva_sf"]
 
-xgb_clf = xgb.XGBClassifier(objective='multi:softmax', 
-                            num_class=3, 
-                            missing=1, 
+xgb_clf = xgb.XGBClassifier(objective='multi:softmax',
+                            num_class=3,
+                            missing=1,
                             booster="gbtree",
                             grow_policy="depthwise",
                             learning_rate=2.0,
-                            n_estimators=20000,
-                            eval_metric=['merror','mlogloss'], 
+                            n_estimators=100,
+                            eval_metric=['merror','mlogloss'],
                             device="cuda",
                             seed=42,
                             n_jobs=32)
