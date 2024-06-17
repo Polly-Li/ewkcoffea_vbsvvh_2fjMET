@@ -469,20 +469,22 @@ class AnalysisProcessor(processor.ProcessorABC):
 
                 # Put the btagging up and down weight variations into the weights object
                 if self._do_systematics:
+
+                    # Run3 2022 btagging systematics stuff
+                    # Note light correlated and uncorrelated are missing, so just using total, as suggested by the pog
+                    # See this for more info: https://cms-talk.web.cern.ch/t/2022-btag-sf-recommendations/42262
                     if is2022:
                         for btag_sys in ["correlated", "uncorrelated"]:
                             year_tag = f"_{year}"
                             if btag_sys == "correlated": year_tag = ""
-
                             btag_sf_bc_up      = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb",f"up_{btag_sys}")
                             btag_sf_bc_down    = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb",f"down_{btag_sys}")
-
                             wgt_bc_up      = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_up,    jets_bc.btagDeepFlavB>btagwpl)
                             wgt_bc_down    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_down,    jets_bc.btagDeepFlavB>btagwpl)
-
                             # Note, up and down weights scaled by 1/wgt_btag_nom so that don't double count the central btag correction (i.e. don't apply it also in the case of up and down variations)
                             weights_obj_base_for_kinematic_syst.add(f"btagSFbc_{btag_sys}{year_tag}",    events.nom, wgt_light*wgt_bc_up/wgt_btag_nom, wgt_light*wgt_bc_down/wgt_btag_nom)
 
+                        # Light have no correlated/uncorrelated so just use total:
                         btag_sf_light_up   = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_light","up")
                         btag_sf_light_down = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_light","down")
                         wgt_light_up   = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light_up, jets_light.btagDeepFlavB>btagwpl)
@@ -490,6 +492,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                         # Note, up and down weights scaled by 1/wgt_btag_nom so that don't double count the central btag correction (i.e. don't apply it also in the case of up and down variations)
                         weights_obj_base_for_kinematic_syst.add("btagSFlight", events.nom, wgt_light_up*wgt_bc/wgt_btag_nom, wgt_light_down*wgt_bc/wgt_btag_nom)
 
+                    # Run2 btagging systematics stuff
                     else:
                         for btag_sys in ["correlated", "uncorrelated"]:
                             year_tag = f"_{year}"
