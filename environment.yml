@@ -14,4 +14,4 @@ dependencies:
   - conda-forge::root
   - mpltern
   - scikit-learn
-  - conda-forgecorrectionlib=2.5.0
+  - conda-forge::correctionlib=2.5.0
