@@ -7,6 +7,11 @@ from sklearn.metrics import roc_curve, auc
 from sklearn.preprocessing import label_binarize
 import xgboost as xgb
 
+# Avoid import but not used error for mpltern:
+#     - We need to import it in order to register the "ternary" projection
+#     - But mpltern is not explicitly used anywhere, making flake8 upset
+#     - Thus just add an assert line, so that flake8 will not catch it
+assert mpltern
 
 dd = pickle.load(gzip.open("bdt.pkl.gz"))
 
