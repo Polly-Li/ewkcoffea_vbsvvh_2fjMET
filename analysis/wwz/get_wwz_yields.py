@@ -524,11 +524,11 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
             "sr_4l_of_2",
             "sr_4l_of_3",
             "sr_4l_of_4",
-            #"cr_4l_sf",
-            #"cr_4l_btag_sf_offZ_met80",
-            #"cr_4l_btag_of",
-            #"sr_4l_of_incl",
-            #"sr_4l_sf_incl",
+            "cr_4l_sf",
+            "cr_4l_btag_sf_offZ_met80",
+            "cr_4l_btag_of",
+            "sr_4l_of_incl",
+            "sr_4l_sf_incl",
         ]
 
         # Rebin if continous variable
@@ -556,13 +556,13 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
             data_nom = merge_overflow(histo_grouped_data[{"systematic":"nominal"}])
 
             for syst in syst_var_lst:
-                #if "btag" not in syst: continue
+                if "btag" not in syst: continue
                 #if "uncorrelated" not in syst: continue
                 #if "lepSF" not in syst: continue
                 #if "PreFiring" not in syst: continue
                 #if "PU" not in syst: continue
                 #if "ISR" not in syst and "FSR" not in syst: continue
-                if "renorm" not in syst and "fact" not in syst: continue
+                #if "renorm" not in syst and "fact" not in syst: continue
 
                 # Skip the variations that don't apply (TODO: why are these in the hist to begin with??)
                 if year == "UL16APV": blacklist_years = ["2016","2017","2018","2022","2022EE"]
@@ -571,6 +571,7 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 if year == "UL18": blacklist_years = ["2016APV","2016","2017","2022","2022EE"]
                 if year == "2022": blacklist_years = ["2016APV","2016","2017","2018","2022EE"]
                 if year == "2022EE": blacklist_years = ["2016APV","2016","2017","2018","2022"]
+                if year == "run3": blacklist_years = ["2016APV","2016","2017","2018"]
                 if year == "all": blacklist_years = []
                 skip = False
                 for y in blacklist_years:
@@ -623,7 +624,7 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data,year,ana_type="cb"):
     if ana_type == "cb":
         sr_lst  = sg.CAT_LST_CB
         hist_label = "Cut-based SRs"
-        y_max = 9 # 9 is good for R2, 4 is good for R3
+        y_max = 4 # 9 is good for R2, 4 is good for R3
         fig_size = (12,7)
     elif ana_type == "bdt":
         sr_lst  = sg.CAT_LST_BDT
@@ -707,7 +708,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
             # Skip some of the cats if you want to
             #if "bdt" in cat_name: continue
             #if cat_name not in ["sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn"]: continue # TMP
-            if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]: continue
+            #if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]: continue
             #print(cat_name)
 
             # Make a copy so changes to binning do not propagate to next loop

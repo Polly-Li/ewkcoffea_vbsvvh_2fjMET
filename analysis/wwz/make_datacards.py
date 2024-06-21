@@ -17,7 +17,7 @@ SMALL = 0.000001
 PRECISION = 6   # Decimal point precision in the text datacard output
 
 # Systs that are not correlated across years
-SYSTS_SPECIAL = {
+SYSTS_SPECIAL_RUN2 = {
     "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
     "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
     "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
@@ -26,6 +26,10 @@ SYSTS_SPECIAL = {
     "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
     "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
     "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+}
+SYSTS_SPECIAL_RUN3 = {
+    "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+    "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
 }
 
 
@@ -130,7 +134,11 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,out_dir="."):
 #   - Because of how we fill in the processor, the yields for per year systs come _only_ from that year
 #   - So this function adds the nominal yields from the other three years to the up/down variation for the relevant year
 #   - Note the in_dict is modifed in place (we do not return a copy of the dict)
-def handle_per_year_systs_for_fr2(in_dict, systs_special=SYSTS_SPECIAL):
+def handle_per_year_systs_for_fr(in_dict,year):
+    if year in ["2022","2022EE","run3"]:
+        systs_special=SYSTS_SPECIAL_RUN3
+    if year in ["UL16","UL16APV","UL17","UL18","run2"]:
+        systs_special=SYSTS_SPECIAL_RUN2
     for cat in in_dict["FR"].keys():
         for sys in systs_special:
             # Find up/down variation for the year relevant to that syst
@@ -362,8 +370,6 @@ def main():
     if out_dir != "." and not os.path.exists(out_dir):
         print(f"Making dir \"{out_dir}\"")
         os.makedirs(out_dir)
-    if run == "run3" and do_nuis:
-        raise Exception("Systematics are not ready for R3 yet.")
 
     # Get the histo
     f = pickle.load(gzip.open(in_file))
@@ -377,13 +383,16 @@ def main():
         sample_names_dict_mc["UL16"]    = sg.create_mc_sample_dict("UL16")
         sample_names_dict_mc["UL17"]    = sg.create_mc_sample_dict("UL17")
         sample_names_dict_mc["UL18"]    = sg.create_mc_sample_dict("UL18")
+    if run == "run3":
+        sample_names_dict_mc["2022"]    = sg.create_mc_sample_dict("2022")
+        sample_names_dict_mc["2022EE"]  = sg.create_mc_sample_dict("2022EE")
 
     # Get yield dictionary (nested in the order: year,cat,syst,proc)
     yld_dict_mc_allyears = {}
     for year in sample_names_dict_mc:
         yld_dict_mc_allyears[year] = yt.get_yields(histo,sample_names_dict_mc[year])
     if do_nuis:
-        handle_per_year_systs_for_fr2(yld_dict_mc_allyears)
+        handle_per_year_systs_for_fr(yld_dict_mc_allyears,run)
 
     # We're only looking at Full R2 (run2) or 2022 (run3) for now
     yld_dict_mc = yld_dict_mc_allyears["FR"]
