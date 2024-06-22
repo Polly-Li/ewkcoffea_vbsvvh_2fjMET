@@ -1108,12 +1108,12 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Fill the list accumulator
             if self._siphon_bdt_data:
                 for chan,mask in {"of": sr_4l_bdt_of_trn, "sf": sr_4l_bdt_sf_trn}.items():
-                    self.accumulator[f"bdt_{chan}_wwz_list"]  += bdt_of_wwz[mask].to_list()
-                    self.accumulator[f"bdt_{chan}_zh_list"]   += bdt_of_zh[mask].to_list()
-                    self.accumulator[f"bdt_{chan}_bkg_list"]  += bdt_of_bkg[mask].to_list()
+                    self.accumulator[f"bdt_{chan}_wwz_list"]  += dense_variables_dict[f"bdt_{chan}_wwz"][mask].to_list()
+                    self.accumulator[f"bdt_{chan}_zh_list"]   += dense_variables_dict[f"bdt_{chan}_zh"][mask].to_list()
+                    self.accumulator[f"bdt_{chan}_bkg_list"]  += dense_variables_dict[f"bdt_{chan}_bkg"][mask].to_list()
                     self.accumulator[f"bdt_{chan}_evt_list"]  += events.event[mask].to_list()
-                    self.accumulator[f"bdt_{chan}_proc_list"] += [histAxisName] * len(bdt_of_bkg[mask])
                     self.accumulator[f"bdt_{chan}_wgt_list"]  += weights_obj_base_for_kinematic_syst.weight(None)[mask]
+                    self.accumulator[f"bdt_{chan}_proc_list"] += [histAxisName] * len(dense_variables_dict[f"bdt_{chan}_bkg"][mask])
                     for ivar, var in enumerate(get_ec_param(f"{chan}_bdt_var_lst")):
                         if chan == "of": self.accumulator[f"{chan}_bdt_{var}"] += bdt_vars_of_wwz[ivar][mask]
                         if chan == "sf": self.accumulator[f"{chan}_bdt_{var}"] += bdt_vars_sf_wwz[ivar][mask]
