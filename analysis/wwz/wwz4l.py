@@ -1105,24 +1105,18 @@ class AnalysisProcessor(processor.ProcessorABC):
                         }
                         self.accumulator[dense_axis_name].fill(**axes_fill_info_dict)
 
+            # Fill the list accumulator
             if self._siphon_bdt_data:
-                # Fill the list accumulator
-                self.accumulator["bdt_of_wwz_list"] += bdt_of_wwz[sr_4l_bdt_of_trn].to_list()
-                self.accumulator["bdt_of_zh_list"]  += bdt_of_zh[sr_4l_bdt_of_trn].to_list()
-                self.accumulator["bdt_of_bkg_list"] += bdt_of_bkg[sr_4l_bdt_of_trn].to_list()
-                self.accumulator["bdt_of_proc_list"]+= [histAxisName] * len(bdt_of_bkg[sr_4l_bdt_of_trn])
-                self.accumulator["bdt_of_wgt_list"] += weights_obj_base_for_kinematic_syst.weight(None)[sr_4l_bdt_of_trn]
-                self.accumulator["bdt_of_evt_list"] += events.event[sr_4l_bdt_of_trn].to_list()
-                self.accumulator["bdt_sf_wwz_list"] += bdt_sf_wwz[sr_4l_bdt_sf_trn].to_list()
-                self.accumulator["bdt_sf_zh_list"]  += bdt_sf_zh[sr_4l_bdt_sf_trn].to_list()
-                self.accumulator["bdt_sf_bkg_list"] += bdt_sf_bkg[sr_4l_bdt_sf_trn].to_list()
-                self.accumulator["bdt_sf_proc_list"]+= [histAxisName] * len(bdt_sf_bkg[sr_4l_bdt_sf_trn])
-                self.accumulator["bdt_sf_wgt_list"] += weights_obj_base_for_kinematic_syst.weight(None)[sr_4l_bdt_sf_trn]
-                self.accumulator["bdt_sf_evt_list"] += events.event[sr_4l_bdt_sf_trn].to_list()
-                for ivar, bdt_var_of in enumerate(get_ec_param("of_bdt_var_lst")):
-                    self.accumulator["of_bdt_" + bdt_var_of] += bdt_vars_of_wwz[ivar][sr_4l_bdt_of_trn]
-                for ivar, bdt_var_sf in enumerate(get_ec_param("sf_bdt_var_lst")):
-                    self.accumulator["sf_bdt_" + bdt_var_sf] += bdt_vars_sf_wwz[ivar][sr_4l_bdt_sf_trn]
+                for chan,mask in {"of": sr_4l_bdt_of_trn, "sf": sr_4l_bdt_sf_trn}.items():
+                    self.accumulator[f"bdt_{chan}_wwz_list"]  += bdt_of_wwz[mask].to_list()
+                    self.accumulator[f"bdt_{chan}_zh_list"]   += bdt_of_zh[mask].to_list()
+                    self.accumulator[f"bdt_{chan}_bkg_list"]  += bdt_of_bkg[mask].to_list()
+                    self.accumulator[f"bdt_{chan}_evt_list"]  += events.event[mask].to_list()
+                    self.accumulator[f"bdt_{chan}_proc_list"] += [histAxisName] * len(bdt_of_bkg[mask])
+                    self.accumulator[f"bdt_{chan}_wgt_list"]  += weights_obj_base_for_kinematic_syst.weight(None)[mask]
+                    for ivar, var in enumerate(get_ec_param(f"{chan}_bdt_var_lst")):
+                        if chan == "of": self.accumulator[f"{chan}_bdt_{var}"] += bdt_vars_of_wwz[ivar][mask]
+                        if chan == "sf": self.accumulator[f"{chan}_bdt_{var}"] += bdt_vars_sf_wwz[ivar][mask]
 
         return self.accumulator
 
