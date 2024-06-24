@@ -17,7 +17,7 @@ def get_cleaned_collection(obj_collection_a,obj_collection_b,drcut=0.4):
 ######### WWZ 4l analysis object selection #########
 
 # WWZ preselection for electrons
-def is_presel_wwz_ele(ele,is2022):
+def is_presel_wwz_ele(ele,is2022,is2023):
     mask = (
         (ele.pt               >  get_ec_param("wwz_pres_e_pt"))          &
         (abs(ele.eta)         <  get_ec_param("wwz_pres_e_eta"))         &
@@ -29,7 +29,7 @@ def is_presel_wwz_ele(ele,is2022):
         (ele.convVeto)
     )
 
-    if is2022:
+    if (is2022 or is2023):
         mask_year = (
             ele.mvaIso_WP90
         )
@@ -43,7 +43,7 @@ def is_presel_wwz_ele(ele,is2022):
 
 
 # WWZ preselection for muons
-def is_presel_wwz_mu(mu,is2022):
+def is_presel_wwz_mu(mu,is2022,is2023):
     mask = (
         (mu.pt               >  get_ec_param("wwz_pres_m_pt"))   &
         (abs(mu.eta)         <  get_ec_param("wwz_pres_m_eta"))  &
