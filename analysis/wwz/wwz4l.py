@@ -152,30 +152,28 @@ class AnalysisProcessor(processor.ProcessorABC):
                 name="Counts",
             )
 
+        # Adding list accumulators for BDT output variables and weights
         if siphon_bdt_data:
-            # Adding list accumulators for BDT output variables and weights
             list_output_names = [
-                "bdt_of_wwz_list",
-                "bdt_of_zh_list",
-                "bdt_of_bkg_list",
-                "bdt_of_proc_list",
-                "bdt_of_wgt_list",
-                "bdt_of_evt_list",
-                "bdt_sf_wwz_list",
-                "bdt_sf_zh_list",
-                "bdt_sf_bkg_list",
-                "bdt_sf_proc_list",
-                "bdt_sf_wgt_list",
-                "bdt_sf_evt_list",
+                "list_bdt_of_wwz",
+                "list_bdt_of_zh",
+                "list_bdt_of_bkg",
+                "list_bdt_of_proc",
+                "list_bdt_of_wgt",
+                "list_bdt_of_evt",
+                "list_bdt_sf_wwz",
+                "list_bdt_sf_zh",
+                "list_bdt_sf_bkg",
+                "list_bdt_sf_proc",
+                "list_bdt_sf_wgt",
+                "list_bdt_sf_evt",
             ]
             for list_output_name in list_output_names:
                 dout[list_output_name] = processor.list_accumulator([])
-
-            # Also adding BDT input variable list accumulators
             for of_bdt_var_name in get_ec_param("of_bdt_var_lst"):
-                dout["of_bdt_" + of_bdt_var_name] = processor.list_accumulator([])
+                dout[f"list_of_bdt_{of_bdt_var_name}"] = processor.list_accumulator([])
             for sf_bdt_var_name in get_ec_param("sf_bdt_var_lst"):
-                dout["sf_bdt_" + sf_bdt_var_name] = processor.list_accumulator([])
+                dout[f"list_sf_bdt_{sf_bdt_var_name}"] = processor.list_accumulator([])
 
         # Set the accumulator
         self._accumulator = processor.dict_accumulator(dout)
@@ -738,103 +736,101 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             ######### Evaluate the BDTs (get WWZ, ZH, and WZ scores for SF and OF) #########
 
-            if not is2022:
+            # Get the list of variables for the BDTs (and fill None with -9999 to not cause problems), and eval
+            bdt_vars_sf_wwz = fill_none_in_list(get_ec_param("sf_bdt_var_lst"),dense_variables_dict,-9999)
+            bdt_vars_of_wwz = fill_none_in_list(get_ec_param("of_bdt_var_lst"),dense_variables_dict,-9999)
 
-                # Get the list of variables for the BDTs (and fill None with -9999 to not cause problems), and eval
-                bdt_vars_sf_wwz = fill_none_in_list(get_ec_param("sf_bdt_var_lst"),dense_variables_dict,-9999)
-                bdt_vars_of_wwz = fill_none_in_list(get_ec_param("of_bdt_var_lst"),dense_variables_dict,-9999)
+            # Evaluate BDT v7
+            bdt_of_tern = ak.Array(es_ec.eval_of_tern_bdt(bdt_vars_of_wwz))
+            bdt_of_wwz = bdt_of_tern[:, 0]
+            bdt_of_zh = bdt_of_tern[:, 1]
+            bdt_of_bkg = bdt_of_tern[:, 2]
+            bdt_sf_tern = ak.Array(es_ec.eval_sf_tern_bdt(bdt_vars_sf_wwz))
+            bdt_sf_wwz = bdt_sf_tern[:, 0]
+            bdt_sf_zh = bdt_sf_tern[:, 1]
+            bdt_sf_bkg = bdt_sf_tern[:, 2]
+            bdt_of_wwz_m_zh = bdt_of_wwz - bdt_of_zh
+            bdt_sf_wwz_m_zh = bdt_sf_wwz - bdt_sf_zh
 
-                # Evaluate BDT v7
-                bdt_of_tern = ak.Array(es_ec.eval_of_tern_bdt(bdt_vars_of_wwz))
-                bdt_of_wwz = bdt_of_tern[:, 0]
-                bdt_of_zh = bdt_of_tern[:, 1]
-                bdt_of_bkg = bdt_of_tern[:, 2]
-                bdt_sf_tern = ak.Array(es_ec.eval_sf_tern_bdt(bdt_vars_sf_wwz))
-                bdt_sf_wwz = bdt_sf_tern[:, 0]
-                bdt_sf_zh = bdt_sf_tern[:, 1]
-                bdt_sf_bkg = bdt_sf_tern[:, 2]
-                bdt_of_wwz_m_zh = bdt_of_wwz - bdt_of_zh
-                bdt_sf_wwz_m_zh = bdt_sf_wwz - bdt_sf_zh
+            # Philip's version of the v7 binning
 
-                # Philip's version of the v7 binning
+            of_thr_zh_1 = 0.08
+            of_thr_zh_2 = 0.14
+            of_thr_zh_3 = 0.39
 
-                of_thr_zh_1 = 0.08
-                of_thr_zh_2 = 0.14
-                of_thr_zh_3 = 0.39
+            of_thr_wwz_1 = 0.04
+            of_thr_wwz_2 = 0.13
+            of_thr_wwz_3 = 0.29
 
-                of_thr_wwz_1 = 0.04
-                of_thr_wwz_2 = 0.13
-                of_thr_wwz_3 = 0.29
+            sf_thr_zh_1 = 0.04
+            sf_thr_zh_2 = 0.11
+            sf_thr_zh_3 = 0.30
 
-                sf_thr_zh_1 = 0.04
-                sf_thr_zh_2 = 0.11
-                sf_thr_zh_3 = 0.30
+            sf_thr_wwz_1 = 0.03
+            sf_thr_wwz_2 = 0.05
+            sf_thr_wwz_3 = 0.18
 
-                sf_thr_wwz_1 = 0.03
-                sf_thr_wwz_2 = 0.05
-                sf_thr_wwz_3 = 0.18
+            bdt_of_wwz_vs_zh_divider = bdt_of_wwz_m_zh
+            bdt_sf_wwz_vs_zh_divider = bdt_sf_wwz_m_zh
 
-                bdt_of_wwz_vs_zh_divider = bdt_of_wwz_m_zh
-                bdt_sf_wwz_vs_zh_divider = bdt_sf_wwz_m_zh
+            bdt_of_wwz_vs_zh_divider_threshold = 0
+            bdt_sf_wwz_vs_zh_divider_threshold = 0
 
-                bdt_of_wwz_vs_zh_divider_threshold = 0
-                bdt_sf_wwz_vs_zh_divider_threshold = 0
+            # Calculating the masks for OF bins
+            bdt_of_1 =                                (bdt_of_bkg < of_thr_wwz_1) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
+            bdt_of_2 = (bdt_of_bkg >= of_thr_wwz_1) & (bdt_of_bkg < of_thr_wwz_2) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
+            bdt_of_3 = (bdt_of_bkg >= of_thr_wwz_2) & (bdt_of_bkg < of_thr_wwz_3) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
+            bdt_of_4 = (bdt_of_bkg >= of_thr_wwz_3)                               & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
+            bdt_of_5 =                                (bdt_of_bkg < of_thr_zh_1)  & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
+            bdt_of_6 = (bdt_of_bkg >= of_thr_zh_1)  & (bdt_of_bkg < of_thr_zh_2)  & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
+            bdt_of_7 = (bdt_of_bkg >= of_thr_zh_2)  & (bdt_of_bkg < of_thr_zh_3)  & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
+            bdt_of_8 = (bdt_of_bkg >= of_thr_zh_3)                                & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
+            bdt_of_bin = ak.full_like(events.nom,-999)
+            bdt_of_bin = ak.where(bdt_of_1, 0, bdt_of_bin)
+            bdt_of_bin = ak.where(bdt_of_2, 1, bdt_of_bin)
+            bdt_of_bin = ak.where(bdt_of_3, 2, bdt_of_bin)
+            bdt_of_bin = ak.where(bdt_of_4, 3, bdt_of_bin)
+            bdt_of_bin = ak.where(bdt_of_5, 4, bdt_of_bin)
+            bdt_of_bin = ak.where(bdt_of_6, 5, bdt_of_bin)
+            bdt_of_bin = ak.where(bdt_of_7, 6, bdt_of_bin)
+            bdt_of_bin = ak.where(bdt_of_8, 7, bdt_of_bin)
 
-                # Calculating the masks for OF bins
-                bdt_of_1 =                                (bdt_of_bkg < of_thr_wwz_1) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
-                bdt_of_2 = (bdt_of_bkg >= of_thr_wwz_1) & (bdt_of_bkg < of_thr_wwz_2) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
-                bdt_of_3 = (bdt_of_bkg >= of_thr_wwz_2) & (bdt_of_bkg < of_thr_wwz_3) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
-                bdt_of_4 = (bdt_of_bkg >= of_thr_wwz_3)                               & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
-                bdt_of_5 =                                (bdt_of_bkg < of_thr_zh_1)  & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
-                bdt_of_6 = (bdt_of_bkg >= of_thr_zh_1)  & (bdt_of_bkg < of_thr_zh_2)  & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
-                bdt_of_7 = (bdt_of_bkg >= of_thr_zh_2)  & (bdt_of_bkg < of_thr_zh_3)  & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
-                bdt_of_8 = (bdt_of_bkg >= of_thr_zh_3)                                & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
-                bdt_of_bin = ak.full_like(events.nom,-999)
-                bdt_of_bin = ak.where(bdt_of_1, 0, bdt_of_bin)
-                bdt_of_bin = ak.where(bdt_of_2, 1, bdt_of_bin)
-                bdt_of_bin = ak.where(bdt_of_3, 2, bdt_of_bin)
-                bdt_of_bin = ak.where(bdt_of_4, 3, bdt_of_bin)
-                bdt_of_bin = ak.where(bdt_of_5, 4, bdt_of_bin)
-                bdt_of_bin = ak.where(bdt_of_6, 5, bdt_of_bin)
-                bdt_of_bin = ak.where(bdt_of_7, 6, bdt_of_bin)
-                bdt_of_bin = ak.where(bdt_of_8, 7, bdt_of_bin)
+            # Calculating the bins and computing bin index for each event
+            bdt_sf_1 =                                (bdt_sf_bkg < sf_thr_wwz_1) & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
+            bdt_sf_2 = (bdt_sf_bkg >= sf_thr_wwz_1) & (bdt_sf_bkg < sf_thr_wwz_2) & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
+            bdt_sf_3 = (bdt_sf_bkg >= sf_thr_wwz_2) & (bdt_sf_bkg < sf_thr_wwz_3) & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
+            bdt_sf_4 = (bdt_sf_bkg >= sf_thr_wwz_3)                               & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
+            bdt_sf_5 =                                (bdt_sf_bkg < sf_thr_zh_1)  & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
+            bdt_sf_6 = (bdt_sf_bkg >= sf_thr_zh_1)  & (bdt_sf_bkg < sf_thr_zh_2)  & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
+            bdt_sf_7 = (bdt_sf_bkg >= sf_thr_zh_2)  & (bdt_sf_bkg < sf_thr_zh_3)  & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
+            bdt_sf_8 = (bdt_sf_bkg >= sf_thr_zh_3)                                & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
+            bdt_sf_bin = ak.full_like(events.nom,-999)
+            bdt_sf_bin = ak.where(bdt_sf_1, 0, bdt_sf_bin)
+            bdt_sf_bin = ak.where(bdt_sf_2, 1, bdt_sf_bin)
+            bdt_sf_bin = ak.where(bdt_sf_3, 2, bdt_sf_bin)
+            bdt_sf_bin = ak.where(bdt_sf_4, 3, bdt_sf_bin)
+            bdt_sf_bin = ak.where(bdt_sf_5, 4, bdt_sf_bin)
+            bdt_sf_bin = ak.where(bdt_sf_6, 5, bdt_sf_bin)
+            bdt_sf_bin = ak.where(bdt_sf_7, 6, bdt_sf_bin)
+            bdt_sf_bin = ak.where(bdt_sf_8, 7, bdt_sf_bin)
 
-                # Calculating the bins and computing bin index for each event
-                bdt_sf_1 =                                (bdt_sf_bkg < sf_thr_wwz_1) & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
-                bdt_sf_2 = (bdt_sf_bkg >= sf_thr_wwz_1) & (bdt_sf_bkg < sf_thr_wwz_2) & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
-                bdt_sf_3 = (bdt_sf_bkg >= sf_thr_wwz_2) & (bdt_sf_bkg < sf_thr_wwz_3) & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
-                bdt_sf_4 = (bdt_sf_bkg >= sf_thr_wwz_3)                               & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
-                bdt_sf_5 =                                (bdt_sf_bkg < sf_thr_zh_1)  & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
-                bdt_sf_6 = (bdt_sf_bkg >= sf_thr_zh_1)  & (bdt_sf_bkg < sf_thr_zh_2)  & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
-                bdt_sf_7 = (bdt_sf_bkg >= sf_thr_zh_2)  & (bdt_sf_bkg < sf_thr_zh_3)  & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
-                bdt_sf_8 = (bdt_sf_bkg >= sf_thr_zh_3)                                & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
-                bdt_sf_bin = ak.full_like(events.nom,-999)
-                bdt_sf_bin = ak.where(bdt_sf_1, 0, bdt_sf_bin)
-                bdt_sf_bin = ak.where(bdt_sf_2, 1, bdt_sf_bin)
-                bdt_sf_bin = ak.where(bdt_sf_3, 2, bdt_sf_bin)
-                bdt_sf_bin = ak.where(bdt_sf_4, 3, bdt_sf_bin)
-                bdt_sf_bin = ak.where(bdt_sf_5, 4, bdt_sf_bin)
-                bdt_sf_bin = ak.where(bdt_sf_6, 5, bdt_sf_bin)
-                bdt_sf_bin = ak.where(bdt_sf_7, 6, bdt_sf_bin)
-                bdt_sf_bin = ak.where(bdt_sf_8, 7, bdt_sf_bin)
+            # Creating the event mask for BDT regions when split between WWZ vs. ZH
+            bdt_of_bin_wwz = (bdt_of_wwz_m_zh > 0)
+            bdt_of_bin_zh  = (bdt_of_wwz_m_zh <= 0)
+            bdt_sf_bin_wwz = (bdt_sf_wwz_m_zh > 0)
+            bdt_sf_bin_zh  = (bdt_sf_wwz_m_zh <= 0)
 
-                # Creating the event mask for BDT regions when split between WWZ vs. ZH
-                bdt_of_bin_wwz = (bdt_of_wwz_m_zh > 0)
-                bdt_of_bin_zh  = (bdt_of_wwz_m_zh <= 0)
-                bdt_sf_bin_wwz = (bdt_sf_wwz_m_zh > 0)
-                bdt_sf_bin_zh  = (bdt_sf_wwz_m_zh <= 0)
-
-                # Put the bdt variables into the dict of variables too
-                dense_variables_dict["bdt_of_wwz"]      = bdt_of_wwz
-                dense_variables_dict["bdt_sf_wwz"]      = bdt_sf_wwz
-                dense_variables_dict["bdt_of_zh"]       = bdt_of_zh
-                dense_variables_dict["bdt_sf_zh"]       = bdt_sf_zh
-                dense_variables_dict["bdt_of_bkg"]      = bdt_of_bkg
-                dense_variables_dict["bdt_sf_bkg"]      = bdt_sf_bkg
-                dense_variables_dict["bdt_of_wwz_m_zh"] = bdt_of_wwz_m_zh
-                dense_variables_dict["bdt_sf_wwz_m_zh"] = bdt_sf_wwz_m_zh
-                dense_variables_dict["bdt_of_bin"]      = bdt_of_bin
-                dense_variables_dict["bdt_sf_bin"]      = bdt_sf_bin
+            # Put the bdt variables into the dict of variables too
+            dense_variables_dict["bdt_of_wwz"]      = bdt_of_wwz
+            dense_variables_dict["bdt_sf_wwz"]      = bdt_sf_wwz
+            dense_variables_dict["bdt_of_zh"]       = bdt_of_zh
+            dense_variables_dict["bdt_sf_zh"]       = bdt_sf_zh
+            dense_variables_dict["bdt_of_bkg"]      = bdt_of_bkg
+            dense_variables_dict["bdt_sf_bkg"]      = bdt_sf_bkg
+            dense_variables_dict["bdt_of_wwz_m_zh"] = bdt_of_wwz_m_zh
+            dense_variables_dict["bdt_sf_wwz_m_zh"] = bdt_sf_wwz_m_zh
+            dense_variables_dict["bdt_of_bin"]      = bdt_of_bin
+            dense_variables_dict["bdt_sf_bin"]      = bdt_sf_bin
 
 
 
@@ -875,70 +871,70 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # For BDT SRs
 
-            if not is2022:
-                sr_4l_bdt_sf_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z)
-                sr_4l_bdt_sf_trn    = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & mt2_mask)
-                sr_4l_bdt_of_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)
-                sr_4l_bdt_of_trn    = sr_4l_bdt_of_presel # For OF, presel and trn regions are the same
-                selections.add("sr_4l_bdt_sf_presel", sr_4l_bdt_sf_presel)
-                selections.add("sr_4l_bdt_sf_trn"   , sr_4l_bdt_sf_trn)
-                selections.add("sr_4l_bdt_of_presel", sr_4l_bdt_of_presel)
-                selections.add("sr_4l_bdt_of_trn"   , sr_4l_bdt_of_trn)
+            sr_4l_bdt_sf_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z)
+            sr_4l_bdt_sf_trn    = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & mt2_mask)
+            sr_4l_bdt_of_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)
+            sr_4l_bdt_of_trn    = sr_4l_bdt_of_presel # For OF, presel and trn regions are the same
 
-                selections.add("sr_4l_bdt_sf_1", (sr_4l_bdt_sf_trn & bdt_sf_1))
-                selections.add("sr_4l_bdt_sf_2", (sr_4l_bdt_sf_trn & bdt_sf_2))
-                selections.add("sr_4l_bdt_sf_3", (sr_4l_bdt_sf_trn & bdt_sf_3))
-                selections.add("sr_4l_bdt_sf_4", (sr_4l_bdt_sf_trn & bdt_sf_4))
-                selections.add("sr_4l_bdt_sf_5", (sr_4l_bdt_sf_trn & bdt_sf_5))
-                selections.add("sr_4l_bdt_sf_6", (sr_4l_bdt_sf_trn & bdt_sf_6))
-                selections.add("sr_4l_bdt_sf_7", (sr_4l_bdt_sf_trn & bdt_sf_7))
-                selections.add("sr_4l_bdt_sf_8", (sr_4l_bdt_sf_trn & bdt_sf_8))
+            selections.add("sr_4l_bdt_sf_presel", sr_4l_bdt_sf_presel)
+            selections.add("sr_4l_bdt_sf_trn"   , sr_4l_bdt_sf_trn)
+            selections.add("sr_4l_bdt_of_presel", sr_4l_bdt_of_presel)
+            selections.add("sr_4l_bdt_of_trn"   , sr_4l_bdt_of_trn)
 
-                selections.add("sr_4l_bdt_of_1", (sr_4l_bdt_of_trn & bdt_of_1))
-                selections.add("sr_4l_bdt_of_2", (sr_4l_bdt_of_trn & bdt_of_2))
-                selections.add("sr_4l_bdt_of_3", (sr_4l_bdt_of_trn & bdt_of_3))
-                selections.add("sr_4l_bdt_of_4", (sr_4l_bdt_of_trn & bdt_of_4))
-                selections.add("sr_4l_bdt_of_5", (sr_4l_bdt_of_trn & bdt_of_5))
-                selections.add("sr_4l_bdt_of_6", (sr_4l_bdt_of_trn & bdt_of_6))
-                selections.add("sr_4l_bdt_of_7", (sr_4l_bdt_of_trn & bdt_of_7))
-                selections.add("sr_4l_bdt_of_8", (sr_4l_bdt_of_trn & bdt_of_8))
+            selections.add("sr_4l_bdt_sf_1", (sr_4l_bdt_sf_trn & bdt_sf_1))
+            selections.add("sr_4l_bdt_sf_2", (sr_4l_bdt_sf_trn & bdt_sf_2))
+            selections.add("sr_4l_bdt_sf_3", (sr_4l_bdt_sf_trn & bdt_sf_3))
+            selections.add("sr_4l_bdt_sf_4", (sr_4l_bdt_sf_trn & bdt_sf_4))
+            selections.add("sr_4l_bdt_sf_5", (sr_4l_bdt_sf_trn & bdt_sf_5))
+            selections.add("sr_4l_bdt_sf_6", (sr_4l_bdt_sf_trn & bdt_sf_6))
+            selections.add("sr_4l_bdt_sf_7", (sr_4l_bdt_sf_trn & bdt_sf_7))
+            selections.add("sr_4l_bdt_sf_8", (sr_4l_bdt_sf_trn & bdt_sf_8))
 
-                selections.add("sr_4l_bdt_of_wwz", (sr_4l_bdt_of_trn & bdt_of_bin_wwz))
-                selections.add("sr_4l_bdt_of_zh" , (sr_4l_bdt_of_trn & bdt_of_bin_zh))
-                selections.add("sr_4l_bdt_sf_wwz", (sr_4l_bdt_sf_trn & bdt_sf_bin_wwz))
-                selections.add("sr_4l_bdt_sf_zh" , (sr_4l_bdt_sf_trn & bdt_sf_bin_zh))
+            selections.add("sr_4l_bdt_of_1", (sr_4l_bdt_of_trn & bdt_of_1))
+            selections.add("sr_4l_bdt_of_2", (sr_4l_bdt_of_trn & bdt_of_2))
+            selections.add("sr_4l_bdt_of_3", (sr_4l_bdt_of_trn & bdt_of_3))
+            selections.add("sr_4l_bdt_of_4", (sr_4l_bdt_of_trn & bdt_of_4))
+            selections.add("sr_4l_bdt_of_5", (sr_4l_bdt_of_trn & bdt_of_5))
+            selections.add("sr_4l_bdt_of_6", (sr_4l_bdt_of_trn & bdt_of_6))
+            selections.add("sr_4l_bdt_of_7", (sr_4l_bdt_of_trn & bdt_of_7))
+            selections.add("sr_4l_bdt_of_8", (sr_4l_bdt_of_trn & bdt_of_8))
 
-                bdt_sr_names = [
-                    "sr_4l_bdt_sf_1",
-                    "sr_4l_bdt_sf_2",
-                    "sr_4l_bdt_sf_3",
-                    "sr_4l_bdt_sf_4",
-                    "sr_4l_bdt_sf_5",
-                    "sr_4l_bdt_sf_6",
-                    "sr_4l_bdt_sf_7",
-                    "sr_4l_bdt_sf_8",
+            selections.add("sr_4l_bdt_of_wwz", (sr_4l_bdt_of_trn & bdt_of_bin_wwz))
+            selections.add("sr_4l_bdt_of_zh" , (sr_4l_bdt_of_trn & bdt_of_bin_zh))
+            selections.add("sr_4l_bdt_sf_wwz", (sr_4l_bdt_sf_trn & bdt_sf_bin_wwz))
+            selections.add("sr_4l_bdt_sf_zh" , (sr_4l_bdt_sf_trn & bdt_sf_bin_zh))
 
-                    "sr_4l_bdt_of_1",
-                    "sr_4l_bdt_of_2",
-                    "sr_4l_bdt_of_3",
-                    "sr_4l_bdt_of_4",
-                    "sr_4l_bdt_of_5",
-                    "sr_4l_bdt_of_6",
-                    "sr_4l_bdt_of_7",
-                    "sr_4l_bdt_of_8",
+            bdt_sr_names = [
+                "sr_4l_bdt_sf_1",
+                "sr_4l_bdt_sf_2",
+                "sr_4l_bdt_sf_3",
+                "sr_4l_bdt_sf_4",
+                "sr_4l_bdt_sf_5",
+                "sr_4l_bdt_sf_6",
+                "sr_4l_bdt_sf_7",
+                "sr_4l_bdt_sf_8",
 
-                    "sr_4l_bdt_sf_wwz",
-                    "sr_4l_bdt_sf_zh",
+                "sr_4l_bdt_of_1",
+                "sr_4l_bdt_of_2",
+                "sr_4l_bdt_of_3",
+                "sr_4l_bdt_of_4",
+                "sr_4l_bdt_of_5",
+                "sr_4l_bdt_of_6",
+                "sr_4l_bdt_of_7",
+                "sr_4l_bdt_of_8",
 
-                    "sr_4l_bdt_of_wwz",
-                    "sr_4l_bdt_of_zh",
-                ]
-                bdt_misc_names = [
-                    "sr_4l_bdt_sf_presel",
-                    "sr_4l_bdt_sf_trn",
-                    "sr_4l_bdt_of_presel",
-                    "sr_4l_bdt_of_trn",
-                ]
+                "sr_4l_bdt_sf_wwz",
+                "sr_4l_bdt_sf_zh",
+
+                "sr_4l_bdt_of_wwz",
+                "sr_4l_bdt_of_zh",
+            ]
+            bdt_misc_names = [
+                "sr_4l_bdt_sf_presel",
+                "sr_4l_bdt_sf_trn",
+                "sr_4l_bdt_of_presel",
+                "sr_4l_bdt_of_trn",
+            ]
 
             cat_dict = {
                 "lep_chan_lst" : [
@@ -948,19 +944,17 @@ class AnalysisProcessor(processor.ProcessorABC):
                 ]
             }
 
-            if not is2022:
-                cat_dict["lep_chan_lst"] = cat_dict["lep_chan_lst"] + bdt_sr_names + bdt_misc_names
+            cat_dict["lep_chan_lst"] = cat_dict["lep_chan_lst"] + bdt_sr_names + bdt_misc_names
 
             ######### Fill histos #########
 
             # List the hists that are only defined for some categories
-            analysis_cats = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
-            if not is2022:
-                analysis_cats = analysis_cats + bdt_sr_names
+            analysis_cats = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"] + bdt_sr_names
+
             exclude_var_dict = {
                 "mt2" : ["all_events"],
                 "ptl4" : ["all_events"],
-                "j0pt" : ["all_events", "4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf"] + analysis_cats,
+                "j0pt" : ["all_events", "4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf"] + analysis_cats + bdt_misc_names,
                 "l0pt" : ["all_events"],
                 "mll_01" : ["all_events"],
                 "mllll" : ["all_events"],
@@ -1012,22 +1006,19 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mll_min_afos" : ["all_events"],
                 "mll_min_sfos" : ["all_events"],
 
-                "mlb_min" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf"] + analysis_cats,
-                "mlb_max" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf"] + analysis_cats,
-            }
+                "mlb_min" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf"] + analysis_cats + bdt_misc_names,
+                "mlb_max" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf"] + analysis_cats + bdt_misc_names,
 
-            if not is2022:
-                exclude_var_dict["bdt_of_wwz"] = ["all_events"]
-                exclude_var_dict["bdt_sf_wwz"] = ["all_events"]
-                exclude_var_dict["bdt_of_zh"] = ["all_events"]
-                exclude_var_dict["bdt_sf_zh"] = ["all_events"]
-                exclude_var_dict["bdt_of_bkg"] = ["all_events"]
-                exclude_var_dict["bdt_sf_bkg"] = ["all_events"]
-                exclude_var_dict["bdt_of_wwz_m_zh"] = ["all_events"]
-                exclude_var_dict["bdt_sf_wwz_m_zh"] = ["all_events"]
-                exclude_var_dict["j0pt"] = exclude_var_dict["j0pt"] + bdt_misc_names
-                exclude_var_dict["mlb_max"] = exclude_var_dict["mlb_max"] + bdt_misc_names
-                exclude_var_dict["mlb_min"] = exclude_var_dict["mlb_min"] + bdt_misc_names
+                "bdt_of_wwz"      : ["all_events"],
+                "bdt_sf_wwz"      : ["all_events"],
+                "bdt_of_zh"       : ["all_events"],
+                "bdt_sf_zh"       : ["all_events"],
+                "bdt_of_bkg"      : ["all_events"],
+                "bdt_sf_bkg"      : ["all_events"],
+                "bdt_of_wwz_m_zh" : ["all_events"],
+                "bdt_sf_wwz_m_zh" : ["all_events"],
+
+            }
 
             # Set up the list of weight fluctuations to loop over
             # For now the syst do not depend on the category, so we can figure this out outside of the filling loop
@@ -1108,15 +1099,15 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Fill the list accumulator
             if self._siphon_bdt_data:
                 for chan,mask in {"of": sr_4l_bdt_of_trn, "sf": sr_4l_bdt_sf_trn}.items():
-                    self.accumulator[f"bdt_{chan}_wwz_list"]  += dense_variables_dict[f"bdt_{chan}_wwz"][mask].to_list()
-                    self.accumulator[f"bdt_{chan}_zh_list"]   += dense_variables_dict[f"bdt_{chan}_zh"][mask].to_list()
-                    self.accumulator[f"bdt_{chan}_bkg_list"]  += dense_variables_dict[f"bdt_{chan}_bkg"][mask].to_list()
-                    self.accumulator[f"bdt_{chan}_evt_list"]  += events.event[mask].to_list()
-                    self.accumulator[f"bdt_{chan}_wgt_list"]  += weights_obj_base_for_kinematic_syst.weight(None)[mask]
-                    self.accumulator[f"bdt_{chan}_proc_list"] += [histAxisName] * len(dense_variables_dict[f"bdt_{chan}_bkg"][mask])
+                    self.accumulator[f"list_bdt_{chan}_wwz"]  += dense_variables_dict[f"bdt_{chan}_wwz"][mask].to_list()
+                    self.accumulator[f"list_bdt_{chan}_zh"]   += dense_variables_dict[f"bdt_{chan}_zh"][mask].to_list()
+                    self.accumulator[f"list_bdt_{chan}_bkg"]  += dense_variables_dict[f"bdt_{chan}_bkg"][mask].to_list()
+                    self.accumulator[f"list_bdt_{chan}_evt"]  += events.event[mask].to_list()
+                    self.accumulator[f"list_bdt_{chan}_wgt"]  += weights_obj_base_for_kinematic_syst.weight(None)[mask]
+                    self.accumulator[f"list_bdt_{chan}_proc"] += [histAxisName] * len(dense_variables_dict[f"bdt_{chan}_bkg"][mask])
                     for ivar, var in enumerate(get_ec_param(f"{chan}_bdt_var_lst")):
-                        if chan == "of": self.accumulator[f"{chan}_bdt_{var}"] += bdt_vars_of_wwz[ivar][mask]
-                        if chan == "sf": self.accumulator[f"{chan}_bdt_{var}"] += bdt_vars_sf_wwz[ivar][mask]
+                        if chan == "of": self.accumulator[f"list_{chan}_bdt_{var}"] += bdt_vars_of_wwz[ivar][mask]
+                        if chan == "sf": self.accumulator[f"list_{chan}_bdt_{var}"] += bdt_vars_sf_wwz[ivar][mask]
 
         return self.accumulator
 
