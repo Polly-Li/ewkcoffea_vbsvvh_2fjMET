@@ -16,8 +16,11 @@
 ### Examples with 4l skims configs ###
 
 # Run at scale with futures
-# time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim.cfg -x futures -n 200 -s 100000000 -o wwz_histos --hist-list few
-# time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim.cfg -x futures -n 200 -s 100000000 -o wwz_histos --hist-list njets --do-systs
+#time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim.cfg -x futures -n 200 -s 100000000 -o wwz_histos --hist-list few
+#time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim.cfg -x futures -n 200 -s 100000000 -o wwz_histos --hist-list njets --do-systs
+
+# Run with the siphon turned on (might want to comment out data in the input cfg)
+#time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim.cfg -x futures -n 64 -s 100000000 -o wwz_histos_siphon
 
 # Run at scale with wq
 #time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim.cfg -o wwz_histos_noSys --hist-list bdt
