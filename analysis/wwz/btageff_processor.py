@@ -52,17 +52,18 @@ class AnalysisProcessor(processor.ProcessorABC):
     def process(self, events):
 
         # Dataset parameters
-        dataset = events.metadata["dataset"]
+        json_name = events.metadata["dataset"]
+        #dataset = events.metadata["dataset"]
 
-        isData             = self._samples[dataset]["isData"]
-        histAxisName       = self._samples[dataset]["histAxisName"]
-        year               = self._samples[dataset]["year"]
-        xsec               = self._samples[dataset]["xsec"]
-        sow                = self._samples[dataset]["nSumOfWeights"]
+        isData             = self._samples[json_name]["isData"]
+        histAxisName       = self._samples[json_name]["histAxisName"]
+        year               = self._samples[json_name]["year"]
+        xsec               = self._samples[json_name]["xsec"]
+        sow                = self._samples[json_name]["nSumOfWeights"]
 
         # Set a flag if this is a 2022 year
         is2022 = year in ["2022","2022EE"]
-        is2022 = year in ["2023","2023BPix"]
+        is2023 = year in ["2023","2023BPix"]
 
         # If this is a 2022 sample, get the era info
         if isData and is2022:
