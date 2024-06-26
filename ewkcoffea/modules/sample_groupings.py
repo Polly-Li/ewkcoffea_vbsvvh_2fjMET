@@ -170,7 +170,6 @@ SAMPLE_DICT_BASE_RUN3 = {
         "VHnobb",
         "WJetsToLNu",
         "WWTo2L2Nu",
-        "WZTo3LNu",
 
         "WWW",
         "WZZ",
