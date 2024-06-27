@@ -18,26 +18,26 @@ def prepare_bdt_training_data(pklfilepath):
     # At this point I do wonder whether the following should be in the params.json
     # (N.B. there is also a copy of this in the processor)
     list_output_names = [
-        "bdt_of_wwz_list",
-        "bdt_of_zh_list",
-        "bdt_of_bkg_list",
-        "bdt_of_proc_list",
-        "bdt_of_wgt_list",
-        "bdt_of_evt_list",
-        "bdt_sf_wwz_list",
-        "bdt_sf_zh_list",
-        "bdt_sf_bkg_list",
-        "bdt_sf_proc_list",
-        "bdt_sf_wgt_list",
-        "bdt_sf_evt_list",
+        "list_bdt_of_wwz",
+        "list_bdt_of_zh",
+        "list_bdt_of_bkg",
+        "list_bdt_of_proc",
+        "list_bdt_of_wgt",
+        "list_bdt_of_evt",
+        "list_bdt_sf_wwz",
+        "list_bdt_sf_zh",
+        "list_bdt_sf_bkg",
+        "list_bdt_sf_proc",
+        "list_bdt_sf_wgt",
+        "list_bdt_sf_evt",
     ]
 
     get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
 
     # Parse the pickle file and store to myd as numpy arrays
     for list_output_name in list_output_names: myd[list_output_name] = np.array(d[list_output_name])
-    for var in get_ec_param("of_bdt_var_lst"): myd["of_bdt_" + var] = np.array(d["of_bdt_" + var])
-    for var in get_ec_param("sf_bdt_var_lst"): myd["sf_bdt_" + var] = np.array(d["sf_bdt_" + var])
+    for var in get_ec_param("of_bdt_var_lst"): myd["of_bdt_" + var] = np.array(d["list_of_bdt_" + var])
+    for var in get_ec_param("sf_bdt_var_lst"): myd["sf_bdt_" + var] = np.array(d["list_sf_bdt_" + var])
 
     # Sample groupings to split the data into signals, and backgrounds
     sample_dict_mc = sg.create_mc_sample_dict("run2")
@@ -98,7 +98,7 @@ def prepare_bdt_training_data(pklfilepath):
 
                 # Get more variables for this sample_name
                 # masking is done via "bdt_of/sf_proc_list" which holds sample_name (that is how it was saved in wwz4l.py)
-                b = myd[bdt_vname][myd["bdt_of_proc_list"] == sample_name]
+                b = myd[bdt_vname][myd["list_bdt_of_proc"] == sample_name]
 
                 # Concatenate
                 c = np.concatenate((a, b))
@@ -107,15 +107,15 @@ def prepare_bdt_training_data(pklfilepath):
                 bdt_data[proc_cat]["all"][bdt_vname] = c
 
             # We need to save weights as well
-            bdt_data[proc_cat]["all"]["of_bdt_weight"] = np.concatenate((bdt_data[proc_cat]["all"]["of_bdt_weight"], myd["bdt_of_wgt_list"][myd["bdt_of_proc_list"] == sample_name]))
+            bdt_data[proc_cat]["all"]["of_bdt_weight"] = np.concatenate((bdt_data[proc_cat]["all"]["of_bdt_weight"], myd["list_bdt_of_wgt"][myd["list_bdt_of_proc"] == sample_name]))
 
             # We need to save event numbers as well
-            bdt_data[proc_cat]["all"]["of_bdt_event"] = np.concatenate((bdt_data[proc_cat]["all"]["of_bdt_event"], myd["bdt_of_evt_list"][myd["bdt_of_proc_list"] == sample_name]))
+            bdt_data[proc_cat]["all"]["of_bdt_event"] = np.concatenate((bdt_data[proc_cat]["all"]["of_bdt_event"], myd["list_bdt_of_evt"][myd["list_bdt_of_proc"] == sample_name]))
 
             # We need to save tmva variables as well
-            bdt_data[proc_cat]["all"]["tmva_bdt_of_wwz"] = np.concatenate((bdt_data[proc_cat]["all"]["tmva_bdt_of_wwz"], myd["bdt_of_wwz_list"][myd["bdt_of_proc_list"] == sample_name]))
-            bdt_data[proc_cat]["all"]["tmva_bdt_of_zh"] = np.concatenate((bdt_data[proc_cat]["all"]["tmva_bdt_of_zh"], myd["bdt_of_zh_list"][myd["bdt_of_proc_list"] == sample_name]))
-            bdt_data[proc_cat]["all"]["tmva_bdt_of_bkg"] = np.concatenate((bdt_data[proc_cat]["all"]["tmva_bdt_of_bkg"], myd["bdt_of_bkg_list"][myd["bdt_of_proc_list"] == sample_name]))
+            bdt_data[proc_cat]["all"]["tmva_bdt_of_wwz"] = np.concatenate((bdt_data[proc_cat]["all"]["tmva_bdt_of_wwz"], myd["list_bdt_of_wwz"][myd["list_bdt_of_proc"] == sample_name]))
+            bdt_data[proc_cat]["all"]["tmva_bdt_of_zh"] = np.concatenate((bdt_data[proc_cat]["all"]["tmva_bdt_of_zh"], myd["list_bdt_of_zh"][myd["list_bdt_of_proc"] == sample_name]))
+            bdt_data[proc_cat]["all"]["tmva_bdt_of_bkg"] = np.concatenate((bdt_data[proc_cat]["all"]["tmva_bdt_of_bkg"], myd["list_bdt_of_bkg"][myd["list_bdt_of_proc"] == sample_name]))
 
             # Processing OF BDT inputs
             for var in get_ec_param("sf_bdt_var_lst"):
@@ -127,7 +127,7 @@ def prepare_bdt_training_data(pklfilepath):
 
                 # Get more variables for this sample_name
                 # masking is done via "bdt_sf/sf_proc_list" which holds sample_name (that is how it was saved in wwz4l.py)
-                b = myd[bdt_vname][myd["bdt_sf_proc_list"] == sample_name]
+                b = myd[bdt_vname][myd["list_bdt_sf_proc"] == sample_name]
 
                 # Concatenate
                 c = np.concatenate((a, b))
@@ -136,15 +136,15 @@ def prepare_bdt_training_data(pklfilepath):
                 bdt_data[proc_cat]["all"][bdt_vname] = c
 
             # We need to save weights as well
-            bdt_data[proc_cat]["all"]["sf_bdt_weight"] = np.concatenate((bdt_data[proc_cat]["all"]["sf_bdt_weight"], myd["bdt_sf_wgt_list"][myd["bdt_sf_proc_list"] == sample_name]))
+            bdt_data[proc_cat]["all"]["sf_bdt_weight"] = np.concatenate((bdt_data[proc_cat]["all"]["sf_bdt_weight"], myd["list_bdt_sf_wgt"][myd["list_bdt_sf_proc"] == sample_name]))
 
             # We need to save event numbers as well
-            bdt_data[proc_cat]["all"]["sf_bdt_event"] = np.concatenate((bdt_data[proc_cat]["all"]["sf_bdt_event"], myd["bdt_sf_evt_list"][myd["bdt_sf_proc_list"] == sample_name]))
+            bdt_data[proc_cat]["all"]["sf_bdt_event"] = np.concatenate((bdt_data[proc_cat]["all"]["sf_bdt_event"], myd["list_bdt_sf_evt"][myd["list_bdt_sf_proc"] == sample_name]))
 
             # We need to save tmva variables as well
-            bdt_data[proc_cat]["all"]["tmva_bdt_sf_wwz"] = np.concatenate((bdt_data[proc_cat]["all"]["tmva_bdt_sf_wwz"], myd["bdt_sf_wwz_list"][myd["bdt_sf_proc_list"] == sample_name]))
-            bdt_data[proc_cat]["all"]["tmva_bdt_sf_zh"] = np.concatenate((bdt_data[proc_cat]["all"]["tmva_bdt_sf_zh"], myd["bdt_sf_zh_list"][myd["bdt_sf_proc_list"] == sample_name]))
-            bdt_data[proc_cat]["all"]["tmva_bdt_sf_bkg"] = np.concatenate((bdt_data[proc_cat]["all"]["tmva_bdt_sf_bkg"], myd["bdt_sf_bkg_list"][myd["bdt_sf_proc_list"] == sample_name]))
+            bdt_data[proc_cat]["all"]["tmva_bdt_sf_wwz"] = np.concatenate((bdt_data[proc_cat]["all"]["tmva_bdt_sf_wwz"], myd["list_bdt_sf_wwz"][myd["list_bdt_sf_proc"] == sample_name]))
+            bdt_data[proc_cat]["all"]["tmva_bdt_sf_zh"] = np.concatenate((bdt_data[proc_cat]["all"]["tmva_bdt_sf_zh"], myd["list_bdt_sf_zh"][myd["list_bdt_sf_proc"] == sample_name]))
+            bdt_data[proc_cat]["all"]["tmva_bdt_sf_bkg"] = np.concatenate((bdt_data[proc_cat]["all"]["tmva_bdt_sf_bkg"], myd["list_bdt_sf_bkg"][myd["list_bdt_sf_proc"] == sample_name]))
 
     # Split the testing and training by event number (even event number vs. odd event number)
     for cat in categories:
