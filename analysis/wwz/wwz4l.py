@@ -222,7 +222,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Get name for MC cases too, since "dataset" is passed to overlap removal function in all cases (though it's not actually used in the MC case)
         dataset = json_name.split('_')[0]
         if isData:
-            datasets = ["SingleMuon", "SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG","Muon"]
+            datasets = ["SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG","Muon"]
             if dataset not in datasets:
                 raise Exception("ERROR: Unexpected dataset name for data file.")
 
@@ -526,9 +526,8 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Pass trigger mask
             pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=era)
-            # Skip trigger matching requirementmes for R3 for now
-            if not (is2022 or is2023):
-                pass_trg = (pass_trg & es_ec.trg_matching(events,year))
+            # if not (is2022 or is2023):
+            pass_trg = (pass_trg & es_ec.trg_matching(events,year))
 
             # b jet masks
             bmask_atleast1med_atleast2loose = ((nbtagsm>=1)&(nbtagsl>=2)) # Used for 2lss and 4l
