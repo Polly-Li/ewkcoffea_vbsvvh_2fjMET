@@ -178,7 +178,7 @@ SAMPLE_DICT_BASE_RUN3 = {
 }
 
 # Processes indiviudally
-SAMPLE_DICT_BASE_INDIV = {
+SAMPLE_DICT_BASE_INDIV_RUN2 = {
     "WWZJetsTo4L2Nu":            ["WWZJetsTo4L2Nu"],
     "GluGluZH":                  ["GluGluZH"],
     "qqToZHToZTo2L":             ["qqToZHToZTo2L"],
@@ -259,7 +259,7 @@ SAMPLE_DICT_BASE_INDIV_RUN3 = {
 ######################## Tools ########################
 
 # Pass dictionary with the base names for the samples, and return with full list for 4 years
-def create_mc_sample_dict(year):
+def create_mc_sample_dict(year,yld_individual=False):
     out_dict = {}
     r2_years = ["UL16APV","UL16","UL17","UL18"]
     r3_years = ["2022","2022EE"]
@@ -268,15 +268,19 @@ def create_mc_sample_dict(year):
     elif year == "run2":
         years = r2_years
         sample_dict_base = SAMPLE_DICT_BASE_RUN2
+        if yld_individual: sample_dict_base = SAMPLE_DICT_BASE_INDIV_RUN2 # If we want individual not grouped yields
     elif year == "run3":
         years = r3_years
         sample_dict_base = SAMPLE_DICT_BASE_RUN3
+        if yld_individual: sample_dict_base = SAMPLE_DICT_BASE_INDIV_RUN3 # If we want individual not grouped yields
     else:
         years = [year]
         if year in r2_years:
             sample_dict_base = SAMPLE_DICT_BASE_RUN2
+            if yld_individual: sample_dict_base = SAMPLE_DICT_BASE_INDIV_RUN2 # If we want individual not grouped yields
         elif year in r3_years:
             sample_dict_base = SAMPLE_DICT_BASE_RUN3
+            if yld_individual: sample_dict_base = SAMPLE_DICT_BASE_INDIV_RUN3 # If we want individual not grouped yields
         else:
             raise Exception(f"ERROR: Unrecognized year \"{year}\". Exiting.")
 

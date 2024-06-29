@@ -232,7 +232,7 @@ def put_cat_col_sums(yld_dict,sr_sf_lst,sr_of_lst,metrics_names_lst=["Zmetric",S
 
 
 # Print yields
-def print_yields(ul_year,yld_dict_in,cats_to_print,procs_to_print,ref_dict=yd.EWK_REF_NOSF,print_fom=True,hlines=[]):
+def print_yields(yld_dict_in,cats_to_print,procs_to_print,do_comp=True,ref_dict=yd.EWK_REF_NOSF,print_fom=True,hlines=[]):
 
     # Get err from var
     def get_err_from_var(in_dict):
@@ -247,7 +247,7 @@ def print_yields(ul_year,yld_dict_in,cats_to_print,procs_to_print,ref_dict=yd.EW
 
     yld_dict = get_err_from_var(yld_dict_in)
 
-    # Print the yields directly
+    # Print the yields directly c|cc|cc|ccc
     mlt.print_latex_yield_table(
         yld_dict,
         tag="All yields",
@@ -258,9 +258,8 @@ def print_yields(ul_year,yld_dict_in,cats_to_print,procs_to_print,ref_dict=yd.EW
         print_errs=True,
         column_variable="subkeys",
         size="tiny",
-        hz_line_lst=[6],
     )
-    #exit()
+    if not do_comp: return
 
     ### Compare with other yields, print comparison ###
 
@@ -912,7 +911,14 @@ def main():
     # Wrapper around the code for getting the yields for sr and bkg samples
     if args.get_yields:
 
-        # Get the yield dict and put the extra columns and rows into it
+        # Directly dump the individual yields for all processes
+        sample_dict_mc_indiv = sg.create_mc_sample_dict(args.ul_year,yld_individual=True)
+        yld_dict_mc_indiv = get_yields(histo_dict,sample_dict_mc_indiv,quiet=True)
+        cats_to_print = ["sr_4l_sf", "sr_4l_of", "sr_4l_bdt_sf_trn","sr_4l_bdt_of_trn", "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]
+        print_yields(yld_dict_mc_indiv,cats_to_print,procs_to_print=yld_dict_mc_indiv.keys(),do_comp=False)
+        #exit()
+
+        # Get the grouped yield dict and put the extra columns and rows into it
         yld_dict = get_yields(histo_dict,sample_dict_mc)
         put_proc_row_sums(yld_dict, SR_SF_CB+SR_OF_CB)
         put_cat_col_sums(yld_dict, sr_sf_lst=SR_SF_CB, sr_of_lst=SR_OF_CB, tag="_cutbased")
@@ -927,20 +933,13 @@ def main():
         sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
         #sr_cats_to_print = ["sr_sf_all_cutbased" , "sr_of_all_cutbased" , "sr_all_cutbased" , "sr_4l_sf_presel" , "sr_4l_sf_trn" , "sr_4l_of_presel"] # Preselection SR categories
         procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
-        print_yields(args.ul_year,yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines,ref_dict=yd.EWK_REF) # Or e.g. for 2022 comp use yd.EWK_REF_2022
+        print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines,ref_dict=yd.EWK_REF) # Or e.g. for 2022 comp use yd.EWK_REF_2022
 
         # Dump latex table for BDT
         #hlines = [7,8,16,17]
         #sr_cats_to_print = SR_SF_BDT + ["sr_sf_all_bdt"] + SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"]
         #procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
-        #print_yields(args.ul_year,yld_dict,sr_cats_to_print,procs_to_print,ref_dict=yd.EWK_REF,hlines=hlines)
-
-        # Compare BDT yields against Keegan ref yields
-        #keegan_ref = utils.put_none_errs(copy.deepcopy(yd.KEEGAN_BDT_YLDS))
-        #sr_cats_to_print = SR_SF_BDT + SR_OF_BDT
-        #procs_to_print = ["WWZ","ZH","ZZ","ttZ","tWZ","WZ","other"]
-        #print_yields(args.ul_year,yld_dict,sr_cats_to_print,procs_to_print,ref_dict=keegan_ref,print_fom=False)
-
+        #print_yields(yld_dict,sr_cats_to_print,procs_to_print,ref_dict=yd.EWK_REF,hlines=hlines)
 
         # Dump yield dict to json
         json_name = "process_yields.json" # Could be an argument
