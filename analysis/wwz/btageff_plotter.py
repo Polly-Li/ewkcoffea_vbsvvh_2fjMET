@@ -70,7 +70,7 @@ def main():
     args = parser.parse_args()
 
     year = args.ul_year
-    
+
 
     # Get the counts from the input hiso
     histo = pickle.load(gzip.open(args.pkl_file_path))["ptabseta"]

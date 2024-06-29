@@ -81,7 +81,6 @@ dataset_dict = {
             "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8",
         ],
         "MuonEG" : [
-#            "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL",
             "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
             "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ",
         ]
