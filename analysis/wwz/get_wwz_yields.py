@@ -924,7 +924,7 @@ def main():
         # Dump latex table of the individual yields for all processes
         sample_dict_mc_indiv = sg.create_mc_sample_dict(args.ul_year,yld_individual=True)
         yld_dict_mc_indiv = get_yields(histo_dict,sample_dict_mc_indiv,quiet=True)
-        cats_to_print = ["sr_4l_sf", "sr_4l_of", "sr_4l_bdt_sf_trn","sr_4l_bdt_of_trn", "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]
+        cats_to_print = ["sr_4l_of", "sr_4l_sf", "sr_4l_bdt_of_trn","sr_4l_bdt_sf_trn", "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]
         print_yields(yld_dict_mc_indiv,cats_to_print,procs_to_print=yld_dict_mc_indiv.keys(),do_comp=False)
         #exit()
 
@@ -935,7 +935,7 @@ def main():
         #sr_cats_to_print = sg.SR_SF_CB + ["sr_sf_all_cutbased"] + sg.SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"] + sg.SR_SF_BDT + ["sr_sf_all_bdt"] + sg.SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"] + ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]
         procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg"]
         print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines,ref_dict=yd.EWK_REF) # Or e.g. for 2022 comp use yd.EWK_REF_2022
-        exit()
+        #exit()
 
         # Dump latex table for cut based
         hlines = [2,3,7,8]
