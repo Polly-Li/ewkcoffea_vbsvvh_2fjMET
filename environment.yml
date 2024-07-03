@@ -12,3 +12,5 @@ dependencies:
   - git
   - pyyaml
   - conda-forge::root
+  - mpltern
+  - scikit-learn

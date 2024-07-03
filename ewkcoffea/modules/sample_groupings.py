@@ -7,12 +7,15 @@ PROC_LST = ["WWZ","ZH","ZZ","ttZ","tWZ","WZ","other"]
 SIG_LST = ["WWZ","ZH"]
 BKG_LST = ["ZZ","ttZ","tWZ","WZ","other"]
 
-CAT_LST_CB = ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C", "sr_4l_of_1", "sr_4l_of_2", "sr_4l_of_3", "sr_4l_of_4"]
+SR_SF_CB = ["sr_4l_sf_A", "sr_4l_sf_B", "sr_4l_sf_C"]
+SR_OF_CB = ["sr_4l_of_1", "sr_4l_of_2", "sr_4l_of_3", "sr_4l_of_4"]
+CAT_LST_CB = SR_SF_CB + SR_OF_CB
 
 SR_SF_BDT = ["sr_4l_bdt_sf_1", "sr_4l_bdt_sf_2", "sr_4l_bdt_sf_3", "sr_4l_bdt_sf_4", "sr_4l_bdt_sf_5", "sr_4l_bdt_sf_6", "sr_4l_bdt_sf_7", "sr_4l_bdt_sf_8"]
 SR_OF_BDT = ["sr_4l_bdt_of_1", "sr_4l_bdt_of_2", "sr_4l_bdt_of_3", "sr_4l_bdt_of_4", "sr_4l_bdt_of_5", "sr_4l_bdt_of_6", "sr_4l_bdt_of_7", "sr_4l_bdt_of_8"]
 CAT_LST_BDT = SR_SF_BDT + SR_OF_BDT
 
+CAT_LST_CR = ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]
 
 ######################## Dictionaries ########################
 
@@ -170,7 +173,6 @@ SAMPLE_DICT_BASE_RUN3 = {
         "VHnobb",
         "WJetsToLNu",
         "WWTo2L2Nu",
-        "WZTo3LNu",
 
         "WWW",
         "WZZ",
@@ -179,7 +181,7 @@ SAMPLE_DICT_BASE_RUN3 = {
 }
 
 # Processes indiviudally
-SAMPLE_DICT_BASE_INDIV = {
+SAMPLE_DICT_BASE_INDIV_RUN2 = {
     "WWZJetsTo4L2Nu":            ["WWZJetsTo4L2Nu"],
     "GluGluZH":                  ["GluGluZH"],
     "qqToZHToZTo2L":             ["qqToZHToZTo2L"],
@@ -260,7 +262,7 @@ SAMPLE_DICT_BASE_INDIV_RUN3 = {
 ######################## Tools ########################
 
 # Pass dictionary with the base names for the samples, and return with full list for 4 years
-def create_mc_sample_dict(year):
+def create_mc_sample_dict(year,yld_individual=False):
     out_dict = {}
     r2_years = ["UL16APV","UL16","UL17","UL18"]
     r3_years = ["2022","2022EE"]
@@ -269,15 +271,19 @@ def create_mc_sample_dict(year):
     elif year == "run2":
         years = r2_years
         sample_dict_base = SAMPLE_DICT_BASE_RUN2
+        if yld_individual: sample_dict_base = SAMPLE_DICT_BASE_INDIV_RUN2 # If we want individual not grouped yields
     elif year == "run3":
         years = r3_years
         sample_dict_base = SAMPLE_DICT_BASE_RUN3
+        if yld_individual: sample_dict_base = SAMPLE_DICT_BASE_INDIV_RUN3 # If we want individual not grouped yields
     else:
         years = [year]
         if year in r2_years:
             sample_dict_base = SAMPLE_DICT_BASE_RUN2
+            if yld_individual: sample_dict_base = SAMPLE_DICT_BASE_INDIV_RUN2 # If we want individual not grouped yields
         elif year in r3_years:
             sample_dict_base = SAMPLE_DICT_BASE_RUN3
+            if yld_individual: sample_dict_base = SAMPLE_DICT_BASE_INDIV_RUN3 # If we want individual not grouped yields
         else:
             raise Exception(f"ERROR: Unrecognized year \"{year}\". Exiting.")
 

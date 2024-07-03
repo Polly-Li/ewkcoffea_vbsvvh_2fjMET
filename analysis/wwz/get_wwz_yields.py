@@ -232,7 +232,7 @@ def put_cat_col_sums(yld_dict,sr_sf_lst,sr_of_lst,metrics_names_lst=["Zmetric",S
 
 
 # Print yields
-def print_yields(ul_year,yld_dict_in,cats_to_print,procs_to_print,ref_dict=yd.EWK_REF_NOSF,print_fom=True,hlines=[]):
+def print_yields(yld_dict_in,cats_to_print,procs_to_print,do_comp=True,ref_dict=yd.EWK_REF_NOSF,print_fom=True,hlines=[]):
 
     # Get err from var
     def get_err_from_var(in_dict):
@@ -247,7 +247,7 @@ def print_yields(ul_year,yld_dict_in,cats_to_print,procs_to_print,ref_dict=yd.EW
 
     yld_dict = get_err_from_var(yld_dict_in)
 
-    # Print the yields directly
+    # Print the yields directly c|cc|cc|ccc
     mlt.print_latex_yield_table(
         yld_dict,
         tag="All yields",
@@ -258,9 +258,8 @@ def print_yields(ul_year,yld_dict_in,cats_to_print,procs_to_print,ref_dict=yd.EW
         print_errs=True,
         column_variable="subkeys",
         size="tiny",
-        hz_line_lst=[6],
     )
-    #exit()
+    if not do_comp: return
 
     ### Compare with other yields, print comparison ###
 
@@ -689,6 +688,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
 
 
     for var_name in histo_dict.keys():
+        print(f"\nVar name: {var_name}")
         # Skip over some variables if you want to
         if "counts" in var_name: continue
         if var_name == "nbtagsm": continue
@@ -700,6 +700,11 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
         #print(f"\n{var_name}")
         histo_orig = histo_dict[var_name]
 
+        # Skip empty hists
+        if len(histo_orig.values()) == 0:
+            print("Empty, skipping...")
+            continue
+
         # Just plot nominal syst for now
         histo_orig = histo_orig[{"systematic":"nominal"}]
 
@@ -708,7 +713,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
             # Skip some of the cats if you want to
             #if "bdt" in cat_name: continue
             #if cat_name not in ["sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn"]: continue # TMP
-            #if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]: continue
+            if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]: continue
             #print(cat_name)
 
             # Make a copy so changes to binning do not propagate to next loop
@@ -906,14 +911,34 @@ def main():
     # Wrapper around the code for getting the yields for sr and bkg samples
     if args.get_yields:
 
-        # Get the yield dict and put the extra columns and rows into it
+        # Get the grouped yield dict and put the extra columns and rows into it
         yld_dict = get_yields(histo_dict,sample_dict_mc)
-        put_proc_row_sums(yld_dict, SR_SF_CB+SR_OF_CB)
-        put_cat_col_sums(yld_dict, sr_sf_lst=SR_SF_CB, sr_of_lst=SR_OF_CB, tag="_cutbased")
-        if (args.ul_year == "run2") or (("UL" in args.ul_year) and ("2022" not in args.ul_year)):
-            put_proc_row_sums(yld_dict, SR_SF_BDT+SR_OF_BDT)
-            put_cat_col_sums(yld_dict, sr_sf_lst=SR_SF_BDT, sr_of_lst=SR_OF_BDT, tag="_bdt")
+        put_proc_row_sums(yld_dict, SR_SF_CB+SR_OF_CB + SR_SF_BDT+SR_OF_BDT + sg.CAT_LST_CR)
+        put_cat_col_sums(yld_dict, sr_sf_lst=SR_SF_CB,  sr_of_lst=SR_OF_CB,  tag="_cutbased")
+        put_cat_col_sums(yld_dict, sr_sf_lst=SR_SF_BDT, sr_of_lst=SR_OF_BDT, tag="_bdt")
         #print(yld_dict)
+        #exit()
+
+        # Dump latex table of the individual yields for all processes
+        sample_dict_mc_indiv = sg.create_mc_sample_dict(args.ul_year,yld_individual=True)
+        yld_dict_mc_indiv = get_yields(histo_dict,sample_dict_mc_indiv,quiet=True)
+        cats_to_print = ["sr_4l_of", "sr_4l_sf", "sr_4l_bdt_of_trn","sr_4l_bdt_sf_trn", "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]
+        print_yields(yld_dict_mc_indiv,cats_to_print,procs_to_print=yld_dict_mc_indiv.keys(),do_comp=False)
+        #exit()
+
+        ### Get and dump the comparisons against ref yields ###
+
+        # Get the ref dict, for the relevant year
+        if args.ul_year in ["run2","UL18","UL17","UL16","UL16APV"]: ref_ylds = ref_dict=yd.EWK_REF
+        if args.ul_year in ["run3","2022","2022EE"]: ref_ylds = ref_dict=yd.EWK_REF_2022
+
+        # Dump latex table for summary of CB, BDT, CRs
+        hlines = [2,5] # Just summary categories
+        sr_cats_to_print = ["sr_of_all_cutbased","sr_sf_all_cutbased","sr_all_cutbased"] + ["sr_of_all_bdt","sr_sf_all_bdt","sr_all_bdt"] + ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]
+        #hlines = [2,3,7,8,9,17,18,26,27,28] # All CB and BDT categories
+        #sr_cats_to_print = sg.SR_SF_CB + ["sr_sf_all_cutbased"] + sg.SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"] + sg.SR_SF_BDT + ["sr_sf_all_bdt"] + sg.SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"] + ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]
+        procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg"]
+        print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines,ref_dict=ref_ylds)
         #exit()
 
         # Dump latex table for cut based
@@ -921,20 +946,15 @@ def main():
         sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
         #sr_cats_to_print = ["sr_sf_all_cutbased" , "sr_of_all_cutbased" , "sr_all_cutbased" , "sr_4l_sf_presel" , "sr_4l_sf_trn" , "sr_4l_of_presel"] # Preselection SR categories
         procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
-        print_yields(args.ul_year,yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines,ref_dict=yd.EWK_REF) # Or e.g. for 2022 comp use yd.EWK_REF_2022
+        print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines,ref_dict=ref_ylds)
+        #exit()
 
         # Dump latex table for BDT
-        #hlines = [6,7,15,16]
-        #sr_cats_to_print = SR_SF_BDT + ["sr_sf_all_bdt"] + SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"]
-        #procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
-        #print_yields(args.ul_year,yld_dict,sr_cats_to_print,procs_to_print,ref_dict=yd.EWK_REF,hlines=hlines)
-
-        # Compare BDT yields against Keegan ref yields
-        #keegan_ref = utils.put_none_errs(copy.deepcopy(yd.KEEGAN_BDT_YLDS))
-        #sr_cats_to_print = SR_SF_BDT + SR_OF_BDT
-        #procs_to_print = ["WWZ","ZH","ZZ","ttZ","tWZ","WZ","other"]
-        #print_yields(args.ul_year,yld_dict,sr_cats_to_print,procs_to_print,ref_dict=keegan_ref,print_fom=False)
-
+        hlines = [7,8,16,17]
+        sr_cats_to_print = SR_SF_BDT + ["sr_sf_all_bdt"] + SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"]
+        procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
+        print_yields(yld_dict,sr_cats_to_print,procs_to_print,ref_dict=ref_ylds,hlines=hlines)
+        #exit()
 
         # Dump yield dict to json
         json_name = "process_yields.json" # Could be an argument

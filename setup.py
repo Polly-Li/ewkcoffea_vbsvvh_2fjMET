@@ -17,7 +17,7 @@ setuptools.setup(
             "data/btag_eff/*.pkl.gz",
             "data/run3_pu/*/*json",
             "data/run3_lep_sf/electron_sf/*/*json",
-            "data/run3_lep_sf/muon_sf/*/*json",
+            "data/run3_lep_sf/muon_sf/*json",
         ],
     }
 )
