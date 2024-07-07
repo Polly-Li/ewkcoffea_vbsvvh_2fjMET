@@ -112,22 +112,26 @@ def btag_eff_eval(jets,wp,year):
     elif year == "2018":
         pname = f"UL18_{pname_base}"
     elif year == "2022":
-        pname_1 = "2022_TTZToLL_M_4to50"
-        pname_2 = "2022_TTZToLL_M_50"
+        pname = f"UL18_{pname_base}"
     elif year == "2022EE":
-        pname_1 = "2022EE_TTZToLL_M_4to50"
-        pname_2 = "2022EE_TTZToLL_M_50"
+        pname = f"UL18_{pname_base}"
+    #elif year == "2022":
+    #    pname_1 = "2022_TTZToLL_M_4to50"
+    #    pname_2 = "2022_TTZToLL_M_50"
+    #elif year == "2022EE":
+    #    pname_1 = "2022EE_TTZToLL_M_4to50"
+    #    pname_2 = "2022EE_TTZToLL_M_50"
     else:
         raise Exception(f"Not a known year: {year}")
 
-    if year in ["2022","2022EE"]:
-        pkl_file_path = ewkcoffea_path("data/btag_eff/btag_eff_2022_ttZ_srpresel.pkl.gz")
-        histo = pickle.load(gzip.open(pkl_file_path))["ptabseta"]
-        histo_proc = histo[{"process":pname_1}] + histo[{"process":pname_2}]
-    else:
-        pkl_file_path = ewkcoffea_path("data/btag_eff/btag_eff_ttZ_srpresel.pkl.gz")
-        histo = pickle.load(gzip.open(pkl_file_path))["ptabseta"]
-        histo_proc = histo[{"process":pname}]
+    #if year in ["2022","2022EE"]:
+    #    pkl_file_path = ewkcoffea_path("data/btag_eff/btag_eff_2022_ttZ_srpresel.pkl.gz")
+    #    histo = pickle.load(gzip.open(pkl_file_path))["ptabseta"]
+    #    histo_proc = histo[{"process":pname_1}] + histo[{"process":pname_2}]
+    #else:
+    pkl_file_path = ewkcoffea_path("data/btag_eff/btag_eff_ttZ_srpresel.pkl.gz")
+    histo = pickle.load(gzip.open(pkl_file_path))["ptabseta"]
+    histo_proc = histo[{"process":pname}]
 
     # Make sure wp is known
     if (wp != "L") and (wp != "M"):
