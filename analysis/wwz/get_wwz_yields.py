@@ -531,7 +531,7 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
         ]
 
         # Rebin if continous variable
-        if var_name not in ["njets","nbtagsl","nleps"]:
+        if var_name not in ["njets","nbtagsl","nleps","bdt_of_bin","bdt_sf_bin","abs_pdgid_sum"]:
             histo = rebin(histo,6)
 
         # Get the list of systematic base names (i.e. without the up and down tags)
@@ -720,7 +720,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
             histo = copy.deepcopy(histo_orig)
 
             # Rebin if continous variable
-            if var_name not in ["njets","nbtagsl","nleps","bdt_of_bin","bdt_sf_bin"]:
+            if var_name not in ["njets","nbtagsl","nleps","bdt_of_bin","bdt_sf_bin","abs_pdgid_sum"]:
                 if cat_name in ["cr_4l_btag_sf_offZ_met80","cr_4l_btag_of"]:
                     histo = rebin(histo,15)
                 else:

@@ -69,6 +69,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
             "j0pt"  : axis.Regular(180, 0, 500, name="j0pt", label="j0pt"),
 
+            "abs_pdgid_sum" : axis.Regular(15, 40, 55, name="abs_pdgid_sum", label="Sum of abs pdgId for all 4 lep"),
+
             "w_lep0_pt"  : axis.Regular(180, 0, 300, name="w_lep0_pt", label="Leading W lep pt"),
             "w_lep1_pt"  : axis.Regular(180, 0, 300, name="w_lep1_pt", label="Subleading W lep pt"),
             "z_lep0_pt"  : axis.Regular(180, 0, 300, name="z_lep0_pt", label="Leading Z lep pt"),
@@ -609,6 +611,8 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             ######### Get variables we haven't already calculated #########
 
+            abs_pdgid_sum = (abs(l0.pdgId) + abs(l1.pdgId) + abs(l2.pdgId) + abs(l3.pdgId))
+
             l0pt = l0.pt
             j0pt = ak.flatten(j0.pt) # Flatten to go from [[j0pt],[j0pt],...] -> [j0pt,j0pt,...]
             mll_01 = (l0+l1).mass
@@ -674,6 +678,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mllll" : mllll,
                 "l0pt" : l0pt,
                 "j0pt" : j0pt,
+
+                "abs_pdgid_sum": abs_pdgid_sum,
 
                 "z_lep0_pt" : z_lep0.pt,
                 "z_lep1_pt" : z_lep1.pt,
@@ -851,6 +857,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             ww_mm = ((abs(w_lep0.pdgId) == 13) & (abs(w_lep1.pdgId) == 13))
             ww_em = ((abs(w_lep0.pdgId) == 11) & (abs(w_lep1.pdgId) == 13))
             ww_me = ((abs(w_lep0.pdgId) == 13) & (abs(w_lep1.pdgId) == 11))
+            lepflav_4e = ((abs(l0.pdgId)==11) & (abs(l1.pdgId)==11) & (abs(l2.pdgId)==11) & (abs(l3.pdgId)==11))
+            lepflav_4m = ((abs(l0.pdgId)==13) & (abs(l1.pdgId)==13) & (abs(l2.pdgId)==13) & (abs(l3.pdgId)==13))
             selections.add("cr_4l_btag_of",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of))
             selections.add("cr_4l_btag_sf_offZ_met80", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0)))
             selections.add("cr_4l_sf", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
@@ -978,6 +986,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "z_lep1_phi" : ["all_events"],
                 "mll_wl0_wl1" : ["all_events"],
                 "mll_zl0_zl1" : ["all_events"],
+
+                "abs_pdgid_sum" : ["all_events"],
 
                 "pt_zl0_zl1" : ["all_events"],
                 "pt_wl0_wl1" : ["all_events"],
