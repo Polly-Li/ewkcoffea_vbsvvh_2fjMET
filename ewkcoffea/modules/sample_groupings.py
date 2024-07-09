@@ -135,6 +135,8 @@ SAMPLE_DICT_BASE_RUN2 = {
         "WWW",
         "WZZ",
         "ZZZ",
+
+        "ggHToZZ4L",
     ],
 }
 
@@ -218,6 +220,8 @@ SAMPLE_DICT_BASE_INDIV_RUN2 = {
     "WWW" : ["WWW"],
     "WZZ" : ["WZZ"],
     "ZZZ" : ["ZZZ"],
+
+    "ggHToZZ4L" : ["ggHToZZ4L"],
 }
 
 SAMPLE_DICT_BASE_INDIV_RUN3 = {
