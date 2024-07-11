@@ -850,9 +850,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             zeroj = (njets==0)
 
-            # Fill the packed slection object
-
-            # CRs
+            # For the CRs
             ww_ee = ((abs(w_lep0.pdgId) == 11) & (abs(w_lep1.pdgId) == 11))
             ww_mm = ((abs(w_lep0.pdgId) == 13) & (abs(w_lep1.pdgId) == 13))
             ww_em = ((abs(w_lep0.pdgId) == 11) & (abs(w_lep1.pdgId) == 13))
@@ -862,6 +860,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             selections.add("cr_4l_btag_of",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of))
             selections.add("cr_4l_btag_sf_offZ_met80", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0)))
             selections.add("cr_4l_sf", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
+            # H->ZZ validation region: note, this is not enforced to be orthogonal to the SR, but it has effectively zero signal in it
+            selections.add("cr_4l_sf_higgs", (pass_trg & events.is4lWWZ & events.wwz_presel_sf & ((mllll > 119) & (mllll < 131))))
+
+
+            # For Cut Based SRs
 
             selections.add("sr_4l_sf_A", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_A))
             selections.add("sr_4l_sf_B", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_B))
@@ -950,7 +953,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "lep_chan_lst" : [
                     "sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4",
                     "all_events","4l_presel", "sr_4l_sf", "sr_4l_of", "sr_4l_sf_incl", "sr_4l_of_incl",
-                    "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf",
+                    "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "cr_4l_sf_higgs",
                 ]
             }
 
@@ -964,7 +967,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             exclude_var_dict = {
                 "mt2" : ["all_events"],
                 "ptl4" : ["all_events"],
-                "j0pt" : ["all_events", "4l_presel", "sr_4l_sf", "sr_4l_of", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf"] + analysis_cats + bdt_misc_names,
+                "j0pt" : ["all_events", "4l_presel", "sr_4l_sf", "sr_4l_of", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf", "cr_4l_sf_higgs"] + analysis_cats + bdt_misc_names,
                 "l0pt" : ["all_events"],
                 "mll_01" : ["all_events"],
                 "mllll" : ["all_events"],
@@ -1018,8 +1021,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mll_min_afos" : ["all_events"],
                 "mll_min_sfos" : ["all_events"],
 
-                "mlb_min" : ["all_events","4l_presel", "sr_4l_sf", "sr_4l_of", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf"] + analysis_cats + bdt_misc_names,
-                "mlb_max" : ["all_events","4l_presel", "sr_4l_sf", "sr_4l_of", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf"] + analysis_cats + bdt_misc_names,
+                "mlb_min" : ["all_events","4l_presel", "sr_4l_sf", "sr_4l_of", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf", "cr_4l_sf_higgs"] + analysis_cats + bdt_misc_names,
+                "mlb_max" : ["all_events","4l_presel", "sr_4l_sf", "sr_4l_of", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf", "cr_4l_sf_higgs"] + analysis_cats + bdt_misc_names,
 
                 "bdt_of_wwz"      : ["all_events"],
                 "bdt_sf_wwz"      : ["all_events"],
