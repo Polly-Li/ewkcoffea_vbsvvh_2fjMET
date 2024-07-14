@@ -28,7 +28,7 @@ import yld_dicts_for_comp as yd
 #WZ    = (163, 155, 47) #A39B2F
 #tWZ   = (205, 240, 155) #CDF09B
 #Other = (205, 205, 205) #CDCDCD
-CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"]
+CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"] # If need extra color, "skyblue" is nice
 #CLR_LST = ["#F09B9B","#00D091","#CDF09B"]
 
 # Names of the cut-based and BDT SRs
@@ -354,7 +354,7 @@ def group(h, oldname, newname, grouping):
 
 
 # Takes a mc hist and data hist and plots both
-def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False):
+def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisrangex=None):
 
     # Create the figure
     fig, (ax, rax) = plt.subplots(
@@ -413,7 +413,10 @@ def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False):
         rax.scatter(bin_centers_arr,data_arr/mc_arr,facecolor='black',edgecolor='black',marker="o")
         rax.vlines(bin_centers_arr,data_ratio_err_p,data_ratio_err_m,color='k')
 
-    # Scale the y axis and labels
+    # Scale the axis and set labels
+    if axisrangex is not None:
+        ax.set_xlim(axisrangex[0],axisrangex[1])
+        rax.set_xlim(axisrangex[0],axisrangex[1])
     ax.legend(fontsize="12")
     ax.set_title(title)
     ax.autoscale(axis='y')
@@ -531,7 +534,7 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
         ]
 
         # Rebin if continous variable
-        if var_name not in ["njets","nbtagsl","nleps"]:
+        if var_name not in ["njets","nbtagsl","nleps","bdt_of_bin","bdt_sf_bin","abs_pdgid_sum"]:
             histo = rebin(histo,6)
 
         # Get the list of systematic base names (i.e. without the up and down tags)
@@ -694,7 +697,6 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
         if var_name == "nbtagsm": continue
         #if var_name not in ["bdt_of_bin","bdt_sf_bin"]: continue
         #if var_name not in BDT_INPUT_LST: continue
-        #if var_name not in BDT_SCORE_LST: continue
 
         # Get the relevant histogram from the input dict
         #print(f"\n{var_name}")
@@ -713,16 +715,38 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
             # Skip some of the cats if you want to
             #if "bdt" in cat_name: continue
             #if cat_name not in ["sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn"]: continue # TMP
+            #if cat_name not in ["cr_4l_sf_higgs"]: continue
             if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]: continue
             #print(cat_name)
 
             # Make a copy so changes to binning do not propagate to next loop
             histo = copy.deepcopy(histo_orig)
 
-            # Rebin if continous variable
-            if var_name not in ["njets","nbtagsl","nleps","bdt_of_bin","bdt_sf_bin"]:
-                if cat_name in ["cr_4l_btag_sf_offZ_met80","cr_4l_btag_of"]:
+            # Rebin and set some x axis ranges (for the continous variables)
+            # Skip this for discrete variables
+            rangex = None
+            if var_name not in ["njets","nbtagsl","nleps","bdt_of_bin","bdt_sf_bin","abs_pdgid_sum"]:
+                # Zoom in on mll around Z for Z CR
+                if (cat_name == "cr_4l_sf") and (var_name in ["mll_zl0_zl1","mll_wl0_wl1"]):
+                    histo = rebin(histo,1)
+                    rangex = [50,150]
+                # Zoom in on mll for the higgs validation region
+                elif (cat_name == "cr_4l_sf_higgs"):
+                    histo = rebin(histo,1)
+                    if var_name == "mllll":
+                        rangex = [110,140]
+                    elif var_name == "mll_zl0_zl1":
+                        rangex = [50,150]
+                        histo = rebin(histo,2)
+                    elif var_name == "mll_wl0_wl1":
+                        rangex = [0,100]
+                        histo = rebin(histo,2)
+                    else:
+                        histo = rebin(histo,8)
+                # Fewer bins for low stats CRs
+                elif cat_name in ["cr_4l_btag_sf_offZ_met80","cr_4l_btag_of"]:
                     histo = rebin(histo,15)
+                # Otherwise bin a bit more finely
                 else:
                     histo = rebin(histo,6)
 
@@ -772,9 +796,9 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
             title = f"{cat_name}_{var_name}"
             print("Making: ",title)
             if "cr" in title:
-                fig = make_cr_fig(histo_grouped_mc,histo_grouped_data,title=title)
+                fig = make_cr_fig(histo_grouped_mc,histo_grouped_data,axisrangex=rangex,title=title)
             else:
-                fig = make_cr_fig(histo_grouped_mc,title=title)
+                fig = make_cr_fig(histo_grouped_mc,axisrangex=rangex,title=title)
 
             # Save
             save_dir_path_cat = os.path.join(save_dir_path,cat_name)

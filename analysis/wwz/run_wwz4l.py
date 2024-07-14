@@ -131,9 +131,9 @@ if __name__ == '__main__':
     # Figure out which hists to include
     if args.hist_list == ["few"]:
         # Here we hardcode a reduced list of a few hists
-        hist_lst = ["j0pt", "njets", "njets_counts", "nbtagsl", "nleps", "met", "l0pt"]
+        hist_lst = ["j0pt", "njets", "njets_counts", "nbtagsl", "nleps", "met", "l0pt", "abs_pdgid_sum"]
     elif args.hist_list == ["bdt"]:
-        hist_lst = ["j0pt", "njets", "njets_counts", "nbtagsl", "nleps", "met", "l0pt"] + BDT_VAR_NAMES
+        hist_lst = ["j0pt", "njets", "njets_counts", "nbtagsl", "nleps", "met", "l0pt", "abs_pdgid_sum"] + BDT_VAR_NAMES
     else:
         # We want to specify a custom list
         # If we don't specify this argument, it will be None, and the processor will fill all hists
