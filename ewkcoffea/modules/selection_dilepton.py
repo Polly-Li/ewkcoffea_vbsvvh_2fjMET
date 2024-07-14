@@ -92,6 +92,31 @@ dataset_dict = {
             "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
             "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ",
         ]
+    },
+    "2023" : {
+        "EGamma" : [
+            "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
+            "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL",
+            "Ele30_WPTight_Gsf",
+            "Ele32_WPTight_Gsf",
+            "Ele32_WPTight_Gsf_L1DoubleEG",
+            "Ele35_WPTight_Gsf",
+            "Ele115_CaloIdVT_GsfTrkIdT",
+            "DoubleEle25_CaloIdL_MW",
+        ],
+        "Muon" : [
+            "IsoMu24",
+            "IsoMu27",
+            "Mu50",
+            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
+            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8",
+        ],
+        "MuonEG" : [
+            "Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ",
+            "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL",
+            "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
+            "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ",
+        ]
     }
 }
 
@@ -127,32 +152,37 @@ exclude_dict = {
         "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["SingleMuon"] + dataset_dict["2022"]["EGamma"],
     },
     "D": {
-        "Muon"     : [],
+        "Muon"           : [],
         "EGamma"         : dataset_dict["2022"]["Muon"],
         "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
     },
     "E": {
-        "Muon"     : [],
+        "Muon"           : [],
         "EGamma"         : dataset_dict["2022"]["Muon"],
         "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
     },
     "F": {
-        "Muon"     : [],
+        "Muon"           : [],
         "EGamma"         : dataset_dict["2022"]["Muon"],
         "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
     },
     "G": {
-        "Muon"     : [],
+        "Muon"           : [],
         "EGamma"         : dataset_dict["2022"]["Muon"],
         "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
+    },
+    "2023": {
+        "Muon"           : [],
+        "EGamma"         : dataset_dict["2023"]["Muon"],
+        "MuonEG"         : dataset_dict["2023"]["Muon"] + dataset_dict["2023"]["EGamma"],
     },
 }
 
 # 2l selection
-def add4lmask_wwz(events,year,isData,sample_name,is2022,is2023):
+def add2lmask_dilepton(events,year,isData,sample_name,is2022,is2023):
 
     # Leptons and padded leptons
-    leps = events.l_wwz_t
+    leps = events.l_dil_t
     leps_padded = ak.pad_none(leps,2)
 
     # Filters
@@ -175,7 +205,7 @@ def add4lmask_wwz(events,year,isData,sample_name,is2022,is2023):
     events['sf_4l_lo_muon'] = leps_padded[:,0].sf_lo_muon*leps_padded[:,1].sf_lo_muon
     events['sf_4l_lo_elec'] = leps_padded[:,0].sf_lo_elec*leps_padded[:,1].sf_lo_elec
 
-    events['is2lWWZ'] = ak.fill_none(mask,False)
+    events['is2l_dil'] = ak.fill_none(mask,False)
 
 # Do Run3 2Lep pre selection, construct event level mask
 def attach_dilepton_preselection_mask(events,lep_collection):
@@ -198,16 +228,16 @@ def attach_dilepton_preselection_mask(events,lep_collection):
     mumu_mask = ak.fill_none(mumu_mask,False) # Replace the None with False in the mask just to make it easier to think about
 
     # mLL masks
-    z_mass_mask = ak.any((abs(((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) - get_ec_param("zmass")) < 15.0),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
+    z_mass_mask = ak.any((abs(((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) - get_ec_param("zmass")) < 10.0),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
     z_mass_mask = ak.fill_none(z_mass_mask,False) # Replace the None with False in the mask just to make it easier to think about
 
     of_mass_mask = ak.any((((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) > 20.0),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
     of_mass_mask = ak.fill_none(of_mass_mask,False) # Replace the None with False in the mask just to make it easier to think about
 
     # The final preselection mask
-    run3_2lep_presel_mask = (os_mask & pt_mask)
+    dil_presel_mask = (os_mask & pt_mask)
 
     # Attach to the lepton objects
-    events["run3_2lep_presel_sf_ee"] = (run3_2lep_presel_mask & sf_mask & ee_mask & z_mass_mask)
-    events["run3_2lep_presel_sf_mumu"] = (run3_2lep_presel_mask & sf_mask & mumu_mask & z_mass_mask)
-    events["run3_2lep_presel_of"] = (run3_2lep_presel_mask & of_mask & of_mass_mask)
+    events["dil_presel_sf_ee"] = (dil_presel_mask & sf_mask & ee_mask & z_mass_mask)
+    events["dil_presel_sf_mumu"] = (dil_presel_mask & sf_mask & mumu_mask & z_mass_mask)
+    events["dil_presel_of"] = (dil_presel_mask & of_mask & of_mass_mask)

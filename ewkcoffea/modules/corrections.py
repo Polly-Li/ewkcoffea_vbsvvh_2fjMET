@@ -115,6 +115,10 @@ def btag_eff_eval(jets,wp,year):
         pname = f"UL18_{pname_base}" #TODO Update with 2022 efficiency when available
     elif year == "2022EE":
         pname = f"UL18_{pname_base}" #TODO Update with 2022EE efficiency when available
+    elif year == "2023":
+        pname = f"UL18_{pname_base}" #TODO Update with 2023 efficiency when available
+    elif year == "2023BPix":
+        pname = f"UL18_{pname_base}" #TODO Update with 2023BPix efficiency when available
     else:
         raise Exception(f"Not a known year: {year}")
 
@@ -141,6 +145,10 @@ def run3_muons_sf_attach(muons,year,id_method,iso_method):
         fname = ewkcoffea_path("data/run3_lep_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_EE_schemaV2.json")
     elif year == "2022":
         fname = ewkcoffea_path("data/run3_lep_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_schemaV2.json")
+    elif year == "2023":
+        fname = ewkcoffea_path("data/run3_lep_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2023_schemaV2.json")
+    elif year == "2023BPix":
+        fname = ewkcoffea_path("data/run3_lep_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2023_BPix_schemaV2.json")
     else:
         raise Exception("Trying to apply Run3 Muon SF where they shouldn't be!")
 
@@ -155,17 +163,13 @@ def run3_muons_sf_attach(muons,year,id_method,iso_method):
     # Evaluate the ID SF
     ceval = correctionlib.CorrectionSet.from_file(fname)
     sf_id_flat_nom = ceval[id_method].evaluate(abseta_flat,pt_flat,"nominal")
-    sf_id_flat_syst = ceval[id_method].evaluate(abseta_flat,pt_flat,"syst")
-    # Finding the syst uncertaintities
-    sf_id_flat_hi = sf_id_flat_nom + sf_id_flat_syst
-    sf_id_flat_lo = sf_id_flat_nom - sf_id_flat_syst
+    sf_id_flat_hi  = ceval[id_method].evaluate(abseta_flat,pt_flat,"systup")
+    sf_id_flat_lo  = ceval[id_method].evaluate(abseta_flat,pt_flat,"systdown")
 
     # Evaluate the Iso SF
     sf_iso_flat_nom = ceval[iso_method].evaluate(abseta_flat,pt_flat,"nominal")
-    sf_iso_flat_syst = ceval[iso_method].evaluate(abseta_flat,pt_flat,"syst")
-    # Finding the syst uncertaintities
-    sf_iso_flat_hi = sf_iso_flat_nom + sf_iso_flat_syst
-    sf_iso_flat_lo = sf_iso_flat_nom - sf_iso_flat_syst
+    sf_iso_flat_hi  = ceval[iso_method].evaluate(abseta_flat,pt_flat,"systup")
+    sf_iso_flat_lo = ceval[iso_method].evaluate(abseta_flat,pt_flat,"systdown")
 
     # Getting the overall SF (ID * Iso)
     sf_flat_nom = sf_id_flat_nom * sf_iso_flat_nom
@@ -193,10 +197,17 @@ def run3_electrons_sf_attach(electrons,year,wp):
     elif year == "2022":
         n_year = "2022Re-recoBCD" # key for accessing the 2022 SFs
         fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2022_ele/electron.json")
+    elif year == "2023":
+        n_year = "2023PromptC" # key for accessing the 2023 SFs
+        fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2023_ele/electron.json")
+    elif year == "2023BPix":
+        n_year = "2023PromptD" # key for accessing the 2023BPix SFs
+        fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2023BPix_ele/electron.json")
     else:
         raise Exception("Trying to apply run3 SF where they shouldn't be!")
 
     # Flatten the input
+    phi_flat = ak.flatten(electrons.phi)
     eta_flat = ak.flatten(electrons.eta)
     pt_flat = ak.flatten(electrons.pt)
     ceval = correctionlib.CorrectionSet.from_file(fname)
@@ -207,29 +218,61 @@ def run3_electrons_sf_attach(electrons,year,wp):
     pt_flat_75 = ak.where(pt_flat < 75.0, 75.0,pt_flat)
 
     #Get the Reco SF for all three region lists
-    sf_flat_20 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","RecoBelow20",eta_flat,pt_flat_20)
-    sf_flat_2075 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","Reco20to75",eta_flat,pt_flat_2075)
-    sf_flat_75 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","RecoAbove75",eta_flat,pt_flat_75)
+    if "2023" in year:
+        sf_flat_20 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","RecoBelow20",eta_flat,pt_flat_20,phi_flat)
+        sf_flat_20_hi = ceval["Electron-ID-SF"].evaluate(n_year,"sfup","RecoBelow20",eta_flat,pt_flat_20,phi_flat)
+        sf_flat_20_lo = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown","RecoBelow20",eta_flat,pt_flat_20,phi_flat)
+        sf_flat_2075 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","Reco20to75",eta_flat,pt_flat_2075,phi_flat)
+        sf_flat_2075_hi = ceval["Electron-ID-SF"].evaluate(n_year,"sfup","Reco20to75",eta_flat,pt_flat_2075,phi_flat)
+        sf_flat_2075_lo = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown","Reco20to75",eta_flat,pt_flat_2075,phi_flat)
+        sf_flat_75 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","RecoAbove75",eta_flat,pt_flat_75,phi_flat)
+        sf_flat_75_hi = ceval["Electron-ID-SF"].evaluate(n_year,"sfup","RecoAbove75",eta_flat,pt_flat_75,phi_flat)
+        sf_flat_75_lo = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown","RecoAbove75",eta_flat,pt_flat_75,phi_flat)
+    else:
+        sf_flat_20 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","RecoBelow20",eta_flat,pt_flat_20)
+        sf_flat_20_hi = ceval["Electron-ID-SF"].evaluate(n_year,"sfup","RecoBelow20",eta_flat,pt_flat_20)
+        sf_flat_20_lo = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown","RecoBelow20",eta_flat,pt_flat_20)
+        sf_flat_2075 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","Reco20to75",eta_flat,pt_flat_2075)
+        sf_flat_2075_hi = ceval["Electron-ID-SF"].evaluate(n_year,"sfup","Reco20to75",eta_flat,pt_flat_2075)
+        sf_flat_2075_lo = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown","Reco20to75",eta_flat,pt_flat_2075)
+        sf_flat_75 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","RecoAbove75",eta_flat,pt_flat_75)
+        sf_flat_75_hi = ceval["Electron-ID-SF"].evaluate(n_year,"sfup","RecoAbove75",eta_flat,pt_flat_75)
+        sf_flat_75_lo = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown","RecoAbove75",eta_flat,pt_flat_75)
 
     # Remove the unwanted Reco SF
     # We assigned values in the correct pT range in order to obtain the SF. We now need to remove the unwanted SF based on the original pt_flat
     reco_sf_flat_20 = ak.where(pt_flat >= 20.0, 0, sf_flat_20)
+    reco_sf_flat_20_hi = ak.where(pt_flat >= 20.0, 0, sf_flat_20_hi)
+    reco_sf_flat_20_lo = ak.where(pt_flat >= 20.0, 0, sf_flat_20_lo)
     reco_sf_flat_2075 = ak.where(pt_flat < 20.0, 0, ak.where(pt_flat >= 75.0, 0, sf_flat_2075))
+    reco_sf_flat_2075_hi = ak.where(pt_flat < 20.0, 0, ak.where(pt_flat >= 75.0, 0, sf_flat_2075_hi))
+    reco_sf_flat_2075_lo = ak.where(pt_flat < 20.0, 0, ak.where(pt_flat >= 75.0, 0, sf_flat_2075_lo))
     reco_sf_flat_75 = ak.where(pt_flat < 75.0, 0, sf_flat_75)
+    reco_sf_flat_75_hi = ak.where(pt_flat < 75.0, 0, sf_flat_75_hi)
+    reco_sf_flat_75_lo = ak.where(pt_flat < 75.0, 0, sf_flat_75_lo)
 
     #Add up the sf lists
     sf_reco = reco_sf_flat_20 + reco_sf_flat_2075 + reco_sf_flat_75
+    sf_reco_hi = reco_sf_flat_20_hi + reco_sf_flat_2075_hi + reco_sf_flat_75_hi
+    sf_reco_lo = reco_sf_flat_20_lo + reco_sf_flat_2075_lo + reco_sf_flat_75_lo
 
     # Evaluate the ID SF
-    sf_id_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sf",wp,eta_flat,pt_flat)
-    hi_id_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sfup",wp,eta_flat,pt_flat)
-    lo_id_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown",wp,eta_flat,pt_flat)
+    if "2023" in year:
+        sf_id_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sf",wp,eta_flat,pt_flat,phi_flat)
+        hi_id_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sfup",wp,eta_flat,pt_flat,phi_flat)
+        lo_id_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown",wp,eta_flat,pt_flat,phi_flat)
+    else:
+        sf_id_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sf",wp,eta_flat,pt_flat)
+        hi_id_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sfup",wp,eta_flat,pt_flat)
+        lo_id_flat = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown",wp,eta_flat,pt_flat)
 
     sf_return = sf_id_flat * sf_reco
+    sf_return_hi = hi_id_flat * sf_reco_hi
+    sf_return_lo = lo_id_flat * sf_reco_lo
 
     sf = ak.unflatten(sf_return,ak.num(electrons.pt))
-    hi = ak.unflatten(hi_id_flat,ak.num(electrons.pt))
-    lo = ak.unflatten(lo_id_flat,ak.num(electrons.pt))
+    hi = ak.unflatten(sf_return_hi,ak.num(electrons.pt))
+    lo = ak.unflatten(sf_return_lo,ak.num(electrons.pt))
 
     electrons['sf_nom_muon'] = ak.ones_like(sf)
     electrons['sf_hi_muon']  = ak.ones_like(sf)
@@ -245,6 +288,10 @@ def run3_pu_attach(pileup,year,sys):
         fname = ewkcoffea_path("data/run3_pu/pu_2022EE/puWeights.json")
     elif year == "2022":
         fname = ewkcoffea_path("data/run3_pu/pu_2022/puWeights.json")
+    elif year == "2023":
+        fname = ewkcoffea_path("data/run3_pu/pu_2023/puWeights.json")
+    elif year == "2023BPix":
+        fname = ewkcoffea_path("data/run3_pu/pu_2023BPix/puWeights.json")
     else:
         raise Exception("Trying to apply run3 SF where they shouldn't be!")
 
@@ -258,6 +305,14 @@ def run3_pu_attach(pileup,year,sys):
         pu_corr = ceval["Collisions2022_355100_357900_eraBCD_GoldenJson"].evaluate(pileup.nTrueInt,"nominal")
         pu_corr_hi = ceval["Collisions2022_355100_357900_eraBCD_GoldenJson"].evaluate(pileup.nTrueInt,"up")
         pu_corr_lo = ceval["Collisions2022_355100_357900_eraBCD_GoldenJson"].evaluate(pileup.nTrueInt,"down")
+    if year == "2023":
+        pu_corr = ceval["Collisions2023_366403_369802_eraBC_GoldenJson"].evaluate(pileup.nTrueInt,"nominal")
+        pu_corr_hi = ceval["Collisions2023_366403_369802_eraBC_GoldenJson"].evaluate(pileup.nTrueInt,"up")
+        pu_corr_lo = ceval["Collisions2023_366403_369802_eraBC_GoldenJson"].evaluate(pileup.nTrueInt,"down")
+    if year == "2023BPix":
+        pu_corr = ceval["Collisions2023_369803_370790_eraD_GoldenJson"].evaluate(pileup.nTrueInt,"nominal")
+        pu_corr_hi = ceval["Collisions2023_369803_370790_eraD_GoldenJson"].evaluate(pileup.nTrueInt,"up")
+        pu_corr_lo = ceval["Collisions2023_369803_370790_eraD_GoldenJson"].evaluate(pileup.nTrueInt,"down")
     if sys == "nominal":
         return pu_corr
     if sys == "hi":

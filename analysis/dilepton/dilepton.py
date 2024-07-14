@@ -39,16 +39,12 @@ class AnalysisProcessor(processor.ProcessorABC):
             "met"   : axis.Regular(180, 0, 300, name="met",  label="met"),
             "metphi": axis.Regular(180, -3.1416, 3.1416, name="metphi", label="met phi"),
             "mll"   : axis.Regular(180, 0, 200, name="mll",  label="mll"),
-
             "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
             "l1pt"  : axis.Regular(180, 0, 500, name="l1pt", label="l1pt"),
-
             "l0_eta" : axis.Regular(180, -3, 3, name="lep0_eta", label="Leading Z lep eta"),
             "l1_eta" : axis.Regular(180, -3, 3, name="lep1_eta", label="Subleading Z lep eta"),
-
             "l0_phi" : axis.Regular(180, -3.1416, 3.1416, name="lep0_phi", label="Leading Z lep phi"),
             "l1_phi" : axis.Regular(180, -3.1416, 3.1416, name="lep1_phi", label="Subleading Z lep phi"),
-
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
             "nbtagsl" : axis.Regular(6, 0, 6, name="nbtagsl", label="Loose btag multiplicity"),
@@ -153,35 +149,32 @@ class AnalysisProcessor(processor.ProcessorABC):
         mu_presl_mask = os_ec.is_presel_wwz_mu(mu,is2022,is2023)
         if not (is2022 or is2023):
             mu["topmva"] = os_ec.get_topmva_score_mu(events, year)
-            mu["is_tight_lep_for_wwz"] = ((mu.topmva > get_tc_param("topmva_wp_t_m")) & mu_presl_mask)
+            mu["is_tight_lep_for_dilepton"] = ((mu.topmva > get_tc_param("topmva_wp_t_m")) & mu_presl_mask)
         else:
-            mu["is_tight_lep_for_wwz"] = (mu_presl_mask)
+            mu["is_tight_lep_for_dilepton"] = (mu_presl_mask)
 
         # Get tight leptons for WWZ selection
-        ele_wwz_t = ele[ele.is_tight_lep_for_wwz]
-        mu_wwz_t = mu[mu.is_tight_lep_for_wwz]
+        ele_dil_t = ele[ele.is_tight_lep_for_dilepton]
+        mu_dil_t = mu[mu.is_tight_lep_for_dilepton]
 
         # Attach the lepton SFs to the electron and muons collections
         if (is2022 or is2023):
-            cor_ec.run3_muons_sf_attach(mu_wwz_t,year,"NUM_MediumID_DEN_TrackerMuons","NUM_LoosePFIso_DEN_MediumID")
-            cor_ec.run3_electrons_sf_attach(ele_wwz_t,year,"wp90iso")
+            cor_ec.run3_muons_sf_attach(mu_dil_t,year,"NUM_MediumID_DEN_TrackerMuons","NUM_LoosePFIso_DEN_MediumID")
+            cor_ec.run3_electrons_sf_attach(ele_dil_t,year,"wp90iso")
         else:
-            cor_ec.AttachElectronSF(ele_wwz_t,year=year)
-            cor_ec.AttachMuonSF(mu_wwz_t,year=year)
+            cor_ec.AttachElectronSF(ele_dil_t,year=year)
+            cor_ec.AttachMuonSF(mu_dil_t,year=year)
 
-        l_wwz_t = ak.with_name(ak.concatenate([ele_wwz_t,mu_wwz_t],axis=1),'PtEtaPhiMCandidate')
-        l_wwz_t = l_wwz_t[ak.argsort(l_wwz_t.pt, axis=-1,ascending=False)] # Sort by pt
+        l_dil_t = ak.with_name(ak.concatenate([ele_dil_t,mu_dil_t],axis=1),'PtEtaPhiMCandidate')
+        l_dil_t = l_dil_t[ak.argsort(l_dil_t.pt, axis=-1,ascending=False)] # Sort by pt
 
         # For WWZ
-        l_wwz_t_padded = ak.pad_none(l_wwz_t, 2)
-        l0 = l_wwz_t_padded[:,0]
-        l1 = l_wwz_t_padded[:,1]
-
-        nleps = ak.num(l_wwz_t)
-
-        # Put njets and l_fo_conept_sorted into events and get 4l event selection mask
-        events["l_wwz_t"] = l_wwz_t
-        es_ec.add2lmask_wwz(events,year,isData,histAxisName,is2022,is2023)
+        l_dil_t_padded = ak.pad_none(l_dil_t, 2)
+        l0 = l_dil_t_padded[:,0]
+        l1 = l_dil_t_padded[:,1]
+        nleps = ak.num(l_dil_t)
+        events["l_dil_t"] = l_dil_t
+        es_ec.add2lmask_dilepton(events,year,isData,histAxisName,is2022,is2023)
 
 
         ######### Normalization and weights ###########
@@ -206,7 +199,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             lumi = 1000.0*get_tc_param(f"lumi_{year}")
             weights_obj_base.add("norm",(xsec/sow)*genw*lumi*sm_wgt)
 
-            if not is2022:
+            if not (is2022 or is2023):
                 # Misc other experimental SFs and systs
                 weights_obj_base.add('PreFiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
                 weights_obj_base.add('PU', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
@@ -220,9 +213,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Set up the list of systematics that are handled via event weight variations
         wgt_correction_syst_lst = [
-            "btagSFlight_correlated", "btagSFbc_correlated", f"btagSFlight_uncorrelated_{year}", f"btagSFbc_uncorrelated_{year}",
             "lepSF_elec", "lepSF_muon", "PU",
-            "renorm", "fact", "ISR", "FSR",
         ]
         if not (is2022 or is2023):
             wgt_correction_syst_lst = wgt_correction_syst_lst + ["PreFiring"]
@@ -231,9 +222,6 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
 
-        obj_correction_systs = [] # Will have e.g. jes etc
-
-        # Otherwise loop juse once, for nominal
         obj_corr_syst_var_list = ['nominal']
 
         # Loop over the list of systematic variations (that impact object kinematics) that we've constructed
@@ -241,7 +229,6 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Make a copy of the base weights object, so that each time through the loop we do not double count systs
             # In this loop over systs that impact kinematics, we will add to the weights objects the SFs that depend on the object kinematics
             weights_obj_base_for_kinematic_syst = copy.deepcopy(weights_obj_base)
-
 
             #################### Jets ####################
 
@@ -255,13 +242,9 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Count jets
             njets = ak.num(goodJets)
-            ht = ak.sum(goodJets.pt,axis=-1)
-            j0 = goodJets[ak.argmax(goodJets.pt,axis=-1,keepdims=True)]
-
 
             # Loose DeepJet WP
             btagger = "btag" # For deep flavor WPs
-            #btagger = "btagcsv" # For deep CSV WPs
             if year == "2017":
                 btagwpl = get_tc_param(f"{btagger}_wp_loose_UL17")
                 btagwpm = get_tc_param(f"{btagger}_wp_medium_UL17")
@@ -311,15 +294,23 @@ class AnalysisProcessor(processor.ProcessorABC):
             ######### WWZ event selection stuff #########
 
             # Get some preliminary things we'll need
-            es_ec.attach_wwz_preselection_mask(events,l_wwz_t_padded[:,0:4]) # Attach preselection sf and of flags to the events
+            es_ec.attach_dilepton_preselection_mask(events,l_dil_t_padded[:,0:2]) 
 
             # Put the variables into a dictionary for easy access later
             dense_variables_dict = {
-                "met" : met.pt,
-                "metphi" : met.phi,
-                "nleps" : nleps,
-                "njets" : njets,
+                "met"     : met.pt,
+                "metphi"  : met.phi,
+                "mll"     : (l0 + l1).mass,
+                "l0pt"    : l0.pt,
+                "l1pt"    : l1.pt,
+                "l0_eta"  : l0.eta,
+                "l1_eta"  : l1.eta,
+                "l0_phi"  : l0.phi,
+                "l1_phi"  : l1.phi,
+                "njets"   : njets,
+                "nleps"   : nleps,
                 "nbtagsl" : nbtagsl,
+                "nbtagsm" : nbtagsm,
             }
 
 
@@ -333,13 +324,13 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Fill the packed slection object
 
             # SRs
-            selections.add("mumu_2l_sf",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of))
-            selections.add("ee_2l_sf", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0)))
-            selections.add("emu_2l_of", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
+            selections.add("mumu_2l_sf" ,(pass_trg & events.is2l_dil & events.dil_presel_sf_mumu))
+            selections.add("ee_2l_sf"   ,(pass_trg & events.is2l_dil & events.dil_presel_sf_ee))
+            #selections.add("emu_2l_of", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
 
             cat_dict = {
                 "lep_chan_lst" : [
-                    "mumu_2l_sf","ee_2l_sf","emu_2l_of",
+                    "mumu_2l_sf","ee_2l_sf",#"emu_2l_of",
                 ]
             }
 
@@ -350,7 +341,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
             # List the hists that are only defined for some categories
-            analysis_cats = ["mumu_2l_sf","ee_2l_sf","emu_2l_of"]
+            analysis_cats = ["mumu_2l_sf","ee_2l_sf"] #,"emu_2l_of"]
             exclude_var_dict = {}
 
             # Set up the list of weight fluctuations to loop over
@@ -385,9 +376,6 @@ class AnalysisProcessor(processor.ProcessorABC):
 
                     # Loop over categories
                     for sr_cat in cat_dict["lep_chan_lst"]:
-
-                        # Skip filling if this variable is not relevant for this selection
-                        if (dense_axis_name in exclude_var_dict) and (sr_cat in exclude_var_dict[dense_axis_name]): continue
 
                         # Make the cuts mask
                         cuts_lst = [sr_cat]
