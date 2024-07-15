@@ -41,10 +41,10 @@ class AnalysisProcessor(processor.ProcessorABC):
             "mll"   : axis.Regular(180, 0, 200, name="mll",  label="mll"),
             "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
             "l1pt"  : axis.Regular(180, 0, 500, name="l1pt", label="l1pt"),
-            "l0_eta" : axis.Regular(180, -3, 3, name="lep0_eta", label="Leading Z lep eta"),
-            "l1_eta" : axis.Regular(180, -3, 3, name="lep1_eta", label="Subleading Z lep eta"),
-            "l0_phi" : axis.Regular(180, -3.1416, 3.1416, name="lep0_phi", label="Leading Z lep phi"),
-            "l1_phi" : axis.Regular(180, -3.1416, 3.1416, name="lep1_phi", label="Subleading Z lep phi"),
+            "l0eta" : axis.Regular(180, -3, 3, name="l0eta", label="Leading Z lep eta"),
+            "l1eta" : axis.Regular(180, -3, 3, name="l1eta", label="Subleading Z lep eta"),
+            "l0phi" : axis.Regular(180, -3.1416, 3.1416, name="l0phi", label="Leading Z lep phi"),
+            "l1phi" : axis.Regular(180, -3.1416, 3.1416, name="l1phi", label="Subleading Z lep phi"),
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
             "nbtagsl" : axis.Regular(6, 0, 6, name="nbtagsl", label="Loose btag multiplicity"),
@@ -217,7 +217,6 @@ class AnalysisProcessor(processor.ProcessorABC):
         ]
         if not (is2022 or is2023):
             wgt_correction_syst_lst = wgt_correction_syst_lst + ["PreFiring"]
-        wgt_correction_syst_lst = append_up_down_to_sys_base(wgt_correction_syst_lst)
 
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
@@ -233,7 +232,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             #################### Jets ####################
 
             # Clean with dr (though another option is to use jetIdx)
-            cleanedJets = os_ec.get_cleaned_collection(l_wwz_t,jets)
+            cleanedJets = os_ec.get_cleaned_collection(l_dil_t,jets)
 
             # Selecting jets and cleaning them
             jetptname = "pt_nom" if hasattr(cleanedJets, "pt_nom") else "pt"
@@ -303,10 +302,10 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mll"     : (l0 + l1).mass,
                 "l0pt"    : l0.pt,
                 "l1pt"    : l1.pt,
-                "l0_eta"  : l0.eta,
-                "l1_eta"  : l1.eta,
-                "l0_phi"  : l0.phi,
-                "l1_phi"  : l1.phi,
+                "l0eta"  : l0.eta,
+                "l1eta"  : l1.eta,
+                "l0phi"  : l0.phi,
+                "l1phi"  : l1.phi,
                 "njets"   : njets,
                 "nleps"   : nleps,
                 "nbtagsl" : nbtagsl,
