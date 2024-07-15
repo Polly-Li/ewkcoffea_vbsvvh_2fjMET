@@ -244,9 +244,11 @@ def run3_electrons_sf_attach(electrons,year,wp):
     reco_sf_flat_20 = ak.where(pt_flat >= 20.0, 0, sf_flat_20)
     reco_sf_flat_20_hi = ak.where(pt_flat >= 20.0, 0, sf_flat_20_hi)
     reco_sf_flat_20_lo = ak.where(pt_flat >= 20.0, 0, sf_flat_20_lo)
+
     reco_sf_flat_2075 = ak.where(pt_flat < 20.0, 0, ak.where(pt_flat >= 75.0, 0, sf_flat_2075))
     reco_sf_flat_2075_hi = ak.where(pt_flat < 20.0, 0, ak.where(pt_flat >= 75.0, 0, sf_flat_2075_hi))
     reco_sf_flat_2075_lo = ak.where(pt_flat < 20.0, 0, ak.where(pt_flat >= 75.0, 0, sf_flat_2075_lo))
+
     reco_sf_flat_75 = ak.where(pt_flat < 75.0, 0, sf_flat_75)
     reco_sf_flat_75_hi = ak.where(pt_flat < 75.0, 0, sf_flat_75_hi)
     reco_sf_flat_75_lo = ak.where(pt_flat < 75.0, 0, sf_flat_75_lo)

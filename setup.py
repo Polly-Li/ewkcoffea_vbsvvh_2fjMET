@@ -12,6 +12,8 @@ setuptools.setup(
             "data/topmva_lep_sf/*root",
             "data/topmva_lep_sf/*json",
             "data/wwz_zh_bdt/*json",
+            "data/wwz_zh_ternary_bdt/*xml",
+            "data/wwz_zh_ternary_bdt/tmva_multiclassifier.C",
             "data/btag_eff/*.pkl.gz",
             "data/run3_pu/*/*json",
             "data/run3_lep_sf/electron_sf/*/*json",

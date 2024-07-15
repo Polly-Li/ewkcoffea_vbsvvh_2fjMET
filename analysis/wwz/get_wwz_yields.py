@@ -34,37 +34,50 @@ CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"]
 # Names of the cut-based and BDT SRs
 SR_SF_CB = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C"]
 SR_OF_CB = ["sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
-SR_SF_BDT = ["sr_4l_bdt_sf_1", "sr_4l_bdt_sf_2", "sr_4l_bdt_sf_3", "sr_4l_bdt_sf_4", "sr_4l_bdt_sf_5", "sr_4l_bdt_sf_6", "sr_4l_bdt_sf_7"]
+SR_SF_BDT = ["sr_4l_bdt_sf_1", "sr_4l_bdt_sf_2", "sr_4l_bdt_sf_3", "sr_4l_bdt_sf_4", "sr_4l_bdt_sf_5", "sr_4l_bdt_sf_6", "sr_4l_bdt_sf_7", "sr_4l_bdt_sf_8"]
 SR_OF_BDT = ["sr_4l_bdt_of_1", "sr_4l_bdt_of_2", "sr_4l_bdt_of_3", "sr_4l_bdt_of_4", "sr_4l_bdt_of_5", "sr_4l_bdt_of_6", "sr_4l_bdt_of_7", "sr_4l_bdt_of_8"]
 
 BDT_INPUT_LST = [
     "mll_wl0_wl1",
     "mllll",
+    "absdphi_4l_met",
+    "absdphi_zleps_met",
+    "absdphi_wleps_met",
     "absdphi_wl0_met",
     "absdphi_wl1_met",
-    "absdphi_4l_met",
-    "absdphi_wleps_met",
-    "absdphi_zleps_met",
-    "dr_wleps_zleps",
     "dr_wl0_wl1",
     "dr_zl0_zl1",
-    "scalarptsum_jet",
-    "scalarptsum_lepmet",
+    "dr_wleps_zleps",
     "met",
     "mt2",
-    "mt_4l_met",
-    "mt_wleps_met",
-    "mt_wl0_met",
-    "mt_wl1_met",
     "ptl4",
+    "scalarptsum_jet",
+    "scalarptsum_lepmet",
     "z_lep0_pt",
     "z_lep1_pt",
     "w_lep0_pt",
     "w_lep1_pt",
+    "njets",
     "cos_helicity_x",
+    "mt_wl0_met",
+    "mt_wl1_met",
+    "mt_wleps_met",
+    "mt_4l_met",
     "dr_wl0_j_min",
     "dr_wl1_j_min",
-    "njets",
+]
+
+BDT_SCORE_LST = [
+    "bdt_of_wwz",
+    "bdt_sf_wwz",
+    "bdt_of_zh",
+    "bdt_sf_zh",
+    "bdt_of_bkg",
+    "bdt_sf_bkg",
+    "bdt_of_wwz_m_zh",
+    "bdt_sf_wwz_m_zh",
+    #"bdt_of_bin",
+    #"bdt_sf_bin",
 ]
 
 TMP_VAR_LST = [
@@ -531,11 +544,11 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
             "sr_4l_of_2",
             "sr_4l_of_3",
             "sr_4l_of_4",
-            #"cr_4l_sf",
-            #"cr_4l_btag_sf_offZ_met80",
-            #"cr_4l_btag_of",
-            #"sr_4l_of_incl",
-            #"sr_4l_sf_incl",
+            "cr_4l_sf",
+            "cr_4l_btag_sf_offZ_met80",
+            "cr_4l_btag_of",
+            "sr_4l_of_incl",
+            "sr_4l_sf_incl",
         ]
 
         # Rebin if continous variable
@@ -563,13 +576,13 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
             data_nom = merge_overflow(histo_grouped_data[{"systematic":"nominal"}])
 
             for syst in syst_var_lst:
-                #if "btag" not in syst: continue
+                if "btag" not in syst: continue
                 #if "uncorrelated" not in syst: continue
                 #if "lepSF" not in syst: continue
                 #if "PreFiring" not in syst: continue
                 #if "PU" not in syst: continue
                 #if "ISR" not in syst and "FSR" not in syst: continue
-                if "renorm" not in syst and "fact" not in syst: continue
+                #if "renorm" not in syst and "fact" not in syst: continue
 
                 # Skip the variations that don't apply (TODO: why are these in the hist to begin with??)
                 if year == "UL16APV": blacklist_years = ["2016","2017","2018","2022","2022EE"]
@@ -578,6 +591,7 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 if year == "UL18": blacklist_years = ["2016APV","2016","2017","2022","2022EE"]
                 if year == "2022": blacklist_years = ["2016APV","2016","2017","2018","2022EE"]
                 if year == "2022EE": blacklist_years = ["2016APV","2016","2017","2018","2022"]
+                if year == "run3": blacklist_years = ["2016APV","2016","2017","2018"]
                 if year == "all": blacklist_years = []
                 skip = False
                 for y in blacklist_years:
@@ -630,7 +644,7 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data,year,ana_type="cb"):
     if ana_type == "cb":
         sr_lst  = sg.CAT_LST_CB
         hist_label = "Cut-based SRs"
-        y_max = 9 # 9 is good for R2, 4 is good for R3
+        y_max = 4 # 9 is good for R2, 4 is good for R3
         fig_size = (12,7)
     elif ana_type == "bdt":
         sr_lst  = sg.CAT_LST_BDT
@@ -698,8 +712,9 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
         # Skip over some variables if you want to
         if "counts" in var_name: continue
         if var_name == "nbtagsm": continue
+        #if var_name not in ["bdt_of_bin","bdt_sf_bin"]: continue
         #if var_name not in BDT_INPUT_LST: continue
-        #if var_name != "nleps" and "bdt" not in var_name: continue
+        #if var_name not in BDT_SCORE_LST: continue
 
         # Get the relevant histogram from the input dict
         #print(f"\n{var_name}")
@@ -713,14 +728,14 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
             # Skip some of the cats if you want to
             #if "bdt" in cat_name: continue
             #if cat_name not in ["sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn"]: continue # TMP
-            if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]: continue
+            #if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]: continue
             #print(cat_name)
 
             # Make a copy so changes to binning do not propagate to next loop
             histo = copy.deepcopy(histo_orig)
 
             # Rebin if continous variable
-            if var_name not in ["njets","nbtagsl","nleps"]:
+            if var_name not in ["njets","nbtagsl","nleps","bdt_of_bin","bdt_sf_bin"]:
                 if cat_name in ["cr_4l_btag_sf_offZ_met80","cr_4l_btag_of"]:
                     histo = rebin(histo,15)
                 else:
@@ -932,7 +947,7 @@ def main():
         #hlines = [6,7,15,16]
         #sr_cats_to_print = SR_SF_BDT + ["sr_sf_all_bdt"] + SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"]
         #procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
-        #print_yields(args.ul_year,yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines)
+        #print_yields(args.ul_year,yld_dict,sr_cats_to_print,procs_to_print,ref_dict=yd.EWK_REF,hlines=hlines)
 
         # Compare BDT yields against Keegan ref yields
         #keegan_ref = utils.put_none_errs(copy.deepcopy(yd.KEEGAN_BDT_YLDS))

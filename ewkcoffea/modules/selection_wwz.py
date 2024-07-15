@@ -11,6 +11,14 @@ from ewkcoffea.modules.paths import ewkcoffea_path
 from topcoffea.modules.get_param_from_jsons import GetParam
 get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
 
+# Loading of the TMVA classifier
+import ROOT as r
+import os
+dirpath = os.path.dirname(os.path.abspath(__file__))
+r.gROOT.ProcessLine(".L {}".format(ewkcoffea_path("data/wwz_zh_ternary_bdt/tmva_multiclassifier.C")))
+
+bdt_of_v7 = r.ewkcoffea.BDT_OF_v7(ewkcoffea_path("data/wwz_zh_ternary_bdt/BDT_OF_v7__050124_Ternary_BDTG_LR0p1.weights.xml"))
+bdt_sf_v7 = r.ewkcoffea.BDT_SF_v7(ewkcoffea_path("data/wwz_zh_ternary_bdt/BDT_SF_v7__050124_Ternary_BDTG_LR0p1.weights.xml"))
 
 # The datasets we are using, and the triggers in them
 dataset_dict = {
@@ -461,3 +469,66 @@ def eval_sig_bdt(events,in_vals,model_fpath):
     bst.load_model(model_fpath)
     score = bst.predict(in_vals)
     return score
+
+def eval_of_tern_bdt(in_vals):
+    rtn = bdt_of_v7.Eval(
+        in_vals[0].to_list(),
+        in_vals[1].to_list(),
+        in_vals[2].to_list(),
+        in_vals[3].to_list(),
+        in_vals[4].to_list(),
+        in_vals[5].to_list(),
+        in_vals[6].to_list(),
+        in_vals[7].to_list(),
+        in_vals[8].to_list(),
+        in_vals[9].to_list(),
+        in_vals[10].to_list(),
+        in_vals[11].to_list(),
+        in_vals[12].to_list(),
+        in_vals[13].to_list(),
+        in_vals[14].to_list(),
+        in_vals[15].to_list(),
+        in_vals[16].to_list(),
+        in_vals[17].to_list(),
+        in_vals[18].to_list(),
+        in_vals[19].to_list(),
+        in_vals[20].to_list(),
+        in_vals[21].to_list(),
+        in_vals[22].to_list(),
+        in_vals[23].to_list(),
+        in_vals[24].to_list(),
+        in_vals[25].to_list()
+    )
+    return rtn
+
+def eval_sf_tern_bdt(in_vals):
+    rtn = bdt_sf_v7.Eval(
+        in_vals[0].to_list(),
+        in_vals[1].to_list(),
+        in_vals[2].to_list(),
+        in_vals[3].to_list(),
+        in_vals[4].to_list(),
+        in_vals[5].to_list(),
+        in_vals[6].to_list(),
+        in_vals[7].to_list(),
+        in_vals[8].to_list(),
+        in_vals[9].to_list(),
+        in_vals[10].to_list(),
+        in_vals[11].to_list(),
+        in_vals[12].to_list(),
+        in_vals[13].to_list(),
+        in_vals[14].to_list(),
+        in_vals[15].to_list(),
+        in_vals[16].to_list(),
+        in_vals[17].to_list(),
+        in_vals[18].to_list(),
+        in_vals[19].to_list(),
+        in_vals[20].to_list(),
+        in_vals[21].to_list(),
+        in_vals[22].to_list(),
+        in_vals[23].to_list(),
+        in_vals[24].to_list(),
+        in_vals[25].to_list(),
+        in_vals[26].to_list()
+    )
+    return rtn
