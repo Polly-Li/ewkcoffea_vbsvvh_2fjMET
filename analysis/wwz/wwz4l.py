@@ -885,7 +885,6 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # For BDT SRs
 
-
             sr_4l_bdt_sf_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z)
             sr_4l_bdt_sf_trn    = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & mt2_mask)
             sr_4l_bdt_of_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)
@@ -958,7 +957,6 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "cr_4l_sf_higgs",
                 ]
             }
-
 
             cat_dict["lep_chan_lst"] = cat_dict["lep_chan_lst"] + bdt_sr_names + bdt_misc_names
 

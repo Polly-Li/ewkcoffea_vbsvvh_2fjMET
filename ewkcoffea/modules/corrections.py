@@ -218,7 +218,7 @@ def run3_electrons_sf_attach(electrons,year,wp):
     pt_flat_75 = ak.where(pt_flat < 75.0, 75.0,pt_flat)
 
     #Get the Reco SF for all three region lists
-    if "2023" in year:
+    if year in ["2023","2023BPix"]:
         sf_flat_20 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","RecoBelow20",eta_flat,pt_flat_20,phi_flat)
         sf_flat_20_hi = ceval["Electron-ID-SF"].evaluate(n_year,"sfup","RecoBelow20",eta_flat,pt_flat_20,phi_flat)
         sf_flat_20_lo = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown","RecoBelow20",eta_flat,pt_flat_20,phi_flat)

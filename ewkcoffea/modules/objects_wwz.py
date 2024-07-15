@@ -164,7 +164,7 @@ def get_topmva_score_mu(events, year):
 
 #################### Run 2 and Run 3 TnP IDs #######################
 
-def is_loose_run2_ele(ele):
+def is_loose_run2_ele_tnp(ele):
     mask = (
         (ele.pt               >  get_ec_param("wwz_pres_e_pt"))  &
         (abs(ele.eta)         <  get_ec_param("wwz_pres_e_eta")) &
@@ -178,7 +178,7 @@ def is_loose_run2_ele(ele):
     )
     return mask
 
-def is_loose_run2_mu(mu):
+def is_loose_run2_mu_tnp(mu):
     mask = (
         (mu.pt               >  get_ec_param("wwz_pres_m_pt")) &
         (abs(mu.eta)         <  get_ec_param("wwz_pres_m_eta")) &
@@ -190,7 +190,7 @@ def is_loose_run2_mu(mu):
     )
     return mask
 
-def is_loose_run3_ele(ele):
+def is_loose_run3_ele_tnp(ele):
     mask = (
         (ele.pt               >  get_ec_param("wwz_pres_e_pt"))  &
         (abs(ele.eta)         <  get_ec_param("wwz_pres_e_eta")) &
@@ -204,7 +204,7 @@ def is_loose_run3_ele(ele):
     )
     return mask
 
-def is_loose_run3_mu(mu):
+def is_loose_run3_mu_tnp(mu):
     mask = (
         (mu.pt               >  get_ec_param("wwz_pres_m_pt")) &
         (abs(mu.eta)         <  get_ec_param("wwz_pres_m_eta")) &
@@ -216,7 +216,7 @@ def is_loose_run3_mu(mu):
     )
     return mask
 
-def is_tight_run3_ele(ele):
+def is_tight_run3_ele_tnp(ele):
     mask = (
         (ele.pt               >  get_ec_param("wwz_pres_e_pt"))  &
         (abs(ele.eta)         <  get_ec_param("wwz_pres_e_eta")) &
@@ -231,7 +231,7 @@ def is_tight_run3_ele(ele):
     )
     return mask
 
-def is_tight_run3_mu(mu):
+def is_tight_run3_mu_tnp(mu):
     mask = (
         (mu.pt               >  get_ec_param("wwz_pres_m_pt")) &
         (abs(mu.eta)         <  get_ec_param("wwz_pres_m_eta")) &
