@@ -206,22 +206,22 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
 
             ######
             # Print stuff if you want to
-            #if (cat_name == "mumu_2l_sf" or cat_name == "ee_2l_sf") and var_name == "nleps":
-            #    print(f"\n{cat_name} {var_name}:")
-            #    print("Yields")
-            #    data = sum(sum(histo_grouped_data.values(flow=True)))
-            #    data_error = sum(sum(histo_grouped_data.variances(flow=True))) ** 0.5
-            #    mc = sum(sum(histo_grouped_mc.values(flow=True)))
-            #    mc_error = sum(sum(histo_grouped_mc.variances(flow=True))) ** 0.5
-            #    data_over_mc_ratio = data / mc
-            #    data_over_mc_ratio_error = data_over_mc_ratio * ((data_error / data)**2 + (mc_error / mc)**2)**0.5
-            #    print("mc:",mc)
-            #    print("mc Error:",mc_error)
-            #    print("data:",data)
-            #    print("data Error:",data_error)
-            #    print("data/mc:", data_over_mc_ratio)
-            #    print("data/mc Error:", data_over_mc_ratio_error)
-            #continue
+            if (cat_name == "mumu_2l_sf" or cat_name == "ee_2l_sf") and var_name == "nleps":
+                print(f"\n{cat_name} {var_name}:")
+                print("Yields")
+                data = sum(sum(histo_grouped_data.values(flow=True)))
+                data_error = sum(sum(histo_grouped_data.variances(flow=True))) ** 0.5
+                mc = sum(sum(histo_grouped_mc.values(flow=True)))
+                mc_error = sum(sum(histo_grouped_mc.variances(flow=True))) ** 0.5
+                data_over_mc_ratio = data / mc
+                data_over_mc_ratio_error = data_over_mc_ratio * ((data_error / data)**2 + (mc_error / mc)**2)**0.5
+                print("mc:",mc)
+                print("mc Error:",mc_error)
+                print("data:",data)
+                print("data Error:",data_error)
+                print("data/mc:", data_over_mc_ratio)
+                print("data/mc Error:", data_over_mc_ratio_error)
+            continue
             #####
 
             # Merge overflow into last bin (so it shows up in the plot)
