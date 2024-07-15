@@ -1,11 +1,4 @@
-import numpy as np
 import awkward as ak
-import xgboost as xgb
-from mt2 import mt2
-
-from coffea.nanoevents.methods import vector
-
-import topcoffea.modules.event_selection as tc_es
 
 from ewkcoffea.modules.paths import ewkcoffea_path
 from topcoffea.modules.get_param_from_jsons import GetParam

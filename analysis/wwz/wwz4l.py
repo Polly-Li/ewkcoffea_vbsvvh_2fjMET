@@ -180,6 +180,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Set a flag if this is a 2022 year
         is2022 = year in ["2022","2022EE"]
+        is2023 = year in ["2023","2023BPix"]
 
         # If this is a 2022 sample, get the era info
         if isData and is2022:
@@ -253,16 +254,16 @@ class AnalysisProcessor(processor.ProcessorABC):
         ################### Lepton selection ####################
 
         # Do the object selection for the WWZ eleectrons
-        ele_presl_mask = os_ec.is_presel_wwz_ele(ele,is2022)
-        if not is2022:
+        ele_presl_mask = os_ec.is_presel_wwz_ele(ele,is2022,is2023)
+        if not (is2022 or is2023):
             ele["topmva"] = os_ec.get_topmva_score_ele(events, year)
             ele["is_tight_lep_for_wwz"] = ((ele.topmva > get_tc_param("topmva_wp_t_e")) & ele_presl_mask)
         else:
             ele["is_tight_lep_for_wwz"] = (ele_presl_mask)
 
         # Do the object selection for the WWZ muons
-        mu_presl_mask = os_ec.is_presel_wwz_mu(mu, is2022)
-        if not is2022:
+        mu_presl_mask = os_ec.is_presel_wwz_mu(mu, is2022,is2023)
+        if not (is2022 or is2023):
             mu["topmva"] = os_ec.get_topmva_score_mu(events, year)
             mu["is_tight_lep_for_wwz"] = ((mu.topmva > get_tc_param("topmva_wp_t_m")) & mu_presl_mask)
         else:
@@ -273,7 +274,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         mu_wwz_t = mu[mu.is_tight_lep_for_wwz]
 
         # Attach the lepton SFs to the electron and muons collections
-        if is2022:
+        if (is2022 or is2023):
             cor_ec.run3_muons_sf_attach(mu_wwz_t,year,"NUM_MediumID_DEN_TrackerMuons","NUM_LoosePFIso_DEN_MediumID")
             cor_ec.run3_electrons_sf_attach(ele_wwz_t,year,"wp90iso")
         else:
@@ -345,7 +346,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Renorm/fact scale
             weights_obj_base.add('renorm', events.nom, events.renormUp*(sow/sow_renormUp), events.renormDown*(sow/sow_renormDown))
             weights_obj_base.add('fact', events.nom, events.factUp*(sow/sow_factUp), events.factDown*(sow/sow_factDown))
-            if not is2022:
+            if not (is2022 or is2023):
                 # Misc other experimental SFs and systs
                 weights_obj_base.add('PreFiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
                 weights_obj_base.add('PU', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
@@ -363,7 +364,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             "lepSF_elec", "lepSF_muon", "PU",
             "renorm", "fact", "ISR", "FSR",
         ]
-        if not is2022:
+        if not (is2022 or is2023):
             wgt_correction_syst_lst = wgt_correction_syst_lst_common + ["PreFiring","btagSFlight_correlated",f"btagSFlight_uncorrelated_{year}"]
         else:
             wgt_correction_syst_lst = wgt_correction_syst_lst_common + ["btagSFlight"]
@@ -452,7 +453,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 year_light = year
                 if year == "2016": year_light = "2016APV"
 
-                if not is2022:
+                if not (is2022 or is2023):
                     btag_sf_light = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl","central")
                 else:
                     btag_sf_light = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_light","central")
@@ -473,7 +474,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                     # Run3 2022 btagging systematics stuff
                     # Note light correlated and uncorrelated are missing, so just using total, as suggested by the pog
                     # See this for more info: https://cms-talk.web.cern.ch/t/2022-btag-sf-recommendations/42262
-                    if is2022:
+                    if (is2022 or is2023):
                         for btag_sys in ["correlated", "uncorrelated"]:
                             year_tag = f"_{year}"
                             if btag_sys == "correlated": year_tag = ""
@@ -518,7 +519,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Pass trigger mask
             pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=era)
             # Skip trigger matching requirementmes for R3 for now
-            if not is2022:
+            if not (is2022 or is2023):
                 pass_trg = (pass_trg & es_ec.trg_matching(events,year))
 
             # b jet masks
@@ -694,7 +695,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             ######### Evaluate the BDTs (get WWZ, ZH, and WZ scores for SF and OF) #########
 
-            if not is2022:
+            if not (is2022 or is2023):
 
                 # Get the list of variables for the BDTs (and fill None with -9999 to not cause problems), and eval
                 bdt_vars_sf_wwz = fill_none_in_list(get_ec_param("sf_bdt_var_lst"),dense_variables_dict,-9999)
@@ -831,7 +832,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # For BDT SRs
 
-            if not is2022:
+            if not (is2022 or is2023):
                 sr_4l_bdt_sf_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z)
                 sr_4l_bdt_sf_trn    = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & mt2_mask)
                 sr_4l_bdt_of_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)
@@ -904,7 +905,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 ]
             }
 
-            if not is2022:
+            if not (is2022 or is2023):
                 cat_dict["lep_chan_lst"] = cat_dict["lep_chan_lst"] + bdt_sr_names + bdt_misc_names
 
             ######### Fill histos #########
@@ -914,7 +915,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # List the hists that are only defined for some categories
             analysis_cats = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
-            if not is2022:
+            if not (is2022 or is2023):
                 analysis_cats = analysis_cats + bdt_sr_names
             exclude_var_dict = {
                 "mt2" : ["all_events"],
@@ -975,7 +976,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mlb_max" : ["all_events","4l_presel", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf"] + analysis_cats,
             }
 
-            if not is2022:
+            if not (is2022 or is2023):
                 exclude_var_dict["bdt_of_wwz"] = ["all_events"]
                 exclude_var_dict["bdt_sf_wwz"] = ["all_events"]
                 exclude_var_dict["bdt_of_zh"] = ["all_events"]
