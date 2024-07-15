@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 #import sys
-import math
 import coffea
 import numpy as np
 import awkward as ak
@@ -293,7 +292,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             ######### WWZ event selection stuff #########
 
             # Get some preliminary things we'll need
-            es_ec.attach_dilepton_preselection_mask(events,l_dil_t_padded[:,0:2]) 
+            es_ec.attach_dilepton_preselection_mask(events,l_dil_t_padded[:,0:2])
 
             # Put the variables into a dictionary for easy access later
             dense_variables_dict = {

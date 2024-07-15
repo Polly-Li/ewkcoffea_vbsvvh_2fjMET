@@ -1,17 +1,13 @@
 import argparse
 import pickle
-import json
 import gzip
 import os
 import numpy as np
-import math
 import matplotlib.pyplot as plt
 import copy
 import hist
 
 from topcoffea.scripts.make_html import make_html
-from topcoffea.modules import utils
-import topcoffea.modules.MakeLatexTable as mlt
 
 import ewkcoffea.modules.yield_tools as yt
 import ewkcoffea.modules.sample_groupings_dilepton as sg
@@ -188,7 +184,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path):
         for cat_name in histo_orig.axes["category"]:
             # Skip some of the cats if you want to
             #if "bdt" in cat_name: continue
-            #if cat_name not in ["sr_4l_sf_incl", "sr_4l_of_incl"]: continue 
+            #if cat_name not in ["sr_4l_sf_incl", "sr_4l_of_incl"]: continue
             #print(cat_name)
 
             # Make a copy so changes to binning do not propagate to next loop
