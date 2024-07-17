@@ -111,10 +111,6 @@ def btag_eff_eval(jets,wp,year):
         pname = f"UL17_{pname_base}"
     elif year == "2018":
         pname = f"UL18_{pname_base}"
-    #elif year == "2022":
-    #    pname = f"UL18_{pname_base}"
-    #elif year == "2022EE":
-    #    pname = f"UL18_{pname_base}"
     elif year in ["2022","2022EE"]:
         pname_22_1   = "2022_TTZToLL_M_4to50"
         pname_22_2   = "2022_TTZToLL_M_50"
@@ -130,7 +126,7 @@ def btag_eff_eval(jets,wp,year):
     if year in ["2022","2022EE"]:
         pkl_file_path = ewkcoffea_path("data/btag_eff/btag_eff_2022_ttZ_srpresel.pkl.gz")
         histo = pickle.load(gzip.open(pkl_file_path))["ptabseta"]
-        histo_proc = histo[{"process":pname_22_1}] + histo[{"process":pname_22_2}] + histo[{"process":pname_22EE_1}] + histo[{"process":pname_22EE_2}]
+        histo_proc = histo[{"process":pname_22_1}] + histo[{"process":pname_22_2}] + histo[{"process":pname_22EE_1}] + histo[{"process":pname_22EE_2}] #Adding 2022EE and 2022 together to fix low-stat bug
     else:
         pkl_file_path = ewkcoffea_path("data/btag_eff/btag_eff_ttZ_srpresel.pkl.gz")
         histo = pickle.load(gzip.open(pkl_file_path))["ptabseta"]
