@@ -16,6 +16,7 @@ def get_cleaned_collection(obj_collection_a,obj_collection_b,drcut=0.4):
 
 ######### WWZ 4l analysis object selection #########
 
+
 # WWZ preselection for electrons
 def is_presel_wwz_ele(ele,is2022,is2023):
     mask = (
@@ -53,7 +54,7 @@ def is_presel_wwz_mu(mu,is2022,is2023):
         (mu.mediumId)
     )
 
-    if is2022:
+    if (is2022 or is2023):
         mask_year = (
             (mu.pfIsoId >= get_ec_param("run3_wwz_pres_m_pfIsoId_Loose"))
         )
@@ -161,47 +162,86 @@ def get_topmva_score_mu(events, year):
     score = ak.unflatten(score,counts)
     return score
 
-def is_veto_run3_2lep_ele(ele):
+#################### Run 2 and Run 3 TnP IDs #######################
+
+def is_loose_run2_ele_tnp(ele):
     mask = (
-        (ele.pt                 >  get_ec_param("run3_2lep_pres_e_pt")) &
-        (abs(ele.eta)           <  get_ec_param("run3_2lep_pres_e_eta")) &
-        (ele.cutBased           >= get_ec_param("run3_2lep_pres_e_cutBasedID_veto")) &
+        (ele.pt               >  get_ec_param("wwz_pres_e_pt"))  &
+        (abs(ele.eta)         <  get_ec_param("wwz_pres_e_eta")) &
+        (abs(ele.dxy)         <  get_ec_param("wwz_pres_e_dxy")) &
+        (abs(ele.dz)          <  get_ec_param("wwz_pres_e_dz"))  &
+        (abs(ele.sip3d)       <  get_ec_param("wwz_pres_e_sip3d")) &
+        (ele.lostHits         <= get_ec_param("wwz_pres_e_lostHits"))&
+        (ele.tightCharge      == get_ec_param("wwz_pres_e_tightCharge")) &
+        (ele.miniPFRelIso_all <  get_ec_param("wwz_pres_e_miniPFRelIso_all")) &
         (ele.convVeto)
     )
     return mask
 
-def is_tight_run3_2lep_ele(ele):
+def is_loose_run2_mu_tnp(mu):
     mask = (
-        (ele.pt                                >  get_ec_param("run3_2lep_pres_e_pt")) &
-        (abs(ele.eta)                          <  get_ec_param("run3_2lep_pres_e_eta")) &
-        (abs(ele.dxy)                          <  get_ec_param("run3_2lep_pres_e_dxy")) &
-        (abs(ele.dz)                           <  get_ec_param("run3_2lep_pres_e_dz")) &
-        (ele.cutBased                          >= get_ec_param("run3_2lep_pres_e_cutBasedID_med"))
-    )
-    return mask
-
-def is_veto_run3_2lep_mu(mu):
-    mask = (
-        (mu.pt               >  get_ec_param("run3_2lep_pres_m_pt")) &
-        (abs(mu.eta)         <  get_ec_param("run3_2lep_pres_m_eta")) &
-        (mu.looseId)
-    )
-    return mask
-
-def is_tight_run3_2lep_mu(mu):
-    mask = (
-        (mu.pt               >  get_ec_param("run3_2lep_pres_m_pt")) &
-        (abs(mu.eta)         <  get_ec_param("run3_2lep_pres_m_eta")) &
-        (abs(mu.dxy)         <  get_ec_param("run3_2lep_pres_m_dxy")) &
-        (abs(mu.dz)          <  get_ec_param("run3_2lep_pres_m_dz")) &
-        (mu.pfIsoId          >= get_ec_param("run3_2lep_pres_m_pfIsoId_Tight")) &
+        (mu.pt               >  get_ec_param("wwz_pres_m_pt")) &
+        (abs(mu.eta)         <  get_ec_param("wwz_pres_m_eta")) &
+        (abs(mu.dxy)         <  get_ec_param("wwz_pres_m_dxy")) &
+        (abs(mu.dz)          <  get_ec_param("wwz_pres_m_dz")) &
+        (abs(mu.sip3d)       <  get_ec_param("wwz_pres_m_sip3d")) &
+        (mu.miniPFRelIso_all <  get_ec_param("wwz_pres_m_miniPFRelIso_all")) &
         (mu.mediumId)
     )
     return mask
 
-def is_presel_run3_2lep_jets(jets):
+def is_loose_run3_ele_tnp(ele):
     mask = (
-        (jets.pt               >  get_ec_param("run3_2lep_pres_jets_pt")) &
-        (abs(jets.eta)         <  get_ec_param("run3_2lep_pres_jets_eta"))
+        (ele.pt               >  get_ec_param("wwz_pres_e_pt"))  &
+        (abs(ele.eta)         <  get_ec_param("wwz_pres_e_eta")) &
+        (abs(ele.dxy)         <  get_ec_param("wwz_pres_e_dxy")) &
+        (abs(ele.dz)          <  get_ec_param("wwz_pres_e_dz"))  &
+        (abs(ele.sip3d)       <  get_ec_param("wwz_pres_e_sip3d")) &
+        (ele.lostHits         <= get_ec_param("wwz_pres_e_lostHits"))&
+        (ele.tightCharge      == get_ec_param("wwz_pres_e_tightCharge")) &
+        (ele.cutBased         >= 1) &
+        (ele.convVeto)
     )
     return mask
+
+def is_loose_run3_mu_tnp(mu):
+    mask = (
+        (mu.pt               >  get_ec_param("wwz_pres_m_pt")) &
+        (abs(mu.eta)         <  get_ec_param("wwz_pres_m_eta")) &
+        (abs(mu.dxy)         <  get_ec_param("wwz_pres_m_dxy")) &
+        (abs(mu.dz)          <  get_ec_param("wwz_pres_m_dz")) &
+        (abs(mu.sip3d)       <  get_ec_param("wwz_pres_m_sip3d")) &
+        #(mu.pfIsoId          >= 1) &
+        (mu.mediumId)
+    )
+    return mask
+
+def is_tight_run3_ele_tnp(ele):
+    mask = (
+        (ele.pt               >  get_ec_param("wwz_pres_e_pt"))  &
+        (abs(ele.eta)         <  get_ec_param("wwz_pres_e_eta")) &
+        (abs(ele.dxy)         <  get_ec_param("wwz_pres_e_dxy")) &
+        (abs(ele.dz)          <  get_ec_param("wwz_pres_e_dz"))  &
+        (abs(ele.sip3d)       <  get_ec_param("wwz_pres_e_sip3d")) &
+        (ele.lostHits         <= get_ec_param("wwz_pres_e_lostHits"))&
+        (ele.tightCharge      == get_ec_param("wwz_pres_e_tightCharge")) &
+        #(ele.cutBased         >= 1) &
+        (ele.mvaIso_WP90) &
+        (ele.convVeto)
+    )
+    return mask
+
+def is_tight_run3_mu_tnp(mu):
+    mask = (
+        (mu.pt               >  get_ec_param("wwz_pres_m_pt")) &
+        (abs(mu.eta)         <  get_ec_param("wwz_pres_m_eta")) &
+        (abs(mu.dxy)         <  get_ec_param("wwz_pres_m_dxy")) &
+        (abs(mu.dz)          <  get_ec_param("wwz_pres_m_dz")) &
+        (abs(mu.sip3d)       <  get_ec_param("wwz_pres_m_sip3d")) &
+        (mu.pfIsoId          >= 2) &
+        (mu.mediumId)
+    )
+    return mask
+
+
+

@@ -75,6 +75,7 @@ if __name__ == '__main__':
     parser.add_argument('--skip-sr', action='store_true', help = 'Skip all signal region categories')
     parser.add_argument('--skip-cr', action='store_true', help = 'Skip all control region categories')
     parser.add_argument('--do-np'  , action='store_true', help = 'Perform nonprompt estimation on the output hist, and save a new hist with the np contribution included. Note that signal, background and data samples should all be processed together in order for this option to make sense.')
+    parser.add_argument('--siphon' , action='store_true', help = 'Siphon BDT data')
     parser.add_argument('--wc-list', action='extend', nargs='+', help = 'Specify a list of Wilson coefficients to use in filling histograms.')
     parser.add_argument('--hist-list', action='extend', nargs='+', help = 'Specify a list of histograms to fill.')
     parser.add_argument('--ecut', default=None  , help = 'Energy cut threshold i.e. throw out events above this (GeV)')
@@ -95,6 +96,7 @@ if __name__ == '__main__':
     treename   = args.treename
     do_errors  = args.do_errors
     do_systs   = args.do_systs
+    siphon     = args.siphon
     split_lep_flavor = args.split_lep_flavor
     skip_sr    = args.skip_sr
     skip_cr    = args.skip_cr
@@ -129,9 +131,9 @@ if __name__ == '__main__':
     # Figure out which hists to include
     if args.hist_list == ["few"]:
         # Here we hardcode a reduced list of a few hists
-        hist_lst = ["j0pt", "njets", "njets_counts", "nbtagsl", "nleps", "met", "l0pt"]
+        hist_lst = ["j0pt", "njets", "njets_counts", "nbtagsl", "nleps", "met", "l0pt", "abs_pdgid_sum"]
     elif args.hist_list == ["bdt"]:
-        hist_lst = ["j0pt", "njets", "njets_counts", "nbtagsl", "nleps", "met", "l0pt"] + BDT_VAR_NAMES
+        hist_lst = ["j0pt", "njets", "njets_counts", "nbtagsl", "nleps", "met", "l0pt", "abs_pdgid_sum"] + BDT_VAR_NAMES
     else:
         # We want to specify a custom list
         # If we don't specify this argument, it will be None, and the processor will fill all hists
@@ -248,7 +250,7 @@ if __name__ == '__main__':
     else:
         print('No Wilson coefficients specified')
 
-    processor_instance = wwz4l.AnalysisProcessor(samplesdict,wc_lst,hist_lst,ecut_threshold,do_errors,do_systs,split_lep_flavor,skip_sr,skip_cr)
+    processor_instance = wwz4l.AnalysisProcessor(samplesdict,wc_lst,hist_lst,ecut_threshold,do_errors,do_systs,split_lep_flavor,skip_sr,skip_cr,siphon_bdt_data=siphon)
 
     if executor == "work_queue":
         executor_args = {
