@@ -31,11 +31,6 @@ import yld_dicts_for_comp as yd
 CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"] # If need extra color, "skyblue" is nice
 #CLR_LST = ["#F09B9B","#00D091","#CDF09B"]
 
-# Names of the cut-based and BDT SRs
-SR_SF_CB = ["sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C"]
-SR_OF_CB = ["sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"]
-SR_SF_BDT = ["sr_4l_bdt_sf_1", "sr_4l_bdt_sf_2", "sr_4l_bdt_sf_3", "sr_4l_bdt_sf_4", "sr_4l_bdt_sf_5", "sr_4l_bdt_sf_6", "sr_4l_bdt_sf_7", "sr_4l_bdt_sf_8"]
-SR_OF_BDT = ["sr_4l_bdt_of_1", "sr_4l_bdt_of_2", "sr_4l_bdt_of_3", "sr_4l_bdt_of_4", "sr_4l_bdt_of_5", "sr_4l_bdt_of_6", "sr_4l_bdt_of_7", "sr_4l_bdt_of_8"]
 
 BDT_INPUT_LST = [
     "mll_wl0_wl1",
@@ -76,8 +71,13 @@ BDT_SCORE_LST = [
     "bdt_sf_bkg",
     "bdt_of_wwz_m_zh",
     "bdt_sf_wwz_m_zh",
-    #"bdt_of_bin",
-    #"bdt_sf_bin",
+]
+
+BDT_BINSUMMARY_LST = [
+    "bdt_of_bin",
+    "bdt_sf_bin",
+    "bdt_of_bin_coarse",
+    "bdt_sf_bin_coarse",
 ]
 
 TMP_VAR_LST = [
@@ -633,6 +633,9 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data,year,ana_type="cb"):
         hist_label = "BDT-based SRs"
         y_max = 20
         fig_size = (24,7)
+        if year == "run3":
+            sr_lst  = sg.CAT_LST_BDT_COARSE
+            fig_size = (12,7)
     else:
         raise Exception("Unknown analysis type.")
 
@@ -717,7 +720,8 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
             #if cat_name not in ["sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn"]: continue # TMP
             #if cat_name not in ["cr_4l_sf_higgs"]: continue
             if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]: continue
-            #print(cat_name)
+            #if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn"]: continue
+            print(cat_name)
 
             # Make a copy so changes to binning do not propagate to next loop
             histo = copy.deepcopy(histo_orig)
@@ -725,7 +729,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
             # Rebin and set some x axis ranges (for the continous variables)
             # Skip this for discrete variables
             rangex = None
-            if var_name not in ["njets","nbtagsl","nleps","bdt_of_bin","bdt_sf_bin","abs_pdgid_sum"]:
+            if var_name not in ["njets","nbtagsl","nleps","bdt_of_bin","bdt_sf_bin","bdt_of_bin_coarse","bdt_sf_bin_coarse","abs_pdgid_sum"]:
                 # Zoom in on mll around Z for Z CR
                 if (cat_name == "cr_4l_sf") and (var_name in ["mll_zl0_zl1","mll_wl0_wl1"]):
                     histo = rebin(histo,1)
@@ -867,10 +871,10 @@ def do_background_estimation(yld_dict_mc,yld_dict_data,ul_year):
 
     # Do the ttZ and ZZ estimation for BDT SRs
     if (ul_year == "run2") or (("UL" in ul_year) and ("2022" not in ul_year)):
-        for bdt_sr in SR_OF_BDT:
+        for bdt_sr in sg.SR_OF_BDT:
             print_dict[f"ttZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_of",bdt_sr)
             print_dict[f"ZZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ","cr_4l_sf",bdt_sr)
-        for bdt_sr in SR_SF_BDT:
+        for bdt_sr in sg.SR_SF_BDT:
             print_dict[f"ttZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_sf_offZ_met80",bdt_sr)
             print_dict[f"ZZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ", "cr_4l_sf",bdt_sr)
 
@@ -928,7 +932,7 @@ def main():
     if args.get_backgrounds:
         yld_dict_data = get_yields(histo_dict,sample_dict_data,quiet=True,blind=True)
         yld_dict_mc   = get_yields(histo_dict,sample_dict_mc,quiet=True)
-        put_cat_col_sums(yld_dict_mc, sr_sf_lst=SR_SF_CB, sr_of_lst=SR_OF_CB)
+        put_cat_col_sums(yld_dict_mc, sr_sf_lst=sg.SR_SF_CB, sr_of_lst=sg.SR_OF_CB)
         do_background_estimation(yld_dict_mc,yld_dict_data,args.ul_year)
 
 
@@ -937,9 +941,9 @@ def main():
 
         # Get the grouped yield dict and put the extra columns and rows into it
         yld_dict = get_yields(histo_dict,sample_dict_mc)
-        put_proc_row_sums(yld_dict, SR_SF_CB+SR_OF_CB + SR_SF_BDT+SR_OF_BDT + sg.CAT_LST_CR)
-        put_cat_col_sums(yld_dict, sr_sf_lst=SR_SF_CB,  sr_of_lst=SR_OF_CB,  tag="_cutbased")
-        put_cat_col_sums(yld_dict, sr_sf_lst=SR_SF_BDT, sr_of_lst=SR_OF_BDT, tag="_bdt")
+        put_proc_row_sums(yld_dict, sg.SR_SF_CB+sg.SR_OF_CB + sg.SR_SF_BDT+sg.SR_OF_BDT + sg.CAT_LST_CR)
+        put_cat_col_sums(yld_dict, sr_sf_lst=sg.SR_SF_CB,  sr_of_lst=sg.SR_OF_CB,  tag="_cutbased")
+        put_cat_col_sums(yld_dict, sr_sf_lst=sg.SR_SF_BDT, sr_of_lst=sg.SR_OF_BDT, tag="_bdt")
         #print(yld_dict)
         #exit()
 
@@ -967,15 +971,19 @@ def main():
 
         # Dump latex table for cut based
         hlines = [2,3,7,8]
-        sr_cats_to_print = SR_SF_CB + ["sr_sf_all_cutbased"] + SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
+        sr_cats_to_print = sg.SR_SF_CB + ["sr_sf_all_cutbased"] + sg.SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"]
         #sr_cats_to_print = ["sr_sf_all_cutbased" , "sr_of_all_cutbased" , "sr_all_cutbased" , "sr_4l_sf_presel" , "sr_4l_sf_trn" , "sr_4l_of_presel"] # Preselection SR categories
         procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
         print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines,ref_dict=ref_ylds)
         #exit()
 
         # Dump latex table for BDT
-        hlines = [7,8,16,17]
-        sr_cats_to_print = SR_SF_BDT + ["sr_sf_all_bdt"] + SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"]
+        if args.ul_year == "run2":
+            hlines = [7,8,16,17]
+            sr_cats_to_print = sg.SR_SF_BDT + ["sr_sf_all_bdt"] + sg.SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"]
+        elif args.ul_year == "run3":
+            hlines = [3,4,8,9]
+            sr_cats_to_print = sg.SR_SF_BDT_COARSE + ["sr_sf_all_bdt"] + sg.SR_OF_BDT_COARSE + ["sr_of_all_bdt","sr_all_bdt"]
         procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
         print_yields(yld_dict,sr_cats_to_print,procs_to_print,ref_dict=ref_ylds,hlines=hlines)
         #exit()
