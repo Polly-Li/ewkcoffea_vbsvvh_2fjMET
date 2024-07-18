@@ -570,7 +570,6 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Pass trigger mask
             pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=era)
-            # if not (is2022 or is2023):
             pass_trg = (pass_trg & es_ec.trg_matching(events,year))
 
             # b jet masks
