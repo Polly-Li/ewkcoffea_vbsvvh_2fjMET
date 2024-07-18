@@ -13,7 +13,11 @@ CAT_LST_CB = SR_SF_CB + SR_OF_CB
 
 SR_SF_BDT = ["sr_4l_bdt_sf_1", "sr_4l_bdt_sf_2", "sr_4l_bdt_sf_3", "sr_4l_bdt_sf_4", "sr_4l_bdt_sf_5", "sr_4l_bdt_sf_6", "sr_4l_bdt_sf_7", "sr_4l_bdt_sf_8"]
 SR_OF_BDT = ["sr_4l_bdt_of_1", "sr_4l_bdt_of_2", "sr_4l_bdt_of_3", "sr_4l_bdt_of_4", "sr_4l_bdt_of_5", "sr_4l_bdt_of_6", "sr_4l_bdt_of_7", "sr_4l_bdt_of_8"]
+SR_SF_BDT_COARSE = ["sr_4l_bdt_sf_coarse_1", "sr_4l_bdt_sf_coarse_2", "sr_4l_bdt_sf_coarse_3", "sr_4l_bdt_sf_coarse_4"]
+SR_OF_BDT_COARSE = ["sr_4l_bdt_of_coarse_1", "sr_4l_bdt_of_coarse_2", "sr_4l_bdt_of_coarse_3", "sr_4l_bdt_of_coarse_4"]
+
 CAT_LST_BDT = SR_SF_BDT + SR_OF_BDT
+CAT_LST_BDT_COARSE = SR_SF_BDT_COARSE + SR_OF_BDT_COARSE
 
 CAT_LST_CR = ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]
 
@@ -44,6 +48,11 @@ BKG_TF_MAP = {
         "sr_4l_bdt_sf_7" : "cr_4l_sf",
         "sr_4l_bdt_sf_8" : "cr_4l_sf",
 
+        "sr_4l_bdt_sf_coarse_1" : "cr_4l_sf",
+        "sr_4l_bdt_sf_coarse_2" : "cr_4l_sf",
+        "sr_4l_bdt_sf_coarse_3" : "cr_4l_sf",
+        "sr_4l_bdt_sf_coarse_4" : "cr_4l_sf",
+
         "sr_4l_bdt_of_1" : "cr_4l_sf",
         "sr_4l_bdt_of_2" : "cr_4l_sf",
         "sr_4l_bdt_of_3" : "cr_4l_sf",
@@ -52,6 +61,11 @@ BKG_TF_MAP = {
         "sr_4l_bdt_of_6" : "cr_4l_sf",
         "sr_4l_bdt_of_7" : "cr_4l_sf",
         "sr_4l_bdt_of_8" : "cr_4l_sf",
+
+        "sr_4l_bdt_of_coarse_1" : "cr_4l_sf",
+        "sr_4l_bdt_of_coarse_2" : "cr_4l_sf",
+        "sr_4l_bdt_of_coarse_3" : "cr_4l_sf",
+        "sr_4l_bdt_of_coarse_4" : "cr_4l_sf",
 
     },
     "ttZ" : {
@@ -75,6 +89,11 @@ BKG_TF_MAP = {
         "sr_4l_bdt_sf_7" : "cr_4l_btag_sf_offZ_met80",
         "sr_4l_bdt_sf_8" : "cr_4l_btag_sf_offZ_met80",
 
+        "sr_4l_bdt_sf_coarse_1" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_bdt_sf_coarse_2" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_bdt_sf_coarse_3" : "cr_4l_btag_sf_offZ_met80",
+        "sr_4l_bdt_sf_coarse_4" : "cr_4l_btag_sf_offZ_met80",
+
         "sr_4l_bdt_of_1" : "cr_4l_btag_of",
         "sr_4l_bdt_of_2" : "cr_4l_btag_of",
         "sr_4l_bdt_of_3" : "cr_4l_btag_of",
@@ -83,6 +102,11 @@ BKG_TF_MAP = {
         "sr_4l_bdt_of_6" : "cr_4l_btag_of",
         "sr_4l_bdt_of_7" : "cr_4l_btag_of",
         "sr_4l_bdt_of_8" : "cr_4l_btag_of",
+
+        "sr_4l_bdt_of_coarse_1" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_coarse_2" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_coarse_3" : "cr_4l_btag_of",
+        "sr_4l_bdt_of_coarse_4" : "cr_4l_btag_of",
     }
 }
 

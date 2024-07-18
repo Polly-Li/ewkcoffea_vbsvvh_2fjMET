@@ -437,7 +437,13 @@ def main():
 
     #### Make the cards for each channel ####
     cat_lst = sg.CAT_LST_CB
-    if use_bdt_sr: cat_lst = sg.CAT_LST_BDT
+    if use_bdt_sr:
+        if run == "run2":
+            cat_lst = sg.CAT_LST_BDT
+        elif run == "run3":
+            cat_lst = sg.CAT_LST_BDT_COARSE
+        else:
+            raise Exception("Unknown year")
     print(f"\nMaking cards for {cat_lst}. \nPutting in {out_dir}.")
     for ch in cat_lst:
 
