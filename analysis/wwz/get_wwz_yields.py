@@ -147,7 +147,7 @@ def put_proc_row_sums(yld_dict,sr_cat_lst, sig_lst=sg.SIG_LST,bkg_lst=sg.BKG_LST
     for proc in yld_dict.keys():
         print(proc)
         for cat in yld_dict[proc].keys():
-            if cat not in sig_sum: continue
+            if cat not in sr_cat_lst: continue
             val,var = yld_dict[proc][cat]
             print("   ",cat,val)
             if proc in sig_lst:
@@ -878,9 +878,10 @@ def main():
 
         # Get the grouped yield dict and put the extra columns and rows into it
         yld_dict = get_yields(histo_dict,sample_dict_mc)
-        put_proc_row_sums(yld_dict, sg.SR_SF_CB+sg.SR_OF_CB + sg.SR_SF_BDT+sg.SR_OF_BDT + sg.CAT_LST_CR)
+        put_proc_row_sums(yld_dict, sg.SR_SF_CB+sg.SR_OF_CB + sg.SR_SF_BDT+sg.SR_OF_BDT + sg.SR_SF_BDT_COARSE+sg.SR_OF_BDT_COARSE + sg.CAT_LST_CR)
         put_cat_col_sums(yld_dict, sr_sf_lst=sg.SR_SF_CB,  sr_of_lst=sg.SR_OF_CB,  tag="_cutbased")
         put_cat_col_sums(yld_dict, sr_sf_lst=sg.SR_SF_BDT, sr_of_lst=sg.SR_OF_BDT, tag="_bdt")
+        put_cat_col_sums(yld_dict, sr_sf_lst=sg.SR_SF_BDT_COARSE, sr_of_lst=sg.SR_OF_BDT_COARSE, tag="_bdtCoarse")
         #print(yld_dict)
         #exit()
 
@@ -920,7 +921,7 @@ def main():
             sr_cats_to_print = sg.SR_SF_BDT + ["sr_sf_all_bdt"] + sg.SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"]
         elif args.ul_year == "run3":
             hlines = [3,4,8,9]
-            sr_cats_to_print = sg.SR_SF_BDT_COARSE + ["sr_sf_all_bdt"] + sg.SR_OF_BDT_COARSE + ["sr_of_all_bdt","sr_all_bdt"]
+            sr_cats_to_print = sg.SR_SF_BDT_COARSE + ["sr_sf_all_bdtCoarse"] + sg.SR_OF_BDT_COARSE + ["sr_of_all_bdtCoarse","sr_all_bdtCoarse"]
         procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg",SOVERROOTB,SOVERROOTSPLUSB,"Zmetric"]
         print_yields(yld_dict,sr_cats_to_print,procs_to_print,ref_dict=ref_ylds,hlines=hlines)
         #exit()
