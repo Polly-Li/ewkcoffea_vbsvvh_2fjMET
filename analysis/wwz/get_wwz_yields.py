@@ -658,7 +658,7 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data,year,ana_type="cb"):
     yld_dict_mc, _, _ = yt.do_tf(yld_dict_mc,yld_dict_data,None,sg.BKG_TF_MAP,quiet=False)
 
     # Get the values and fill the combined hist
-    histo = histo_dict["nleps"][{"systematic":"nominal"}]
+    histo = histo_dict["njets"][{"systematic":"nominal"}]
     err_lst_p = []
     err_lst_m = []
     for cat_name in sr_lst:
@@ -845,58 +845,6 @@ def get_background_dict(yld_dict_mc,yld_dict_data,bkg_proc,cr_name,sr_name):
     }
     return out_dict
 
-# CAUTION This function should probably not be used, just use the version in the datacard maker
-# TODO move to same function as used in datacard maker
-# Wrapper around the background estimation of TFs and yields
-def do_background_estimation(yld_dict_mc,yld_dict_data,ul_year):
-
-    # Map between short name and name to display in table
-    kname_dict = {
-        "n_sr_est" : "$N_{SR \\rm \\; est} = TF \\cdot N_{CR}$",
-        "m_sr"     : "$MC_{SR}$",
-        "n_cr"     : "$N_{CR}$",
-        "m_cr"     : "$MC_{CR}$",
-        "tf"       : "TF",
-        "nsf"      : "NSF",
-    }
-
-
-    print_dict = {}
-
-    # Do the ttZ and ZZ estimation for cut-based SRs
-    print_dict["ttZ SR_OF"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_of","sr_of_all")
-    print_dict["ZZ SR_OF"]  = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ","cr_4l_sf","sr_of_all")
-    print_dict["ttZ SR_SF"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_sf_offZ_met80","sr_sf_all")
-    print_dict["ZZ SR_SF"]  = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ","cr_4l_sf","sr_sf_all")
-
-    # Do the ttZ and ZZ estimation for BDT SRs
-    if (ul_year == "run2") or (("UL" in ul_year) and ("2022" not in ul_year)):
-        for bdt_sr in sg.SR_OF_BDT:
-            print_dict[f"ttZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_of",bdt_sr)
-            print_dict[f"ZZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ","cr_4l_sf",bdt_sr)
-        for bdt_sr in sg.SR_SF_BDT:
-            print_dict[f"ttZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ttZ","cr_4l_btag_sf_offZ_met80",bdt_sr)
-            print_dict[f"ZZ {bdt_sr}"] = get_background_dict(yld_dict_mc,yld_dict_data,"ZZ", "cr_4l_sf",bdt_sr)
-
-    for k in print_dict:
-        print(k,"\n",print_dict[k])
-
-    # Print the dicts so we can look at the values
-    # First replace key names with more descriptive names for printing
-    for tf_dict_name in print_dict.keys():
-        for kname in kname_dict.keys():
-            print_dict[tf_dict_name][kname_dict[kname]] = print_dict[tf_dict_name].pop(kname)
-    mlt.print_latex_yield_table(
-        print_dict,
-        tag="NSFs and TFs for ttZ and ZZ SR estimations",
-        print_begin_info=True,
-        print_end_info=True,
-        roundat=3,
-        print_errs=True,
-        size="footnotesize",
-        hz_line_lst=[1,3,3,19]
-    )
-
 
 
 ################### Main ###################
@@ -909,7 +857,6 @@ def main():
     parser.add_argument("-o", "--output-path", default="plots", help = "The path the output files should be saved to")
     parser.add_argument('-y', "--get-yields", action='store_true', help = "Get yields from the pkl file")
     parser.add_argument('-p', "--make-plots", action='store_true', help = "Make plots from the pkl file")
-    parser.add_argument('-b', "--get-backgrounds", action='store_true', help = "Get background estimations")
     parser.add_argument('-u', "--ul-year", default='run2', help = "Which year to process", choices=["all","run2","run3","UL16APV","UL16","UL17","UL18","2022","2022EE"])
     args = parser.parse_args()
 
@@ -925,16 +872,6 @@ def main():
     #counts_dict = get_yields(histo_dict,sample_dict_mc,raw_counts=True)
     #print_counts(counts_dict)
     #exit()
-
-
-    # Wrapper around the code for getting the TFs and background estimation factors
-    # TODO move to same function as used in datacard maker
-    if args.get_backgrounds:
-        yld_dict_data = get_yields(histo_dict,sample_dict_data,quiet=True,blind=True)
-        yld_dict_mc   = get_yields(histo_dict,sample_dict_mc,quiet=True)
-        put_cat_col_sums(yld_dict_mc, sr_sf_lst=sg.SR_SF_CB, sr_of_lst=sg.SR_OF_CB)
-        do_background_estimation(yld_dict_mc,yld_dict_data,args.ul_year)
-
 
     # Wrapper around the code for getting the yields for sr and bkg samples
     if args.get_yields:
