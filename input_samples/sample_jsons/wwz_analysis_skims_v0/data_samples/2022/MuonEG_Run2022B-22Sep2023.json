@@ -7,18 +7,18 @@
     "era": "B",
     "WCnames": [],
     "files": [
-        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_4L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_4L_02162024_Loose/output_7.root",
-        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_4L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_4L_02162024_Loose/output_2.root",
-        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_4L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_4L_02162024_Loose/output_3.root",
-        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_4L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_4L_02162024_Loose/output_6.root",
-        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_4L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_4L_02162024_Loose/output_1.root",
-        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_4L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_4L_02162024_Loose/output_4.root",
-        "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_4L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_4L_02162024_Loose/output_5.root"
+        "/Run3_Data_4L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_4L_02162024_Loose/output_7.root",
+        "/Run3_Data_4L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_4L_02162024_Loose/output_2.root",
+        "/Run3_Data_4L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_4L_02162024_Loose/output_3.root",
+        "/Run3_Data_4L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_4L_02162024_Loose/output_6.root",
+        "/Run3_Data_4L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_4L_02162024_Loose/output_1.root",
+        "/Run3_Data_4L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_4L_02162024_Loose/output_4.root",
+        "/Run3_Data_4L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_4L_02162024_Loose/output_5.root"
     ],
     "nEvents": 1931,
     "nGenEvents": 1931,
     "nSumOfWeights": 1931,
     "isData": true,
-    "path": "/store/user/t2/users/matthew.dittrich/skims/Run3_Data_4L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_4L_02162024_Loose",
+    "path": "/Run3_Data_4L_02162024_Loose/MuonEG_Run2022B-22Sep2023-v1_NANOAOD_Run3_Data_4L_02162024_Loose",
     "nSumOfLheWeights": null
 }
