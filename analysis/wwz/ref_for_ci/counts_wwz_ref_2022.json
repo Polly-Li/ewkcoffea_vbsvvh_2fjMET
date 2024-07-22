@@ -108,6 +108,22 @@
             1.0,
             null
         ],
+        "sr_4l_bdt_sf_coarse_1_counts": [
+            15.0,
+            null
+        ],
+        "sr_4l_bdt_sf_coarse_2_counts": [
+            20.0,
+            null
+        ],
+        "sr_4l_bdt_sf_coarse_3_counts": [
+            3.0,
+            null
+        ],
+        "sr_4l_bdt_sf_coarse_4_counts": [
+            3.0,
+            null
+        ],
         "sr_4l_bdt_of_1_counts": [
             2.0,
             null
@@ -138,6 +154,22 @@
         ],
         "sr_4l_bdt_of_8_counts": [
             6.0,
+            null
+        ],
+        "sr_4l_bdt_of_coarse_1_counts": [
+            21.0,
+            null
+        ],
+        "sr_4l_bdt_of_coarse_2_counts": [
+            43.0,
+            null
+        ],
+        "sr_4l_bdt_of_coarse_3_counts": [
+            4.0,
+            null
+        ],
+        "sr_4l_bdt_of_coarse_4_counts": [
+            13.0,
             null
         ],
         "sr_4l_bdt_sf_wwz_counts": [
@@ -268,6 +300,22 @@
             -0.007212847464212345,
             null
         ],
+        "sr_4l_bdt_sf_coarse_1": [
+            0.11278690761454313,
+            null
+        ],
+        "sr_4l_bdt_sf_coarse_2": [
+            0.07959168584100082,
+            null
+        ],
+        "sr_4l_bdt_sf_coarse_3": [
+            0.022261122320162335,
+            null
+        ],
+        "sr_4l_bdt_sf_coarse_4": [
+            0.0014917921340880528,
+            null
+        ],
         "sr_4l_bdt_of_1": [
             0.0147010094210221,
             null
@@ -298,6 +346,22 @@
         ],
         "sr_4l_bdt_of_8": [
             0.037637765991140625,
+            null
+        ],
+        "sr_4l_bdt_of_coarse_1": [
+            0.1060735692627043,
+            null
+        ],
+        "sr_4l_bdt_of_coarse_2": [
+            0.21072828766070395,
+            null
+        ],
+        "sr_4l_bdt_of_coarse_3": [
+            0.019639980170467572,
+            null
+        ],
+        "sr_4l_bdt_of_coarse_4": [
+            0.07825991075101126,
             null
         ],
         "sr_4l_bdt_sf_wwz": [
