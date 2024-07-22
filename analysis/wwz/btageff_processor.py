@@ -52,17 +52,32 @@ class AnalysisProcessor(processor.ProcessorABC):
     def process(self, events):
 
         # Dataset parameters
-        dataset = events.metadata["dataset"]
+        json_name = events.metadata["dataset"]
+        #dataset = events.metadata["dataset"]
 
-        isData             = self._samples[dataset]["isData"]
-        histAxisName       = self._samples[dataset]["histAxisName"]
-        year               = self._samples[dataset]["year"]
-        xsec               = self._samples[dataset]["xsec"]
-        sow                = self._samples[dataset]["nSumOfWeights"]
+        isData             = self._samples[json_name]["isData"]
+        histAxisName       = self._samples[json_name]["histAxisName"]
+        year               = self._samples[json_name]["year"]
+        xsec               = self._samples[json_name]["xsec"]
+        sow                = self._samples[json_name]["nSumOfWeights"]
 
-        datasets = ["SingleMuon", "SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG"]
-        for d in datasets:
-            if d in dataset: dataset = dataset.split('_')[0]
+        # Set a flag if this is a 2022 year
+        is2022 = year in ["2022","2022EE"]
+        is2023 = year in ["2023","2023BPix"]
+
+        # If this is a 2022 sample, get the era info
+        if isData and is2022:
+            era = self._samples[json_name]["era"]
+        else:
+            era = None
+
+        # Get the dataset name (used for duplicate removal) and check to make sure it is an expected name
+        # Get name for MC cases too, since "dataset" is passed to overlap removal function in all cases (though it's not actually used in the MC case)
+        dataset = json_name.split('_')[0]
+        if isData:
+            datasets = ["SingleMuon", "SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG","Muon","Muon0","Muon1","EGamma0","EGamma1"]
+            if dataset not in datasets:
+                raise Exception("ERROR: Unexpected dataset name for data file.")
 
         # Initialize objects
         met  = events.PuppiMET
@@ -75,22 +90,32 @@ class AnalysisProcessor(processor.ProcessorABC):
         ################### Lepton selection ####################
 
         # Do the object selection for the WWZ eleectrons
-        ele_presl_mask = os_ec.is_presel_wwz_ele(ele,tight=True)
-        ele["topmva"] = os_ec.get_topmva_score_ele(events, year)
-        ele["is_tight_lep_for_wwz"] = ((ele.topmva > get_tc_param("topmva_wp_t_e")) & ele_presl_mask)
+        ele_presl_mask = os_ec.is_presel_wwz_ele(ele,is2022,is2023)
+        if not (is2022 or is2023):
+            ele["topmva"] = os_ec.get_topmva_score_ele(events, year)
+            ele["is_tight_lep_for_wwz"] = ((ele.topmva > get_tc_param("topmva_wp_t_e")) & ele_presl_mask)
+        else:
+            ele["is_tight_lep_for_wwz"] = (ele_presl_mask)
 
         # Do the object selection for the WWZ muons
-        mu_presl_mask = os_ec.is_presel_wwz_mu(mu)
-        mu["topmva"] = os_ec.get_topmva_score_mu(events, year)
-        mu["is_tight_lep_for_wwz"] = ((mu.topmva > get_tc_param("topmva_wp_t_m")) & mu_presl_mask)
+        mu_presl_mask = os_ec.is_presel_wwz_mu(mu,is2022,is2023)
+        if not (is2022 or is2023):
+            mu["topmva"] = os_ec.get_topmva_score_mu(events, year)
+            mu["is_tight_lep_for_wwz"] = ((mu.topmva > get_tc_param("topmva_wp_t_m")) & mu_presl_mask)
+        else:
+            mu["is_tight_lep_for_wwz"] = (mu_presl_mask)
 
         # Get tight leptons for WWZ selection
         ele_wwz_t = ele[ele.is_tight_lep_for_wwz]
         mu_wwz_t = mu[mu.is_tight_lep_for_wwz]
 
         # Attach the lepton SFs to the electron and muons collections
-        cor_ec.AttachElectronSF(ele_wwz_t,year=year)
-        cor_ec.AttachMuonSF(mu_wwz_t,year=year)
+        if (is2022 or is2023):
+            cor_ec.run3_muons_sf_attach(mu_wwz_t,year,"NUM_MediumID_DEN_TrackerMuons","NUM_LoosePFIso_DEN_MediumID") #TODO: Is there a way to not have these parameters hard-coded? I could work on merging the SF methods for Run2 and Run3 as the year is an input. But, I am not sure if we want this or not
+            cor_ec.run3_electrons_sf_attach(ele_wwz_t,year,"wp90iso")
+        else:
+            cor_ec.AttachElectronSF(ele_wwz_t,year=year)
+            cor_ec.AttachMuonSF(mu_wwz_t,year=year)
 
         l_wwz_t = ak.with_name(ak.concatenate([ele_wwz_t,mu_wwz_t],axis=1),'PtEtaPhiMCandidate')
         l_wwz_t = l_wwz_t[ak.argsort(l_wwz_t.pt, axis=-1,ascending=False)] # Sort by pt
@@ -110,7 +135,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         l3 = l_wwz_t_padded[:,3]
 
         events["l_wwz_t"] = l_wwz_t
-        es_ec.add4lmask_wwz(events, year, isData, histAxisName)
+        es_ec.add4lmask_wwz(events, year, isData, histAxisName,is2022,is2023)
 
 
         #################### Jets ####################
@@ -126,18 +151,30 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # B tagging
         btagger = "btag" # For deep flavor WPs
-        if year == "2017":
-            btagwpl = get_tc_param(f"{btagger}_wp_loose_UL17")
-            btagwpm = get_tc_param(f"{btagger}_wp_medium_UL17")
-        elif year == "2018":
-            btagwpl = get_tc_param(f"{btagger}_wp_loose_UL18")
-            btagwpm = get_tc_param(f"{btagger}_wp_medium_UL18")
-        elif year=="2016":
+        if year=="2016":
             btagwpl = get_tc_param(f"{btagger}_wp_loose_UL16")
             btagwpm = get_tc_param(f"{btagger}_wp_medium_UL16")
         elif year=="2016APV":
             btagwpl = get_tc_param(f"{btagger}_wp_loose_UL16APV")
             btagwpm = get_tc_param(f"{btagger}_wp_medium_UL16APV")
+        elif year == "2017":
+            btagwpl = get_tc_param(f"{btagger}_wp_loose_UL17")
+            btagwpm = get_tc_param(f"{btagger}_wp_medium_UL17")
+        elif year == "2018":
+            btagwpl = get_tc_param(f"{btagger}_wp_loose_UL18")
+            btagwpm = get_tc_param(f"{btagger}_wp_medium_UL18")
+        elif year == "2022":
+            btagwpl = get_tc_param(f"{btagger}_wp_loose_2022")
+            btagwpm = get_tc_param(f"{btagger}_wp_medium_2022")
+        elif year == "2022EE":
+            btagwpl = get_tc_param(f"{btagger}_wp_loose_2022EE")
+            btagwpm = get_tc_param(f"{btagger}_wp_medium_2022EE")
+        elif year == "2023":
+            btagwpl = get_tc_param(f"{btagger}_wp_loose_2023")
+            btagwpm = get_tc_param(f"{btagger}_wp_medium_2023")
+        elif year == "2023BPix":
+            btagwpl = get_tc_param(f"{btagger}_wp_loose_2023BPix")
+            btagwpm = get_tc_param(f"{btagger}_wp_medium_2023BPix")
         else:
             raise ValueError(f"Error: Unknown year \"{year}\".")
 
@@ -151,8 +188,9 @@ class AnalysisProcessor(processor.ProcessorABC):
         ######### Masks we need for the event selection ##########
 
         # Pass trigger mask
-        pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict)
-        pass_trg = (pass_trg & es_ec.trg_matching(events,year))
+        pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=era)
+        if not (is2022 or is2023):
+            pass_trg = (pass_trg & es_ec.trg_matching(events,year))
 
         # Get some preliminary things we'll need
         es_ec.attach_wwz_preselection_mask(events,l_wwz_t_padded[:,0:4]) # Attach preselection sf and of flags to the events

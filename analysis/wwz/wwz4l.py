@@ -224,7 +224,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         xsec               = self._samples[json_name]["xsec"]
         sow                = self._samples[json_name]["nSumOfWeights"]
 
-        # Set a flag if this is a 2022 year
+        # Set a flag for Run3 years
         is2022 = year in ["2022","2022EE"]
         is2023 = year in ["2023","2023BPix"]
 
@@ -268,7 +268,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Get name for MC cases too, since "dataset" is passed to overlap removal function in all cases (though it's not actually used in the MC case)
         dataset = json_name.split('_')[0]
         if isData:
-            datasets = ["SingleMuon", "SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG","Muon"]
+            datasets = ["SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG","Muon"]
             if dataset not in datasets:
                 raise Exception("ERROR: Unexpected dataset name for data file.")
 
@@ -293,6 +293,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             golden_json_path = topcoffea_path("data/goldenJsons/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt")
         elif year == "2022" or year == "2022EE":
             golden_json_path = topcoffea_path("data/goldenJsons/Cert_Collisions2022_355100_362760_Golden.txt")
+        elif year == "2023" or year == "2023BPix":
+            golden_json_path = topcoffea_path("data/goldenJsons/Cert_Collisions2023_366442_370790_Golden.txt")
         else:
             raise ValueError(f"Error: Unknown year \"{year}\".")
         lumi_mask = LumiMask(golden_json_path)(events.run,events.luminosityBlock)
@@ -356,7 +358,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Put njets and l_fo_conept_sorted into events and get 4l event selection mask
         events["l_wwz_t"] = l_wwz_t
-        es_ec.add4lmask_wwz(events, year, isData, histAxisName, is2022)
+        es_ec.add4lmask_wwz(events, year, isData, histAxisName, is2022,is2023)
 
 
         ######### Normalization and weights ###########
@@ -470,6 +472,12 @@ class AnalysisProcessor(processor.ProcessorABC):
             elif year=="2022EE":
                 btagwpl = get_tc_param(f"{btagger}_wp_loose_2022EE")
                 btagwpm = get_tc_param(f"{btagger}_wp_medium_2022EE")
+            elif year=="2023":
+                btagwpl = get_tc_param(f"{btagger}_wp_loose_2023")
+                btagwpm = get_tc_param(f"{btagger}_wp_medium_2023")
+            elif year=="2023BPix":
+                btagwpl = get_tc_param(f"{btagger}_wp_loose_2023BPix")
+                btagwpm = get_tc_param(f"{btagger}_wp_medium_2023BPix")
             else:
                 raise ValueError(f"Error: Unknown year \"{year}\".")
 
@@ -564,9 +572,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Pass trigger mask
             pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=era)
-            # Skip trigger matching requirementmes for R3 for now
-            if not (is2022 or is2023):
-                pass_trg = (pass_trg & es_ec.trg_matching(events,year))
+            pass_trg = (pass_trg & es_ec.trg_matching(events,year))
 
             # b jet masks
             bmask_atleast1med_atleast2loose = ((nbtagsm>=1)&(nbtagsl>=2)) # Used for 2lss and 4l

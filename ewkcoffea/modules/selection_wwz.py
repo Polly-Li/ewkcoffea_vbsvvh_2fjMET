@@ -70,33 +70,26 @@ dataset_dict = {
     "2022" : {
         "EGamma" : [
             "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
-            "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL",
-            "Ele30_WPTight_Gsf",
-            "Ele32_WPTight_Gsf",
-            "Ele32_WPTight_Gsf_L1DoubleEG",
-            "Ele35_WPTight_Gsf",
-            "Ele115_CaloIdVT_GsfTrkIdT",
-            "DoubleEle25_CaloIdL_MW",
         ],
         "Muon" : [
-            "IsoMu24",
-            "IsoMu27",
-            "Mu50",
             "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
-            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8",
-        ],
-        "SingleMuon" : [
-            "IsoMu24",
-            "IsoMu27",
-            "Mu50",
         ],
         "DoubleMuon" : [
             "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
-            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8",
         ],
         "MuonEG" : [
-            "Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ",
-            "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL",
+            "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
+            "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ",
+        ]
+    },
+    "2023" : {
+        "EGamma" : [
+            "Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
+        ],
+        "Muon" : [
+            "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
+        ],
+        "MuonEG" : [
             "Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
             "Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ",
         ]
@@ -158,6 +151,42 @@ trgs_for_matching = {
             "trg_lst" : ["Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ"],
             "offline_thresholds" : [25.0,10.0],
         },
+    },
+    "2022" : {
+        "m_m" : {
+            "trg_lst" : dataset_dict["2022"]["Muon"],
+            "offline_thresholds" : [20.0,10.0],
+        },
+        "e_e" : {
+            "trg_lst" : dataset_dict["2022"]["EGamma"],
+            "offline_thresholds" : [25.0,15.0],
+        },
+        "m_e" : {
+            "trg_lst" : ["Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ"],
+            "offline_thresholds" : [25.0,15.0],
+        },
+        "e_m" : {
+            "trg_lst" : ["Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ"],
+            "offline_thresholds" : [25.0,10.0],
+        },
+    },
+    "2023" : {
+        "m_m" : {
+            "trg_lst" : dataset_dict["2023"]["Muon"],
+            "offline_thresholds" : [20.0,10.0],
+        },
+        "e_e" : {
+            "trg_lst" : dataset_dict["2023"]["EGamma"],
+            "offline_thresholds" : [25.0,15.0],
+        },
+        "m_e" : {
+            "trg_lst" : ["Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ"],
+            "offline_thresholds" : [25.0,15.0],
+        },
+        "e_m" : {
+            "trg_lst" : ["Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ"],
+            "offline_thresholds" : [25.0,10.0],
+        },
     }
 }
 
@@ -184,18 +213,11 @@ exclude_dict = {
         "EGamma"         : dataset_dict["2018"]["DoubleMuon"],
         "MuonEG"         : dataset_dict["2018"]["DoubleMuon"] + dataset_dict["2018"]["EGamma"],
     },
-    "B": {
-        "SingleMuon"     : [],
-        "DoubleMuon"     : dataset_dict["2022"]["SingleMuon"],
-        "EGamma"         : dataset_dict["2022"]["SingleMuon"] + dataset_dict["2022"]["DoubleMuon"],
-        "MuonEG"         : dataset_dict["2022"]["SingleMuon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["EGamma"],
-    },
     "C": {
         "Muon"           : [],
-        "SingleMuon"     : [],
-        "DoubleMuon"     : dataset_dict["2022"]["SingleMuon"],
-        "EGamma"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["SingleMuon"],
-        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["SingleMuon"] + dataset_dict["2022"]["EGamma"],
+        "DoubleMuon"     : [],
+        "EGamma"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"],
+        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["EGamma"],
     },
     "D": {
         "Muon"     : [],
@@ -217,14 +239,21 @@ exclude_dict = {
         "EGamma"         : dataset_dict["2022"]["Muon"],
         "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
     },
+    "2023": {
+        "Muon"           : [],
+        "EGamma"         : dataset_dict["2023"]["Muon"],
+        "MuonEG"         : dataset_dict["2023"]["Muon"] + dataset_dict["2023"]["EGamma"],
+    },
 }
 
 
 # Apply trigger matching requirements to make sure pt is above online thresholds
 def trg_matching(events,year):
 
-    # The trigger for 2016 and 2016APV are the same
-    if year == "2016APV": year = "2016"
+    # The trigger for 2016 and 2016APV are the same along with 2022EE->2022 and 2023BPix->2023
+    if year == "2016APV" : year = "2016"
+    if year == "2022EE"  : year = "2022"
+    if year == "2023BPix": year = "2023"
 
     # Initialize return array to be True array with same shape as events
     ret_arr = ak.zeros_like(np.array(events.event), dtype=bool)
@@ -260,7 +289,7 @@ def trg_matching(events,year):
 
 
 # 4l selection # SYNC
-def add4lmask_wwz(events, year, isData, sample_name,is2022):
+def add4lmask_wwz(events, year, isData, sample_name,is2022,is2023):
 
     # Leptons and padded leptons
     leps = events.l_wwz_t
@@ -268,7 +297,7 @@ def add4lmask_wwz(events, year, isData, sample_name,is2022):
 
     # Filters
     filter_flags = events.Flag
-    if is2022:
+    if (is2022 or is2023):
         filters = filter_flags.goodVertices & filter_flags.globalSuperTightHalo2016Filter & filter_flags.EcalDeadCellTriggerPrimitiveFilter & filter_flags.BadPFMuonFilter & filter_flags.ecalBadCalibFilter & filter_flags.BadPFMuonDzFilter & filter_flags.hfNoisyHitsFilter & filter_flags.eeBadScFilter
     else:
         filters = filter_flags.goodVertices & filter_flags.globalSuperTightHalo2016Filter & filter_flags.HBHENoiseFilter & filter_flags.HBHENoiseIsoFilter & filter_flags.EcalDeadCellTriggerPrimitiveFilter & filter_flags.BadPFMuonFilter & (((year == "2016")|(year == "2016APV")) | filter_flags.ecalBadCalibFilter) & (isData | filter_flags.eeBadScFilter)

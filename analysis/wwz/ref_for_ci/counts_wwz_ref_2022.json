@@ -48,6 +48,14 @@
             216.0,
             null
         ],
+        "sr_4l_sf_counts": [
+            37.0,
+            null
+        ],
+        "sr_4l_of_counts": [
+            67.0,
+            null
+        ],
         "sr_4l_sf_incl_counts": [
             37.0,
             null
@@ -68,60 +76,324 @@
             11.0,
             null
         ],
+        "sr_4l_bdt_sf_1_counts": [
+            8.0,
+            null
+        ],
+        "sr_4l_bdt_sf_2_counts": [
+            7.0,
+            null
+        ],
+        "sr_4l_bdt_sf_3_counts": [
+            15.0,
+            null
+        ],
+        "sr_4l_bdt_sf_4_counts": [
+            5.0,
+            null
+        ],
+        "sr_4l_bdt_sf_5_counts": [
+            2.0,
+            null
+        ],
+        "sr_4l_bdt_sf_6_counts": [
+            1.0,
+            null
+        ],
+        "sr_4l_bdt_sf_7_counts": [
+            2.0,
+            null
+        ],
+        "sr_4l_bdt_sf_8_counts": [
+            1.0,
+            null
+        ],
+        "sr_4l_bdt_sf_coarse_1_counts": [
+            15.0,
+            null
+        ],
+        "sr_4l_bdt_sf_coarse_2_counts": [
+            20.0,
+            null
+        ],
+        "sr_4l_bdt_sf_coarse_3_counts": [
+            3.0,
+            null
+        ],
+        "sr_4l_bdt_sf_coarse_4_counts": [
+            3.0,
+            null
+        ],
+        "sr_4l_bdt_of_1_counts": [
+            2.0,
+            null
+        ],
+        "sr_4l_bdt_of_2_counts": [
+            19.0,
+            null
+        ],
+        "sr_4l_bdt_of_3_counts": [
+            26.0,
+            null
+        ],
+        "sr_4l_bdt_of_4_counts": [
+            17.0,
+            null
+        ],
+        "sr_4l_bdt_of_5_counts": [
+            2.0,
+            null
+        ],
+        "sr_4l_bdt_of_6_counts": [
+            2.0,
+            null
+        ],
+        "sr_4l_bdt_of_7_counts": [
+            7.0,
+            null
+        ],
+        "sr_4l_bdt_of_8_counts": [
+            6.0,
+            null
+        ],
+        "sr_4l_bdt_of_coarse_1_counts": [
+            21.0,
+            null
+        ],
+        "sr_4l_bdt_of_coarse_2_counts": [
+            43.0,
+            null
+        ],
+        "sr_4l_bdt_of_coarse_3_counts": [
+            4.0,
+            null
+        ],
+        "sr_4l_bdt_of_coarse_4_counts": [
+            13.0,
+            null
+        ],
+        "sr_4l_bdt_sf_wwz_counts": [
+            35.0,
+            null
+        ],
+        "sr_4l_bdt_sf_zh_counts": [
+            6.0,
+            null
+        ],
+        "sr_4l_bdt_of_wwz_counts": [
+            64.0,
+            null
+        ],
+        "sr_4l_bdt_of_zh_counts": [
+            17.0,
+            null
+        ],
+        "sr_4l_bdt_sf_presel_counts": [
+            70.0,
+            null
+        ],
+        "sr_4l_bdt_sf_trn_counts": [
+            41.0,
+            null
+        ],
+        "sr_4l_bdt_of_presel_counts": [
+            81.0,
+            null
+        ],
+        "sr_4l_bdt_of_trn_counts": [
+            81.0,
+            null
+        ],
         "sr_4l_sf_A": [
-            0.1050297413310026,
+            0.10594790994217691,
             null
         ],
         "sr_4l_sf_B": [
-            0.09025472297200957,
+            0.09054884774921645,
             null
         ],
         "sr_4l_sf_C": [
-            0.016992596918566,
+            0.017027426016875992,
             null
         ],
         "sr_4l_of_1": [
-            0.012956355597567339,
+            0.013189392231870219,
             null
         ],
         "sr_4l_of_2": [
-            0.06124553456112963,
+            0.06141056034225178,
             null
         ],
         "sr_4l_of_3": [
-            0.04548854197300198,
+            0.04589585751375201,
             null
         ],
         "sr_4l_of_4": [
-            0.21252049542605744,
+            0.2133202205843983,
             null
         ],
         "all_events": [
-            3.4184289614267866,
+            3.4462825412040665,
             null
         ],
         "4l_presel": [
-            1.1288058044647908,
+            1.1360316211220602,
+            null
+        ],
+        "sr_4l_sf": [
+            0.21352418370826937,
+            null
+        ],
+        "sr_4l_of": [
+            0.3338160306722724,
             null
         ],
         "sr_4l_sf_incl": [
-            0.2122770612215782,
+            0.21352418370826937,
             null
         ],
         "sr_4l_of_incl": [
-            0.41308951123026255,
+            0.414701747844887,
             null
         ],
         "cr_4l_btag_of": [
-            0.11317595185125834,
+            0.11361266987385724,
             null
         ],
         "cr_4l_btag_sf_offZ_met80": [
-            0.02389211300322766,
+            0.026062029860875337,
             null
         ],
         "cr_4l_sf": [
-            0.04870441722035864,
+            0.0486325724430299,
+            null
+        ],
+        "sr_4l_bdt_sf_1": [
+            0.06304175231490036,
+            null
+        ],
+        "sr_4l_bdt_sf_2": [
+            0.04974515529964278,
+            null
+        ],
+        "sr_4l_bdt_sf_3": [
+            0.06266155608450924,
+            null
+        ],
+        "sr_4l_bdt_sf_4": [
+            0.01693012975649158,
+            null
+        ],
+        "sr_4l_bdt_sf_5": [
+            0.013427724290378695,
+            null
+        ],
+        "sr_4l_bdt_sf_6": [
+            0.008833398029783642,
+            null
+        ],
+        "sr_4l_bdt_sf_7": [
+            0.008704639598300399,
+            null
+        ],
+        "sr_4l_bdt_sf_8": [
+            -0.007212847464212345,
+            null
+        ],
+        "sr_4l_bdt_sf_coarse_1": [
+            0.11278690761454313,
+            null
+        ],
+        "sr_4l_bdt_sf_coarse_2": [
+            0.07959168584100082,
+            null
+        ],
+        "sr_4l_bdt_sf_coarse_3": [
+            0.022261122320162335,
+            null
+        ],
+        "sr_4l_bdt_sf_coarse_4": [
+            0.0014917921340880528,
+            null
+        ],
+        "sr_4l_bdt_of_1": [
+            0.0147010094210221,
+            null
+        ],
+        "sr_4l_bdt_of_2": [
+            0.0913725598416822,
+            null
+        ],
+        "sr_4l_bdt_of_3": [
+            0.12582444319664038,
+            null
+        ],
+        "sr_4l_bdt_of_4": [
+            0.08490384446406354,
+            null
+        ],
+        "sr_4l_bdt_of_5": [
+            0.010976502565869236,
+            null
+        ],
+        "sr_4l_bdt_of_6": [
+            0.008663477604598336,
+            null
+        ],
+        "sr_4l_bdt_of_7": [
+            0.04062214475987063,
+            null
+        ],
+        "sr_4l_bdt_of_8": [
+            0.037637765991140625,
+            null
+        ],
+        "sr_4l_bdt_of_coarse_1": [
+            0.1060735692627043,
+            null
+        ],
+        "sr_4l_bdt_of_coarse_2": [
+            0.21072828766070395,
+            null
+        ],
+        "sr_4l_bdt_of_coarse_3": [
+            0.019639980170467572,
+            null
+        ],
+        "sr_4l_bdt_of_coarse_4": [
+            0.07825991075101126,
+            null
+        ],
+        "sr_4l_bdt_sf_wwz": [
+            0.19237859345554392,
+            null
+        ],
+        "sr_4l_bdt_sf_zh": [
+            0.02375291445425039,
+            null
+        ],
+        "sr_4l_bdt_of_wwz": [
+            0.3168018569234083,
+            null
+        ],
+        "sr_4l_bdt_of_zh": [
+            0.09789989092147881,
+            null
+        ],
+        "sr_4l_bdt_sf_presel": [
+            0.3791070075904352,
+            null
+        ],
+        "sr_4l_bdt_sf_trn": [
+            0.21613150790979435,
+            null
+        ],
+        "sr_4l_bdt_of_presel": [
+            0.414701747844887,
+            null
+        ],
+        "sr_4l_bdt_of_trn": [
+            0.414701747844887,
             null
         ]
     }
