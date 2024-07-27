@@ -1,0 +1,31 @@
+{
+    "xsec": 0.01434,
+    "year": "2023",
+    "treeName": "Events",
+    "histAxisName": "2023_ggHToZZ4L",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023/GluGluHtoZZto4L_M-125_TuneCP5_13p6TeV_powheg-jhugen-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_MC_Run3_WWZ_20240712/output_5.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023/GluGluHtoZZto4L_M-125_TuneCP5_13p6TeV_powheg-jhugen-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_MC_Run3_WWZ_20240712/output_1.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023/GluGluHtoZZto4L_M-125_TuneCP5_13p6TeV_powheg-jhugen-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_MC_Run3_WWZ_20240712/output_4.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023/GluGluHtoZZto4L_M-125_TuneCP5_13p6TeV_powheg-jhugen-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_MC_Run3_WWZ_20240712/output_3.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023/GluGluHtoZZto4L_M-125_TuneCP5_13p6TeV_powheg-jhugen-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_MC_Run3_WWZ_20240712/output_2.root"
+    ],
+    "nEvents": 30364,
+    "nGenEvents": 250000,
+    "nSumOfWeights": 5790476.394000001,
+    "isData": false,
+    "path": "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023/GluGluHtoZZto4L_M-125_TuneCP5_13p6TeV_powheg-jhugen-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_MC_Run3_WWZ_20240712",
+    "nSumOfLheWeights": [
+        6782325.088000005,
+        6955115.312999996,
+        7096521.5370000005,
+        5623066.266,
+        5790351.408000001,
+        5922451.924000001,
+        4740918.862000002,
+        4898143.0370000005,
+        5019224.5
+    ]
+}

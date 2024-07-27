@@ -1,0 +1,34 @@
+{
+    "xsec": 0.01591,
+    "year": "2023BPix",
+    "treeName": "Events",
+    "histAxisName": "2023BPix_ZZZ",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/ZZZ_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_8.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/ZZZ_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_6.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/ZZZ_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_5.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/ZZZ_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_7.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/ZZZ_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_1.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/ZZZ_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_4.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/ZZZ_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_3.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/ZZZ_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_2.root"
+    ],
+    "nEvents": 24878,
+    "nGenEvents": 1788000,
+    "nSumOfWeights": 28486.11953943601,
+    "isData": false,
+    "path": "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/ZZZ_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2_NANOAODSIM_MC_Run3_WWZ_20240712",
+    "nSumOfLheWeights": [
+        29249.694712456192,
+        29140.999930181424,
+        29114.978970445583,
+        28586.098678387294,
+        28486.11953943601,
+        28451.92803034062,
+        28031.65732908388,
+        27938.94456486038,
+        27898.113335049286
+    ]
+}

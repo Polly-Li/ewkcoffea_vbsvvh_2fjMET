@@ -1,0 +1,30 @@
+{
+    "xsec": 0.0051,
+    "year": "2023BPix",
+    "treeName": "Events",
+    "histAxisName": "2023BPix_ggToZZTo4mu",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/GluGlutoContinto2Zto4Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_8.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/GluGlutoContinto2Zto4Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_6.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/GluGlutoContinto2Zto4Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_11.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/GluGlutoContinto2Zto4Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_13.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/GluGlutoContinto2Zto4Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_5.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/GluGlutoContinto2Zto4Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_7.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/GluGlutoContinto2Zto4Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_10.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/GluGlutoContinto2Zto4Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_12.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/GluGlutoContinto2Zto4Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_1.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/GluGlutoContinto2Zto4Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_4.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/GluGlutoContinto2Zto4Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_3.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/GluGlutoContinto2Zto4Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_9.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/GluGlutoContinto2Zto4Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_14.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/GluGlutoContinto2Zto4Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_2.root"
+    ],
+    "nEvents": 143601,
+    "nGenEvents": 371000,
+    "nSumOfWeights": 371000.0,
+    "isData": false,
+    "path": "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/GluGlutoContinto2Zto4Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712",
+    "nSumOfLheWeights": []
+}

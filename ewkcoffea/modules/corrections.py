@@ -234,7 +234,7 @@ def run3_electrons_sf_attach(electrons,year,wp):
         sf_flat_75 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","RecoAbove75",eta_flat,pt_flat_75,phi_flat)
         sf_flat_75_hi = ceval["Electron-ID-SF"].evaluate(n_year,"sfup","RecoAbove75",eta_flat,pt_flat_75,phi_flat)
         sf_flat_75_lo = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown","RecoAbove75",eta_flat,pt_flat_75,phi_flat)
-    else:
+    elif year in ["2022","2022EE"]:
         sf_flat_20 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","RecoBelow20",eta_flat,pt_flat_20)
         sf_flat_20_hi = ceval["Electron-ID-SF"].evaluate(n_year,"sfup","RecoBelow20",eta_flat,pt_flat_20)
         sf_flat_20_lo = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown","RecoBelow20",eta_flat,pt_flat_20)
@@ -244,6 +244,8 @@ def run3_electrons_sf_attach(electrons,year,wp):
         sf_flat_75 = ceval["Electron-ID-SF"].evaluate(n_year,"sf","RecoAbove75",eta_flat,pt_flat_75)
         sf_flat_75_hi = ceval["Electron-ID-SF"].evaluate(n_year,"sfup","RecoAbove75",eta_flat,pt_flat_75)
         sf_flat_75_lo = ceval["Electron-ID-SF"].evaluate(n_year,"sfdown","RecoAbove75",eta_flat,pt_flat_75)
+    else:
+        raise Exception("Unidentified Run 3 year. Exciting!")
 
     # Remove the unwanted Reco SF
     # We assigned values in the correct pT range in order to obtain the SF. We now need to remove the unwanted SF based on the original pt_flat

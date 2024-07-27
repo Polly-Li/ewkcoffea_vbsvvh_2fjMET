@@ -857,7 +857,7 @@ def main():
     parser.add_argument("-o", "--output-path", default="plots", help = "The path the output files should be saved to")
     parser.add_argument('-y', "--get-yields", action='store_true', help = "Get yields from the pkl file")
     parser.add_argument('-p', "--make-plots", action='store_true', help = "Make plots from the pkl file")
-    parser.add_argument('-u', "--ul-year", default='run2', help = "Which year to process", choices=["all","run2","run3","UL16APV","UL16","UL17","UL18","2022","2022EE"])
+    parser.add_argument('-u', "--ul-year", default='run2', help = "Which year to process", choices=["all","run2","run3","y22","y23","UL16APV","UL16","UL17","UL18","2022","2022EE","2023","2023BPix"])
     args = parser.parse_args()
 
     # Get the counts from the input hiso
@@ -896,7 +896,7 @@ def main():
 
         # Get the ref dict, for the relevant year
         if args.ul_year in ["run2","UL18","UL17","UL16","UL16APV"]: ref_ylds = ref_dict=yd.EWK_REF
-        if args.ul_year in ["run3","2022","2022EE"]: ref_ylds = ref_dict=yd.EWK_REF_2022
+        if args.ul_year in ["run3","y22","y23","2022","2022EE","2023","2023BPix"]: ref_ylds = ref_dict=yd.EWK_REF_2022
 
         # Dump latex table for summary of CB, BDT, CRs
         hlines = [2,5] # Just summary categories
