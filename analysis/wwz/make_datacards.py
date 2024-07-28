@@ -291,18 +291,22 @@ def add_stats_kappas(yld_mc, kappas, skip_procs=[]):
 ########### Put stuff into form to pass to the function to write out cards ###########
 
 # Get just the numbers we want for rate row for datacard
-# Also sum all MC rates together into asimov number
+# Also sum all MC rates together into asimov number if not unblind
 # Assumes in_dict has nested keys: cat,syst,proc
-def get_rate_for_dc(in_dict,cat):
+def get_rate_for_dc(in_dict_mc,in_dict_data,cat,unblind):
     out_dict = {}
     asimov_data = 0
-    for proc in in_dict[cat]["nominal"]:
-        rate = in_dict[cat]["nominal"][proc][0]
+    for proc in in_dict_mc[cat]["nominal"]:
+        rate = in_dict_mc[cat]["nominal"][proc][0]
         if rate < 0:
             print(f"\nWarning: Process \"{proc}\" in \"{cat}\" has negative total rate: {rate}.\n")
         out_dict[proc] = str(rate)
         asimov_data += rate
-    out_dict["data_obs"] = str(asimov_data)
+
+    if not unblind:
+        out_dict["data_obs"] = str(asimov_data)
+    else:
+        out_dict["data_obs"] = str(in_dict_data[cat]["nominal"]["data"][0])
 
     return out_dict
 
@@ -448,7 +452,7 @@ def main():
     for ch in cat_lst:
 
         # Get just the info we want to put in the card in str form
-        rate_for_dc_ch = get_rate_for_dc(yld_dict_mc,ch)
+        rate_for_dc_ch = get_rate_for_dc(yld_dict_mc,yld_dict_data,ch,unblind)
 
         # Get the kappa and gamma dict for this channel if we are doing systs
         kappa_for_dc_ch = None
