@@ -166,7 +166,7 @@ def handle_negatives(in_dict):
         for proc in in_dict[cat]["nominal"]:
             val = in_dict[cat]["nominal"][proc][0]
             var = in_dict[cat]["nominal"][proc][1]
-            if val < 0:
+            if val <= 0:
                 print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and shifting up/down systematic variations accordingly.")
                 out_dict[cat]["nominal"][proc][0] = SMALL
                 out_dict[cat]["nominal"][proc][1] = (abs(val) + np.sqrt(var))**2
@@ -300,6 +300,7 @@ def get_rate_for_dc(in_dict_mc,in_dict_data,cat,unblind):
         rate = in_dict_mc[cat]["nominal"][proc][0]
         if rate < 0:
             print(f"\nWarning: Process \"{proc}\" in \"{cat}\" has negative total rate: {rate}.\n")
+            raise Exception("This should not be happening. Exiting.")
         out_dict[proc] = str(rate)
         asimov_data += rate
 
@@ -401,6 +402,10 @@ def main():
     # We're only looking at Full R2 (run2) or 2022 (run3) for now
     yld_dict_mc = yld_dict_mc_allyears["FR"]
     yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR"])
+
+    # Scale yield for any processes (e.g. for testing impacts of small backgrounds)
+    scale_dict = {"WZ":1.0}
+    yld_dict_mc = yt.scale_yld_dict(yld_dict_mc,scale_dict)
 
     ####################################################################################
     # Dump some info about a bin (just raw numbers, more or less)

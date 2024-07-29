@@ -60,6 +60,20 @@ def get_yields(histo,sample_dict,blind=True,systematic_name=None):
 
 ############## Manipulating yields in a yield dict ##############
 
+# Scale processes in yield dictionary by a given factor
+# Will scale all systematic variations (not just nominal) by the factor
+# Returns a new dictionary, does not modify original
+def scale_yld_dict(in_yld_dict,scaling_dict):
+    out_dict = copy.deepcopy(in_yld_dict)
+    for cat in in_yld_dict:
+        for syst in in_yld_dict[cat]:
+            for proc in in_yld_dict[cat][syst]:
+                if proc in scaling_dict:
+                    out_dict[cat][syst][proc][0] = in_yld_dict[cat][syst][proc][0]*scaling_dict[proc]
+                    out_dict[cat][syst][proc][1] = in_yld_dict[cat][syst][proc][1]*scaling_dict[proc]
+    return out_dict
+
+
 # Calculate data-driven background estimation from relevant CRs
 def do_tf(yld_mc,yld_data,kappas,tf_map,quiet=True):
 
