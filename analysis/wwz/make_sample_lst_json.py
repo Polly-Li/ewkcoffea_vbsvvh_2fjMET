@@ -523,69 +523,69 @@ central_2022EE_sig_dict = {
 
 # Data
 data_UL16APV_4l_skim_dict = {
-    "DoubleEG_Run2016B-ver1_HIPM"          : {"path" : "/skim4l_v5/DoubleEG_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2016B-ver2_HIPM"          : {"path" : "/skim4l_v5/DoubleEG_Run2016B-ver2_HIPM_UL2016_MiniAODv2_NanoAODv9-v3_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2016C-HIPM"               : {"path" : "/skim4l_v5/DoubleEG_Run2016C-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"        , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2016D-HIPM"               : {"path" : "/skim4l_v5/DoubleEG_Run2016D-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"        , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2016E-HIPM"               : {"path" : "/skim4l_v5/DoubleEG_Run2016E-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"        , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2016F-HIPM"               : {"path" : "/skim4l_v5/DoubleEG_Run2016F-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"        , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2016B-ver1_HIPM_UL2016"     : {"path" : "/skim4l_v5/MuonEG_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2016B-ver2_HIPM_UL2016"     : {"path" : "/skim4l_v5/MuonEG_Run2016B-ver2_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2016C-HIPM_UL2016"          : {"path" : "/skim4l_v5/MuonEG_Run2016C-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"          , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2016D-HIPM_UL2016"          : {"path" : "/skim4l_v5/MuonEG_Run2016D-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"          , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2016E-HIPM_UL2016"          : {"path" : "/skim4l_v5/MuonEG_Run2016E-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"          , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2016F-HIPM_UL2016"          : {"path" : "/skim4l_v5/MuonEG_Run2016F-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"          , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2016B-ver1_HIPM_UL2016" : {"path" : "/skim4l_v5/DoubleMuon_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2016B-ver2_HIPM_UL2016" : {"path" : "/skim4l_v5/DoubleMuon_Run2016B-ver2_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2016C-HIPM_UL2016"      : {"path" : "/skim4l_v5/DoubleMuon_Run2016C-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"      , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2016D-HIPM_UL2016"      : {"path" : "/skim4l_v5/DoubleMuon_Run2016D-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"      , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2016E-HIPM_UL2016"      : {"path" : "/skim4l_v5/DoubleMuon_Run2016E-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"      , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2016F-HIPM_UL2016"      : {"path" : "/skim4l_v5/DoubleMuon_Run2016F-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"      , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016B-ver1_HIPM"          : {"Era" : "B" , "path" : "/skim4l_v5/DoubleEG_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016B-ver2_HIPM"          : {"Era" : "B" , "path" : "/skim4l_v5/DoubleEG_Run2016B-ver2_HIPM_UL2016_MiniAODv2_NanoAODv9-v3_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016C-HIPM"               : {"Era" : "C" , "path" : "/skim4l_v5/DoubleEG_Run2016C-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"        , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016D-HIPM"               : {"Era" : "D" , "path" : "/skim4l_v5/DoubleEG_Run2016D-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"        , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016E-HIPM"               : {"Era" : "E" , "path" : "/skim4l_v5/DoubleEG_Run2016E-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"        , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016F-HIPM"               : {"Era" : "F" , "path" : "/skim4l_v5/DoubleEG_Run2016F-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"        , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016B-ver1_HIPM_UL2016"     : {"Era" : "B" , "path" : "/skim4l_v5/MuonEG_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016B-ver2_HIPM_UL2016"     : {"Era" : "B" , "path" : "/skim4l_v5/MuonEG_Run2016B-ver2_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016C-HIPM_UL2016"          : {"Era" : "C" , "path" : "/skim4l_v5/MuonEG_Run2016C-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"          , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016D-HIPM_UL2016"          : {"Era" : "D" , "path" : "/skim4l_v5/MuonEG_Run2016D-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"          , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016E-HIPM_UL2016"          : {"Era" : "E" , "path" : "/skim4l_v5/MuonEG_Run2016E-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"          , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016F-HIPM_UL2016"          : {"Era" : "F" , "path" : "/skim4l_v5/MuonEG_Run2016F-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"          , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016B-ver1_HIPM_UL2016" : {"Era" : "B" , "path" : "/skim4l_v5/DoubleMuon_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016B-ver2_HIPM_UL2016" : {"Era" : "B" , "path" : "/skim4l_v5/DoubleMuon_Run2016B-ver2_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016C-HIPM_UL2016"      : {"Era" : "C" , "path" : "/skim4l_v5/DoubleMuon_Run2016C-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"      , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016D-HIPM_UL2016"      : {"Era" : "D" , "path" : "/skim4l_v5/DoubleMuon_Run2016D-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"      , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016E-HIPM_UL2016"      : {"Era" : "E" , "path" : "/skim4l_v5/DoubleMuon_Run2016E-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"      , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016F-HIPM_UL2016"      : {"Era" : "F" , "path" : "/skim4l_v5/DoubleMuon_Run2016F-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/"      , "histAxisName" : "UL16APV_data" , "xsecName" : "data" , } ,
 }
 
 data_UL16_4l_skim_dict = {
-    "DoubleMuon_Run2016F-UL2016" : {"path" : "/skim4l_v5/DoubleMuon_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2016G-UL2016" : {"path" : "/skim4l_v5/DoubleMuon_Run2016G-UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2016H-UL2016" : {"path" : "/skim4l_v5/DoubleMuon_Run2016H-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2016F-UL2016"   : {"path" : "/skim4l_v5/DoubleEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2016G-UL2016"   : {"path" : "/skim4l_v5/DoubleEG_Run2016G-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2016H-UL2016"   : {"path" : "/skim4l_v5/DoubleEG_Run2016H-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2016F-UL2016"     : {"path" : "/skim4l_v5/MuonEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2016G-UL2016"     : {"path" : "/skim4l_v5/MuonEG_Run2016G-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2016H-UL2016"     : {"path" : "/skim4l_v5/MuonEG_Run2016H-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016F-UL2016" : {"Era" : "F" , "path" : "/skim4l_v5/DoubleMuon_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016G-UL2016" : {"Era" : "G" , "path" : "/skim4l_v5/DoubleMuon_Run2016G-UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016H-UL2016" : {"Era" : "H" , "path" : "/skim4l_v5/DoubleMuon_Run2016H-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016F-UL2016"   : {"Era" : "F" , "path" : "/skim4l_v5/DoubleEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016G-UL2016"   : {"Era" : "G" , "path" : "/skim4l_v5/DoubleEG_Run2016G-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016H-UL2016"   : {"Era" : "H" , "path" : "/skim4l_v5/DoubleEG_Run2016H-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016F-UL2016"     : {"Era" : "F" , "path" : "/skim4l_v5/MuonEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016G-UL2016"     : {"Era" : "G" , "path" : "/skim4l_v5/MuonEG_Run2016G-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016H-UL2016"     : {"Era" : "H" , "path" : "/skim4l_v5/MuonEG_Run2016H-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL16_data" , "xsecName" : "data" , } ,
 }
 
 data_UL17_4l_skim_dict = {
-    "DoubleMuon_Run2017B-UL2017" : {"path" : "/skim4l_v5/DoubleMuon_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2017C-UL2017" : {"path" : "/skim4l_v5/DoubleMuon_Run2017C-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2017D-UL2017" : {"path" : "/skim4l_v5/DoubleMuon_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2017E-UL2017" : {"path" : "/skim4l_v5/DoubleMuon_Run2017E-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2017F-UL2017" : {"path" : "/skim4l_v5/DoubleMuon_Run2017F-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2017B-UL2017"   : {"path" : "/skim4l_v5/DoubleEG_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2017C-UL2017"   : {"path" : "/skim4l_v5/DoubleEG_Run2017C-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2017D-UL2017"   : {"path" : "/skim4l_v5/DoubleEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2017E-UL2017"   : {"path" : "/skim4l_v5/DoubleEG_Run2017E-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2017F-UL2017"   : {"path" : "/skim4l_v5/DoubleEG_Run2017F-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2017B-UL2017"     : {"path" : "/skim4l_v5/MuonEG_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2017C-UL2017"     : {"path" : "/skim4l_v5/MuonEG_Run2017C-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2017D-UL2017"     : {"path" : "/skim4l_v5/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2017E-UL2017"     : {"path" : "/skim4l_v5/MuonEG_Run2017E-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2017F-UL2017"     : {"path" : "/skim4l_v5/MuonEG_Run2017F-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2017B-UL2017" : {"Era" : "B" , "path" : "/skim4l_v5/DoubleMuon_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2017C-UL2017" : {"Era" : "C" , "path" : "/skim4l_v5/DoubleMuon_Run2017C-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2017D-UL2017" : {"Era" : "D" , "path" : "/skim4l_v5/DoubleMuon_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2017E-UL2017" : {"Era" : "E" , "path" : "/skim4l_v5/DoubleMuon_Run2017E-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2017F-UL2017" : {"Era" : "F" , "path" : "/skim4l_v5/DoubleMuon_Run2017F-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2017B-UL2017"   : {"Era" : "B" , "path" : "/skim4l_v5/DoubleEG_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2017C-UL2017"   : {"Era" : "C" , "path" : "/skim4l_v5/DoubleEG_Run2017C-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2017D-UL2017"   : {"Era" : "D" , "path" : "/skim4l_v5/DoubleEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2017E-UL2017"   : {"Era" : "E" , "path" : "/skim4l_v5/DoubleEG_Run2017E-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2017F-UL2017"   : {"Era" : "F" , "path" : "/skim4l_v5/DoubleEG_Run2017F-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"   , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2017B-UL2017"     : {"Era" : "B" , "path" : "/skim4l_v5/MuonEG_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2017C-UL2017"     : {"Era" : "C" , "path" : "/skim4l_v5/MuonEG_Run2017C-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2017D-UL2017"     : {"Era" : "D" , "path" : "/skim4l_v5/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2017E-UL2017"     : {"Era" : "E" , "path" : "/skim4l_v5/MuonEG_Run2017E-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2017F-UL2017"     : {"Era" : "F" , "path" : "/skim4l_v5/MuonEG_Run2017F-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL17_data" , "xsecName" : "data" , } ,
 }
 
 data_UL18_4l_skim_dict = {
-    "MuonEG_Run2018A-UL2018"     : {"path" : "/skim4l_v5/MuonEG_Run2018A-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2018B-UL2018"     : {"path" : "/skim4l_v5/MuonEG_Run2018B-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2018C-UL2018"     : {"path" : "/skim4l_v5/MuonEG_Run2018C-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
-    "MuonEG_Run2018D-UL2018"     : {"path" : "/skim4l_v5/MuonEG_Run2018D-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
-    "EGamma_Run2018A-UL2018"     : {"path" : "/skim4l_v5/EGamma_Run2018A-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
-    "EGamma_Run2018B-UL2018"     : {"path" : "/skim4l_v5/EGamma_Run2018B-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
-    "EGamma_Run2018C-UL2018"     : {"path" : "/skim4l_v5/EGamma_Run2018C-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
-    "EGamma_Run2018D-UL2018"     : {"path" : "/skim4l_v5/EGamma_Run2018D-UL2018_MiniAODv2_NanoAODv9-v3_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2018A-UL2018" : {"path" : "/skim4l_v5/DoubleMuon_Run2018A-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2018B-UL2018" : {"path" : "/skim4l_v5/DoubleMuon_Run2018B-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2018C-UL2018" : {"path" : "/skim4l_v5/DoubleMuon_Run2018C-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2018D-UL2018" : {"path" : "/skim4l_v5/DoubleMuon_Run2018D-UL2018_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2018A-UL2018"     : {"Era" : "A" , "path" : "/skim4l_v5/MuonEG_Run2018A-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2018B-UL2018"     : {"Era" : "B" , "path" : "/skim4l_v5/MuonEG_Run2018B-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2018C-UL2018"     : {"Era" : "C" , "path" : "/skim4l_v5/MuonEG_Run2018C-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
+    "MuonEG_Run2018D-UL2018"     : {"Era" : "D" , "path" : "/skim4l_v5/MuonEG_Run2018D-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
+    "EGamma_Run2018A-UL2018"     : {"Era" : "A" , "path" : "/skim4l_v5/EGamma_Run2018A-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
+    "EGamma_Run2018B-UL2018"     : {"Era" : "B" , "path" : "/skim4l_v5/EGamma_Run2018B-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
+    "EGamma_Run2018C-UL2018"     : {"Era" : "C" , "path" : "/skim4l_v5/EGamma_Run2018C-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
+    "EGamma_Run2018D-UL2018"     : {"Era" : "D" , "path" : "/skim4l_v5/EGamma_Run2018D-UL2018_MiniAODv2_NanoAODv9-v3_NANOAOD_skim4l_v5/merged/"     , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2018A-UL2018" : {"Era" : "A" , "path" : "/skim4l_v5/DoubleMuon_Run2018A-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2018B-UL2018" : {"Era" : "B" , "path" : "/skim4l_v5/DoubleMuon_Run2018B-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2018C-UL2018" : {"Era" : "C" , "path" : "/skim4l_v5/DoubleMuon_Run2018C-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2018D-UL2018" : {"Era" : "D" , "path" : "/skim4l_v5/DoubleMuon_Run2018D-UL2018_MiniAODv2_NanoAODv9-v2_NANOAOD_skim4l_v5/merged/" , "histAxisName" : "UL18_data" , "xsecName" : "data" , } ,
 }
 
 ## Signal
@@ -888,9 +888,9 @@ def main():
     #replace_xsec_for_dict_of_samples(central_UL18_bkg_dict,out_dir_bkg)
 
     # 4L Skim
-    #jsons_path = "../../input_samples/sample_jsons/"
-    #out_dir_data = os.path.join(jsons_path,"wwz_analysis_4l_skims_v0/data_samples")
-    #os.makedirs(out_dir_data, exist_ok=True)
+    jsons_path = "../../input_samples/sample_jsons/"
+    out_dir_data = os.path.join(jsons_path,"wwz_analysis_4l_skims_v0/data_samples")
+    os.makedirs(out_dir_data, exist_ok=True)
     #out_dir_bkg = os.path.join(jsons_path,"wwz_analysis_4l_skims_v0/bkg_samples")
     #os.makedirs(out_dir_bkg, exist_ok=True)
     #out_dir_sig = os.path.join(jsons_path,"wwz_analysis_4l_skims_v0/sig_samples")
@@ -901,10 +901,10 @@ def main():
     #make_jsons_for_dict_of_samples(central_UL17_sig_4l_skim_dict, "/data/userdata/phchang/", "2017", out_dir_sig, on_das=False)
     #make_jsons_for_dict_of_samples(central_UL18_sig_4l_skim_dict, "/data/userdata/phchang/", "2018", out_dir_sig, on_das=False)
 
-    make_jsons_for_dict_of_samples(central_UL16APV_bkg_4l_skim_dict, "/data/userdata/phchang/", "2016APV", out_dir_bkg, on_das=False)
-    make_jsons_for_dict_of_samples(central_UL16_bkg_4l_skim_dict, "/data/userdata/phchang/", "2016", out_dir_bkg, on_das=False)
-    make_jsons_for_dict_of_samples(central_UL17_bkg_4l_skim_dict, "/data/userdata/phchang/", "2017", out_dir_bkg, on_das=False)
-    make_jsons_for_dict_of_samples(central_UL18_bkg_4l_skim_dict, "/data/userdata/phchang/", "2018", out_dir_bkg, on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL16APV_bkg_4l_skim_dict, "/data/userdata/phchang/", "2016APV", out_dir_bkg, on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL16_bkg_4l_skim_dict, "/data/userdata/phchang/", "2016", out_dir_bkg, on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL17_bkg_4l_skim_dict, "/data/userdata/phchang/", "2017", out_dir_bkg, on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL18_bkg_4l_skim_dict, "/data/userdata/phchang/", "2018", out_dir_bkg, on_das=False)
 
     #make_jsons_for_dict_of_samples(data_UL16APV_4l_skim_dict , "/data/userdata/phchang/", "2016APV", out_dir_data, on_das=False)
     #make_jsons_for_dict_of_samples(data_UL16_4l_skim_dict , "/data/userdata/phchang/", "2016", out_dir_data, on_das=False)

@@ -329,3 +329,33 @@ def run3_pu_attach(pileup,year,sys):
         return pu_corr_lo
     if sys not in ["nominal","hi","lo"]:
         raise Exception("ERROR: Not a recognized parameter.")
+
+def jec_jer_corrections(jet_collection,year,isdata,era):
+
+    # Get the right sf json for the given campaign
+    if year == "2016":
+        fname = ewkcoffea_path("data/wwz_jerc/2016_jerc/jet_jerc.json")
+    elif year == "2016APV":
+        fname = ewkcoffea_path("data/wwz_jerc/2016APV_jerc/jet_jerc.json")
+    elif year == "2017":
+        fname = ewkcoffea_path("data/wwz_jerc/2017_jerc/jet_jerc.json")
+    elif year == "2018":
+        fname = ewkcoffea_path("data/wwz_jerc/2018_jerc/jet_jerc.json")
+    elif year == "2022":
+        fname = ewkcoffea_path("data/wwz_jerc/2022_jerc/jet_jerc.json")
+    elif year == "2022EE":
+        fname = ewkcoffea_path("data/wwz_jerc/2022EE_jerc/jet_jerc.json")
+    elif year == "2023":
+        fname = ewkcoffea_path("data/wwz_jerc/2023_jerc/jet_jerc.json")
+    elif year == "2023BPix":
+        fname = ewkcoffea_path("data/wwz_jerc/2023BPix_jerc/jet_jerc.json")
+    else:
+        raise Exception("Unrecognized year. Exctiting!")
+
+    #Inputs we will need
+    jet_raw_pt = jet_collection.pt * (1 - jet_collection.rawFactor)
+    jet_eta = jet.eta
+    jet_area = jet_collection.area
+    
+ 
+
