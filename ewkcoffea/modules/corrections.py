@@ -332,30 +332,72 @@ def run3_pu_attach(pileup,year,sys):
 
 def jec_jer_corrections(jet_collection,year,isdata,era):
 
-    # Get the right sf json for the given campaign
+    # Get the right json for the year and generic key
     if year == "2016":
         fname = ewkcoffea_path("data/wwz_jerc/2016_jerc/jet_jerc.json")
+        key =
     elif year == "2016APV":
         fname = ewkcoffea_path("data/wwz_jerc/2016APV_jerc/jet_jerc.json")
+        key =
     elif year == "2017":
         fname = ewkcoffea_path("data/wwz_jerc/2017_jerc/jet_jerc.json")
+        key = "Summer19UL17"
     elif year == "2018":
         fname = ewkcoffea_path("data/wwz_jerc/2018_jerc/jet_jerc.json")
+        key = "Summer19UL18"
     elif year == "2022":
         fname = ewkcoffea_path("data/wwz_jerc/2022_jerc/jet_jerc.json")
+        key = "Summer22_22Sep2023"
     elif year == "2022EE":
         fname = ewkcoffea_path("data/wwz_jerc/2022EE_jerc/jet_jerc.json")
+        key =
     elif year == "2023":
         fname = ewkcoffea_path("data/wwz_jerc/2023_jerc/jet_jerc.json")
+        key =
     elif year == "2023BPix":
         fname = ewkcoffea_path("data/wwz_jerc/2023BPix_jerc/jet_jerc.json")
+        key =
     else:
         raise Exception("Unrecognized year. Exctiting!")
 
     #Inputs we will need
-    jet_raw_pt = jet_collection.pt * (1 - jet_collection.rawFactor)
+    jet_raw_pt = STUFF HERE!!!!!!!!!!!!!
     jet_eta = jet.eta
     jet_area = jet_collection.area
-    
- 
+    rho = STUFF HERE!!!!!!!!!!!!!!!!!!!!
+
+    #Make a full key
+    if year in ["2017","2018"]
+        jet_type = "AK4PFchs"
+        if isdata:
+            key = key + f"_Run{era}_V5_DATA"
+        else:
+            key = key + "_V5_MC"
+    elif year in ["2022"]
+        jet_type = "AK4PFPuppi"
+        if isdata:
+            key = key + "_RunCD_V2_DATA" 
+        else: 
+            key = key + "_V2_MC"
+    elif year in ["2022EE"]
+        jet_type = "AK4PFPuppi"
+        if isdata:
+            key = key + "_Run{era}_V2_DATA" 
+        else: 
+            key = key + "_V2_MC"
+
+    #JEC
+    #L1FastJet
+    l1_fj = ceval[f"{key}_L1FastJet_{jet_type}"].evaluate(jet_area,jet_eta,jet_raw_pt,rho)
+    pt_v1 = l1_fj * jet_raw_pt
+    #L2Relative
+    l2_rel = ceval[f"{key}_L2Realtive_{jet_type}"].evaluate(jet_eta,pt_v1)
+    pt_v2 = l2_rel * pt_v1
+    #L3Absolute 
+    l3_abs = ceval[f"{key}_L3Absolute_{jet_type}"].evaluate(jet_eta,pt_v2)
+    pt_v3 = l3_abs * pt_v2
+    #L2L3Residual (Note that this is not needed for MC and will always return 1)
+    l2l3_res = ceval[f"{key}_L2L3Residual_{jet_type}"].evaluate(jet_eta,pt_v3)
+    pt_v4 = l2l3_res * pt_v3
+
 
