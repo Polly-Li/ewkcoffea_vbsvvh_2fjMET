@@ -330,33 +330,106 @@ def run3_pu_attach(pileup,year,sys):
     if sys not in ["nominal","hi","lo"]:
         raise Exception("ERROR: Not a recognized parameter.")
 
-def jec_jer_corrections(jet_collection,year,isdata,era):
+def get_jec_keys(year,isdata,era):
+    run2_years = ["2016","2016APV","2017","2018"]
+    run3_years = ["2022","2022EE","2023","2023BPix"]
+
+    #Get the type of Jets
+    if year in run2_years:
+        jet_type = "AK4PFchs"
+    elif year in run3_years:
+        jet_type = "AK4PFPuppi"
+    else:
+        raise Exception("Unrecognized year. Exciting!")
+
+    #Construct the correct key (year dependent)
+    if year == "2016":
+        key_base = "Summer19UL16"
+        if isdata:
+            key = key_base + "_RunFGH_V7_DATA"
+        else:
+            key = key_base + "_V7_MC"
+    elif year == "2016APV":
+        key_base = "Summer19UL16APV"
+        if isdata:
+            if era in ["B","C","D"]:
+                key = key_base + "_RunBCD_V7_DATA"
+            elif era in ["E","F"]:
+                key = key_base + "_RunEF_V7_DATA"
+            else:
+                raise Exception("Unrecognized Era for 2016APV!")
+        else:
+            key = key_base + "_V7_MC"
+    elif year == "2017":
+        key_base = "Summer19UL17"
+        if isdata:
+            if era in ["B","C","D","E","F"]
+                key = key_base + f"_Run{era}_V5_DATA"
+            else:
+                raise Exception("Unrecognized Era for 2017!")
+        else:
+            key = key_base + "_V5_MC"
+    elif year == "2018":
+        key_base = "Summer19UL18"
+        if isdata:
+            if era in ["A","B","C","D"]
+                key = key_base + f"_Run{era}_V5_DATA"
+            else:
+                raise Exception("Unrecognized Era for 2018!")
+        else:
+            key = key_base + "_V5_MC"
+    elif year == "2022":
+        key_base = "Summer22_22Sep2023"
+        if isdata:
+            key = key_base + "_RunCD_V2_DATA"
+        else:
+            key = key_base + "_V2_MC"
+    elif year == "2022EE":
+        key_base = "Summer22EE_22Sep2023"
+        if isdata:
+            if era in ["E","F","G"]:
+                key = key_base + f"_Run{era}_V2_DATA"
+            else:
+                raise Exception("Unrecognized Era for 2022EE!")
+        else:
+            key = key_base + "_V2_MC"
+    elif year == "2023":
+        key_base = ""
+        if isdata:
+            key = key_base + f""
+        else:
+            key = key_base + f""
+    elif year == "2023BPix":
+        key_base = ""
+        if isdata:
+            key = key_base + f""
+        else:
+            key = key_base + f""
+    else:
+        raise Exception("Unrecognized year. Exciting!")
+
+        return jet_type,key
+
+
+def jec_jer_corrections(jet_collection,year,isdata,era,events):
 
     # Get the right json for the year and generic key
     if year == "2016":
         fname = ewkcoffea_path("data/wwz_jerc/2016_jerc/jet_jerc.json")
-        key =
     elif year == "2016APV":
         fname = ewkcoffea_path("data/wwz_jerc/2016APV_jerc/jet_jerc.json")
-        key =
     elif year == "2017":
         fname = ewkcoffea_path("data/wwz_jerc/2017_jerc/jet_jerc.json")
-        key = "Summer19UL17"
     elif year == "2018":
         fname = ewkcoffea_path("data/wwz_jerc/2018_jerc/jet_jerc.json")
-        key = "Summer19UL18"
     elif year == "2022":
         fname = ewkcoffea_path("data/wwz_jerc/2022_jerc/jet_jerc.json")
-        key = "Summer22_22Sep2023"
     elif year == "2022EE":
         fname = ewkcoffea_path("data/wwz_jerc/2022EE_jerc/jet_jerc.json")
-        key =
     elif year == "2023":
         fname = ewkcoffea_path("data/wwz_jerc/2023_jerc/jet_jerc.json")
-        key =
     elif year == "2023BPix":
         fname = ewkcoffea_path("data/wwz_jerc/2023BPix_jerc/jet_jerc.json")
-        key =
     else:
         raise Exception("Unrecognized year. Exctiting!")
 
@@ -364,28 +437,16 @@ def jec_jer_corrections(jet_collection,year,isdata,era):
     jet_raw_pt = STUFF HERE!!!!!!!!!!!!!
     jet_eta = jet.eta
     jet_area = jet_collection.area
-    rho = STUFF HERE!!!!!!!!!!!!!!!!!!!!
+    rho = events.fixedGridRhoFastjetAll
 
-    #Make a full key
-    if year in ["2017","2018"]
-        jet_type = "AK4PFchs"
-        if isdata:
-            key = key + f"_Run{era}_V5_DATA"
-        else:
-            key = key + "_V5_MC"
-    elif year in ["2022"]
-        jet_type = "AK4PFPuppi"
-        if isdata:
-            key = key + "_RunCD_V2_DATA" 
-        else: 
-            key = key + "_V2_MC"
-    elif year in ["2022EE"]
-        jet_type = "AK4PFPuppi"
-        if isdata:
-            key = key + "_Run{era}_V2_DATA" 
-        else: 
-            key = key + "_V2_MC"
+    #We need to broadcast Rho to have the same shape as jet pt
+    fixed_rho, _ = ak.broadcast_arrays(rho, jet_raw_pt)
 
+    #We need to flatten the arrays
+    fixed_rho_flat = ak.flatten(fixed_rho)
+    jet_raw_pt_flat = ak.flatten(jet_raw_pt)
+    jet_eta_flat = ak.flatten(jet_eta)
+    
     #JEC
     #L1FastJet
     l1_fj = ceval[f"{key}_L1FastJet_{jet_type}"].evaluate(jet_area,jet_eta,jet_raw_pt,rho)
