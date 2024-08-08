@@ -1,0 +1,18 @@
+{
+    "xsec": 1.0,
+    "year": "2023",
+    "treeName": "Events",
+    "histAxisName": "2023_data",
+    "options": "",
+    "era": "C1",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/WWZ_Skims/WWZ_Run3_Data_2024_0803/2023/MuonEG_Run2023C-22Sep2023_v1-v1_NANOAOD_WWZ_Run3_DAT_2024_0803/merged/merged.root"
+    ],
+    "nEvents": 372,
+    "nGenEvents": 372,
+    "nSumOfWeights": 372,
+    "isData": true,
+    "path": "/store/user/mdittric/skim/WWZ_Skims/WWZ_Run3_Data_2024_0803/2023/MuonEG_Run2023C-22Sep2023_v1-v1_NANOAOD_WWZ_Run3_DAT_2024_0803/merged",
+    "nSumOfLheWeights": null
+}

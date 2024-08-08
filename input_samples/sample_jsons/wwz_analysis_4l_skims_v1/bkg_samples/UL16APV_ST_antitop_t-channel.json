@@ -1,0 +1,27 @@
+{
+    "xsec": 80.95,
+    "year": "2016APV",
+    "treeName": "Events",
+    "histAxisName": "UL16APV_ST_antitop_t-channel",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/WWZ_Skims/WWZ_Run2_MC_2024_0804/2016APV/ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_Run2_MC_2024_0804/merged/merged.root"
+    ],
+    "nEvents": 159,
+    "nGenEvents": 31024000,
+    "nSumOfWeights": 1983864521.596481,
+    "isData": false,
+    "path": "/store/user/mdittric/skim/WWZ_Skims/WWZ_Run2_MC_2024_0804/2016APV/ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_Run2_MC_2024_0804/merged",
+    "nSumOfLheWeights": [
+        2087757047.8208704,
+        2088200955.4575374,
+        2108261372.167565,
+        1987666380.4021912,
+        1983847295.9581068,
+        1991070754.6567488,
+        1879634625.332724,
+        1872966113.2356026,
+        1872181797.0761688
+    ]
+}

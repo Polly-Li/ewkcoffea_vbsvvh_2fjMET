@@ -1,0 +1,18 @@
+{
+    "xsec": 1.0,
+    "year": "2022EE",
+    "treeName": "Events",
+    "histAxisName": "2022EE_data",
+    "options": "",
+    "era": "G",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/WWZ_Skims/WWZ_Run3_Data_2024_0803/2022EE/Muon_Run2022G-22Sep2023-v1_NANOAOD_WWZ_Run3_DAT_2024_0803/merged/merged.root"
+    ],
+    "nEvents": 514,
+    "nGenEvents": 514,
+    "nSumOfWeights": 514,
+    "isData": true,
+    "path": "/store/user/mdittric/skim/WWZ_Skims/WWZ_Run3_Data_2024_0803/2022EE/Muon_Run2022G-22Sep2023-v1_NANOAOD_WWZ_Run3_DAT_2024_0803/merged",
+    "nSumOfLheWeights": null
+}

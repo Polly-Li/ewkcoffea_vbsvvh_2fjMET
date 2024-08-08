@@ -1,0 +1,27 @@
+{
+    "xsec": 136.02,
+    "year": "2018",
+    "treeName": "Events",
+    "histAxisName": "UL18_ST_top_t-channel",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/WWZ_Skims/WWZ_Run2_MC_2024_0804/2018/ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_Run2_MC_2024_0804/merged/merged.root"
+    ],
+    "nEvents": 617,
+    "nGenEvents": 178336000,
+    "nSumOfWeights": 18955983507.893997,
+    "isData": false,
+    "path": "/store/user/mdittric/skim/WWZ_Skims/WWZ_Run2_MC_2024_0804/2018/ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_Run2_MC_2024_0804/merged",
+    "nSumOfLheWeights": [
+        19882726413.109734,
+        19868914122.2778,
+        20056787889.4391,
+        18997923071.145924,
+        18955709834.83093,
+        19029003448.468243,
+        18005456678.909348,
+        17944198734.764954,
+        17944763451.431713
+    ]
+}

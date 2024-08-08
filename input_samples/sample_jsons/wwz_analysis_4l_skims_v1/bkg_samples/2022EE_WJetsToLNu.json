@@ -1,0 +1,27 @@
+{
+    "xsec": 64481.58,
+    "year": "2022EE",
+    "treeName": "Events",
+    "histAxisName": "2022EE_WJetsToLNu",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/WWZ_Skims/WWZ_Run3_MC_2024_0803/2022EE/WtoLNu-2Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_WWZ_Run3_MC_2024_0803/merged/merged.root"
+    ],
+    "nEvents": 2,
+    "nGenEvents": 281543551,
+    "nSumOfWeights": 49651697426509.766,
+    "isData": false,
+    "path": "/store/user/mdittric/skim/WWZ_Skims/WWZ_Run3_MC_2024_0803/2022EE/WtoLNu-2Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_WWZ_Run3_MC_2024_0803/merged",
+    "nSumOfLheWeights": [
+        48713353247327.34,
+        50504742726447.68,
+        51393088700317.42,
+        47404587352916.35,
+        49651697426509.76,
+        51027548968946.54,
+        46278203692366.58,
+        48872950325338.05,
+        50627393431386.836
+    ]
+}
