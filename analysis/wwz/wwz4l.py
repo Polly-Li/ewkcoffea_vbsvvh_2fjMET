@@ -228,8 +228,8 @@ class AnalysisProcessor(processor.ProcessorABC):
         is2022 = year in ["2022","2022EE"]
         is2023 = year in ["2023","2023BPix"]
 
-        # If this is a 2022 sample, get the era info
-        if isData and is2022:
+        # We get the era for all datasets
+        if isData:
             era = self._samples[json_name]["era"]
         else:
             era = None
@@ -421,7 +421,23 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
 
-        obj_correction_systs = [] # Will have e.g. jes etc
+        obj_correction_systs = [
+            "AbsoluteMPFBias_Down","AbsoluteScale_Down","AbsoluteStat_Down","FlavorQCD_Down","Fragmentation_Down",
+            "PileUpDataMC_Down","PileUpPtBB_Down","PileUpPtEC1_Down","PileUpPtEC2_Down","PileUpPtHF_Down",
+            "PileUpPtRef_Down","RelativeFSR_Down","RelativeJEREC1_Down","RelativeJEREC2_Down","RelativeJERHF_Down",
+            "RelativePtBB_Down","RelativePtEC1_Down","RelativePtEC2_Down","RelativePtHF_Down","RelativeBal_Down",
+            "RelativeSample_Down","RelativeStatEC_Down","RelativeStatFSR_Down","RelativeStatHF_Down","SinglePionECAL_Down",
+            "SinglePionHCAL_Down","TimePtEta_Down",
+
+            "AbsoluteMPFBias_Up","AbsoluteScale_Up","AbsoluteStat_Up","FlavorQCD_Up","Fragmentation_Up",
+            "PileUpDataMC_Up","PileUpPtBB_Up","PileUpPtEC1_Up","PileUpPtEC2_Up","PileUpPtHF_Up",
+            "PileUpPtRef_Up","RelativeFSR_Up","RelativeJEREC1_Up","RelativeJEREC2_Up","RelativeJERHF_Up",
+            "RelativePtBB_Up","RelativePtEC1_Up","RelativePtEC2_Up","RelativePtHF_Up","RelativeBal_Up",
+            "RelativeSample_Up","RelativeStatEC_Up","RelativeStatFSR_Up","RelativeStatHF_Up","SinglePionECAL_Up",
+            "SinglePionHCAL_Up","TimePtEta_Up",
+
+            "JER_Up","JER_Down",
+        ]
 
         # If we're doing systematics and this isn't data, we will loop over the obj correction syst lst list
         if self._do_systematics and not isData: obj_corr_syst_var_list = ["nominal"] + obj_correction_systs

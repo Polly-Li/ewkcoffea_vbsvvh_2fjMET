@@ -394,30 +394,35 @@ def get_jec_keys(year,isdata,era):
         else:
             key = key_base + "_V2_MC"
     elif year == "2023":
-        key_base = ""
+        key_base = "Summer23Prompt23"
         if isdata:
-            key = key_base + f""
+            if era in ["C1","C2","C3"]:
+                key = key_base + "_RunCv123_V1_DATA"
+            elif era in ["C4"]:
+                key = key_base + "_RunCv4_V1_DATA"
+            else:
+                raise Exception("Unrecognized Era for 2023!")
         else:
-            key = key_base + f""
+            key = key_base + "_V1_MC"
     elif year == "2023BPix":
-        key_base = ""
+        key_base = "Summer23BPixPrompt23"
         if isdata:
-            key = key_base + f""
+            key = key_base + "_RunD_V1_DATA"
         else:
-            key = key_base + f""
+            key = key_base + "_V1_MC"
     else:
         raise Exception("Unrecognized year. Exciting!")
 
-        return jet_type,key
+    return jet_type,key
 
 
-def jec_jer_corrections(jet_collection,year,isdata,era,events):
+def jerc_corrections(year,era,isdata,correction,jet_collection,events):
 
-    # Get the right json for the year and generic key
-    if year == "2016":
-        fname = ewkcoffea_path("data/wwz_jerc/2016_jerc/jet_jerc.json")
-    elif year == "2016APV":
+    #Get the correct files
+    if year == "2016APV":
         fname = ewkcoffea_path("data/wwz_jerc/2016APV_jerc/jet_jerc.json")
+    elif year == "2016":
+        fname = ewkcoffea_path("data/wwz_jerc/2016_jerc/jet_jerc.json")
     elif year == "2017":
         fname = ewkcoffea_path("data/wwz_jerc/2017_jerc/jet_jerc.json")
     elif year == "2018":
@@ -431,11 +436,14 @@ def jec_jer_corrections(jet_collection,year,isdata,era,events):
     elif year == "2023BPix":
         fname = ewkcoffea_path("data/wwz_jerc/2023BPix_jerc/jet_jerc.json")
     else:
-        raise Exception("Unrecognized year. Exctiting!")
+        raise Exception("Unrecognized year for jerc_corrections. Exciting!")
+
+    # Initiliaze files we need
+    jerc_ceval = correctionlib.CorrectionSet.from_file(fname)
 
     #Inputs we will need
-    jet_raw_pt = STUFF HERE!!!!!!!!!!!!!
-    jet_eta = jet.eta
+    jet_raw_pt = (1 - jet_collection.rawFactor)*jet_collection.pt
+    jet_eta = jet_collection.eta
     jet_area = jet_collection.area
     rho = events.fixedGridRhoFastjetAll
 
@@ -446,19 +454,41 @@ def jec_jer_corrections(jet_collection,year,isdata,era,events):
     fixed_rho_flat = ak.flatten(fixed_rho)
     jet_raw_pt_flat = ak.flatten(jet_raw_pt)
     jet_eta_flat = ak.flatten(jet_eta)
+    jet_area_flat = ak.flatten(jet_area)
     
+    #Get the appropriate key and jet type
+    jet_type, key = get_jec_keys(year,isdata,era)
+
     #JEC
     #L1FastJet
-    l1_fj = ceval[f"{key}_L1FastJet_{jet_type}"].evaluate(jet_area,jet_eta,jet_raw_pt,rho)
-    pt_v1 = l1_fj * jet_raw_pt
+    l1_fj = jerc_ceval[f"{key}_L1FastJet_{jet_type}"].evaluate(jet_area_flat,jet_eta_flat,jet_raw_pt_flat,fixed_rho_flat)
+    pt_v1 = l1_fj * jet_raw_pt_flat
     #L2Relative
-    l2_rel = ceval[f"{key}_L2Realtive_{jet_type}"].evaluate(jet_eta,pt_v1)
+    l2_rel = jerc_ceval[f"{key}_L2Realtive_{jet_type}"].evaluate(jet_eta_flat,pt_v1)
     pt_v2 = l2_rel * pt_v1
     #L3Absolute 
-    l3_abs = ceval[f"{key}_L3Absolute_{jet_type}"].evaluate(jet_eta,pt_v2)
+    l3_abs = jerc_ceval[f"{key}_L3Absolute_{jet_type}"].evaluate(jet_eta_flat,pt_v2)
     pt_v3 = l3_abs * pt_v2
-    #L2L3Residual (Note that this is not needed for MC and will always return 1)
-    l2l3_res = ceval[f"{key}_L2L3Residual_{jet_type}"].evaluate(jet_eta,pt_v3)
+    #L2L3Residual (Note that this is not needed for MC but will always return 1)
+    l2l3_res = jerc_ceval[f"{key}_L2L3Residual_{jet_type}"].evaluate(jet_eta_flat,pt_v3)
     pt_v4 = l2l3_res * pt_v3
 
+    ###JEC Uncertaintities
+    if isdata or (correction == "nominal"):
+        #TODO
+    else:
+        #Figure out the syst and up/down
+        syst = correction.split("_")[0]
+        updown = syst_updown.split("_")[1]
+        if updown not in ["Up","Down"]:
+            raise Exception("JEC uncertainty should be up or down!")
 
+        factor = pt_v4 * jerc_ceval[f"{key}_{syst}_{jet_type}"].evaluate(jet_eta_flat,pt_v4)
+        if updown == "Up":
+            pt_v5 = pt_v4 + factor
+        elif updown == "Down":
+            pt_v5 = pt_v4 - factor
+
+    ###JER Corrections
+    if not isdata:
+        
