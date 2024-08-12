@@ -456,8 +456,17 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Clean with dr (though another option is to use jetIdx)
             cleanedJets = os_ec.get_cleaned_collection(l_wwz_t,jets)
 
+            #Get the GenJet pt (or -1 if None)
+            if not isdata:
+                cleanedJets["pt_gen"] = ak.fill_none(cleanedJets.matched_gen.pt, -1)
+            else:
+                cleanedJets["pt_gen"] = ak.ones_like(cleanedJets.pt)
+
+            #Attach the JEC/JER corrected PT to cleanedJets
+            cor_ec.jerc_corrections(year,era,isdata,obj_corr_syst_var,cleanedJets,events)
+
             # Selecting jets and cleaning them
-            jetptname = "pt_nom" if hasattr(cleanedJets, "pt_nom") else "pt"
+            jetptname = "pt_jerc"
             cleanedJets["is_good"] = os_tc.is_tight_jet(getattr(cleanedJets, jetptname), cleanedJets.eta, cleanedJets.jetId, pt_cut=20., eta_cut=get_ec_param("wwz_eta_j_cut"), id_cut=get_ec_param("wwz_jet_id_cut"))
             goodJets = cleanedJets[cleanedJets.is_good]
 
@@ -639,13 +648,13 @@ class AnalysisProcessor(processor.ProcessorABC):
             abs_pdgid_sum = (abs(l0.pdgId) + abs(l1.pdgId) + abs(l2.pdgId) + abs(l3.pdgId))
 
             l0pt = l0.pt
-            j0pt = ak.flatten(j0.pt) # Flatten to go from [[j0pt],[j0pt],...] -> [j0pt,j0pt,...]
+            j0pt = ak.flatten(j0.pt_jerc) # Flatten to go from [[j0pt],[j0pt],...] -> [j0pt,j0pt,...]
             mll_01 = (l0+l1).mass
             mllll = (l0+l1+l2+l3).mass
             scalarptsum_lep = l0.pt + l1.pt + l2.pt + l3.pt
             scalarptsum_lepmet = l0.pt + l1.pt + l2.pt + l3.pt + met.pt
-            scalarptsum_lepmetjet = l0.pt + l1.pt + l2.pt + l3.pt + met.pt + ak.sum(goodJets.pt,axis=-1)
-            scalarptsum_jet = ak.sum(goodJets.pt,axis=-1)
+            scalarptsum_lepmetjet = l0.pt + l1.pt + l2.pt + l3.pt + met.pt + ak.sum(goodJets.pt_jerc,axis=-1)
+            scalarptsum_jet = ak.sum(goodJets.pt_jerc,axis=-1)
 
             # Get lep from Z
             z_lep0 = leps_from_z_candidate_ptordered[:,0]

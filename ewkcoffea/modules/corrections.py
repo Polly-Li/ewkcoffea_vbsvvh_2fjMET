@@ -422,20 +422,36 @@ def jerc_corrections(year,era,isdata,correction,jet_collection,events):
     smear_fname = ewkcoffea_path("data/wwz_jerc/jer_smear.json")
     if year == "2016APV":
         fname = ewkcoffea_path("data/wwz_jerc/2016APV_jerc/jet_jerc.json")
+        sf_key = "Summer20UL16APV_JRV3_MC_ScaleFactor_AK4PFchs"
+        jer_key = "Summer20UL16APV_JRV3_MC_PtResolution_AK4PFchs"
     elif year == "2016":
         fname = ewkcoffea_path("data/wwz_jerc/2016_jerc/jet_jerc.json")
+        sf_key = "Summer20UL16_JRV3_MC_ScaleFactor_AK4PFchs"
+        jer_key = "Summer20UL16_JRV3_MC_PtResolution_AK4PFchs"
     elif year == "2017":
         fname = ewkcoffea_path("data/wwz_jerc/2017_jerc/jet_jerc.json")
+        sf_key = "Summer19UL17_JRV2_MC_ScaleFactor_AK4PFchs"
+        jer_key = "Summer19UL17_JRV2_MC_PtResolution_AK4PFchs"
     elif year == "2018":
         fname = ewkcoffea_path("data/wwz_jerc/2018_jerc/jet_jerc.json")
+        sf_key = "Summer19UL18_JRV2_MC_ScaleFactor_AK4PFchs"
+        jer_key = "Summer19UL18_JRV2_MC_PtResolution_AK4PFchs"
     elif year == "2022":
         fname = ewkcoffea_path("data/wwz_jerc/2022_jerc/jet_jerc.json")
+        sf_key = "Summer22_22Sep2023_JRV1_MC_ScaleFactor_AK4PFPuppi"
+        jer_key = "Summer22_22Sep2023_JRV1_MC_PtResolution_AK4PFPuppi"
     elif year == "2022EE":
         fname = ewkcoffea_path("data/wwz_jerc/2022EE_jerc/jet_jerc.json")
+        sf_key = "Summer22EE_22Sep2023_JRV1_MC_ScaleFactor_AK4PFPuppi"
+        jer_key = "Summer22EE_22Sep2023_JRV1_MC_PtResolution_AK4PFPuppi"
     elif year == "2023":
         fname = ewkcoffea_path("data/wwz_jerc/2023_jerc/jet_jerc.json")
+        sf_key = "Summer23Prompt23_RunCv1234_JRV1_MC_ScaleFactor_AK4PFPuppi"
+        jer_key = "Summer23Prompt23_RunCv1234_JRV1_MC_PtResolution_AK4PFPuppi"
     elif year == "2023BPix":
         fname = ewkcoffea_path("data/wwz_jerc/2023BPix_jerc/jet_jerc.json")
+        sf_key = "Summer23BPixPrompt23_RunD_JRV1_MC_ScaleFactor_AK4PFPuppi"
+        jer_key = "Summer23BPixPrompt23_RunD_JRV1_MC_PtResolution_AK4PFPuppi"
     else:
         raise Exception("Unrecognized year for jerc_corrections. Exciting!")
 
@@ -449,6 +465,7 @@ def jerc_corrections(year,era,isdata,correction,jet_collection,events):
     jet_area = jet_collection.area
     rho = events.fixedGridRhoFastjetAll
     event = events.event
+    jet_genpt = jet_collection.pt_gen
 
     #We need to broadcast Rho  and Event Number to have the same shape as jet pt
     fixed_rho, _ = ak.broadcast_arrays(rho, jet_raw_pt)
@@ -460,6 +477,7 @@ def jerc_corrections(year,era,isdata,correction,jet_collection,events):
     jet_eta_flat = ak.flatten(jet_eta)
     jet_area_flat = ak.flatten(jet_area)
     fixed_event_flat = ak.flatten(fixed_event)
+    jet_genpt_flat = ak.flatten(jet_genpt)
     
     #Get the appropriate key and jet type
     jet_type, key = get_jec_keys(year,isdata,era)
@@ -501,4 +519,15 @@ def jerc_corrections(year,era,isdata,correction,jet_collection,events):
         elif correction == "JER_Down":
             up_down_nom = "down"
         else:
-            up_down_nom = 
+            up_down_nom = "nom"
+        #Get the JER SF
+        jer = jerc_ceval[jer_key].evaluate(jet_eta_flat,pt_v4,fixed_rho_flat)
+        if year in ["2016","2016APV","2017","2018"]:
+            jer_sf = jerc_ceval[sf_key].evaluate(jet_eta_flat,up_down_nom)
+        elif year in ["2022","2022EE","2023","2023BPix"]:
+            jer_sf = jerc_ceval[sf_key].evaluate(jet_eta_flat,pt_v4,up_down_nom)
+        #JER Smearing
+        smear_factor = smear_ceval[JERSmear].evaluate(pt_v4,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer,jer_sf)
+        #Get new pt
+        pt_v5 = smear_factor*pt_v4
+        jet_collection["pt_jerc"] = ak.unflatten(pt_v5,ak.num(jet_collection.pt))
