@@ -511,7 +511,7 @@ central_2023BPix_bkg_dict = {
     "2023BPix_TTZToLL_M_4to50"         : { "histAxisName" : "2023BPix_TTZToLL_M_4to50"         , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023BPix/TTLL_MLL-4to50_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_WWZ_MC_2024_0811/merged" , "xsecName" : "TTLL_MLL-4to50_13p6TeV" , } ,
 
     # TODO:Using 2022EE for now
-    "2023BPix_TTZToQQ"                 : { "histAxisName" : "2023BPix_TTZToQQ"                 , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2022EE/" , "xsecName" : "TTZToQQ_13p6TeV" , } ,
+    "2023BPix_TTZToQQ"                 : { "histAxisName" : "2023BPix_TTZToQQ"                 , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2022EE/TTZ-ZtoQQ-1Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_WWZ_MC_2024_0811/merged" , "xsecName" : "TTZToQQ_13p6TeV" , } ,
     #"2023BPix_TTZToQQ"                 : { "histAxisName" : "2023BPix_TTZToQQ"                 , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023BPix/" , "xsecName" : "TTZToQQ_13p6TeV" , } ,
 
     "2023BPix_VHnobb"                  : { "histAxisName" : "2023BPix_VHnobb"                  , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023BPix/VH_HtoNonbb_M-125_TuneCP5_13p6TeV_amcatnloFXFX-madspin-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_WWZ_MC_2024_0811/merged" , "xsecName" : "VH_HtoNonbb_13p6TeV" , } ,
@@ -522,7 +522,7 @@ central_2023BPix_bkg_dict = {
     "2023BPix_tW_semileptonic"         : { "histAxisName" : "2023BPix_tW_semileptonic"         , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023BPix/TWminustoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v3_NANOAODSIM_WWZ_MC_2024_0811/merged" , "xsecName" : "TWminustoLNu2Q_13p6TeV" , } ,
 
     # TODO:Using 2022EE for now
-    "2023BPix_tZq"                     : { "histAxisName" : "2023BPix_tZq"                     , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2022EE/" , "xsecName" : "tZq_13p6TeV" , } ,
+    "2023BPix_tZq"                     : { "histAxisName" : "2023BPix_tZq"                     , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2022EE/TZQB-Zto2L-4FS_MLL-30_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_WWZ_MC_2024_0811/merged" , "xsecName" : "tZq_13p6TeV" , } ,
     #"2023BPix_tZq"                     : { "histAxisName" : "2023BPix_tZq"                     , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023BPix/" , "xsecName" : "tZq_13p6TeV" , } ,
 
     "2023BPix_tbarW_leptonic"          : { "histAxisName" : "2023BPix_tbarW_leptonic"          , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023BPix/TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_WWZ_MC_2024_0811/merged" , "xsecName" : "TbarWplusto2L2Nu_13p6TeV" , } ,
@@ -768,32 +768,32 @@ def main():
     out_dir_sig = os.path.join(jsons_path,"wwz_analysis_4l_skims_v1/sig_samples/")
 
     # Make configs for data samples
-    make_jsons_for_dict_of_samples(data_UL16APV, "/ceph/cms/","2016APV", out_dir_data_16APV,era_op=1,on_das=False)
-    make_jsons_for_dict_of_samples(data_UL16, "/ceph/cms/","2016", out_dir_data_16,era_op=1,on_das=False)
-    make_jsons_for_dict_of_samples(data_UL17, "/ceph/cms/","2017", out_dir_data_17,era_op=1,on_das=False)
-    make_jsons_for_dict_of_samples(data_UL18, "/ceph/cms/","2018", out_dir_data_18,era_op=1,on_das=False)
-    make_jsons_for_dict_of_samples(data_2022, "/ceph/cms/","2022", out_dir_data_22,era_op=1,on_das=False)
-    make_jsons_for_dict_of_samples(data_2022EE, "/ceph/cms/","2022EE", out_dir_data_22EE,era_op=1,on_das=False)
-    make_jsons_for_dict_of_samples(data_2023, "/ceph/cms/","2023", out_dir_data_23,era_op=1,on_das=False)
-    make_jsons_for_dict_of_samples(data_2023BPix, "/ceph/cms/","2023BPix", out_dir_data_23BPix,era_op=1,on_das=False)
+    #make_jsons_for_dict_of_samples(data_UL16APV, "/ceph/cms/","2016APV", out_dir_data_16APV,era_op=1,on_das=False)
+    #make_jsons_for_dict_of_samples(data_UL16, "/ceph/cms/","2016", out_dir_data_16,era_op=1,on_das=False)
+    #make_jsons_for_dict_of_samples(data_UL17, "/ceph/cms/","2017", out_dir_data_17,era_op=1,on_das=False)
+    #make_jsons_for_dict_of_samples(data_UL18, "/ceph/cms/","2018", out_dir_data_18,era_op=1,on_das=False)
+    #make_jsons_for_dict_of_samples(data_2022, "/ceph/cms/","2022", out_dir_data_22,era_op=1,on_das=False)
+    #make_jsons_for_dict_of_samples(data_2022EE, "/ceph/cms/","2022EE", out_dir_data_22EE,era_op=1,on_das=False)
+    #make_jsons_for_dict_of_samples(data_2023, "/ceph/cms/","2023", out_dir_data_23,era_op=1,on_das=False)
+    #make_jsons_for_dict_of_samples(data_2023BPix, "/ceph/cms/","2023BPix", out_dir_data_23BPix,era_op=1,on_das=False)
 
     # Make configs for bkg samples
-    make_jsons_for_dict_of_samples(central_UL16APV_dict, "/ceph/cms/","2016APV", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_UL16_dict, "/ceph/cms/","2016", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_UL17_dict, "/ceph/cms/","2017", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_UL18_dict, "/ceph/cms/","2018", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_2022_dict, "/ceph/cms/","2022", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_2022EE_dict, "/ceph/cms/","2022EE", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_2023_dict, "/ceph/cms/","2023", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_2023BPix_dict, "/ceph/cms/","2023BPix", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_UL16APV_bkg_dict, "/ceph/cms/","2016APV", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_UL16_bkg_dict, "/ceph/cms/","2016", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_UL17_bkg_dict, "/ceph/cms/","2017", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_UL18_bkg_dict, "/ceph/cms/","2018", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_2022_bkg_dict, "/ceph/cms/","2022", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_2022EE_bkg_dict, "/ceph/cms/","2022EE", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_2023_bkg_dict, "/ceph/cms/","2023", out_dir_bkg,on_das=False)
-    make_jsons_for_dict_of_samples(central_2023BPix_bkg_dict, "/ceph/cms/","2023BPix", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL16APV_dict, "/ceph/cms/","2016APV", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL16_dict, "/ceph/cms/","2016", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL17_dict, "/ceph/cms/","2017", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL18_dict, "/ceph/cms/","2018", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_2022_dict, "/ceph/cms/","2022", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_2022EE_dict, "/ceph/cms/","2022EE", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_2023_dict, "/ceph/cms/","2023", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_2023BPix_dict, "/ceph/cms/","2023BPix", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL16APV_bkg_dict, "/ceph/cms/","2016APV", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL16_bkg_dict, "/ceph/cms/","2016", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL17_bkg_dict, "/ceph/cms/","2017", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL18_bkg_dict, "/ceph/cms/","2018", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_2022_bkg_dict, "/ceph/cms/","2022", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_2022EE_bkg_dict, "/ceph/cms/","2022EE", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_2023_bkg_dict, "/ceph/cms/","2023", out_dir_bkg,on_das=False)
+    #make_jsons_for_dict_of_samples(central_2023BPix_bkg_dict, "/ceph/cms/","2023BPix", out_dir_bkg,on_das=False)
 
     # Make configs for sig samples
     make_jsons_for_dict_of_samples(central_UL16APV_sig_dict, "/ceph/cms/","2016APV", out_dir_sig,on_das=False)
