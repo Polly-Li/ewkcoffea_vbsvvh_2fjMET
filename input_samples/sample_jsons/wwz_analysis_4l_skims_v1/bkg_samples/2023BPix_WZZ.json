@@ -6,13 +6,13 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims/WWZ_Run3_MC_2024_0803/2023BPix/WZZ_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2_NANOAODSIM_WWZ_Run3_MC_2024_0803/merged/merged.root"
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023BPix/WZZ_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2_NANOAODSIM_WWZ_MC_2024_0811/merged/merged.root"
     ],
     "nEvents": 4279,
     "nGenEvents": 1788000,
     "nSumOfWeights": 110958.12963803203,
     "isData": false,
-    "path": "/store/user/mdittric/skim/WWZ_Skims/WWZ_Run3_MC_2024_0803/2023BPix/WZZ_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2_NANOAODSIM_WWZ_Run3_MC_2024_0803/merged",
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023BPix/WZZ_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2_NANOAODSIM_WWZ_MC_2024_0811/merged",
     "nSumOfLheWeights": [
         118238.39724183166,
         115778.14965750091,

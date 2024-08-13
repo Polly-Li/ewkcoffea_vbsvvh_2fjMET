@@ -7,12 +7,12 @@
     "era": "D",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims/WWZ_Run2_Data_2024_0804/2018/EGamma_Run2018D-UL2018_MiniAODv2_NanoAODv9-v3_NANOAOD_WWZ_Run2_Data_2024_0804/merged/merged.root"
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2018/EGamma_Run2018D-UL2018_MiniAODv2_NanoAODv9-v3_NANOAOD_WWZ_Data_2024_0811/merged/merged.root"
     ],
     "nEvents": 2335,
     "nGenEvents": 2335,
     "nSumOfWeights": 2335,
     "isData": true,
-    "path": "/store/user/mdittric/skim/WWZ_Skims/WWZ_Run2_Data_2024_0804/2018/EGamma_Run2018D-UL2018_MiniAODv2_NanoAODv9-v3_NANOAOD_WWZ_Run2_Data_2024_0804/merged",
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2018/EGamma_Run2018D-UL2018_MiniAODv2_NanoAODv9-v3_NANOAOD_WWZ_Data_2024_0811/merged",
     "nSumOfLheWeights": null
 }
