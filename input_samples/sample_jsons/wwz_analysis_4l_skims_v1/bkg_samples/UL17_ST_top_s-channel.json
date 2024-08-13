@@ -1,0 +1,27 @@
+{
+    "xsec": 3.68,
+    "year": "2017",
+    "treeName": "Events",
+    "histAxisName": "UL17_ST_top_s-channel",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2017/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_WWZ_MC_2024_0811/merged/merged.root"
+    ],
+    "nEvents": 103,
+    "nGenEvents": 13620000,
+    "nSumOfWeights": 48361411.361051396,
+    "isData": false,
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2017/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_WWZ_MC_2024_0811/merged",
+    "nSumOfLheWeights": [
+        24545218.368424118,
+        24845120.539764598,
+        25094707.08295934,
+        23845477.691443965,
+        48361411.361051396,
+        24456385.68728266,
+        23275149.940467283,
+        23639170.757349823,
+        23936118.08203257
+    ]
+}

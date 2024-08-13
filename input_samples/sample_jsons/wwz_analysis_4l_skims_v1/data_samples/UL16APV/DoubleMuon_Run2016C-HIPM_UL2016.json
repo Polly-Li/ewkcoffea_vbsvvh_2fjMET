@@ -1,0 +1,18 @@
+{
+    "xsec": 1.0,
+    "year": "2016APV",
+    "treeName": "Events",
+    "histAxisName": "UL16APV_data",
+    "options": "",
+    "era": "C",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/DoubleMuon_Run2016C-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged/merged.root"
+    ],
+    "nEvents": 400,
+    "nGenEvents": 400,
+    "nSumOfWeights": 400,
+    "isData": true,
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/DoubleMuon_Run2016C-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged",
+    "nSumOfLheWeights": null
+}

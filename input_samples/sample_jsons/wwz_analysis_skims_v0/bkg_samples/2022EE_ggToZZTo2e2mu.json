@@ -1,17 +1,17 @@
 {
-    "xsec": 0.006115,
+    "xsec": 0.0103955,
     "year": "2022EE",
     "treeName": "Events",
     "histAxisName": "2022EE_ggToZZTo2e2mu",
     "options": "",
     "WCnames": [],
     "files": [
-        "/Run3_MC_4L_04022024_Loose/GluGluToContinto2Zto2E2Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_Run3_MC_4L_04022024_Loose/output_1.root"
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2022EE/GluGluToContinto2Zto2E2Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_1.root"
     ],
-    "nEvents": 180419,
+    "nEvents": 180323,
     "nGenEvents": 523444,
     "nSumOfWeights": 523444.0,
     "isData": false,
-    "path": "/Run3_MC_4L_04022024_Loose/GluGluToContinto2Zto2E2Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_Run3_MC_4L_04022024_Loose",
+    "path": "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2022EE/GluGluToContinto2Zto2E2Mu_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_MC_Run3_WWZ_20240712",
     "nSumOfLheWeights": []
 }

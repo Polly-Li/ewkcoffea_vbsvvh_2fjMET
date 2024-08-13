@@ -1,0 +1,28 @@
+{
+    "xsec": 0.2328,
+    "year": "2023BPix",
+    "treeName": "Events",
+    "histAxisName": "2023BPix_WWW",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/WWW_4F_TuneCP5_13p6TeV_amcatnlo-madspin-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_1.root",
+        "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/WWW_4F_TuneCP5_13p6TeV_amcatnlo-madspin-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2_NANOAODSIM_MC_Run3_WWZ_20240712/output_2.root"
+    ],
+    "nEvents": 2129,
+    "nGenEvents": 466500,
+    "nSumOfWeights": 108441.08068518,
+    "isData": false,
+    "path": "/store/user/mdittric/skim/Run3_WWZ_4L_Skims_20240712/MC_Run3_WWZ_20240712/2023BPix/WWW_4F_TuneCP5_13p6TeV_amcatnlo-madspin-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2_NANOAODSIM_MC_Run3_WWZ_20240712",
+    "nSumOfLheWeights": [
+        113866.15931974733,
+        112604.35793513646,
+        111582.83509441244,
+        109564.98555004627,
+        108441.08068517999,
+        107504.71809857021,
+        106006.12213508721,
+        104996.34025525025,
+        104130.97199280778
+    ]
+}

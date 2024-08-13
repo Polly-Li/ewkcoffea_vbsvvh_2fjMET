@@ -1,0 +1,27 @@
+{
+    "xsec": 12.98,
+    "year": "2023BPix",
+    "treeName": "Events",
+    "histAxisName": "2023BPix_WWTo2L2Nu",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023BPix/WWto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v3_NANOAODSIM_WWZ_MC_2024_0811/merged/merged.root"
+    ],
+    "nEvents": 38,
+    "nGenEvents": 6390000,
+    "nSumOfWeights": 75332686.212,
+    "isData": false,
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023BPix/WWto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v3_NANOAODSIM_WWZ_MC_2024_0811/merged",
+    "nSumOfLheWeights": [
+        76176270.93940003,
+        77165598.49054992,
+        77964219.55678649,
+        74223011.88684298,
+        75329491.84799999,
+        76229296.97783102,
+        72595909.73533002,
+        73805031.93286005,
+        74782982.13149999
+    ]
+}

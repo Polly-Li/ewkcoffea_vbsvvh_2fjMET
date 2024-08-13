@@ -363,7 +363,7 @@ def get_jec_keys(year,isdata,era):
     elif year == "2017":
         key_base = "Summer19UL17"
         if isdata:
-            if era in ["B","C","D","E","F"]
+            if era in ["B","C","D","E","F"]:
                 key = key_base + f"_Run{era}_V5_DATA"
             else:
                 raise Exception("Unrecognized Era for 2017!")
@@ -372,7 +372,7 @@ def get_jec_keys(year,isdata,era):
     elif year == "2018":
         key_base = "Summer19UL18"
         if isdata:
-            if era in ["A","B","C","D"]
+            if era in ["A","B","C","D"]:
                 key = key_base + f"_Run{era}_V5_DATA"
             else:
                 raise Exception("Unrecognized Era for 2018!")
@@ -463,7 +463,7 @@ def jerc_corrections(year,era,isdata,correction,jet_collection,events):
     jet_raw_pt = (1 - jet_collection.rawFactor)*jet_collection.pt
     jet_eta = jet_collection.eta
     jet_area = jet_collection.area
-    rho = events.fixedGridRhoFastjetAll
+    rho = events.Rho.fixedGridRhoFastjetAll
     event = events.event
     jet_genpt = jet_collection.pt_gen
 
@@ -487,7 +487,7 @@ def jerc_corrections(year,era,isdata,correction,jet_collection,events):
     l1_fj = jerc_ceval[f"{key}_L1FastJet_{jet_type}"].evaluate(jet_area_flat,jet_eta_flat,jet_raw_pt_flat,fixed_rho_flat)
     pt_v1 = l1_fj * jet_raw_pt_flat
     #L2Relative
-    l2_rel = jerc_ceval[f"{key}_L2Realtive_{jet_type}"].evaluate(jet_eta_flat,pt_v1)
+    l2_rel = jerc_ceval[f"{key}_L2Relative_{jet_type}"].evaluate(jet_eta_flat,pt_v1)
     pt_v2 = l2_rel * pt_v1
     #L3Absolute 
     l3_abs = jerc_ceval[f"{key}_L3Absolute_{jet_type}"].evaluate(jet_eta_flat,pt_v2)
@@ -504,7 +504,7 @@ def jerc_corrections(year,era,isdata,correction,jet_collection,events):
         if not ((correction == "nominal") or (correction in ["JER_Up","JER_Down"])):
             #Figure out the syst and up/down
             syst = correction.split("_")[0]
-            updown = syst_updown.split("_")[1]
+            updown = correction.split("_")[1]
             if updown not in ["Up","Down"]:
                 raise Exception("JEC uncertainty should be up or down!")
             #Get the factor for the up/down variation for JEC systematics
@@ -527,7 +527,7 @@ def jerc_corrections(year,era,isdata,correction,jet_collection,events):
         elif year in ["2022","2022EE","2023","2023BPix"]:
             jer_sf = jerc_ceval[sf_key].evaluate(jet_eta_flat,pt_v4,up_down_nom)
         #JER Smearing
-        smear_factor = smear_ceval[JERSmear].evaluate(pt_v4,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer,jer_sf)
+        smear_factor = smear_ceval["JERSmear"].evaluate(pt_v4,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer,jer_sf)
         #Get new pt
         pt_v5 = smear_factor*pt_v4
         jet_collection["pt_jerc"] = ak.unflatten(pt_v5,ak.num(jet_collection.pt))

@@ -457,13 +457,13 @@ class AnalysisProcessor(processor.ProcessorABC):
             cleanedJets = os_ec.get_cleaned_collection(l_wwz_t,jets)
 
             #Get the GenJet pt (or -1 if None)
-            if not isdata:
+            if not isData:
                 cleanedJets["pt_gen"] = ak.fill_none(cleanedJets.matched_gen.pt, -1)
             else:
                 cleanedJets["pt_gen"] = ak.ones_like(cleanedJets.pt)
 
             #Attach the JEC/JER corrected PT to cleanedJets
-            cor_ec.jerc_corrections(year,era,isdata,obj_corr_syst_var,cleanedJets,events)
+            cor_ec.jerc_corrections(year,era,isData,obj_corr_syst_var,cleanedJets,events)
 
             # Selecting jets and cleaning them
             jetptname = "pt_jerc"

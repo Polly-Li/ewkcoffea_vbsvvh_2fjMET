@@ -1,0 +1,18 @@
+{
+    "xsec": 1.0,
+    "year": "2018",
+    "treeName": "Events",
+    "histAxisName": "UL18_data",
+    "options": "",
+    "era": "D",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2018/EGamma_Run2018D-UL2018_MiniAODv2_NanoAODv9-v3_NANOAOD_WWZ_Data_2024_0811/merged/merged.root"
+    ],
+    "nEvents": 2335,
+    "nGenEvents": 2335,
+    "nSumOfWeights": 2335,
+    "isData": true,
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2018/EGamma_Run2018D-UL2018_MiniAODv2_NanoAODv9-v3_NANOAOD_WWZ_Data_2024_0811/merged",
+    "nSumOfLheWeights": null
+}

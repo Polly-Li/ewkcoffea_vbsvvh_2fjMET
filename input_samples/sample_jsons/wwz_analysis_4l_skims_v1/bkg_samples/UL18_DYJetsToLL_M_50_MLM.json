@@ -1,0 +1,27 @@
+{
+    "xsec": 6025.2,
+    "year": "2018",
+    "treeName": "Events",
+    "histAxisName": "UL18_DYJetsToLL_M_50_MLM",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/merged/merged.root"
+    ],
+    "nEvents": 1039,
+    "nGenEvents": 96233328,
+    "nSumOfWeights": 96233328.0,
+    "isData": false,
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/merged",
+    "nSumOfLheWeights": [
+        86441789.72101957,
+        96638204.5975713,
+        105785930.09052055,
+        86045803.36736393,
+        96233328.0,
+        105375721.00666201,
+        85721379.12146625,
+        95901601.75935733,
+        105039611.9066902
+    ]
+}

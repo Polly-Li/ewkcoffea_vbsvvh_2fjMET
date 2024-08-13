@@ -1,0 +1,18 @@
+{
+    "xsec": 1.0,
+    "year": "2022EE",
+    "treeName": "Events",
+    "histAxisName": "2022EE_data",
+    "options": "",
+    "era": "G",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2022EE/EGamma_Run2022G-22Sep2023-v2_NANOAOD_WWZ_Data_2024_0811/merged/merged.root"
+    ],
+    "nEvents": 185,
+    "nGenEvents": 185,
+    "nSumOfWeights": 185,
+    "isData": true,
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2022EE/EGamma_Run2022G-22Sep2023-v2_NANOAOD_WWZ_Data_2024_0811/merged",
+    "nSumOfLheWeights": null
+}
