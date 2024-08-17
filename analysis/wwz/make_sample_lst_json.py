@@ -12,77 +12,77 @@ import topcoffea.modules.sample_lst_jsons_tools as sjt
 ############################ Data samples ############################
 
 data_UL16APV = {
-    "DoubleEG_Run2016B-ver1_HIPM"          : { "Era" : "B" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/DoubleEG_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2016B-ver2_HIPM"          : { "Era" : "B" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/DoubleEG_Run2016B-ver2_HIPM_UL2016_MiniAODv2_NanoAODv9-v3_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2016C-HIPM"               : { "Era" : "C" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/DoubleEG_Run2016C-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2016D-HIPM"               : { "Era" : "D" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/DoubleEG_Run2016D-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2016E-HIPM"               : { "Era" : "E" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/DoubleEG_Run2016E-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2016F-HIPM"               : { "Era" : "F" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/DoubleEG_Run2016F-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016B-ver1_HIPM"          : { "Era" : "B" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/DoubleEG_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016B-ver2_HIPM"          : { "Era" : "B" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/DoubleEG_Run2016B-ver2_HIPM_UL2016_MiniAODv2_NanoAODv9-v3_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016C-HIPM"               : { "Era" : "C" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/DoubleEG_Run2016C-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016D-HIPM"               : { "Era" : "D" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/DoubleEG_Run2016D-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016E-HIPM"               : { "Era" : "E" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/DoubleEG_Run2016E-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016F-HIPM"               : { "Era" : "F" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/DoubleEG_Run2016F-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
 
-    "MuonEG_Run2016B-ver1_HIPM_UL2016"     : { "Era" : "B" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/MuonEG_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "MuonEG_Run2016B-ver2_HIPM_UL2016"     : { "Era" : "B" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/MuonEG_Run2016B-ver2_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "MuonEG_Run2016C-HIPM_UL2016"          : { "Era" : "C" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/MuonEG_Run2016C-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "MuonEG_Run2016D-HIPM_UL2016"          : { "Era" : "D" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/MuonEG_Run2016D-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "MuonEG_Run2016E-HIPM_UL2016"          : { "Era" : "E" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/MuonEG_Run2016E-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "MuonEG_Run2016F-HIPM_UL2016"          : { "Era" : "F" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/MuonEG_Run2016F-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016B-ver1_HIPM_UL2016"     : { "Era" : "B" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/MuonEG_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016B-ver2_HIPM_UL2016"     : { "Era" : "B" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/MuonEG_Run2016B-ver2_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016C-HIPM_UL2016"          : { "Era" : "C" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/MuonEG_Run2016C-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016D-HIPM_UL2016"          : { "Era" : "D" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/MuonEG_Run2016D-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016E-HIPM_UL2016"          : { "Era" : "E" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/MuonEG_Run2016E-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016F-HIPM_UL2016"          : { "Era" : "F" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/MuonEG_Run2016F-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
 
-    "DoubleMuon_Run2016B-ver1_HIPM_UL2016" : { "Era" : "B" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/DoubleMuon_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2016B-ver2_HIPM_UL2016" : { "Era" : "B" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/DoubleMuon_Run2016B-ver2_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2016C-HIPM_UL2016"      : { "Era" : "C" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/DoubleMuon_Run2016C-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2016D-HIPM_UL2016"      : { "Era" : "D" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/DoubleMuon_Run2016D-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2016E-HIPM_UL2016"      : { "Era" : "E" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/DoubleMuon_Run2016E-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2016F-HIPM_UL2016"      : { "Era" : "F" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016APV/DoubleMuon_Run2016F-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016B-ver1_HIPM_UL2016" : { "Era" : "B" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/DoubleMuon_Run2016B-ver1_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016B-ver2_HIPM_UL2016" : { "Era" : "B" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/DoubleMuon_Run2016B-ver2_HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016C-HIPM_UL2016"      : { "Era" : "C" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/DoubleMuon_Run2016C-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016D-HIPM_UL2016"      : { "Era" : "D" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/DoubleMuon_Run2016D-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016E-HIPM_UL2016"      : { "Era" : "E" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/DoubleMuon_Run2016E-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016F-HIPM_UL2016"      : { "Era" : "F" , "histAxisName" : "UL16APV_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016APV/DoubleMuon_Run2016F-HIPM_UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
 }
 
 data_UL16 = {
-    "DoubleMuon_Run2016F-UL2016" : { "Era" : "F" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016/DoubleMuon_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2016G-UL2016" : { "Era" : "G" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016/DoubleMuon_Run2016G-UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2016H-UL2016" : { "Era" : "H" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016/DoubleMuon_Run2016H-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016F-UL2016" : { "Era" : "F" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016/DoubleMuon_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016G-UL2016" : { "Era" : "G" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016/DoubleMuon_Run2016G-UL2016_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2016H-UL2016" : { "Era" : "H" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016/DoubleMuon_Run2016H-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
 
-    "DoubleEG_Run2016F-UL2016"   : { "Era" : "F" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016/DoubleEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2016G-UL2016"   : { "Era" : "G" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016/DoubleEG_Run2016G-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2016H-UL2016"   : { "Era" : "H" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016/DoubleEG_Run2016H-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016F-UL2016"   : { "Era" : "F" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016/DoubleEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016G-UL2016"   : { "Era" : "G" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016/DoubleEG_Run2016G-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2016H-UL2016"   : { "Era" : "H" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016/DoubleEG_Run2016H-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
 
-    "MuonEG_Run2016F-UL2016"     : { "Era" : "F" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016/MuonEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "MuonEG_Run2016G-UL2016"     : { "Era" : "G" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016/MuonEG_Run2016G-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "MuonEG_Run2016H-UL2016"     : { "Era" : "H" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2016/MuonEG_Run2016H-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016F-UL2016"     : { "Era" : "F" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016/MuonEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016G-UL2016"     : { "Era" : "G" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016/MuonEG_Run2016G-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "MuonEG_Run2016H-UL2016"     : { "Era" : "H" , "histAxisName" : "UL16_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2016/MuonEG_Run2016H-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
 }
 
 data_UL17 = {
-    "DoubleMuon_Run2017B-UL2017" : { "Era" : "B" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2017/DoubleMuon_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2017C-UL2017" : { "Era" : "C" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2017/DoubleMuon_Run2017C-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2017D-UL2017" : { "Era" : "D" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2017/DoubleMuon_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2017E-UL2017" : { "Era" : "E" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2017/DoubleMuon_Run2017E-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2017F-UL2017" : { "Era" : "F" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2017/DoubleMuon_Run2017F-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2017B-UL2017" : { "Era" : "B" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2017/DoubleMuon_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2017C-UL2017" : { "Era" : "C" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2017/DoubleMuon_Run2017C-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2017D-UL2017" : { "Era" : "D" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2017/DoubleMuon_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2017E-UL2017" : { "Era" : "E" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2017/DoubleMuon_Run2017E-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2017F-UL2017" : { "Era" : "F" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2017/DoubleMuon_Run2017F-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
 
-    "DoubleEG_Run2017B-UL2017"   : { "Era" : "B" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2017/DoubleEG_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2017C-UL2017"   : { "Era" : "C" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2017/DoubleEG_Run2017C-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2017D-UL2017"   : { "Era" : "D" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2017/DoubleEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2017E-UL2017"   : { "Era" : "E" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2017/DoubleEG_Run2017E-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleEG_Run2017F-UL2017"   : { "Era" : "F" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2017/DoubleEG_Run2017F-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2017B-UL2017"   : { "Era" : "B" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2017/DoubleEG_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2017C-UL2017"   : { "Era" : "C" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2017/DoubleEG_Run2017C-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2017D-UL2017"   : { "Era" : "D" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2017/DoubleEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2017E-UL2017"   : { "Era" : "E" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2017/DoubleEG_Run2017E-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleEG_Run2017F-UL2017"   : { "Era" : "F" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2017/DoubleEG_Run2017F-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
 
-    "MuonEG_Run2017B-UL2017"     : { "Era" : "B" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2017/MuonEG_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "MuonEG_Run2017C-UL2017"     : { "Era" : "C" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2017/MuonEG_Run2017C-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "MuonEG_Run2017D-UL2017"     : { "Era" : "D" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2017/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "MuonEG_Run2017E-UL2017"     : { "Era" : "E" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2017/MuonEG_Run2017E-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "MuonEG_Run2017F-UL2017"     : { "Era" : "F" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2017/MuonEG_Run2017F-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
+    "MuonEG_Run2017B-UL2017"     : { "Era" : "B" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2017/MuonEG_Run2017B-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "MuonEG_Run2017C-UL2017"     : { "Era" : "C" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2017/MuonEG_Run2017C-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "MuonEG_Run2017D-UL2017"     : { "Era" : "D" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2017/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "MuonEG_Run2017E-UL2017"     : { "Era" : "E" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2017/MuonEG_Run2017E-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "MuonEG_Run2017F-UL2017"     : { "Era" : "F" , "histAxisName" : "UL17_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2017/MuonEG_Run2017F-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
 }
 
 data_UL18 = {
-    "MuonEG_Run2018A-UL2018"     : { "Era" : "A" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2018/MuonEG_Run2018A-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "MuonEG_Run2018B-UL2018"     : { "Era" : "B" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2018/MuonEG_Run2018B-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "MuonEG_Run2018C-UL2018"     : { "Era" : "C" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2018/MuonEG_Run2018C-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "MuonEG_Run2018D-UL2018"     : { "Era" : "D" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2018/MuonEG_Run2018D-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
+    "MuonEG_Run2018A-UL2018"     : { "Era" : "A" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2018/MuonEG_Run2018A-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "MuonEG_Run2018B-UL2018"     : { "Era" : "B" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2018/MuonEG_Run2018B-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "MuonEG_Run2018C-UL2018"     : { "Era" : "C" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2018/MuonEG_Run2018C-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "MuonEG_Run2018D-UL2018"     : { "Era" : "D" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2018/MuonEG_Run2018D-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
 
-    "EGamma_Run2018A-UL2018"     : { "Era" : "A" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2018/EGamma_Run2018A-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "EGamma_Run2018B-UL2018"     : { "Era" : "B" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2018/EGamma_Run2018B-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "EGamma_Run2018C-UL2018"     : { "Era" : "C" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2018/EGamma_Run2018C-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "EGamma_Run2018D-UL2018"     : { "Era" : "D" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2018/EGamma_Run2018D-UL2018_MiniAODv2_NanoAODv9-v3_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
+    "EGamma_Run2018A-UL2018"     : { "Era" : "A" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2018/EGamma_Run2018A-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "EGamma_Run2018B-UL2018"     : { "Era" : "B" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2018/EGamma_Run2018B-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "EGamma_Run2018C-UL2018"     : { "Era" : "C" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2018/EGamma_Run2018C-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "EGamma_Run2018D-UL2018"     : { "Era" : "D" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2018/EGamma_Run2018D-UL2018_MiniAODv2_NanoAODv9-v3_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
 
-    "DoubleMuon_Run2018A-UL2018" : { "Era" : "A" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2018/DoubleMuon_Run2018A-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2018B-UL2018" : { "Era" : "B" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2018/DoubleMuon_Run2018B-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2018C-UL2018" : { "Era" : "C" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2018/DoubleMuon_Run2018C-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
-    "DoubleMuon_Run2018D-UL2018" : { "Era" : "D" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_2024_0811/2018/DoubleMuon_Run2018D-UL2018_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_2024_0811/merged" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2018A-UL2018" : { "Era" : "A" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2018/DoubleMuon_Run2018A-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2018B-UL2018" : { "Era" : "B" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2018/DoubleMuon_Run2018B-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2018C-UL2018" : { "Era" : "C" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2018/DoubleMuon_Run2018C-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
+    "DoubleMuon_Run2018D-UL2018" : { "Era" : "D" , "histAxisName" : "UL18_data" , "path" : "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_Data_Run2_2024_0817/2018/DoubleMuon_Run2018D-UL2018_MiniAODv2_NanoAODv9-v2_NANOAOD_WWZ_Data_Run2_2024_0817" , "xsecName" : "data" , } ,
 }
 
 data_2022 = {
@@ -768,10 +768,10 @@ def main():
     out_dir_sig = os.path.join(jsons_path,"wwz_analysis_4l_skims_v1/sig_samples/")
 
     # Make configs for data samples
-    #make_jsons_for_dict_of_samples(data_UL16APV, "/ceph/cms/","2016APV", out_dir_data_16APV,era_op=1,on_das=False)
-    #make_jsons_for_dict_of_samples(data_UL16, "/ceph/cms/","2016", out_dir_data_16,era_op=1,on_das=False)
-    #make_jsons_for_dict_of_samples(data_UL17, "/ceph/cms/","2017", out_dir_data_17,era_op=1,on_das=False)
-    #make_jsons_for_dict_of_samples(data_UL18, "/ceph/cms/","2018", out_dir_data_18,era_op=1,on_das=False)
+    make_jsons_for_dict_of_samples(data_UL16APV, "/ceph/cms/","2016APV", out_dir_data_16APV,era_op=1,on_das=False)
+    make_jsons_for_dict_of_samples(data_UL16, "/ceph/cms/","2016", out_dir_data_16,era_op=1,on_das=False)
+    make_jsons_for_dict_of_samples(data_UL17, "/ceph/cms/","2017", out_dir_data_17,era_op=1,on_das=False)
+    make_jsons_for_dict_of_samples(data_UL18, "/ceph/cms/","2018", out_dir_data_18,era_op=1,on_das=False)
     #make_jsons_for_dict_of_samples(data_2022, "/ceph/cms/","2022", out_dir_data_22,era_op=1,on_das=False)
     #make_jsons_for_dict_of_samples(data_2022EE, "/ceph/cms/","2022EE", out_dir_data_22EE,era_op=1,on_das=False)
     #make_jsons_for_dict_of_samples(data_2023, "/ceph/cms/","2023", out_dir_data_23,era_op=1,on_das=False)
@@ -796,14 +796,14 @@ def main():
     #make_jsons_for_dict_of_samples(central_2023BPix_bkg_dict, "/ceph/cms/","2023BPix", out_dir_bkg,on_das=False)
 
     # Make configs for sig samples
-    make_jsons_for_dict_of_samples(central_UL16APV_sig_dict, "/ceph/cms/","2016APV", out_dir_sig,on_das=False)
-    make_jsons_for_dict_of_samples(central_UL16_sig_dict, "/ceph/cms/","2016", out_dir_sig,on_das=False)
-    make_jsons_for_dict_of_samples(central_UL17_sig_dict, "/ceph/cms/","2017", out_dir_sig,on_das=False)
-    make_jsons_for_dict_of_samples(central_UL18_sig_dict, "/ceph/cms/","2018", out_dir_sig,on_das=False)
-    make_jsons_for_dict_of_samples(central_2022_sig_dict, "/ceph/cms/","2022", out_dir_sig,on_das=False)
-    make_jsons_for_dict_of_samples(central_2022EE_sig_dict, "/ceph/cms/","2022EE", out_dir_sig,on_das=False)
-    make_jsons_for_dict_of_samples(central_2023_sig_dict, "/ceph/cms/","2023", out_dir_sig,on_das=False)
-    make_jsons_for_dict_of_samples(central_2023BPix_sig_dict, "/ceph/cms/","2023BPix", out_dir_sig,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL16APV_sig_dict, "/ceph/cms/","2016APV", out_dir_sig,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL16_sig_dict, "/ceph/cms/","2016", out_dir_sig,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL17_sig_dict, "/ceph/cms/","2017", out_dir_sig,on_das=False)
+    #make_jsons_for_dict_of_samples(central_UL18_sig_dict, "/ceph/cms/","2018", out_dir_sig,on_das=False)
+    #make_jsons_for_dict_of_samples(central_2022_sig_dict, "/ceph/cms/","2022", out_dir_sig,on_das=False)
+    #make_jsons_for_dict_of_samples(central_2022EE_sig_dict, "/ceph/cms/","2022EE", out_dir_sig,on_das=False)
+    #make_jsons_for_dict_of_samples(central_2023_sig_dict, "/ceph/cms/","2023", out_dir_sig,on_das=False)
+    #make_jsons_for_dict_of_samples(central_2023BPix_sig_dict, "/ceph/cms/","2023BPix", out_dir_sig,on_das=False)
 
     # Replace xsec numbers
     #replace_xsec_for_dict_of_samples(central_UL16APV_bkg_dict,out_dir_bkg)
