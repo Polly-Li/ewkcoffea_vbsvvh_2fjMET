@@ -422,21 +422,23 @@ class AnalysisProcessor(processor.ProcessorABC):
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
 
         obj_correction_systs = [
-            "AbsoluteMPFBias_Down","AbsoluteScale_Down","AbsoluteStat_Down","FlavorQCD_Down","Fragmentation_Down",
-            "PileUpDataMC_Down","PileUpPtBB_Down","PileUpPtEC1_Down","PileUpPtEC2_Down","PileUpPtHF_Down",
-            "PileUpPtRef_Down","RelativeFSR_Down","RelativeJEREC1_Down","RelativeJEREC2_Down","RelativeJERHF_Down",
-            "RelativePtBB_Down","RelativePtEC1_Down","RelativePtEC2_Down","RelativePtHF_Down","RelativeBal_Down",
-            "RelativeSample_Down","RelativeStatEC_Down","RelativeStatFSR_Down","RelativeStatHF_Down","SinglePionECAL_Down",
-            "SinglePionHCAL_Down","TimePtEta_Down",
+            "AbsoluteMPFBias_correlatedDown","AbsoluteScale_correlatedDown","FlavorQCD_correlatedDown","Fragmentation_correlatedDown","PileUpDataMC_correlatedDown",
+            "PileUpPtBB_correlatedDown","PileUpPtEC1_correlatedDown","PileUpPtEC2_correlatedDown","PileUpPtHF_correlatedDown","PileUpPtRef_correlatedDown",
+            "RelativeFSR_correlatedDown","RelativeJERHF_correlatedDown","RelativePtBB_correlatedDown","RelativePtHF_correlatedDown","RelativeBal_correlatedDown",
+            "SinglePionECAL_correlatedDown","SinglePionHCAL_correlatedDown",
 
-            "AbsoluteMPFBias_Up","AbsoluteScale_Up","AbsoluteStat_Up","FlavorQCD_Up","Fragmentation_Up",
-            "PileUpDataMC_Up","PileUpPtBB_Up","PileUpPtEC1_Up","PileUpPtEC2_Up","PileUpPtHF_Up",
-            "PileUpPtRef_Up","RelativeFSR_Up","RelativeJEREC1_Up","RelativeJEREC2_Up","RelativeJERHF_Up",
-            "RelativePtBB_Up","RelativePtEC1_Up","RelativePtEC2_Up","RelativePtHF_Up","RelativeBal_Up",
-            "RelativeSample_Up","RelativeStatEC_Up","RelativeStatFSR_Up","RelativeStatHF_Up","SinglePionECAL_Up",
-            "SinglePionHCAL_Up","TimePtEta_Up",
+            "AbsoluteMPFBias_correlatedUp","AbsoluteScale_correlatedUp","FlavorQCD_correlatedUp","Fragmentation_correlatedUp","PileUpDataMC_correlatedUp",
+            "PileUpPtBB_correlatedUp","PileUpPtEC1_correlatedUp","PileUpPtEC2_correlatedUp","PileUpPtHF_correlatedUp","PileUpPtRef_correlatedUp",
+            "RelativeFSR_correlatedUp","RelativeJERHF_correlatedUp","RelativePtBB_correlatedUp","RelativePtHF_correlatedUp","RelativeBal_correlatedUp",
+            "SinglePionECAL_correlatedUp","SinglePionHCAL_correlatedUp",
 
-            "JER_Up","JER_Down",
+            f"AbsoluteStat_uncorrelated_{year}Down",f"RelativeJEREC1_uncorrelated_{year}Down",f"RelativeJEREC2_uncorrelated_{year}Down",f"RelativePtEC1_uncorrelated_{year}Down",f"RelativePtEC2_uncorrelated_{year}Down",
+            f"TimePtEta_uncorrelated_{year}Down",f"RelativeSample_uncorrelated_{year}Down",f"RelativeStatEC_uncorrelated_{year}Down",f"RelativeStatFSR_uncorrelated_{year}Down",f"RelativeStatHF_uncorrelated_{year}Down",
+
+            f"AbsoluteStat_uncorrelated_{year}Up",f"RelativeJEREC1_uncorrelated_{year}Up",f"RelativeJEREC2_uncorrelated_{year}Up",f"RelativePtEC1_uncorrelated_{year}Up",f"RelativePtEC2_uncorrelated_{year}Up",
+            f"TimePtEta_uncorrelated_{year}Up",f"RelativeSample_uncorrelated_{year}Up",f"RelativeStatEC_uncorrelated_{year}Up",f"RelativeStatFSR_uncorrelated_{year}Up",f"RelativeStatHF_uncorrelated_{year}Up",
+
+            f"JER_{year}Up",f"JER_{year}Down",
         ]
 
         # If we're doing systematics and this isn't data, we will loop over the obj correction syst lst list

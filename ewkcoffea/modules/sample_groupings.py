@@ -168,41 +168,39 @@ SAMPLE_DICT_BASE_RUN2 = {
 SAMPLE_DICT_BASE_RUN3 = {
     "WWZ" : ["WWZJetsTo4L2Nu"],
     "ZH"  : ["GluGluZHTo2WTo2L2Nu","qqToZHTo2WTo2L2Nu"],
-
     "ZZ"  : ["ZZTo4l", "ggToZZTo2e2mu", "ggToZZTo2e2tau", "ggToZZTo2mu2tau", "ggToZZTo4e", "ggToZZTo4mu", "ggToZZTo4tau"],
-
     "ttZ" : [
         "TTZToLL_M_4to50",
         "TTZToLL_M_50",
-        #"TTZToQQ",
+        "TTZToQQ",
     ],
-
     "tWZ" : ["tWZ4l"],
-
     "WZ" : ["WZTo3LNu"],
-
     "other" : [
-
         "DYJetsToLL_M_10to50_MLM",
         "DYJetsToLL_M_50_MLM",
-        #"SSWW",
-        #"ST_antitop_t-channel",
-        #"ST_top_s-channel",
-        #"ST_top_t-channel",
-        "tbarW_noFullHad",
+        "SSWW_TT",
+        "SSWW_TL",
+        "SSWW_LL",
+        "ST_antitop_t-channel",
+        "ST_top_s-channel",
+        "ST_top_t-channel",
+        "tbarW_leptonic",
+        "tbarW_semileptonic",
         "ttHnobb",
-        #"TTTo2L2Nu",
+        "TTTo2L2Nu",
         #"TTWJetsToLNu",
         #"TTWJetsToQQ",
-        "tW_noFullHad",
-        #"tZq",
+        "tW_leptonic",
+        "tW_semileptonic",
+        "tZq",
         "VHnobb",
         "WJetsToLNu",
         "WWTo2L2Nu",
-
         "WWW",
         "WZZ",
-        #"ZZZ",
+        "ZZZ",
+        "ggHToZZ4L",
     ],
 }
 
@@ -261,31 +259,34 @@ SAMPLE_DICT_BASE_INDIV_RUN3 = {
     "ggToZZTo4tau"            : ["ggToZZTo4tau"],
     "TTZToLL_M_4to50"         : ["TTZToLL_M_4to50"],
     "TTZToLL_M_50"            : ["TTZToLL_M_50"],
-    #"TTZToQQ"                 : ["TTZToQQ"],
+    "TTZToQQ"                 : ["TTZToQQ"],
     "tWZ4l"                   : ["tWZ4l"],
     "WZTo3LNu"                : ["WZTo3LNu"],
-
     "DYJetsToLL_M_10to50_MLM" : ["DYJetsToLL_M_10to50_MLM"],
     "DYJetsToLL_M_50_MLM"     : ["DYJetsToLL_M_50_MLM"],
-    #"SSWW"                    : ["SSWW"],
-    #"ST_antitop_t-channel"    : ["ST_antitop_t-channel"],
-    #"ST_top_s-channel"        : ["ST_top_s-channel"],
-    #"ST_top_t-channel"        : ["ST_top_t-channel"],
-    "tbarW_noFullHad"         : ["tbarW_noFullHad"],
+    "SSWW_TT"                 : ["SSWW_TT"],
+    "SSWW_TL"                 : ["SSWW_TL"],
+    "SSWW_LL"                 : ["SSWW_LL"],
+    "ST_antitop_t-channel"    : ["ST_antitop_t-channel"],
+    "ST_top_s-channel"        : ["ST_top_s-channel"],
+    "ST_top_t-channel"        : ["ST_top_t-channel"],
+    "tbarW_leptonic"          : ["tbarW_leptonic"],
+    "tbarW_semileptonic"      : ["tbarW_semileptonic"],
     "ttHnobb"                 : ["ttHnobb"],
-    #"TTTo2L2Nu"               : ["TTTo2L2Nu"],
+    "TTTo2L2Nu"               : ["TTTo2L2Nu"],
     #"TTWJetsToLNu"            : ["TTWJetsToLNu"],
     #"TTWJetsToQQ"             : ["TTWJetsToQQ"],
-    "tW_noFullHad"            : ["tW_noFullHad"],
-    #"tZq"                     : ["tZq"],
+    "tW_leptonic"             : ["tW_leptonic"],
+    "tW_semileptonic"         : ["tW_semileptonic"],
+    "tZq"                     : ["tZq"],
     "VHnobb"                  : ["VHnobb"],
     "WJetsToLNu"              : ["WJetsToLNu"],
     "WWTo2L2Nu"               : ["WWTo2L2Nu"],
     "WWW"                     : ["WWW"],
     "WZZ"                     : ["WZZ"],
-    #"ZZZ"                     : ["ZZZ"],
+    "ZZZ"                     : ["ZZZ"],
+    "ggHToZZ4L"               : ["ggHToZZ4L"],
 }
-
 
 ######################## Tools ########################
 
