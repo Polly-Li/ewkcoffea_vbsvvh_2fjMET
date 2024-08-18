@@ -6,13 +6,13 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims/WWZ_Run2_MC_2024_0804/2018/GluGluZH_HToWWTo2L2Nu_M-125_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_WWZ_Run2_MC_2024_0804/merged/merged.root"
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/GluGluZH_HToWWTo2L2Nu_M-125_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_WWZ_MC_2024_0811/merged/merged.root"
     ],
     "nEvents": 15564,
     "nGenEvents": 794725,
     "nSumOfWeights": 48953.311605,
     "isData": false,
-    "path": "/store/user/mdittric/skim/WWZ_Skims/WWZ_Run2_MC_2024_0804/2018/GluGluZH_HToWWTo2L2Nu_M-125_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_WWZ_Run2_MC_2024_0804/merged",
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/GluGluZH_HToWWTo2L2Nu_M-125_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_WWZ_MC_2024_0811/merged",
     "nSumOfLheWeights": [
         62126.762991,
         59272.974356,
