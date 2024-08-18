@@ -463,7 +463,10 @@ def jerc_corrections(year,era,isdata,correction,jet_collection,events):
     jet_raw_pt = (1 - jet_collection.rawFactor)*jet_collection.pt
     jet_eta = jet_collection.eta
     jet_area = jet_collection.area
-    rho = events.Rho.fixedGridRhoFastjetAll
+    if year in ["2022","2022EE","2023","2023BPix"]:
+        rho = events.Rho.fixedGridRhoFastjetAll
+    elif year in ["2016APV","2016","2017","2018"]:
+        rho = events.fixedGridRhoFastjetAll
     event = events.event
     jet_genpt = jet_collection.pt_gen
 
@@ -535,9 +538,6 @@ def jerc_corrections(year,era,isdata,correction,jet_collection,events):
         jer = jerc_ceval[jer_key].evaluate(jet_eta_flat,pt_v4,fixed_rho_flat)
         if year in ["2016","2016APV","2017","2018"]:
             jer_sf = jerc_ceval[sf_key].evaluate(jet_eta_flat,up_down_nom)
-            jer_sf_up = jerc_ceval[sf_key].evaluate(jet_eta_flat,"up")
-            jer_sf_down = jerc_ceval[sf_key].evaluate(jet_eta_flat,"down")
-            jer_sf_nom = jerc_ceval[sf_key].evaluate(jet_eta_flat,"nom")
         elif year in ["2022","2022EE","2023","2023BPix"]:
             jer_sf = jerc_ceval[sf_key].evaluate(jet_eta_flat,pt_v4,up_down_nom)
         #JER Smearing
@@ -545,41 +545,41 @@ def jerc_corrections(year,era,isdata,correction,jet_collection,events):
 
 
 #        #JER Smear Testing
-        if ((up_down_nom == "nom") and (correction != "nominal") and (year in ["2022","2022EE"])):
-            jer_sf_nom = jerc_ceval[sf_key].evaluate(jet_eta_flat,jec_pt_nom,up_down_nom)
-            jer_sf_up = jerc_ceval[sf_key].evaluate(jet_eta_flat,jec_pt_up,up_down_nom)
-            jer_sf_down = jerc_ceval[sf_key].evaluate(jet_eta_flat,jec_pt_down,up_down_nom)
-            jer_nom = jerc_ceval[jer_key].evaluate(jet_eta_flat,jec_pt_nom,fixed_rho_flat)
-            jer_up = jerc_ceval[jer_key].evaluate(jet_eta_flat,jec_pt_up,fixed_rho_flat)
-            jer_down = jerc_ceval[jer_key].evaluate(jet_eta_flat,jec_pt_down,fixed_rho_flat)
-            smear_factor_nom = smear_ceval["JERSmear"].evaluate(jec_pt_nom,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer_nom,jer_sf_nom)
-            smear_factor_up = smear_ceval["JERSmear"].evaluate(jec_pt_up,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer_up,jer_sf_up)
-            smear_factor_down = smear_ceval["JERSmear"].evaluate(jec_pt_down,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer_down,jer_sf_down)
-            pt_test_nom = jec_pt_nom*smear_factor_nom
-            pt_test_up = jec_pt_up*smear_factor_up
-            pt_test_down = jec_pt_down*smear_factor_down
-            for i in range(len(jec_pt_nom)):
-                if ((pt_test_nom[i] > pt_test_down[i]) and (pt_test_nom[i] > pt_test_up[i])) or ((pt_test_nom[i] < pt_test_down[i]) and (pt_test_nom[i] < pt_test_up[i])):
-                    print("Smear Factors")
-                    print("Nom: ",smear_factor_nom[i])
-                    print("Up: ",smear_factor_up[i])
-                    print("Down: ",smear_factor_down[i])
-                    print("Final pT Values")
-                    print("Nom: ",pt_test_nom[i])
-                    print("Up: ",pt_test_up[i])
-                    print("Down: ",pt_test_down[i])
-                    print("JEC PT Values")
-                    print("Nom: ",jec_pt_nom[i])
-                    print("Up: ",jec_pt_up[i])
-                    print("Down: ",jec_pt_down[i])
-                    print("Eta")
-                    print(jet_eta_flat[i])
-                    print("Gen Jet Pt")
-                    print(jet_genpt_flat[i])
-                    print("Rho")
-                    print(fixed_rho_flat[i])
-                    print("Event")
-                    print(fixed_event_flat[i])
+#        if ((up_down_nom == "nom") and (correction != "nominal") and (year in ["2022","2022EE"])):
+#            jer_sf_nom = jerc_ceval[sf_key].evaluate(jet_eta_flat,jec_pt_nom,up_down_nom)
+#            jer_sf_up = jerc_ceval[sf_key].evaluate(jet_eta_flat,jec_pt_up,up_down_nom)
+#            jer_sf_down = jerc_ceval[sf_key].evaluate(jet_eta_flat,jec_pt_down,up_down_nom)
+#            jer_nom = jerc_ceval[jer_key].evaluate(jet_eta_flat,jec_pt_nom,fixed_rho_flat)
+#            jer_up = jerc_ceval[jer_key].evaluate(jet_eta_flat,jec_pt_up,fixed_rho_flat)
+#            jer_down = jerc_ceval[jer_key].evaluate(jet_eta_flat,jec_pt_down,fixed_rho_flat)
+#            smear_factor_nom = smear_ceval["JERSmear"].evaluate(jec_pt_nom,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer_nom,jer_sf_nom)
+#            smear_factor_up = smear_ceval["JERSmear"].evaluate(jec_pt_up,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer_up,jer_sf_up)
+#            smear_factor_down = smear_ceval["JERSmear"].evaluate(jec_pt_down,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer_down,jer_sf_down)
+#            pt_test_nom = jec_pt_nom*smear_factor_nom
+#            pt_test_up = jec_pt_up*smear_factor_up
+#            pt_test_down = jec_pt_down*smear_factor_down
+#            for i in range(len(jec_pt_nom)):
+#                if ((pt_test_nom[i] > pt_test_down[i]) and (pt_test_nom[i] > pt_test_up[i])) or ((pt_test_nom[i] < pt_test_down[i]) and (pt_test_nom[i] < pt_test_up[i])):
+#                    print("Smear Factors")
+#                    print("Nom: ",smear_factor_nom[i])
+#                    print("Up: ",smear_factor_up[i])
+#                    print("Down: ",smear_factor_down[i])
+#                    print("Final pT Values")
+#                    print("Nom: ",pt_test_nom[i])
+#                    print("Up: ",pt_test_up[i])
+#                    print("Down: ",pt_test_down[i])
+#                    print("JEC PT Values")
+#                    print("Nom: ",jec_pt_nom[i])
+#                    print("Up: ",jec_pt_up[i])
+#                    print("Down: ",jec_pt_down[i])
+#                    print("Eta")
+#                    print(jet_eta_flat[i])
+#                    print("Gen Jet Pt")
+#                    print(jet_genpt_flat[i])
+#                    print("Rho")
+#                    print(fixed_rho_flat[i])
+#                    print("Event")
+#                    print(fixed_event_flat[i])
 
         #Get new pt
         pt_v5 = smear_factor*pt_v4
