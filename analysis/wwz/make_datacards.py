@@ -26,6 +26,55 @@ SYSTS_SPECIAL_RUN2 = {
     "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
     "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
     "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+
+
+    "AbsoluteStat_uncorrelated_2016APV"   : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "RelativeJEREC1_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "RelativeJEREC2_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "RelativePtEC1_uncorrelated_2016APV"  : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "RelativePtEC2_uncorrelated_2016APV"  : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "TimePtEta_uncorrelated_2016APV"      : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "RelativeSample_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "RelativeStatEC_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "RelativeStatFSR_uncorrelated_2016APV": {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "RelativeStatHF_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "JER_2016APV"                         : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+
+    "AbsoluteStat_uncorrelated_2016"   : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "RelativeJEREC1_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "RelativeJEREC2_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "RelativePtEC1_uncorrelated_2016"  : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "RelativePtEC2_uncorrelated_2016"  : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "TimePtEta_uncorrelated_2016"      : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "RelativeSample_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "RelativeStatEC_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "RelativeStatFSR_uncorrelated_2016": {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "RelativeStatHF_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "JER_2016"                         : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+
+    "AbsoluteStat_uncorrelated_2017"   : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "RelativeJEREC1_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "RelativeJEREC2_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "RelativePtEC1_uncorrelated_2017"  : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "RelativePtEC2_uncorrelated_2017"  : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "TimePtEta_uncorrelated_2017"      : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "RelativeSample_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "RelativeStatEC_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "RelativeStatFSR_uncorrelated_2017": {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "RelativeStatHF_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "JER_2017"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+
+    "AbsoluteStat_uncorrelated_2018"   : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    "RelativeJEREC1_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    "RelativeJEREC2_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    "RelativePtEC1_uncorrelated_2018"  : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    "RelativePtEC2_uncorrelated_2018"  : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    "TimePtEta_uncorrelated_2018"      : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    "RelativeSample_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    "RelativeStatEC_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    "RelativeStatFSR_uncorrelated_2018": {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    "RelativeStatHF_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    "JER_2018"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
 }
 SYSTS_SPECIAL_RUN3 = {
     "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
@@ -172,6 +221,9 @@ def handle_negatives(in_dict):
                 out_dict[cat]["nominal"][proc][1] = (abs(val) + np.sqrt(var))**2
                 for syst in out_dict[cat]:
                     if syst == "nominal": continue # Already handled this one
+                    if (proc == "other" and cat == "sr_4l_of_2") and (syst == "AbsoluteMPFBias_correlatedUp" or syst == "AbsoluteMPFBias_correlatedDown"):
+                        print (syst)
+                        print(out_dict[cat][syst][proc][0])
                     syst_var_orig = out_dict[cat][syst][proc][0] # Dont bother messsing with mc stat error on the syst variation
                     out_dict[cat][syst][proc][0] = (syst_var_orig - val) + SMALL # Center around SMALL
 
@@ -220,7 +272,7 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
         out_lst = []
         for syst in in_lst:
             if syst.endswith("Up"):
-                syst_name_base = syst.replace("Up","")
+                syst_name_base = syst[:-2]
                 if syst_name_base not in out_lst:
                     out_lst.append(syst_name_base)
         return out_lst
@@ -240,7 +292,14 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
                 valvar_kappa_do = yt.valvar_op(valvar_do,valvar_nom,"div")
 
                 # Handle negative cases
-                if (valvar_kappa_up[0]<=0) and (valvar_kappa_do[0]<=0): raise Exception("Both kappas negative, should not be possible.")
+                if (valvar_kappa_up[0]<=0) and (valvar_kappa_do[0]<=0):
+                    print(cat)
+                    print(sys)
+                    print(proc)
+                    print(valvar_up)
+                    print(valvar_do)
+                    print(valvar_nom)
+                    raise Exception("Both kappas negative, should not be possible.")
                 if valvar_kappa_up[0] <= 0:
                     print(f"WARNING: Up var for {sys} for {proc} for {cat} is negative, setting to {SMALL}.")
                     valvar_kappa_up[0] = SMALL

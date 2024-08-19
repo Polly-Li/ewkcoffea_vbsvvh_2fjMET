@@ -499,13 +499,13 @@ def jerc_corrections(year,era,isdata,correction,jet_collection,events):
     l2l3_res = jerc_ceval[f"{key}_L2L3Residual_{jet_type}"].evaluate(jet_eta_flat,pt_v3)
     pt_v4 = l2l3_res * pt_v3
 
+    jec_pt_nom = pt_v4
+    jec_pt_final = pt_v4
+
     #Data does not have uncertaintity or JER
     if isdata:
-        jet_collection["pt_jerc"] = ak.unflatten(pt_v4,ak.num(jet_collection.pt))
+        jet_collection["pt"] = ak.unflatten(jec_pt_final,ak.num(jet_collection.pt))
     else:
-        jec_pt_nom = pt_v4
-        jec_pt_up = pt_v4
-        jec_pt_down = pt_v4
         ###JEC Uncertaintities
         if not ((correction == "nominal") or (correction.startswith("JER"))):
             #Figure out the syst and up/down
@@ -518,69 +518,43 @@ def jerc_corrections(year,era,isdata,correction,jet_collection,events):
             else:
                 raise Exception("JEC uncertainty should be up or down!")
             #Get the factor for the up/down variation for JEC systematics
-            factor = pt_v4 * jerc_ceval[f"{key}_{syst}_{jet_type}"].evaluate(jet_eta_flat,pt_v4)
-
-            jec_pt_up = pt_v4 + factor
-            jec_pt_down = pt_v4 - factor 
-
+            factor = jec_pt_nom * jerc_ceval[f"{key}_{syst}_{jet_type}"].evaluate(jet_eta_flat,pt_v4)
             if updown == "Up":
-                pt_v4 = pt_v4 + factor
+                jec_pt_final = jec_pt_nom + factor
             elif updown == "Down":
-                pt_v4 = pt_v4 - factor
+                jec_pt_final = jec_pt_nom - factor
         ###JER Corrections
-        if correction == f"JER_{year}Up":
+        if (correction.startswith("JER") and correction.endswith("Up")):
             up_down_nom = "up"
-        elif correction == f"JER_{year}Down":
+        elif (correction.startswith("JER") and correction.endswith("Down")):
             up_down_nom = "down"
         else:
             up_down_nom = "nom"
         #Get the JER SF
-        jer = jerc_ceval[jer_key].evaluate(jet_eta_flat,pt_v4,fixed_rho_flat)
+        jer = jerc_ceval[jer_key].evaluate(jet_eta_flat,jec_pt_nom,fixed_rho_flat)
         if year in ["2016","2016APV","2017","2018"]:
             jer_sf = jerc_ceval[sf_key].evaluate(jet_eta_flat,up_down_nom)
+
+            jer_sf_nom = jerc_ceval[sf_key].evaluate(jet_eta_flat,"nom")
+            jer_sf_down = jerc_ceval[sf_key].evaluate(jet_eta_flat,"down")
+            jer_sf_up = jerc_ceval[sf_key].evaluate(jet_eta_flat,"up")
+
+
         elif year in ["2022","2022EE","2023","2023BPix"]:
-            jer_sf = jerc_ceval[sf_key].evaluate(jet_eta_flat,pt_v4,up_down_nom)
+            jer_sf = jerc_ceval[sf_key].evaluate(jet_eta_flat,jec_pt_nom,up_down_nom)
         #JER Smearing
-        smear_factor = smear_ceval["JERSmear"].evaluate(pt_v4,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer,jer_sf)
+        smear_factor = smear_ceval["JERSmear"].evaluate(jec_pt_nom,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer,jer_sf)
 
-
-#        #JER Smear Testing
-#        if ((up_down_nom == "nom") and (correction != "nominal") and (year in ["2022","2022EE"])):
-#            jer_sf_nom = jerc_ceval[sf_key].evaluate(jet_eta_flat,jec_pt_nom,up_down_nom)
-#            jer_sf_up = jerc_ceval[sf_key].evaluate(jet_eta_flat,jec_pt_up,up_down_nom)
-#            jer_sf_down = jerc_ceval[sf_key].evaluate(jet_eta_flat,jec_pt_down,up_down_nom)
-#            jer_nom = jerc_ceval[jer_key].evaluate(jet_eta_flat,jec_pt_nom,fixed_rho_flat)
-#            jer_up = jerc_ceval[jer_key].evaluate(jet_eta_flat,jec_pt_up,fixed_rho_flat)
-#            jer_down = jerc_ceval[jer_key].evaluate(jet_eta_flat,jec_pt_down,fixed_rho_flat)
-#            smear_factor_nom = smear_ceval["JERSmear"].evaluate(jec_pt_nom,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer_nom,jer_sf_nom)
-#            smear_factor_up = smear_ceval["JERSmear"].evaluate(jec_pt_up,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer_up,jer_sf_up)
-#            smear_factor_down = smear_ceval["JERSmear"].evaluate(jec_pt_down,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer_down,jer_sf_down)
-#            pt_test_nom = jec_pt_nom*smear_factor_nom
-#            pt_test_up = jec_pt_up*smear_factor_up
-#            pt_test_down = jec_pt_down*smear_factor_down
-#            for i in range(len(jec_pt_nom)):
-#                if ((pt_test_nom[i] > pt_test_down[i]) and (pt_test_nom[i] > pt_test_up[i])) or ((pt_test_nom[i] < pt_test_down[i]) and (pt_test_nom[i] < pt_test_up[i])):
-#                    print("Smear Factors")
-#                    print("Nom: ",smear_factor_nom[i])
-#                    print("Up: ",smear_factor_up[i])
-#                    print("Down: ",smear_factor_down[i])
-#                    print("Final pT Values")
-#                    print("Nom: ",pt_test_nom[i])
-#                    print("Up: ",pt_test_up[i])
-#                    print("Down: ",pt_test_down[i])
-#                    print("JEC PT Values")
-#                    print("Nom: ",jec_pt_nom[i])
-#                    print("Up: ",jec_pt_up[i])
-#                    print("Down: ",jec_pt_down[i])
-#                    print("Eta")
-#                    print(jet_eta_flat[i])
-#                    print("Gen Jet Pt")
-#                    print(jet_genpt_flat[i])
-#                    print("Rho")
-#                    print(fixed_rho_flat[i])
-#                    print("Event")
-#                    print(fixed_event_flat[i])
+        smear_factor_nom = smear_ceval["JERSmear"].evaluate(jec_pt_nom,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer,jer_sf_nom)
+        smear_factor_up = smear_ceval["JERSmear"].evaluate(jec_pt_nom,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer,jer_sf_up)
+        smear_factor_down = smear_ceval["JERSmear"].evaluate(jec_pt_nom,jet_eta_flat,jet_genpt_flat,fixed_rho_flat,fixed_event_flat,jer,jer_sf_down)
+        pt_v5_nom = smear_factor_nom*jec_pt_final
+        pt_v5_up = smear_factor_up*jec_pt_final
+        pt_v5_down = smear_factor_down*jec_pt_final
+        for i in range(len(jec_pt_nom)):
+            if (((pt_v5_nom[i] > pt_v5_up[i]) and (pt_v5_nom[i] > pt_v5_down[i])) or ((pt_v5_nom[i] < pt_v5_up[i]) and (pt_v5_nom[i] < pt_v5_down[i]))):
+                print("This is concerning and annoying!")
 
         #Get new pt
-        pt_v5 = smear_factor*pt_v4
-        jet_collection["pt_jerc"] = ak.unflatten(pt_v5,ak.num(jet_collection.pt))
+        pt_v5 = smear_factor*jec_pt_final
+        jet_collection["pt"] = ak.unflatten(pt_v5,ak.num(jet_collection.pt))

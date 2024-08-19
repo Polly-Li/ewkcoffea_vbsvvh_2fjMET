@@ -96,7 +96,121 @@ SOVERROOTSPLUSB = "$S/\sqrt{S+B}$"
 
 
 
+JERC_LST = [
+    "AbsoluteMPFBias_correlated",
+    "AbsoluteScale_correlated",
+    "FlavorQCD_correlated",
+    "Fragmentation_correlated",
+    "PileUpDataMC_correlated",
+    "PileUpPtBB_correlated",
+    "PileUpPtEC1_correlated",
+    "PileUpPtEC2_correlated",
+    "PileUpPtHF_correlated",
+    "PileUpPtRef_correlated",
+    "RelativeFSR_correlated",
+    "RelativeJERHF_correlated",
+    "RelativePtBB_correlated",
+    "RelativePtHF_correlated",
+    "RelativeBal_correlated",
+    "SinglePionECAL_correlated",
+    "SinglePionHCAL_correlated",
 
+    "AbsoluteStat_uncorrelated_2016APV",
+    "RelativeJEREC1_uncorrelated_2016APV",
+    "RelativeJEREC2_uncorrelated_2016APV",
+    "RelativePtEC1_uncorrelated_2016APV",
+    "RelativePtEC2_uncorrelated_2016APV",
+    "TimePtEta_uncorrelated_2016APV",
+    "RelativeSample_uncorrelated_2016APV",
+    "RelativeStatEC_uncorrelated_2016APV",
+    "RelativeStatFSR_uncorrelated_2016APV",
+    "RelativeStatHF_uncorrelated_2016APV",
+    "JER_2016APV",
+
+    "AbsoluteStat_uncorrelated_2016",
+    "RelativeJEREC1_uncorrelated_2016",
+    "RelativeJEREC2_uncorrelated_2016",
+    "RelativePtEC1_uncorrelated_2016",
+    "RelativePtEC2_uncorrelated_2016",
+    "TimePtEta_uncorrelated_2016",
+    "RelativeSample_uncorrelated_2016",
+    "RelativeStatEC_uncorrelated_2016",
+    "RelativeStatFSR_uncorrelated_2016",
+    "RelativeStatHF_uncorrelated_2016",
+    "JER_2016",
+
+    "AbsoluteStat_uncorrelated_2017",
+    "RelativeJEREC1_uncorrelated_2017",
+    "RelativeJEREC2_uncorrelated_2017",
+    "RelativePtEC1_uncorrelated_2017",
+    "RelativePtEC2_uncorrelated_2017",
+    "TimePtEta_uncorrelated_2017",
+    "RelativeSample_uncorrelated_2017",
+    "RelativeStatEC_uncorrelated_2017",
+    "RelativeStatFSR_uncorrelated_2017",
+    "RelativeStatHF_uncorrelated_2017",
+    "JER_2017",
+
+    "AbsoluteStat_uncorrelated_2018",
+    "RelativeJEREC1_uncorrelated_2018",
+    "RelativeJEREC2_uncorrelated_2018",
+    "RelativePtEC1_uncorrelated_2018",
+    "RelativePtEC2_uncorrelated_2018",
+    "TimePtEta_uncorrelated_2018",
+    "RelativeSample_uncorrelated_2018",
+    "RelativeStatEC_uncorrelated_2018",
+    "RelativeStatFSR_uncorrelated_2018",
+    "RelativeStatHF_uncorrelated_2018",
+    "JER_2018",
+
+    "AbsoluteStat_uncorrelated_2022",
+    "RelativeJEREC1_uncorrelated_2022",
+    "RelativeJEREC2_uncorrelated_2022",
+    "RelativePtEC1_uncorrelated_2022",
+    "RelativePtEC2_uncorrelated_2022",
+    "TimePtEta_uncorrelated_2022",
+    "RelativeSample_uncorrelated_2022",
+    "RelativeStatEC_uncorrelated_2022",
+    "RelativeStatFSR_uncorrelated_2022",
+    "RelativeStatHF_uncorrelated_2022",
+    "JER_2022",
+
+    "AbsoluteStat_uncorrelated_2022EE",
+    "RelativeJEREC1_uncorrelated_2022EE",
+    "RelativeJEREC2_uncorrelated_2022EE",
+    "RelativePtEC1_uncorrelated_2022EE",
+    "RelativePtEC2_uncorrelated_2022EE",
+    "TimePtEta_uncorrelated_2022EE",
+    "RelativeSample_uncorrelated_2022EE",
+    "RelativeStatEC_uncorrelated_2022EE",
+    "RelativeStatFSR_uncorrelated_2022EE",
+    "RelativeStatHF_uncorrelated_2022EE",
+    "JER_2022EE",
+
+    "AbsoluteStat_uncorrelated_2023",
+    "RelativeJEREC1_uncorrelated_2023",
+    "RelativeJEREC2_uncorrelated_2023",
+    "RelativePtEC1_uncorrelated_2023",
+    "RelativePtEC2_uncorrelated_2023",
+    "TimePtEta_uncorrelated_2023",
+    "RelativeSample_uncorrelated_2023",
+    "RelativeStatEC_uncorrelated_2023",
+    "RelativeStatFSR_uncorrelated_2023",
+    "RelativeStatHF_uncorrelated_2023",
+    "JER_2023",
+
+    "AbsoluteStat_uncorrelated_2023BPix",
+    "RelativeJEREC1_uncorrelated_2023BPix",
+    "RelativeJEREC2_uncorrelated_2023BPix",
+    "RelativePtEC1_uncorrelated_2023BPix",
+    "RelativePtEC2_uncorrelated_2023BPix",
+    "TimePtEta_uncorrelated_2023BPix",
+    "RelativeSample_uncorrelated_2023BPix",
+    "RelativeStatEC_uncorrelated_2023BPix",
+    "RelativeStatFSR_uncorrelated_2023BPix",
+    "RelativeStatHF_uncorrelated_2023BPix",
+    "JER_2023BPix",
+]
 
 
 ################### Getting and printing yields ###################
@@ -515,7 +629,8 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
 
     for var_name in histo_dict.keys():
         #print(f"\n{var_name}")
-        if var_name not in TMP_VAR_LST: continue
+        if var_name != "njets": continue
+        #if var_name not in TMP_VAR_LST: continue
         histo = histo_dict[var_name]
 
         cat_lst = [
@@ -542,8 +657,8 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
         syst_var_lst = []
         all_syst_var_lst = histo.axes["systematic"]
         for syst_var_name in all_syst_var_lst:
-            if syst_var_name.endswith("Up"):
-                syst_name_base = syst_var_name.replace("Up","")
+            if syst_var_name.endswith("Down"):
+                syst_name_base = syst_var_name.replace("Down","")
                 if syst_name_base not in syst_var_lst:
                     syst_var_lst.append(syst_name_base)
 
@@ -558,7 +673,8 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
             data_nom = merge_overflow(histo_grouped_data[{"systematic":"nominal"}])
 
             for syst in syst_var_lst:
-                if "btag" not in syst: continue
+                if syst not in JERC_LST: continue
+                #if "btag" not in syst: continue
                 #if "uncorrelated" not in syst: continue
                 #if "lepSF" not in syst: continue
                 #if "PreFiring" not in syst: continue
@@ -566,15 +682,30 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 #if "ISR" not in syst and "FSR" not in syst: continue
                 #if "renorm" not in syst and "fact" not in syst: continue
 
-                # Skip the variations that don't apply (TODO: why are these in the hist to begin with??)
-                if year == "UL16APV": blacklist_years = ["2016","2017","2018","2022","2022EE"]
-                if year == "UL16": blacklist_years = ["2016APV","2017","2018","2022","2022EE"]
-                if year == "UL17": blacklist_years = ["2016APV","2016","2018","2022","2022EE"]
-                if year == "UL18": blacklist_years = ["2016APV","2016","2017","2022","2022EE"]
-                if year == "2022": blacklist_years = ["2016APV","2016","2017","2018","2022EE"]
-                if year == "2022EE": blacklist_years = ["2016APV","2016","2017","2018","2022"]
-                if year == "run3": blacklist_years = ["2016APV","2016","2017","2018"]
-                if year == "all": blacklist_years = []
+                if (("uncorrelated" in syst) or (syst.startswith("JER"))):
+                    if "2016APV" in syst:
+                        blacklist_years = ["2016","2017","2018","2022","2022EE"]
+                    elif "2016" in syst:
+                        blacklist_years = ["2016APV","2017","2018","2022","2022EE"]
+                    elif "2017" in syst:
+                        blacklist_years = ["2016APV","2016","2018","2022","2022EE"]
+                    elif "2018" in syst:
+                        blacklist_years = ["2016APV","2016","2017","2022","2022EE"]
+                    elif "2022" in syst:
+                        blacklist_years = ["2016APV","2016","2017","2018","2022EE"]
+                    elif "2022EE" in syst:
+                        blacklist_years = ["2016APV","2016","2017","2018","2022"]
+                else:
+                    # Skip the variations that don't apply (TODO: why are these in the hist to begin with??)
+                    if year == "UL16APV": blacklist_years = ["2016","2017","2018","2022","2022EE"]
+                    if year == "UL16": blacklist_years = ["2016APV","2017","2018","2022","2022EE"]
+                    if year == "UL17": blacklist_years = ["2016APV","2016","2018","2022","2022EE"]
+                    if year == "UL18": blacklist_years = ["2016APV","2016","2017","2022","2022EE"]
+                    if year == "2022": blacklist_years = ["2016APV","2016","2017","2018","2022EE"]
+                    if year == "2022EE": blacklist_years = ["2016APV","2016","2017","2018","2022"]
+                    if year == "run3": blacklist_years = ["2016APV","2016","2017","2018"]
+                    if year == "run2": blacklist_years = ["2022","2022EE"]
+                    if year == "all": blacklist_years = []
                 skip = False
                 for y in blacklist_years:
                     if syst.endswith(y):
@@ -593,22 +724,22 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 mc_down_arr = mc_down[{"process_grp":sum}].values()
 
                 # Print individual syst numbers
-                #if var_name != "nleps": continue
-                #n = sum(sum(mc_nom.values()))
-                #u = sum(mc_up_arr)
-                #d = sum(mc_down_arr)
-                #print("\n",syst)
-                #print("nom",n)
-                #print("up",u)
-                #print("do",d)
-                #r_up = abs((n-u)/n)
-                #r_do = abs((n-d)/n)
-                #r = (r_up+r_do)/2
-                #print("err",np.round(100*abs(n-u)/n,1),"%")
-                #print("err up",np.round(100*r_up,1),"%")
-                #print("err do",np.round(100*r_do,1),"%")
-                #print("err do",np.round(100*r,1),"%")
-                #continue
+                if var_name != "njets": continue
+                n = sum(sum(mc_nom.values()))
+                u = sum(mc_up_arr)
+                d = sum(mc_down_arr)
+                print("\n",syst)
+                print("nom",n)
+                print("up",u)
+                print("do",d)
+                r_up = abs((n-u)/n)
+                r_do = abs((n-d)/n)
+                r = (r_up+r_do)/2
+                print("err",np.round(100*abs(n-u)/n,1),"%")
+                print("err up",np.round(100*r_up,1),"%")
+                print("err do",np.round(100*r_do,1),"%")
+                print("err do",np.round(100*r,1),"%")
+                continue
 
                 fig = make_syst_fig(mc_nom,mc_up_arr,mc_down_arr,syst,title=f"{var_name}_{yeartag}_{cat}_{syst}")
 
@@ -935,8 +1066,8 @@ def main():
 
     # Make plots
     if args.make_plots:
-        make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path,apply_nsf_to_cr=False)
-        #make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
+        #make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path,apply_nsf_to_cr=False)
+        make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
         #make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data,args.ul_year,ana_type="cb") # Make plot of all SR yields in one plot
 
 
