@@ -32,11 +32,18 @@ SYSTS_SPECIAL_RUN3 = {
     "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
 }
 
+# Hard code the rateParam lines to put at the end of the card (for background normalization)
+RATE_PARAM_LINES = [
+    "ZZ_norm rateParam * ZZ 1 [0,5]",
+    "txZ_norm rateParam * ttZ 1 [0,5]",
+    "txZ_norm rateParam * tWZ 1 [0,5]",
+]
+
 
 ########### Writing the datacard ###########
 
 # Make the datacard for a given channel
-def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,out_dir="."):
+def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,extra_lines=None,out_dir="."):
 
     # Building blocks we'll need to build the card formatting
     bin_str = f"bin_{ch}"
@@ -122,6 +129,10 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,out_dir="."):
         else:
             f.write(line_break)
 
+        # Write any extra lines
+        if extra_lines is not None:
+            for extra_line in extra_lines:
+                f.write(f"{extra_line}\n")
 
 
 
@@ -357,7 +368,7 @@ def main():
     parser.add_argument("in_file_name",help="Either json file of yields or pickle file with scikit hists")
     parser.add_argument("--out-dir","-d",default="./cards_wwz4l",help="Output directory to write root and text datacard files to")
     parser.add_argument("-s","--do-nuisance",action="store_true",help="Include nuisance parameters")
-    parser.add_argument("--no-tf",action="store_true",help="Skip doing the data-driven background estimation")
+    parser.add_argument("--do-tf",action="store_true",help="Do the TF data-driven background estimation")
     parser.add_argument("--bdt",action="store_true",help="Use BDT SR bins")
     parser.add_argument("--unblind",action="store_true",help="If set, use real data, otherwise use asimov data")
     parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["run2","run3"])
@@ -366,7 +377,7 @@ def main():
     in_file = args.in_file_name
     out_dir = args.out_dir
     do_nuis = args.do_nuisance
-    skip_tf = args.no_tf
+    do_tf   = args.do_tf
     use_bdt_sr = args.bdt
     unblind = args.unblind
     run = args.run
@@ -440,21 +451,30 @@ def main():
         kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,skip_procs=["ZZ","ttZ"])
 
     # Do the TF calculation
-    if not skip_tf:
+    if do_tf:
         yld_dict_mc, kappa_dict, gmn_dict = yt.do_tf(yld_dict_mc,yld_dict_data,kappa_dict,sg.BKG_TF_MAP)
 
 
     #### Make the cards for each channel ####
-    cat_lst = sg.CAT_LST_CB
+
+    # Get list of channels
+    cat_lst_cr = ["cr_4l_btag_of_1b", "cr_4l_btag_of_2b", "cr_4l_btag_of_3b", "cr_4l_btag_sf_offZ_met80_1b", "cr_4l_btag_sf_offZ_met80_2b", "cr_4l_btag_sf_offZ_met80_3b","cr_4l_sf"]
+    cat_lst_sr = sg.CAT_LST_CB
     if use_bdt_sr:
         if run == "run2":
-            cat_lst = sg.CAT_LST_BDT
+            cat_lst_sr = sg.CAT_LST_BDT
         elif run == "run3":
-            cat_lst = sg.CAT_LST_BDT_COARSE
+            cat_lst_sr = sg.CAT_LST_BDT_COARSE
         else:
             raise Exception("Unknown year")
+    cat_lst = cat_lst_sr + cat_lst_cr
     print(f"\nMaking cards for {cat_lst}. \nPutting in {out_dir}.")
+
+    # Loop over channels and make cards
     for ch in cat_lst:
+
+        # Use real data in CRs
+        if ch in cat_lst_cr: unblind = True
 
         # Get just the info we want to put in the card in str form
         rate_for_dc_ch = get_rate_for_dc(yld_dict_mc,yld_dict_data,ch,unblind)
@@ -465,7 +485,8 @@ def main():
         if do_nuis:
             kappa_for_dc_ch = get_kappa_for_dc(kappa_dict,ch)
             kappa_for_dc_ch.update(get_rate_systs(sg.PROC_LST)) # Append in the ones from rate json
-        if do_nuis and not skip_tf:
+        if do_nuis and do_tf and (ch not in cat_lst_cr):
+            # TF calculation not meaningful for CRs
             gmn_for_dc_ch = get_gmn_for_dc(gmn_dict[ch],proc_lst=sg.PROC_LST)
 
 
@@ -476,7 +497,8 @@ def main():
             rate_for_dc_ch,
             kappa_for_dc_ch,
             gmn_for_dc_ch,
-            out_dir,
+            extra_lines=RATE_PARAM_LINES,
+            out_dir=out_dir,
         )
 
 
