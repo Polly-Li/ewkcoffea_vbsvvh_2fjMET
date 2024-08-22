@@ -100,7 +100,7 @@ jobs:
       - name: Install pip packages
         run: |
           conda run -n coffea-env pip install xgboost
-          conda run -n coffea-env pip install mt2
+          conda run -n coffea-env pip install mt2==1.2.0
           conda list -n coffea-env
 
       - name: Download root files
