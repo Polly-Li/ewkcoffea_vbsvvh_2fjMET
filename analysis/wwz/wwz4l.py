@@ -122,7 +122,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
-            "nbtagsl" : axis.Regular(6, 0, 6, name="nbtagsl", label="Loose btag multiplicity"),
+            "nbtagsl" : axis.Regular(4, 0, 4, name="nbtagsl", label="Loose btag multiplicity"),
             "nbtagsm" : axis.Regular(4, 0, 4, name="nbtagsm", label="Medium btag multiplicity"),
 
             "njets_counts"   : axis.Regular(30, 0, 30, name="njets_counts",   label="Jet multiplicity counts"),
@@ -895,6 +895,14 @@ class AnalysisProcessor(processor.ProcessorABC):
             lepflav_4m = ((abs(l0.pdgId)==13) & (abs(l1.pdgId)==13) & (abs(l2.pdgId)==13) & (abs(l3.pdgId)==13))
             selections.add("cr_4l_btag_of",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of))
             selections.add("cr_4l_btag_sf_offZ_met80", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0)))
+
+            selections.add("cr_4l_btag_of_1b",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of & (nbtagsl==1)))
+            selections.add("cr_4l_btag_of_2b",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of & (nbtagsl==2)))
+            selections.add("cr_4l_btag_of_3b",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of & (nbtagsl>=3)))
+            selections.add("cr_4l_btag_sf_offZ_met80_1b", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0) & (nbtagsl==1)))
+            selections.add("cr_4l_btag_sf_offZ_met80_2b", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0) & (nbtagsl==2)))
+            selections.add("cr_4l_btag_sf_offZ_met80_3b", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0) & (nbtagsl>=3)))
+
             selections.add("cr_4l_sf", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
             # H->ZZ validation region: note, this is not enforced to be orthogonal to the SR, but it has effectively zero signal in it
             selections.add("cr_4l_sf_higgs", (pass_trg & events.is4lWWZ & events.wwz_presel_sf & ((mllll > 119) & (mllll < 131))))
@@ -1008,6 +1016,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4",
                     "all_events","4l_presel", "sr_4l_sf", "sr_4l_of", "sr_4l_sf_incl", "sr_4l_of_incl",
                     "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "cr_4l_sf_higgs",
+                    "cr_4l_btag_of_1b", "cr_4l_btag_of_2b", "cr_4l_btag_of_3b", "cr_4l_btag_sf_offZ_met80_1b", "cr_4l_btag_sf_offZ_met80_2b", "cr_4l_btag_sf_offZ_met80_3b",
                 ]
             }
 
