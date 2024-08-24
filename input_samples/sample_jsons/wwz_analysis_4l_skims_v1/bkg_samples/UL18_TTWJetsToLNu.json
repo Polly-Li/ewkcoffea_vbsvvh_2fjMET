@@ -6,22 +6,34 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/merged/merged.root"
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_8.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_6.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_11.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_13.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_5.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_7.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_10.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_12.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_1.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_4.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_3.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_9.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_2.root"
     ],
     "nEvents": 18154,
     "nGenEvents": 10450000,
-    "nSumOfWeights": 3502613.391951839,
+    "nSumOfWeights": 3502613.3919518394,
     "isData": false,
-    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/merged",
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/",
     "nSumOfLheWeights": [
-        3862088.256706107,
-        3825518.525354255,
-        3805890.574330507,
-        3570262.989197716,
+        3862088.2567061074,
+        3825518.5253542555,
+        3805890.5743305064,
+        3570262.9891977166,
         3502613.391951839,
         3451263.953903528,
-        3234714.196560223,
-        3155187.9957281603,
-        3090552.98315358
+        3234714.196560222,
+        3155187.9957281607,
+        3090552.9831535807
     ]
 }

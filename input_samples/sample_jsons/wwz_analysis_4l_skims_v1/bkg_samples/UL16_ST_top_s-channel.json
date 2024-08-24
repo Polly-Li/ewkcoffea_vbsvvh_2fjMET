@@ -6,22 +6,40 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/merged/merged.root"
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_8.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_6.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_11.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_16.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_19.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_13.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_5.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_18.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_7.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_10.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_12.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_1.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_15.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_4.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_17.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_3.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_9.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_14.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_2.root"
     ],
     "nEvents": 66,
     "nGenEvents": 5471000,
     "nSumOfWeights": 19433132.409308404,
     "isData": false,
-    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/merged",
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/",
     "nSumOfLheWeights": [
         9863365.732879473,
         9983756.135818208,
         10083907.644769652,
         9581991.095138334,
         19433132.409308404,
-        9827198.002628252,
-        9352655.04293797,
-        9498791.593486534,
-        9617965.300031492
+        9827198.00262825,
+        9352655.042937968,
+        9498791.593486533,
+        9617965.30003149
     ]
 }

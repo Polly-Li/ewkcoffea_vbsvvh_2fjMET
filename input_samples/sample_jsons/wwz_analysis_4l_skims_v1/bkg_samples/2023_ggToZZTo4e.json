@@ -6,12 +6,30 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/merged/merged.root"
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_8.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_6.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_11.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_16.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_19.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_13.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_5.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_18.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_7.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_10.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_12.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_1.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_15.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_4.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_17.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_3.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_9.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_14.root",
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/output_2.root"
     ],
     "nEvents": 124781,
     "nGenEvents": 748000,
     "nSumOfWeights": 748000.0,
     "isData": false,
-    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/merged",
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2023/GluGlutoContinto2Zto4E_TuneCP5_13p6TeV_mcfm701-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v3_NANOAODSIM_WWZ_MC_2024_0811/",
     "nSumOfLheWeights": []
 }
