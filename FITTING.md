@@ -6,15 +6,12 @@ This readme describes how to perform the statistical analysis on the histograms 
 
 The information in the histograms (produced by the processor) can be converted into datacards (to be fed to `combine`) via the `make_datacards.py` script.
 
-* Example of running over Run2 histograms, with data-driven background estimation (on by default) and systematics (`-s`) for the BDT bins (`--bdt`): 
+* Example of running over Run2 histograms with systematics (`-s`) for the BDT bins (`--bdt`). 
   ```
   python make_datacards.py histos/yourhist.pkl.gz --run run2 -s --bdt
   ```
 
-* Example of running over Run3 (which right now is just 2022) histograms: 
-  ```
-  python make_datacards.py histos/yourhisto.pkl.gz --run run3
-  ```
+Note that by default the code will include CR bins to handle background normalization via a simultaneous SR+CR fit, using the `rateParam` functionality in combine (described in the combine documentation [here](https://cms-analysis.github.io/HiggsAnalysis-CombinedLimit/latest/model_building_tutorial2024/model_building_exercise/#rate-parameters)). 
 
 ## Using combine to perform the statistical analysis 
 
