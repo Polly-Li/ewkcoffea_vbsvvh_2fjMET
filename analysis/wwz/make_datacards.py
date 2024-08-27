@@ -16,6 +16,15 @@ SMALL = 0.000001
 # Global variables
 PRECISION = 6   # Decimal point precision in the text datacard output
 
+#JERC Syst List
+jerc_list = [
+"AbsoluteMPFBias_correlated","AbsoluteScale_correlated","FlavorQCD_correlated","Fragmentation_correlated","PileUpDataMC_correlated",
+"PileUpPtBB_correlated","PileUpPtEC1_correlated","PileUpPtEC2_correlated","PileUpPtHF_correlated","PileUpPtRef_correlated",
+"RelativeFSR_correlated","RelativeJERHF_correlated","RelativePtBB_correlated","RelativePtHF_correlated","RelativeBal_correlated",
+"SinglePionECAL_correlated","SinglePionHCAL_correlated"
+]
+
+
 # Systs that are not correlated across years
 SYSTS_SPECIAL_RUN2 = {
     "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
@@ -79,6 +88,30 @@ SYSTS_SPECIAL_RUN2 = {
 SYSTS_SPECIAL_RUN3 = {
     "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
     "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+
+    "AbsoluteStat_uncorrelated_2022"   : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+    "RelativeJEREC1_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+    "RelativeJEREC2_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+    "RelativePtEC1_uncorrelated_2022"  : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+    "RelativePtEC2_uncorrelated_2022"  : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+    "TimePtEta_uncorrelated_2022"      : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+    "RelativeSample_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+    "RelativeStatEC_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+    "RelativeStatFSR_uncorrelated_2022": {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+    "RelativeStatHF_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+    "JER_2022"                         : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+
+    "AbsoluteStat_uncorrelated_2022EE"   : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+    "RelativeJEREC1_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+    "RelativeJEREC2_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+    "RelativePtEC1_uncorrelated_2022EE"  : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+    "RelativePtEC2_uncorrelated_2022EE"  : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+    "TimePtEta_uncorrelated_2022EE"      : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+    "RelativeSample_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+    "RelativeStatEC_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+    "RelativeStatFSR_uncorrelated_2022EE": {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+    "RelativeStatHF_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+    "JER_2022EE"                         : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
 }
 
 # Hard code the rateParam lines to put at the end of the card (for background normalization)
@@ -273,6 +306,23 @@ def get_rate_systs(proc_lst):
     return out_dict
 
 
+def determine_updo_same(nom,up,down):
+    if nom < 0:
+        raise Exception("Negative values should have been fixed by this point!")
+    elif ((up > nom) and (down > nom)):
+        return True
+    elif ((up < nom) and (down < nom)):
+        return True
+    else: return False
+
+def fix_updown_same(nom,up,down):
+    diff_1 = abs(nom - up)
+    diff_2 = abs(nom - down)
+    diff = max(diff_1,diff_2)
+    kappa_up = (nom + diff)/nom
+    kappa_down = (nom - diff)/nom
+    return kappa_up, kappa_down
+
 # Get kappa dict (e.g. up/nom ratios) from the dict of all histograms
 def get_kappa_dict(in_dict_mc,in_dict_data):
 
@@ -302,14 +352,20 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
                 valvar_kappa_up = yt.valvar_op(valvar_up,valvar_nom,"div")
                 valvar_kappa_do = yt.valvar_op(valvar_do,valvar_nom,"div")
 
-                # Handle negative cases
+                # Ensure the nominal is not negative
+                if (valvar_nom[0] < 0):
+                    raise Exception("Negatove Values should have been fixed by this point!")
+
+                #Handle cases where both up/down in the same direction
+                updo_same = determine_updo_same(valvar_nom[0],valvar_up[0],valvar_do[0])
+                if (updo_same and sys in jerc_list) or (updo_same and (sys in SYSTS_SPECIAL_RUN2 or sys in SYSTS_SPECIAL_RUN3) and (not sys.startswith("btag"))):
+                    valvar_kappa_up[0],valvar_kappa_do[0] = fix_updown_same(valvar_nom[0],valvar_up[0],valvar_do[0])
+#                elif updo_same:
+#                    print(sys)
+#                    raise Exception("Up and Down variations in same direction!")
+
+                # Handle cases with negative kappa
                 if (valvar_kappa_up[0]<=0) and (valvar_kappa_do[0]<=0):
-                    print(cat)
-                    print(sys)
-                    print(proc)
-                    print(valvar_up)
-                    print(valvar_do)
-                    print(valvar_nom)
                     raise Exception("Both kappas negative, should not be possible.")
                 if valvar_kappa_up[0] <= 0:
                     print(f"WARNING: Up var for {sys} for {proc} for {cat} is negative, setting to {SMALL}.")
