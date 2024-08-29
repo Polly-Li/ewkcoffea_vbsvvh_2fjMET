@@ -110,6 +110,80 @@ BKG_TF_MAP = {
     }
 }
 
+all_exclude_dict = {
+    "TTZToLL_M_1to10": ["2022","2022EE"],
+    "TTZToLLNuNu_M_10": ["2022","2022EE"],
+    "SSWW": ["2022","2022EE"],
+    "tbarW_noFullHad": ["2022","2022EE"],
+    "TTWJetsToLNu": ["2022","2022EE"],
+    "TTWJetsToQQ": ["2022","2022EE"],
+    "tW_noFullHad": ["2022","2022EE"],
+    "GluGluZH": ["2022","2022EE"],
+    "qqToZHToZTo2L": ["2022","2022EE"],
+
+    "TTZToLL_M_4to50": ["UL16APV","UL16","UL17","UL18"],
+    "TTZToLL_M_50": ["UL16APV","UL16","UL17","UL18"],
+    "GluGluZHTo2WTo2L2Nu": ["UL16APV","UL16","UL17","UL18"],
+    "qqToZHTo2WTo2L2Nu": ["UL16APV","UL16","UL17","UL18"],
+    "DYJetsToLL_M_10to50_MLM": ["UL16APV","UL16","UL17","UL18"],
+    "SSWW_TT": ["UL16APV","UL16","UL17","UL18"],
+    "SSWW_TL": ["UL16APV","UL16","UL17","UL18"],
+    "SSWW_LL": ["UL16APV","UL16","UL17","UL18"],
+    "tbarW_leptonic": ["UL16APV","UL16","UL17","UL18"],
+    "tbarW_semileptonic": ["UL16APV","UL16","UL17","UL18"],
+    "tW_leptonic": ["UL16APV","UL16","UL17","UL18"],
+    "tW_semileptonic": ["UL16APV","UL16","UL17","UL18"],
+    "WJetsToLNu": ["UL16APV","UL16","UL17","UL18"],
+}
+
+
+# The "official" groupings
+SAMPLE_DICT_BASE_ALL = {
+    "WWZ" : ["WWZJetsTo4L2Nu"],
+    "ZH"  : ["GluGluZH","qqToZHToZTo2L","GluGluZHTo2WTo2L2Nu","qqToZHTo2WTo2L2Nu"],
+    "ZZ"  : ["ZZTo4l", "ggToZZTo2e2mu", "ggToZZTo2e2tau", "ggToZZTo2mu2tau", "ggToZZTo4e", "ggToZZTo4mu", "ggToZZTo4tau"],
+
+    "ttZ" : [
+        "TTZToLL_M_1to10",
+        "TTZToLLNuNu_M_10",
+        "TTZToQQ",
+        "TTZToLL_M_4to50",
+        "TTZToLL_M_50",
+    ],
+    "tWZ" : ["tWZ4l"], 
+    "WZ" : ["WZTo3LNu"],
+
+    "other" : [
+        "DYJetsToLL_M_50_MLM",
+        "SSWW",
+        "ST_antitop_t-channel",
+        "ST_top_s-channel",
+        "ST_top_t-channel",
+        "tbarW_noFullHad",
+        "ttHnobb",
+        "TTTo2L2Nu",
+        "TTWJetsToLNu",
+        "TTWJetsToQQ",
+        "tW_noFullHad",
+        "tZq",
+        "VHnobb",
+        "WWTo2L2Nu",
+        "WWW",
+        "WZZ",
+        "ZZZ",
+        "ggHToZZ4L",
+        "DYJetsToLL_M_10to50_MLM",
+        "SSWW_TT",
+        "SSWW_TL",
+        "SSWW_LL",
+        "tbarW_leptonic",
+        "tbarW_semileptonic",
+        "tW_leptonic",
+        "tW_semileptonic",
+        "WJetsToLNu",
+    ],
+}
+
 
 # The "official" groupings
 SAMPLE_DICT_BASE_RUN2 = {
@@ -294,12 +368,15 @@ SAMPLE_DICT_BASE_INDIV_RUN3 = {
 # Pass dictionary with the base names for the samples, and return with full list for 4 years
 def create_mc_sample_dict(year,yld_individual=False):
     out_dict = {}
+    all_years = ["UL16APV","UL16","UL17","UL18","2022","2022EE"]
     r2_years = ["UL16APV","UL16","UL17","UL18"]
-    r3_years = ["2022","2022EE","2023","2023BPix"]
+#    r3_years = ["2022","2022EE","2023","2023BPix"]
+    r3_years = ["2022","2022EE"]
     y22_years = ["2022","2022EE"]
     y23_years = ["2023","2023BPix"]
     if year == "all":
-        raise Exception("ERROR: We are not ready to sum Run2 and Run3.")
+        years = all_years
+        sample_dict_base = SAMPLE_DICT_BASE_ALL
     elif year == "run2":
         years = r2_years
         sample_dict_base = SAMPLE_DICT_BASE_RUN2
@@ -331,6 +408,9 @@ def create_mc_sample_dict(year,yld_individual=False):
         out_dict[proc_group] = []
         for proc_base_name in sample_dict_base[proc_group]:
             for year_str in years:
+                if proc_base_name in all_exclude_dict.keys():
+                    if year_str in all_exclude_dict[proc_base_name]:
+                        continue
                 out_dict[proc_group].append(f"{year_str}_{proc_base_name}")
 
     return out_dict
@@ -338,8 +418,7 @@ def create_mc_sample_dict(year,yld_individual=False):
 # Get data sampel dict
 def create_data_sample_dict(year):
     if year == "all":
-        raise Exception("ERROR: We are not ready to run over Run2 and Run3.")
-        #grouping_data = {'data': ["UL16APV_data","UL16_data","UL17_data","UL18_data","2022_data","2022EE_data"]}
+        grouping_data = {'data': ["UL16APV_data","UL16_data","UL17_data","UL18_data","2022_data","2022EE_data"]}
     elif year == "run2":
         grouping_data = {'data': ["UL16APV_data","UL16_data","UL17_data","UL18_data"]}
     elif year == "run3":

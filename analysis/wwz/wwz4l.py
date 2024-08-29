@@ -229,7 +229,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         is2023 = year in ["2023","2023BPix"]
 
         # If this is a 2022 sample, get the era info
-        if isData and is2022:
+        if isData and (is2022 or is2023):
             era = self._samples[json_name]["era"]
         else:
             era = None
