@@ -53,6 +53,8 @@ BDT_VAR_NAMES = [
     "bdt_sf_wwz_m_zh",
     "bdt_of_bin",
     "bdt_sf_bin",
+    "bdt_of_bin_coarse",
+    "bdt_sf_bin_coarse",
 ]
 
 if __name__ == '__main__':
