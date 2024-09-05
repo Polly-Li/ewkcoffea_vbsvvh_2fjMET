@@ -283,7 +283,7 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
                 valvar_kappa_do = yt.valvar_op(valvar_do,valvar_nom,"div")
 
                 # Handle negative cases
-                if (valvar_kappa_up[0]<=0) and (valvar_kappa_do[0]<=0): 
+                if (valvar_kappa_up[0]<=0) and (valvar_kappa_do[0]<=0):
                     raise Exception(f"Up and Down variations are same direction for process: {proc}, category: {cat}, systematic: {sys}")
                 if valvar_kappa_up[0] <= 0:
                     print(f"WARNING: Up var for {sys} for {proc} for {cat} is negative, setting to {SMALL}.")
