@@ -6,33 +6,22 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_8.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_6.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_11.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_5.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_7.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_10.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_12.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_1.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_4.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_3.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_9.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_2.root"
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/merged/merged.root"
     ],
     "nEvents": 6505,
     "nGenEvents": 3322643,
     "nSumOfWeights": 1113150.4285124398,
     "isData": false,
-    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/",
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/merged/",
     "nSumOfLheWeights": [
         1227576.3203820016,
-        1215766.8751807022,
+        1215766.8751807024,
         1209414.2322120469,
-        1134752.9439352446,
+        1134752.9439352443,
         1113150.4285124398,
-        1096769.2126172073,
-        1028055.8419938054,
-        1002727.1334440539,
-        982154.0214829975
+        1096769.2126172076,
+        1028055.8419938055,
+        1002727.133444054,
+        982154.0214829973
     ]
 }

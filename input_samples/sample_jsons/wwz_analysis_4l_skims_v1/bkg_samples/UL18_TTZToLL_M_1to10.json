@@ -6,26 +6,20 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_6.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_5.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_7.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_1.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_4.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_3.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/output_2.root"
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/merged/merged.root"
     ],
     "nEvents": 6977,
     "nGenEvents": 994000,
-    "nSumOfWeights": 53133.240523064014,
+    "nSumOfWeights": 53133.24052306401,
     "isData": false,
-    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/",
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/merged/",
     "nSumOfLheWeights": [
         59903.67471308142,
         58756.60911700208,
-        57898.76092645365,
-        54494.01147981357,
+        57898.760926453644,
+        54494.01147981356,
         52029.730104745635,
-        49286.50439505837,
+        49286.504395058364,
         47854.080410062015,
         46650.90847903982
     ]

@@ -6,16 +6,13 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_1.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_4.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_3.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/output_2.root"
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/merged/merged.root"
     ],
     "nEvents": 441,
     "nGenEvents": 72000,
-    "nSumOfWeights": 1066.52194498,
+    "nSumOfWeights": 1066.5219449800002,
     "isData": false,
-    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/",
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_WWZ_MC_2024_0811/merged/",
     "nSumOfLheWeights": [
         1096.04826468065,
         1090.9126753868402,

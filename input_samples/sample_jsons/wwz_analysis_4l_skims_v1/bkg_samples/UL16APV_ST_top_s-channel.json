@@ -6,33 +6,22 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_MC_2024_0811/output_8.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_MC_2024_0811/output_6.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_MC_2024_0811/output_11.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_MC_2024_0811/output_5.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_MC_2024_0811/output_7.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_MC_2024_0811/output_10.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_MC_2024_0811/output_12.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_MC_2024_0811/output_1.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_MC_2024_0811/output_4.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_MC_2024_0811/output_3.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_MC_2024_0811/output_9.root",
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_MC_2024_0811/output_2.root"
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_MC_2024_0811/merged/merged.root"
     ],
     "nEvents": 65,
     "nGenEvents": 5518000,
     "nSumOfWeights": 19596250.124904204,
     "isData": false,
-    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_MC_2024_0811/",
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_WWZ_MC_2024_0811/merged/",
     "nSumOfLheWeights": [
-        9942955.743434949,
+        9942955.743434947,
         10066132.583159305,
         10169028.441593595,
-        9660758.376871694,
+        9660758.376871696,
         19596250.124904204,
-        9911449.994510692,
+        9911449.99451069,
         9430751.754886907,
-        9579683.10573627,
-        9701509.167373376
+        9579683.105736272,
+        9701509.167373374
     ]
 }
