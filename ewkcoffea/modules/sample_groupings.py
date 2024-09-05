@@ -110,6 +110,7 @@ BKG_TF_MAP = {
     }
 }
 
+#Exclusion Dictionary for sample differences in Run 2 and Run 3
 all_exclude_dict = {
     "TTZToLL_M_1to10": ["2022","2022EE"],
     "TTZToLLNuNu_M_10": ["2022","2022EE"],
@@ -137,7 +138,7 @@ all_exclude_dict = {
 }
 
 
-# The "official" groupings
+# The "official" ALL groupings
 SAMPLE_DICT_BASE_ALL = {
     "WWZ" : ["WWZJetsTo4L2Nu"],
     "ZH"  : ["GluGluZH","qqToZHToZTo2L","GluGluZHTo2WTo2L2Nu","qqToZHTo2WTo2L2Nu"],
@@ -150,7 +151,7 @@ SAMPLE_DICT_BASE_ALL = {
         "TTZToLL_M_4to50",
         "TTZToLL_M_50",
     ],
-    "tWZ" : ["tWZ4l"], 
+    "tWZ" : ["tWZ4l"],
     "WZ" : ["WZTo3LNu"],
 
     "other" : [
@@ -185,7 +186,7 @@ SAMPLE_DICT_BASE_ALL = {
 }
 
 
-# The "official" groupings
+# The "official" Run 2 groupings
 SAMPLE_DICT_BASE_RUN2 = {
     "WWZ" : ["WWZJetsTo4L2Nu"],
     "ZH"  : ["GluGluZH","qqToZHToZTo2L"],
@@ -263,8 +264,6 @@ SAMPLE_DICT_BASE_RUN3 = {
         "tbarW_semileptonic",
         "ttHnobb",
         "TTTo2L2Nu",
-        #"TTWJetsToLNu",
-        #"TTWJetsToQQ",
         "tW_leptonic",
         "tW_semileptonic",
         "tZq",
@@ -348,8 +347,6 @@ SAMPLE_DICT_BASE_INDIV_RUN3 = {
     "tbarW_semileptonic"      : ["tbarW_semileptonic"],
     "ttHnobb"                 : ["ttHnobb"],
     "TTTo2L2Nu"               : ["TTTo2L2Nu"],
-    #"TTWJetsToLNu"            : ["TTWJetsToLNu"],
-    #"TTWJetsToQQ"             : ["TTWJetsToQQ"],
     "tW_leptonic"             : ["tW_leptonic"],
     "tW_semileptonic"         : ["tW_semileptonic"],
     "tZq"                     : ["tZq"],
@@ -370,7 +367,7 @@ def create_mc_sample_dict(year,yld_individual=False):
     out_dict = {}
     all_years = ["UL16APV","UL16","UL17","UL18","2022","2022EE"]
     r2_years = ["UL16APV","UL16","UL17","UL18"]
-#    r3_years = ["2022","2022EE","2023","2023BPix"]
+    #r3_years = ["2022","2022EE","2023","2023BPix"] TODO: USE this when we switch to 2023 MC Samples
     r3_years = ["2022","2022EE"]
     y22_years = ["2022","2022EE"]
     y23_years = ["2023","2023BPix"]
@@ -408,6 +405,7 @@ def create_mc_sample_dict(year,yld_individual=False):
         out_dict[proc_group] = []
         for proc_base_name in sample_dict_base[proc_group]:
             for year_str in years:
+                # Check to see if the sample is in the exclusion dictionary for R2 and R3 sample differences
                 if proc_base_name in all_exclude_dict.keys():
                     if year_str in all_exclude_dict[proc_base_name]:
                         continue

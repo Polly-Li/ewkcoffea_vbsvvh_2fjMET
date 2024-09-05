@@ -282,17 +282,9 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
                 valvar_kappa_up = yt.valvar_op(valvar_up,valvar_nom,"div")
                 valvar_kappa_do = yt.valvar_op(valvar_do,valvar_nom,"div")
 
-#                # Handle when up and down are same direction
-                updo_same = determine_updo_same(valvar_nom[0],valvar_up[0],valvar_do[0])
-#                if updo_same:
-#                    print(f"Up are Down variations are same direction for process: {proc}, category: {cat}, systematic: {sys}")
-#                    valvar_kappa_up[0],valvar_kappa_do[0] = fix_updown_same(valvar_nom[0],valvar_up[0],valvar_do[0])
-
                 # Handle negative cases
                 if (valvar_kappa_up[0]<=0) and (valvar_kappa_do[0]<=0): 
-                    if updo_same:
-                        print(f"Up are Down variations are same direction for process: {proc}, category: {cat}, systematic: {sys}")
-                        valvar_kappa_up[0],valvar_kappa_do[0] = fix_updown_same(valvar_nom[0],valvar_up[0],valvar_do[0])
+                    raise Exception(f"Up and Down variations are same direction for process: {proc}, category: {cat}, systematic: {sys}")
                 if valvar_kappa_up[0] <= 0:
                     print(f"WARNING: Up var for {sys} for {proc} for {cat} is negative, setting to {SMALL}.")
                     valvar_kappa_up[0] = SMALL
@@ -442,6 +434,8 @@ def main():
         sample_names_dict_mc["UL18"]    = sg.create_mc_sample_dict("UL18")
         sample_names_dict_mc["2022"]    = sg.create_mc_sample_dict("2022")
         sample_names_dict_mc["2022EE"]  = sg.create_mc_sample_dict("2022EE")
+        #sample_names_dict_mc["2023"]  = sg.create_mc_sample_dict("2023")
+        #sample_names_dict_mc["2023BPix"]  = sg.create_mc_sample_dict("2023BPix")
     if run == "run2":
         sample_names_dict_mc["UL16APV"] = sg.create_mc_sample_dict("UL16APV")
         sample_names_dict_mc["UL16"]    = sg.create_mc_sample_dict("UL16")
@@ -450,6 +444,8 @@ def main():
     if run == "run3":
         sample_names_dict_mc["2022"]    = sg.create_mc_sample_dict("2022")
         sample_names_dict_mc["2022EE"]  = sg.create_mc_sample_dict("2022EE")
+        #sample_names_dict_mc["2023"]  = sg.create_mc_sample_dict("2023")
+        #sample_names_dict_mc["2023BPix"]  = sg.create_mc_sample_dict("2023BPix")
 
     # Get yield dictionary (nested in the order: year,cat,syst,proc)
     yld_dict_mc_allyears = {}
