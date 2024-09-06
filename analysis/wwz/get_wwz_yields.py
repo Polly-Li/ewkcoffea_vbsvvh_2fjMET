@@ -719,7 +719,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
             #if "bdt" in cat_name: continue
             #if cat_name not in ["sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn"]: continue # TMP
             #if cat_name not in ["cr_4l_sf_higgs"]: continue
-            #if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]: continue
+            if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]: continue
             #if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn"]: continue
             print(cat_name)
 
@@ -935,9 +935,9 @@ def main():
 
     # Make plots
     if args.make_plots:
-        #make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path,apply_nsf_to_cr=False)
+        make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path,apply_nsf_to_cr=False)
         #make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
-        make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data,args.ul_year,ana_type="cb") # Make plot of all SR yields in one plot
+        #make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data,args.ul_year,ana_type="cb") # Make plot of all SR yields in one plot
 
 
 

@@ -8,20 +8,20 @@
     "files": [
         "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_WWZ_MC_2024_0811/merged/merged.root"
     ],
-    "nEvents": 5812306,
-    "nGenEvents": 196976000,
-    "nSumOfWeights": 260966339.33439997,
+    "nEvents": 2906153,
+    "nGenEvents": 98488000,
+    "nSumOfWeights": 130483169.66719995,
     "isData": false,
     "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/ZZTo4L_TuneCP5_13TeV_powheg_pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_WWZ_MC_2024_0811/merged/",
     "nSumOfLheWeights": [
-        250362610.8962635,
-        266475687.47125426,
-        275247228.7238956,
-        243337837.806552,
-        260966339.33439997,
-        272133049.7498416,
-        237712827.16940215,
-        256533962.80270627,
-        269554503.3184856
+        125181305.44813168,
+        133237843.73562717,
+        137623614.36194772,
+        121668918.903276,
+        130483169.66719995,
+        136066524.87492082,
+        118856413.58470115,
+        128266981.40135325,
+        134777251.65924278
     ]
 }

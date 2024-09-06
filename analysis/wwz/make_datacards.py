@@ -43,7 +43,7 @@ SYSTS_SPECIAL_ALL = {
     "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17", "2022", "2022EE"]},
 
     "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["UL16APV","UL16","UL17","UL18","2022EE"]},
-    "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["UL16APV","2022"]},
+    "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["UL16APV","UL16","UL17","UL18","2022"]},
 }
 
 # Hard code the rateParam lines to put at the end of the card (for background normalization)
@@ -162,7 +162,7 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,extra_lines=No
 def handle_per_year_systs_for_fr(in_dict,year):
     if year == "all":
         systs_special=SYSTS_SPECIAL_ALL
-    if year in ["2022","2022EE","run3"]:
+    if year in ["2022","2022EE","run3","y22","y23"]:
         systs_special=SYSTS_SPECIAL_RUN3
     if year in ["UL16","UL16APV","UL17","UL18","run2"]:
         systs_special=SYSTS_SPECIAL_RUN2
@@ -236,6 +236,7 @@ def get_rate_systs(proc_lst):
 
     return out_dict
 
+#Determines if the up and down variations of a systematic are in the same direction
 def determine_updo_same(nom,up,down):
     if nom < 0:
         raise Exception("Negative values should have been fixed by this point!")
@@ -245,6 +246,7 @@ def determine_updo_same(nom,up,down):
         return True
     else: return False
 
+#Fixes the situation when the up and down variation are in the same direction by taking the larger variation and symmetrize
 def fix_updown_same(nom,up,down):
     diff_1 = abs(nom - up)
     diff_2 = abs(nom - down)
@@ -284,7 +286,7 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
 
                 # Handle negative cases
                 if (valvar_kappa_up[0]<=0) and (valvar_kappa_do[0]<=0):
-                    raise Exception(f"Up and Down variations are same direction for process: {proc}, category: {cat}, systematic: {sys}")
+                    raise Exception(f"Both Kappas Neagtive for process: {proc}, category: {cat}, systematic: {sys}")
                 if valvar_kappa_up[0] <= 0:
                     print(f"WARNING: Up var for {sys} for {proc} for {cat} is negative, setting to {SMALL}.")
                     valvar_kappa_up[0] = SMALL
@@ -404,7 +406,7 @@ def main():
     parser.add_argument("--do-tf",action="store_true",help="Do the TF data-driven background estimation")
     parser.add_argument("--bdt",action="store_true",help="Use BDT SR bins")
     parser.add_argument("--unblind",action="store_true",help="If set, use real data, otherwise use asimov data")
-    parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["all","run2","run3"])
+    parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["all","run2","run3","y22","y23"])
 
     args = parser.parse_args()
     in_file = args.in_file_name
@@ -446,6 +448,12 @@ def main():
         sample_names_dict_mc["2022EE"]  = sg.create_mc_sample_dict("2022EE")
         #sample_names_dict_mc["2023"]  = sg.create_mc_sample_dict("2023")
         #sample_names_dict_mc["2023BPix"]  = sg.create_mc_sample_dict("2023BPix")
+    if run == "y22":
+        sample_names_dict_mc["2022"]    = sg.create_mc_sample_dict("2022")
+        sample_names_dict_mc["2022EE"]  = sg.create_mc_sample_dict("2022EE")
+    if run == "y23":
+        sample_names_dict_mc["2023"]  = sg.create_mc_sample_dict("2023")
+        sample_names_dict_mc["2023BPix"]  = sg.create_mc_sample_dict("2023BPix")
 
     # Get yield dictionary (nested in the order: year,cat,syst,proc)
     yld_dict_mc_allyears = {}
