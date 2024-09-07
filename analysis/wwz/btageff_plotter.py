@@ -132,10 +132,10 @@ def main():
 
         if year == "y22":
             name_1 = "2022"
-            name_2 = "2022EE"        
+            name_2 = "2022EE"
         if year == "y23":
             name_1 = "2023"
-            name_2 = "2023BPix"        
+            name_2 = "2023BPix"
 
         wp = "L"
         histo_proc = histo[{"process":f"{name_1}_TTZToLL_M_4to50"}] + histo[{"process":f"{name_1}_TTZToLL_M_50"}] + histo[{"process":f"{name_2}_TTZToLL_M_4to50"}] + histo[{"process":f"{name_2}_TTZToLL_M_50"}]
