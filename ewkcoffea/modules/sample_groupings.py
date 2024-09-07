@@ -110,81 +110,6 @@ BKG_TF_MAP = {
     }
 }
 
-#Exclusion Dictionary for sample differences in Run 2 and Run 3
-all_exclude_dict = {
-    "TTZToLL_M_1to10": ["2022","2022EE"],
-    "TTZToLLNuNu_M_10": ["2022","2022EE"],
-    "SSWW": ["2022","2022EE"],
-    "tbarW_noFullHad": ["2022","2022EE"],
-    "TTWJetsToLNu": ["2022","2022EE"],
-    "TTWJetsToQQ": ["2022","2022EE"],
-    "tW_noFullHad": ["2022","2022EE"],
-    "GluGluZH": ["2022","2022EE"],
-    "qqToZHToZTo2L": ["2022","2022EE"],
-
-    "TTZToLL_M_4to50": ["UL16APV","UL16","UL17","UL18"],
-    "TTZToLL_M_50": ["UL16APV","UL16","UL17","UL18"],
-    "GluGluZHTo2WTo2L2Nu": ["UL16APV","UL16","UL17","UL18"],
-    "qqToZHTo2WTo2L2Nu": ["UL16APV","UL16","UL17","UL18"],
-    "DYJetsToLL_M_10to50_MLM": ["UL16APV","UL16","UL17","UL18"],
-    "SSWW_TT": ["UL16APV","UL16","UL17","UL18"],
-    "SSWW_TL": ["UL16APV","UL16","UL17","UL18"],
-    "SSWW_LL": ["UL16APV","UL16","UL17","UL18"],
-    "tbarW_leptonic": ["UL16APV","UL16","UL17","UL18"],
-    "tbarW_semileptonic": ["UL16APV","UL16","UL17","UL18"],
-    "tW_leptonic": ["UL16APV","UL16","UL17","UL18"],
-    "tW_semileptonic": ["UL16APV","UL16","UL17","UL18"],
-    "WJetsToLNu": ["UL16APV","UL16","UL17","UL18"],
-}
-
-
-# The "official" ALL groupings
-SAMPLE_DICT_BASE_ALL = {
-    "WWZ" : ["WWZJetsTo4L2Nu"],
-    "ZH"  : ["GluGluZH","qqToZHToZTo2L","GluGluZHTo2WTo2L2Nu","qqToZHTo2WTo2L2Nu"],
-    "ZZ"  : ["ZZTo4l", "ggToZZTo2e2mu", "ggToZZTo2e2tau", "ggToZZTo2mu2tau", "ggToZZTo4e", "ggToZZTo4mu", "ggToZZTo4tau"],
-
-    "ttZ" : [
-        "TTZToLL_M_1to10",
-        "TTZToLLNuNu_M_10",
-        "TTZToQQ",
-        "TTZToLL_M_4to50",
-        "TTZToLL_M_50",
-    ],
-    "tWZ" : ["tWZ4l"],
-    "WZ" : ["WZTo3LNu"],
-
-    "other" : [
-        "DYJetsToLL_M_50_MLM",
-        "SSWW",
-        "ST_antitop_t-channel",
-        "ST_top_s-channel",
-        "ST_top_t-channel",
-        "tbarW_noFullHad",
-        "ttHnobb",
-        "TTTo2L2Nu",
-        "TTWJetsToLNu",
-        "TTWJetsToQQ",
-        "tW_noFullHad",
-        "tZq",
-        "VHnobb",
-        "WWTo2L2Nu",
-        "WWW",
-        "WZZ",
-        "ZZZ",
-        "ggHToZZ4L",
-        "DYJetsToLL_M_10to50_MLM",
-        "SSWW_TT",
-        "SSWW_TL",
-        "SSWW_LL",
-        "tbarW_leptonic",
-        "tbarW_semileptonic",
-        "tW_leptonic",
-        "tW_semileptonic",
-        "WJetsToLNu",
-    ],
-}
-
 
 # The "official" Run 2 groupings
 SAMPLE_DICT_BASE_RUN2 = {
@@ -362,8 +287,28 @@ SAMPLE_DICT_BASE_INDIV_RUN3 = {
 
 ######################## Tools ########################
 
-# Pass dictionary with the base names for the samples, and return with full list for 4 years
+# Pass dictionary with the base names for the samples, and return with full list for the years
+#     - This is a wrapper around create_mc_sample_dict_single_run
+#     - This wrapper handles the stapling together of R2 and R3 dictionaries if necessary)
 def create_mc_sample_dict(year,yld_individual=False):
+    # If the year is "all" (i.e. run2+run3) get the dict for each, and combine
+    if year == "all":
+        out_dict = {}
+        out_dict_r2 = create_mc_sample_dict_single_run("run2",yld_individual)
+        out_dict_r3 = create_mc_sample_dict_single_run("run3",yld_individual)
+        if set(out_dict_r2.keys()) != set(out_dict_r3.keys()):
+            raise Exception("Run 2 and Run 3 are not combinable, they do not have the same keys.")
+        for proc_group_key in out_dict_r2.keys():
+            out_dict[proc_group_key] = out_dict_r2[proc_group_key] + out_dict_r3[proc_group_key]
+    # Otherwise just call create_mc_sample_dict_single_run directly
+    else:
+        out_dict = create_mc_sample_dict_single_run(year,yld_individual)
+    return out_dict
+
+# Pass dictionary with the base names for the samples, and return with full list for the years
+# Does not create combined R2 and R3 dict since the sample names are different
+# To make combined, call this once for R2 and once for R2 and glue together the resuls
+def create_mc_sample_dict_single_run(year,yld_individual=False):
     out_dict = {}
     all_years = ["UL16APV","UL16","UL17","UL18","2022","2022EE"]
     r2_years = ["UL16APV","UL16","UL17","UL18"]
@@ -371,10 +316,7 @@ def create_mc_sample_dict(year,yld_individual=False):
     r3_years = ["2022","2022EE"]
     y22_years = ["2022","2022EE"]
     y23_years = ["2023","2023BPix"]
-    if year == "all":
-        years = all_years
-        sample_dict_base = SAMPLE_DICT_BASE_ALL
-    elif year == "run2":
+    if year == "run2":
         years = r2_years
         sample_dict_base = SAMPLE_DICT_BASE_RUN2
         if yld_individual: sample_dict_base = SAMPLE_DICT_BASE_INDIV_RUN2 # If we want individual not grouped yields
@@ -405,10 +347,6 @@ def create_mc_sample_dict(year,yld_individual=False):
         out_dict[proc_group] = []
         for proc_base_name in sample_dict_base[proc_group]:
             for year_str in years:
-                # Check to see if the sample is in the exclusion dictionary for R2 and R3 sample differences
-                if proc_base_name in all_exclude_dict.keys():
-                    if year_str in all_exclude_dict[proc_base_name]:
-                        continue
                 out_dict[proc_group].append(f"{year_str}_{proc_base_name}")
 
     return out_dict

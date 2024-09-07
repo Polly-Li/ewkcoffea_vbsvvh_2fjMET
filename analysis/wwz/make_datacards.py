@@ -514,9 +514,9 @@ def main():
     if use_bdt_sr:
         if run == "all":
             cat_lst_sr = sg.CAT_LST_BDT
-        elif run == "run2":
+        elif run in ["run2"]:
             cat_lst_sr = sg.CAT_LST_BDT
-        elif run == "run3":
+        elif run in ["run3", "y22", "y23"]:
             cat_lst_sr = sg.CAT_LST_BDT_COARSE
         else:
             print(run)
