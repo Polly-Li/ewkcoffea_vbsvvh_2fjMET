@@ -626,12 +626,12 @@ def make_sr_comb_plot(histo_dict,grouping_mc,grouping_data,year,ana_type="cb"):
     if ana_type == "cb":
         sr_lst  = sg.CAT_LST_CB
         hist_label = "Cut-based SRs"
-        y_max = 4 # 9 is good for R2, 4 is good for R3
+        y_max = 8 # 9 is good for R2, 4 is good for R3
         fig_size = (12,7)
     elif ana_type == "bdt":
         sr_lst  = sg.CAT_LST_BDT
         hist_label = "BDT-based SRs"
-        y_max = 20
+        y_max = 35
         fig_size = (24,7)
         if year == "run3":
             sr_lst  = sg.CAT_LST_BDT_COARSE
@@ -857,7 +857,7 @@ def main():
     parser.add_argument("-o", "--output-path", default="plots", help = "The path the output files should be saved to")
     parser.add_argument('-y', "--get-yields", action='store_true', help = "Get yields from the pkl file")
     parser.add_argument('-p', "--make-plots", action='store_true', help = "Make plots from the pkl file")
-    parser.add_argument('-u', "--ul-year", default='run2', help = "Which year to process", choices=["all","run2","run3","UL16APV","UL16","UL17","UL18","2022","2022EE"])
+    parser.add_argument('-u', "--ul-year", default='run2', help = "Which year to process", choices=["all","run2","run3","y22","y23","UL16APV","UL16","UL17","UL18","2022","2022EE","2023","2023BPix"])
     args = parser.parse_args()
 
     # Get the counts from the input hiso
@@ -896,7 +896,7 @@ def main():
 
         # Get the ref dict, for the relevant year
         if args.ul_year in ["run2","UL18","UL17","UL16","UL16APV"]: ref_ylds = ref_dict=yd.EWK_REF
-        if args.ul_year in ["run3","2022","2022EE"]: ref_ylds = ref_dict=yd.EWK_REF_2022
+        if args.ul_year in ["run3","y22","y23","2022","2022EE","2023","2023BPix"]: ref_ylds = ref_dict=yd.EWK_REF_2022
 
         # Dump latex table for summary of CB, BDT, CRs
         hlines = [2,5] # Just summary categories

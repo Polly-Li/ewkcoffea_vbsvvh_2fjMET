@@ -32,6 +32,20 @@ SYSTS_SPECIAL_RUN3 = {
     "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
 }
 
+SYSTS_SPECIAL_ALL = {
+    "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18", "2022", "2022EE"]},
+    "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18", "2022", "2022EE"]},
+    "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18", "2022", "2022EE"]},
+    "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18", "2022", "2022EE"]},
+    "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18", "2022", "2022EE"]},
+    "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18", "2022", "2022EE"]},
+    "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17", "2022", "2022EE"]},
+    "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17", "2022", "2022EE"]},
+
+    "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["UL16APV","UL16","UL17","UL18","2022EE"]},
+    "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["UL16APV","UL16","UL17","UL18","2022"]},
+}
+
 # Hard code the rateParam lines to put at the end of the card (for background normalization)
 RATE_PARAM_LINES = [
     "ZZ_norm rateParam * ZZ 1 [0,5]",
@@ -146,7 +160,9 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,extra_lines=No
 #   - So this function adds the nominal yields from the other three years to the up/down variation for the relevant year
 #   - Note the in_dict is modifed in place (we do not return a copy of the dict)
 def handle_per_year_systs_for_fr(in_dict,year):
-    if year in ["2022","2022EE","run3"]:
+    if year == "all":
+        systs_special=SYSTS_SPECIAL_ALL
+    if year in ["2022","2022EE","run3","y22","y23"]:
         systs_special=SYSTS_SPECIAL_RUN3
     if year in ["UL16","UL16APV","UL17","UL18","run2"]:
         systs_special=SYSTS_SPECIAL_RUN2
@@ -220,6 +236,24 @@ def get_rate_systs(proc_lst):
 
     return out_dict
 
+#Determines if the up and down variations of a systematic are in the same direction
+def determine_updo_same(nom,up,down):
+    if nom < 0:
+        raise Exception("Negative values should have been fixed by this point!")
+    elif ((up > nom) and (down > nom)):
+        return True
+    elif ((up < nom) and (down < nom)):
+        return True
+    else: return False
+
+#Fixes the situation when the up and down variation are in the same direction by taking the larger variation and symmetrize
+def fix_updown_same(nom,up,down):
+    diff_1 = abs(nom - up)
+    diff_2 = abs(nom - down)
+    diff = max(diff_1,diff_2)
+    kappa_up = (nom + diff)/nom
+    kappa_down = (nom - diff)/nom
+    return kappa_up, kappa_down
 
 # Get kappa dict (e.g. up/nom ratios) from the dict of all histograms
 def get_kappa_dict(in_dict_mc,in_dict_data):
@@ -251,7 +285,8 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
                 valvar_kappa_do = yt.valvar_op(valvar_do,valvar_nom,"div")
 
                 # Handle negative cases
-                if (valvar_kappa_up[0]<=0) and (valvar_kappa_do[0]<=0): raise Exception("Both kappas negative, should not be possible.")
+                if (valvar_kappa_up[0]<=0) and (valvar_kappa_do[0]<=0):
+                    raise Exception(f"Both Kappas Neagtive for process: {proc}, category: {cat}, systematic: {sys}")
                 if valvar_kappa_up[0] <= 0:
                     print(f"WARNING: Up var for {sys} for {proc} for {cat} is negative, setting to {SMALL}.")
                     valvar_kappa_up[0] = SMALL
@@ -371,7 +406,7 @@ def main():
     parser.add_argument("--do-tf",action="store_true",help="Do the TF data-driven background estimation")
     parser.add_argument("--bdt",action="store_true",help="Use BDT SR bins")
     parser.add_argument("--unblind",action="store_true",help="If set, use real data, otherwise use asimov data")
-    parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["run2","run3"])
+    parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["all","run2","run3","y22","y23"])
 
     args = parser.parse_args()
     in_file = args.in_file_name
@@ -394,6 +429,15 @@ def main():
     # Get the dictionary defining the mc sample grouping
     sample_names_dict_data = {"FR" : sg.create_data_sample_dict(run)}
     sample_names_dict_mc   = {"FR" : sg.create_mc_sample_dict(run)}
+    if run == "all":
+        sample_names_dict_mc["UL16APV"] = sg.create_mc_sample_dict("UL16APV")
+        sample_names_dict_mc["UL16"]    = sg.create_mc_sample_dict("UL16")
+        sample_names_dict_mc["UL17"]    = sg.create_mc_sample_dict("UL17")
+        sample_names_dict_mc["UL18"]    = sg.create_mc_sample_dict("UL18")
+        sample_names_dict_mc["2022"]    = sg.create_mc_sample_dict("2022")
+        sample_names_dict_mc["2022EE"]  = sg.create_mc_sample_dict("2022EE")
+        #sample_names_dict_mc["2023"]  = sg.create_mc_sample_dict("2023")
+        #sample_names_dict_mc["2023BPix"]  = sg.create_mc_sample_dict("2023BPix")
     if run == "run2":
         sample_names_dict_mc["UL16APV"] = sg.create_mc_sample_dict("UL16APV")
         sample_names_dict_mc["UL16"]    = sg.create_mc_sample_dict("UL16")
@@ -402,6 +446,14 @@ def main():
     if run == "run3":
         sample_names_dict_mc["2022"]    = sg.create_mc_sample_dict("2022")
         sample_names_dict_mc["2022EE"]  = sg.create_mc_sample_dict("2022EE")
+        #sample_names_dict_mc["2023"]  = sg.create_mc_sample_dict("2023")
+        #sample_names_dict_mc["2023BPix"]  = sg.create_mc_sample_dict("2023BPix")
+    if run == "y22":
+        sample_names_dict_mc["2022"]    = sg.create_mc_sample_dict("2022")
+        sample_names_dict_mc["2022EE"]  = sg.create_mc_sample_dict("2022EE")
+    if run == "y23":
+        sample_names_dict_mc["2023"]  = sg.create_mc_sample_dict("2023")
+        sample_names_dict_mc["2023BPix"]  = sg.create_mc_sample_dict("2023BPix")
 
     # Get yield dictionary (nested in the order: year,cat,syst,proc)
     yld_dict_mc_allyears = {}
@@ -410,7 +462,6 @@ def main():
     if do_nuis:
         handle_per_year_systs_for_fr(yld_dict_mc_allyears,run)
 
-    # We're only looking at Full R2 (run2) or 2022 (run3) for now
     yld_dict_mc = yld_dict_mc_allyears["FR"]
     yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR"])
 
@@ -461,11 +512,14 @@ def main():
     cat_lst_cr = ["cr_4l_btag_of_1b", "cr_4l_btag_of_2b", "cr_4l_btag_of_3b", "cr_4l_btag_sf_offZ_met80_1b", "cr_4l_btag_sf_offZ_met80_2b", "cr_4l_btag_sf_offZ_met80_3b","cr_4l_sf"]
     cat_lst_sr = sg.CAT_LST_CB
     if use_bdt_sr:
-        if run == "run2":
+        if run == "all":
             cat_lst_sr = sg.CAT_LST_BDT
-        elif run == "run3":
+        elif run in ["run2"]:
+            cat_lst_sr = sg.CAT_LST_BDT
+        elif run in ["run3", "y22", "y23"]:
             cat_lst_sr = sg.CAT_LST_BDT_COARSE
         else:
+            print(run)
             raise Exception("Unknown year")
     cat_lst = cat_lst_sr + cat_lst_cr
     print(f"\nMaking cards for {cat_lst}. \nPutting in {out_dir}.")

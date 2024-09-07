@@ -1,0 +1,27 @@
+{
+    "xsec": 0.4062,
+    "year": "2017",
+    "treeName": "Events",
+    "histAxisName": "UL17_TTWJetsToQQ",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2017/TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_WWZ_MC_2024_0811/merged/merged.root"
+    ],
+    "nEvents": 96,
+    "nGenEvents": 655018,
+    "nSumOfWeights": 444333.97167040006,
+    "isData": false,
+    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2017/TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_WWZ_MC_2024_0811/merged/",
+    "nSumOfLheWeights": [
+        490718.72334642743,
+        485878.93822372996,
+        483189.059835579,
+        453001.29047145654,
+        444333.97167040006,
+        437723.33063964086,
+        410104.51035202265,
+        399992.81468738074,
+        391754.31900181936
+    ]
+}
