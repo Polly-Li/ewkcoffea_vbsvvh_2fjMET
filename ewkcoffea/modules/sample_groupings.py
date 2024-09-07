@@ -347,7 +347,11 @@ def create_mc_sample_dict_single_run(year,yld_individual=False):
         out_dict[proc_group] = []
         for proc_base_name in sample_dict_base[proc_group]:
             for year_str in years:
-                out_dict[proc_group].append(f"{year_str}_{proc_base_name}")
+                #ST_antitop_t-channel has no yields for 2023BPix. Simple method to skip this sample for particular year
+                if (year_str == "2023BPix") and (proc_base_name == "ST_antitop_t-channel"):
+                    continue
+                else:
+                    out_dict[proc_group].append(f"{year_str}_{proc_base_name}")
 
     return out_dict
 
