@@ -64,9 +64,10 @@ def main():
     # Set up the command line parser
     parser = argparse.ArgumentParser()
     parser.add_argument("pkl_file_path", help = "The path to the pkl file")
-    parser.add_argument('-u', "--ul-year", default='run2', help = "Which year to process", choices=["run2","run3"])
+    parser.add_argument('-u', "--ul-year", default='run2', help = "Which year to process", choices=["run2","y22","y23"])
     parser.add_argument('-p', "--make-plots", action='store_true', help = "Make plots from the pkl file")
     parser.add_argument('-y', "--get-yields", action='store_true', help = "Make yields from the pkl file")
+    parser.add_argument('-c', "--combo-plots", action='store_true', help = "Make Combo Plots for 2022 or 2023")
     args = parser.parse_args()
 
     year = args.ul_year
@@ -77,8 +78,10 @@ def main():
 
     if year == "run2":
         pname_list = ["UL16APV_TTZToLLNuNu_M_10","UL16_TTZToLLNuNu_M_10","UL17_TTZToLLNuNu_M_10","UL18_TTZToLLNuNu_M_10"]
-    elif year == "run3":
+    elif year == "y22":
         pname_list = ["2022EE","2022"]
+    elif year == "y23":
+        pname_list = ["2023BPix","2023"]
     else:
         raise Exception("Unkown Input Year!")
 
@@ -88,7 +91,7 @@ def main():
         # Create lookup object and evaluate eff
         # Copy pasted from ewkcoffea corrections.py
         wp = "L"
-        if year == "run3":
+        if year in ["y22","y23"]:
             histo_proc = histo[{"process":f"{pname}_TTZToLL_M_4to50"}] + histo[{"process":f"{pname}_TTZToLL_M_50"}]
         elif year == "run2":
             histo_proc = histo[{"process":pname}]
@@ -122,7 +125,34 @@ def main():
                 plt.close(fig)
                 #plt.show()
 
+    if args.combo_plots:
 
+        if year not in ["y22","y23"]:
+            raise Exception(f"{year} is not supported for combination plots.")
+
+        if year == "y22":
+            name_1 = "2022"
+            name_2 = "2022EE"
+        if year == "y23":
+            name_1 = "2023"
+            name_2 = "2023BPix"
+
+        wp = "L"
+        histo_proc = histo[{"process":f"{name_1}_TTZToLL_M_4to50"}] + histo[{"process":f"{name_1}_TTZToLL_M_50"}] + histo[{"process":f"{name_2}_TTZToLL_M_4to50"}] + histo[{"process":f"{name_2}_TTZToLL_M_50"}]
+
+        h_eff = histo_proc[{"tag":wp}] / histo_proc[{"tag":"all"}]
+        vals = h_eff.values(flow=True)[1:,1:-1,:-1] # Pt (drop underflow), eta (drop under and over flow), flav (drop overflow, there is not underflow)
+        h_eff_lookup = lookup_tools.dense_lookup.dense_lookup(vals, [ax.edges for ax in h_eff.axes])
+
+        save_dir = "btag_plots"
+        os.makedirs(save_dir, exist_ok=True)
+        for flav in [0,4,5]:
+            h_eff_flav = h_eff[{'flavor':flav}]
+            fig = make_2d_plot(h_eff_flav,f"{year} Comb - Flavor:{flav}",flav)
+            save_path = os.path.join(save_dir, f"{year}_Comb_Flavor_{flav}.png")
+            fig.savefig(save_path)
+            plt.close(fig)
+            #plt.show()
 
 if __name__ == "__main__":
     main()

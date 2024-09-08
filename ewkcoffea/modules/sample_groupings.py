@@ -111,7 +111,7 @@ BKG_TF_MAP = {
 }
 
 
-# The "official" groupings
+# The "official" Run 2 groupings
 SAMPLE_DICT_BASE_RUN2 = {
     "WWZ" : ["WWZJetsTo4L2Nu"],
     "ZH"  : ["GluGluZH","qqToZHToZTo2L"],
@@ -189,8 +189,6 @@ SAMPLE_DICT_BASE_RUN3 = {
         "tbarW_semileptonic",
         "ttHnobb",
         "TTTo2L2Nu",
-        #"TTWJetsToLNu",
-        #"TTWJetsToQQ",
         "tW_leptonic",
         "tW_semileptonic",
         "tZq",
@@ -274,8 +272,6 @@ SAMPLE_DICT_BASE_INDIV_RUN3 = {
     "tbarW_semileptonic"      : ["tbarW_semileptonic"],
     "ttHnobb"                 : ["ttHnobb"],
     "TTTo2L2Nu"               : ["TTTo2L2Nu"],
-    #"TTWJetsToLNu"            : ["TTWJetsToLNu"],
-    #"TTWJetsToQQ"             : ["TTWJetsToQQ"],
     "tW_leptonic"             : ["tW_leptonic"],
     "tW_semileptonic"         : ["tW_semileptonic"],
     "tZq"                     : ["tZq"],
@@ -290,19 +286,49 @@ SAMPLE_DICT_BASE_INDIV_RUN3 = {
 
 ######################## Tools ########################
 
-# Pass dictionary with the base names for the samples, and return with full list for 4 years
+# Pass dictionary with the base names for the samples, and return with full list for the years
+#     - This is a wrapper around create_mc_sample_dict_single_run
+#     - This wrapper handles the stapling together of R2 and R3 dictionaries if necessary)
 def create_mc_sample_dict(year,yld_individual=False):
-    out_dict = {}
-    r2_years = ["UL16APV","UL16","UL17","UL18"]
-    r3_years = ["2022","2022EE"]
+    # If the year is "all" (i.e. run2+run3) get the dict for each, and combine
     if year == "all":
-        raise Exception("ERROR: We are not ready to sum Run2 and Run3.")
-    elif year == "run2":
+        out_dict = {}
+        out_dict_r2 = create_mc_sample_dict_single_run("run2",yld_individual)
+        out_dict_r3 = create_mc_sample_dict_single_run("run3",yld_individual)
+        if set(out_dict_r2.keys()) != set(out_dict_r3.keys()):
+            raise Exception("Run 2 and Run 3 are not combinable, they do not have the same keys.")
+        for proc_group_key in out_dict_r2.keys():
+            out_dict[proc_group_key] = out_dict_r2[proc_group_key] + out_dict_r3[proc_group_key]
+    # Otherwise just call create_mc_sample_dict_single_run directly
+    else:
+        out_dict = create_mc_sample_dict_single_run(year,yld_individual)
+    return out_dict
+
+# Pass dictionary with the base names for the samples, and return with full list for the years
+# Does not create combined R2 and R3 dict since the sample names are different
+# To make combined, call this once for R2 and once for R2 and glue together the resuls
+def create_mc_sample_dict_single_run(year,yld_individual=False):
+    out_dict = {}
+    all_years = ["UL16APV","UL16","UL17","UL18","2022","2022EE"]
+    r2_years = ["UL16APV","UL16","UL17","UL18"]
+    #r3_years = ["2022","2022EE","2023","2023BPix"] TODO: USE this when we switch to 2023 MC Samples
+    r3_years = ["2022","2022EE", "2023","2023BPix"]
+    y22_years = ["2022","2022EE"]
+    y23_years = ["2023","2023BPix"]
+    if year == "run2":
         years = r2_years
         sample_dict_base = SAMPLE_DICT_BASE_RUN2
         if yld_individual: sample_dict_base = SAMPLE_DICT_BASE_INDIV_RUN2 # If we want individual not grouped yields
     elif year == "run3":
         years = r3_years
+        sample_dict_base = SAMPLE_DICT_BASE_RUN3
+        if yld_individual: sample_dict_base = SAMPLE_DICT_BASE_INDIV_RUN3 # If we want individual not grouped yields
+    elif year == "y22":
+        years = y22_years
+        sample_dict_base = SAMPLE_DICT_BASE_RUN3
+        if yld_individual: sample_dict_base = SAMPLE_DICT_BASE_INDIV_RUN3 # If we want individual not grouped yields
+    elif year == "y23":
+        years = y23_years
         sample_dict_base = SAMPLE_DICT_BASE_RUN3
         if yld_individual: sample_dict_base = SAMPLE_DICT_BASE_INDIV_RUN3 # If we want individual not grouped yields
     else:
@@ -320,19 +346,26 @@ def create_mc_sample_dict(year,yld_individual=False):
         out_dict[proc_group] = []
         for proc_base_name in sample_dict_base[proc_group]:
             for year_str in years:
-                out_dict[proc_group].append(f"{year_str}_{proc_base_name}")
+                #ST_antitop_t-channel has no yields for 2023BPix. Simple method to skip this sample for particular year
+                if (year_str == "2023BPix") and (proc_base_name == "ST_antitop_t-channel"):
+                    continue
+                else:
+                    out_dict[proc_group].append(f"{year_str}_{proc_base_name}")
 
     return out_dict
 
 # Get data sampel dict
 def create_data_sample_dict(year):
     if year == "all":
-        raise Exception("ERROR: We are not ready to run over Run2 and Run3.")
-        #grouping_data = {'data': ["UL16APV_data","UL16_data","UL17_data","UL18_data","2022_data","2022EE_data"]}
+        grouping_data = {'data': ["UL16APV_data","UL16_data","UL17_data","UL18_data","2022_data","2022EE_data"]}
     elif year == "run2":
         grouping_data = {'data': ["UL16APV_data","UL16_data","UL17_data","UL18_data"]}
     elif year == "run3":
+        grouping_data = {'data': ["2022_data","2022EE_data","2023_data","2023BPix_data"]}
+    elif year == "y22":
         grouping_data = {'data': ["2022_data","2022EE_data"]}
+    elif year == "y23":
+        grouping_data = {'data': ["2023_data","2023BPix_data"]}
     else:
         grouping_data = {'data': [f"{year}_data"]}
     return grouping_data

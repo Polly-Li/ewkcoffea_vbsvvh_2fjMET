@@ -239,7 +239,32 @@ exclude_dict = {
         "EGamma"         : dataset_dict["2022"]["Muon"],
         "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
     },
-    "2023": {
+    "C1": {
+        "Muon"           : [],
+        "EGamma"         : dataset_dict["2023"]["Muon"],
+        "MuonEG"         : dataset_dict["2023"]["Muon"] + dataset_dict["2023"]["EGamma"],
+    },
+    "C2": {
+        "Muon"           : [],
+        "EGamma"         : dataset_dict["2023"]["Muon"],
+        "MuonEG"         : dataset_dict["2023"]["Muon"] + dataset_dict["2023"]["EGamma"],
+    },
+    "C3": {
+        "Muon"           : [],
+        "EGamma"         : dataset_dict["2023"]["Muon"],
+        "MuonEG"         : dataset_dict["2023"]["Muon"] + dataset_dict["2023"]["EGamma"],
+    },
+    "C4": {
+        "Muon"           : [],
+        "EGamma"         : dataset_dict["2023"]["Muon"],
+        "MuonEG"         : dataset_dict["2023"]["Muon"] + dataset_dict["2023"]["EGamma"],
+    },
+    "D1": {
+        "Muon"           : [],
+        "EGamma"         : dataset_dict["2023"]["Muon"],
+        "MuonEG"         : dataset_dict["2023"]["Muon"] + dataset_dict["2023"]["EGamma"],
+    },
+    "D2": {
         "Muon"           : [],
         "EGamma"         : dataset_dict["2023"]["Muon"],
         "MuonEG"         : dataset_dict["2023"]["Muon"] + dataset_dict["2023"]["EGamma"],

@@ -24,7 +24,7 @@ get_ec_param = GetParam(ewkcoffea_path("params/params.json"))
 
 class AnalysisProcessor(processor.ProcessorABC):
 
-    def __init__(self, samples, wc_names_lst=[], hist_lst=None, ecut_threshold=None, do_errors=False, do_systematics=False, split_by_lepton_flavor=False, skip_signal_regions=False, skip_control_regions=False, muonSyst='nominal', dtype=np.float32):
+    def __init__(self, samples, wc_names_lst=[], hist_lst=None, ecut_threshold=None, do_errors=False, do_systematics=False, split_by_lepton_flavor=False, skip_signal_regions=False, skip_control_regions=False, muonSyst='nominal', dtype=np.float32,siphon_bdt_data=False):
 
         self._samples = samples
         self._wc_names_lst = wc_names_lst
@@ -66,7 +66,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         is2023 = year in ["2023","2023BPix"]
 
         # If this is a 2022 sample, get the era info
-        if isData and is2022:
+        if isData and (is2022 or is2023):
             era = self._samples[json_name]["era"]
         else:
             era = None
