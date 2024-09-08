@@ -1,0 +1,27 @@
+{
+    "xsec": 19.4674104,
+    "year": "2017",
+    "treeName": "Events",
+    "histAxisName": "UL17_tbarW_noFullHad",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/skim4l_v5/ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_skim4l_v5/merged/merged.root"
+    ],
+    "nEvents": 528,
+    "nGenEvents": 8433998,
+    "nSumOfWeights": 274168353.7703998,
+    "isData": false,
+    "path": "/skim4l_v5/ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_skim4l_v5/merged/",
+    "nSumOfLheWeights": [
+        281802102.87813,
+        287439982.889363,
+        294106687.98413,
+        266516692.7073,
+        274166667.0580001,
+        281694326.09749997,
+        252222020.96596998,
+        261141193.7424238,
+        269147531.714795
+    ]
+}
