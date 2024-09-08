@@ -313,7 +313,7 @@ def create_mc_sample_dict_single_run(year,yld_individual=False):
     all_years = ["UL16APV","UL16","UL17","UL18","2022","2022EE"]
     r2_years = ["UL16APV","UL16","UL17","UL18"]
     #r3_years = ["2022","2022EE","2023","2023BPix"] TODO: USE this when we switch to 2023 MC Samples
-    r3_years = ["2022","2022EE"]
+    r3_years = ["2022","2022EE", "2023","2023BPix"]
     y22_years = ["2022","2022EE"]
     y23_years = ["2023","2023BPix"]
     if year == "run2":
