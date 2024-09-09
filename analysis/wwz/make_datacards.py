@@ -81,7 +81,7 @@ RATE_PARAM_LINES = [
 ########### Writing the datacard ###########
 
 # Make the datacard for a given channel
-def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,extra_lines=None,out_dir="."):
+def make_ch_card(ch,proc_order,year_name,ch_ylds,ch_kappas=None,ch_gmn=None,extra_lines=None,out_dir="."):
 
     # Building blocks we'll need to build the card formatting
     bin_str = f"bin_{ch}"
@@ -92,7 +92,7 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,extra_lines=No
     left_width = max(syst_width+len("shape")+1,left_width)
 
     # The output name, location
-    outf_card_name = f"wwz4l_card_{ch}.txt"
+    outf_card_name = f"wwz4l_card_{ch}_{year_name}.txt"
     print(f"Generating text file: {out_dir}/{outf_card_name}")
     outf_card_name = os.path.join(out_dir,outf_card_name)
 
@@ -569,6 +569,7 @@ def main():
         make_ch_card(
             ch,
             sg.PROC_LST,
+            run,
             rate_for_dc_ch,
             kappa_for_dc_ch,
             gmn_for_dc_ch,
