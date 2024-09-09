@@ -16,35 +16,52 @@ SMALL = 0.000001
 # Global variables
 PRECISION = 6   # Decimal point precision in the text datacard output
 
+# What each recognized year grouping consists of
+ALL_YEARS_LST = ["UL16","UL16APV","UL17","UL18", "2022","2022EE", "2023","2023BPix"]
+
 # Systs that are not correlated across years
-SYSTS_SPECIAL_RUN2 = {
-    "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-    "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-}
-SYSTS_SPECIAL_RUN3 = {
-    "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
-    "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+
+SYSTS_SPECIAL = {
+
+    "run2" : {
+        "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    },
+
+    "y22" : {
+        "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+        "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+    },
+
+    "y23" : {
+        "btagSFbc_uncorrelated_2023"       : {"yr_rel":"2023", "yr_notrel": ["2023BPix"]},
+        "btagSFbc_uncorrelated_2023BPix"   : {"yr_rel":"2023BPix", "yr_notrel": ["2023"]},
+    },
+
+    "all" : {
+        "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16","UL17","UL18","2022","2022EE","2023","2023BPix"]},
+        "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16","UL17","UL18","2022","2022EE","2023","2023BPix"]},
+        "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV","UL17","UL18","2022","2022EE","2023","2023BPix"]},
+        "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV","UL17","UL18","2022","2022EE","2023","2023BPix"]},
+        "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV","UL16","UL18","2022","2022EE","2023","2023BPix"]},
+        "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV","UL16","UL18","2022","2022EE","2023","2023BPix"]},
+        "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV","UL16","UL17","2022","2022EE","2023","2023BPix"]},
+        "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV","UL16","UL17","2022","2022EE","2023","2023BPix"]},
+
+        "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["UL16APV","UL16","UL17","UL18","2022EE","2023","2023BPix"]},
+        "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["UL16APV","UL16","UL17","UL18","2022","2023","2023BPix"]},
+        "btagSFbc_uncorrelated_2023"       : {"yr_rel":"2023", "yr_notrel": ["UL16APV","UL16","UL17","UL18","2022","2022EE","2023BPix"]},
+        "btagSFbc_uncorrelated_2023BPix"   : {"yr_rel":"2023BPix", "yr_notrel": ["UL16APV","UL16","UL17","UL18","2022","2022EE","2023"]},
+    }
+
 }
 
-SYSTS_SPECIAL_ALL = {
-    "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18", "2022", "2022EE"]},
-    "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18", "2022", "2022EE"]},
-    "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18", "2022", "2022EE"]},
-    "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18", "2022", "2022EE"]},
-    "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18", "2022", "2022EE"]},
-    "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18", "2022", "2022EE"]},
-    "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17", "2022", "2022EE"]},
-    "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17", "2022", "2022EE"]},
-
-    "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["UL16APV","UL16","UL17","UL18","2022EE"]},
-    "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["UL16APV","UL16","UL17","UL18","2022"]},
-}
 
 # Hard code the rateParam lines to put at the end of the card (for background normalization)
 RATE_PARAM_LINES = [
@@ -159,13 +176,8 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,extra_lines=No
 #   - Because of how we fill in the processor, the yields for per year systs come _only_ from that year
 #   - So this function adds the nominal yields from the other three years to the up/down variation for the relevant year
 #   - Note the in_dict is modifed in place (we do not return a copy of the dict)
-def handle_per_year_systs_for_fr(in_dict,year):
-    if year == "all":
-        systs_special=SYSTS_SPECIAL_ALL
-    if year in ["2022","2022EE","run3","y22","y23"]:
-        systs_special=SYSTS_SPECIAL_RUN3
-    if year in ["UL16","UL16APV","UL17","UL18","run2"]:
-        systs_special=SYSTS_SPECIAL_RUN2
+def handle_per_year_systs_for_fr(in_dict,year_name):
+    systs_special = SYSTS_SPECIAL[year_name]
     for cat in in_dict["FR"].keys():
         for sys in systs_special:
             # Find up/down variation for the year relevant to that syst
@@ -256,7 +268,7 @@ def fix_updown_same(nom,up,down):
     return kappa_up, kappa_down
 
 # Get kappa dict (e.g. up/nom ratios) from the dict of all histograms
-def get_kappa_dict(in_dict_mc,in_dict_data):
+def get_kappa_dict(in_dict_mc,in_dict_data,yrs_lst):
 
     # Get the list of systematic base names (i.e. without the up and down tags)
     #     - Assumes each syst has a "systnameUp" and a "systnameDown"
@@ -275,8 +287,15 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
     for cat in in_dict_mc.keys():
         kappa_dict[cat] = {}
         for sys in get_syst_base_name_lst(list(in_dict_mc[cat].keys())):
+
+            # Skip year specific systs that are not relevant
+            # E.g. if the pkl file is all r3, but we're only making a 22 datacard, skip btagSFbc_uncorrelated_2023BPix variation
+            # Do this by checking if the syst name ends with a year, and then if that year is in our list for this card
+            if (sys.split("_")[-1] in ALL_YEARS_LST) and (sys.split("_")[-1] not in yrs_lst): continue
+
             kappa_dict[cat][sys] = {}
             for proc in in_dict_mc[cat]["nominal"]:
+
                 kappa_dict[cat][sys][proc] = {}
                 valvar_up = in_dict_mc[cat][f"{sys}Up"][proc]
                 valvar_do = in_dict_mc[cat][f"{sys}Down"][proc]
@@ -422,6 +441,14 @@ def main():
         print(f"Making dir \"{out_dir}\"")
         os.makedirs(out_dir)
 
+    # Set list of years from the run name
+    if   run == "all" : yrs_lst = ["UL16APV","UL16","UL17","UL18", "2022","2022EE","2023","2023BPix"]
+    elif run == "run2": yrs_lst = ["UL16APV","UL16","UL17","UL18"]
+    elif run == "run3": yrs_lst = ["2022","2022EE","2023","2023BPix"]
+    elif run == "y22" : yrs_lst = ["2022","2022EE"]
+    elif run == "y23" : yrs_lst = ["2023","2023BPix"]
+    else: raise Exception("Unknown year")
+
     # Get the histo
     f = pickle.load(gzip.open(in_file))
     histo = f["njets"] # Let's use njets
@@ -429,31 +456,8 @@ def main():
     # Get the dictionary defining the mc sample grouping
     sample_names_dict_data = {"FR" : sg.create_data_sample_dict(run)}
     sample_names_dict_mc   = {"FR" : sg.create_mc_sample_dict(run)}
-    if run == "all":
-        sample_names_dict_mc["UL16APV"] = sg.create_mc_sample_dict("UL16APV")
-        sample_names_dict_mc["UL16"]    = sg.create_mc_sample_dict("UL16")
-        sample_names_dict_mc["UL17"]    = sg.create_mc_sample_dict("UL17")
-        sample_names_dict_mc["UL18"]    = sg.create_mc_sample_dict("UL18")
-        sample_names_dict_mc["2022"]    = sg.create_mc_sample_dict("2022")
-        sample_names_dict_mc["2022EE"]  = sg.create_mc_sample_dict("2022EE")
-        #sample_names_dict_mc["2023"]  = sg.create_mc_sample_dict("2023")
-        #sample_names_dict_mc["2023BPix"]  = sg.create_mc_sample_dict("2023BPix")
-    if run == "run2":
-        sample_names_dict_mc["UL16APV"] = sg.create_mc_sample_dict("UL16APV")
-        sample_names_dict_mc["UL16"]    = sg.create_mc_sample_dict("UL16")
-        sample_names_dict_mc["UL17"]    = sg.create_mc_sample_dict("UL17")
-        sample_names_dict_mc["UL18"]    = sg.create_mc_sample_dict("UL18")
-    if run == "run3":
-        sample_names_dict_mc["2022"]    = sg.create_mc_sample_dict("2022")
-        sample_names_dict_mc["2022EE"]  = sg.create_mc_sample_dict("2022EE")
-        #sample_names_dict_mc["2023"]  = sg.create_mc_sample_dict("2023")
-        #sample_names_dict_mc["2023BPix"]  = sg.create_mc_sample_dict("2023BPix")
-    if run == "y22":
-        sample_names_dict_mc["2022"]    = sg.create_mc_sample_dict("2022")
-        sample_names_dict_mc["2022EE"]  = sg.create_mc_sample_dict("2022EE")
-    if run == "y23":
-        sample_names_dict_mc["2023"]  = sg.create_mc_sample_dict("2023")
-        sample_names_dict_mc["2023BPix"]  = sg.create_mc_sample_dict("2023BPix")
+    for year_indiv_name in yrs_lst:
+        sample_names_dict_mc[year_indiv_name] = sg.create_mc_sample_dict(year_indiv_name)
 
     # Get yield dictionary (nested in the order: year,cat,syst,proc)
     yld_dict_mc_allyears = {}
@@ -498,7 +502,7 @@ def main():
     # Get the syst ratios to nominal (i.e. kappas)
     kappa_dict = None
     if do_nuis:
-        kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data)
+        kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data,yrs_lst)
         kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,skip_procs=["ZZ","ttZ"])
 
     # Do the TF calculation
