@@ -34,6 +34,13 @@ SYSTS_SPECIAL = {
         "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
     },
 
+    "run3" : {
+        "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "btagSFbc_uncorrelated_2023"       : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "btagSFbc_uncorrelated_2023BPix"   : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+    },
+
     "y22" : {
         "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
         "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
