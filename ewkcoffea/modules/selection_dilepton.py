@@ -227,24 +227,24 @@ def attach_dilepton_preselection_mask(events,lep_collection):
     pt_mask = ak.fill_none(pt_mask,False) # Replace the None with False in the mask just to make it easier to think about
 
     # SFOS and OPOS masks
-    os_mask = ak.any((((lep_collection[:,0:1].pdgId)*(lep_collection[:,1:2].pdgId)) < 0),axis=1) 
-    sf_mask = ak.any((((lep_collection[:,0:1].pdgId) + (lep_collection[:,1:2].pdgId)) == 0),axis=1) 
-    of_mask = ak.any((abs(lep_collection[:,0:1].pdgId) != abs(lep_collection[:,1:2].pdgId)),axis=1) 
-    ee_mask = ak.any((abs(lep_collection[:,0:1].pdgId) == 11),axis=1) 
-    mumu_mask = ak.any((abs(lep_collection[:,0:1].pdgId) == 13),axis=1) 
+    os_mask = ak.any((((lep_collection[:,0:1].pdgId)*(lep_collection[:,1:2].pdgId)) < 0),axis=1)
+    sf_mask = ak.any((((lep_collection[:,0:1].pdgId) + (lep_collection[:,1:2].pdgId)) == 0),axis=1)
+    of_mask = ak.any((abs(lep_collection[:,0:1].pdgId) != abs(lep_collection[:,1:2].pdgId)),axis=1)
+    ee_mask = ak.any((abs(lep_collection[:,0:1].pdgId) == 11),axis=1)
+    mumu_mask = ak.any((abs(lep_collection[:,0:1].pdgId) == 13),axis=1)
 
-    os_mask = ak.fill_none(os_mask,False) 
-    sf_mask = ak.fill_none(sf_mask,False) 
-    of_mask = ak.fill_none(of_mask,False) 
-    ee_mask = ak.fill_none(ee_mask,False) 
+    os_mask = ak.fill_none(os_mask,False)
+    sf_mask = ak.fill_none(sf_mask,False)
+    of_mask = ak.fill_none(of_mask,False)
+    ee_mask = ak.fill_none(ee_mask,False)
     mumu_mask = ak.fill_none(mumu_mask,False)
 
     # mLL masks
-    z_mass_mask = ak.any((abs(((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) - get_ec_param("zmass")) < 15.0),axis=1) 
-    z_mass_mask = ak.fill_none(z_mass_mask,False) 
+    z_mass_mask = ak.any((abs(((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) - get_ec_param("zmass")) < 15.0),axis=1)
+    z_mass_mask = ak.fill_none(z_mass_mask,False)
 
-    of_mass_mask = ak.any((((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) > 20.0),axis=1) 
-    of_mass_mask = ak.fill_none(of_mass_mask,False) 
+    of_mass_mask = ak.any((((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) > 20.0),axis=1)
+    of_mass_mask = ak.fill_none(of_mass_mask,False)
 
     # The final preselection mask
     dil_presel_mask = (os_mask & pt_mask)
