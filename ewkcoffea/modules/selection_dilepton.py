@@ -70,11 +70,6 @@ dataset_dict = {
             "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
             "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8",
         ],
-        "SingleMuon" : [
-            "IsoMu24",
-            "IsoMu27",
-            "Mu50",
-        ],
         "DoubleMuon" : [
             "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8",
             "Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8",
@@ -139,10 +134,9 @@ exclude_dict = {
     },
     "C": {
         "Muon"           : [],
-        "SingleMuon"     : [],
-        "DoubleMuon"     : dataset_dict["2022"]["SingleMuon"],
-        "EGamma"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["SingleMuon"],
-        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["SingleMuon"] + dataset_dict["2022"]["EGamma"],
+        "DoubleMuon"     : [],
+        "EGamma"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"],
+        "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["DoubleMuon"] + dataset_dict["2022"]["EGamma"],
     },
     "D": {
         "Muon"           : [],
@@ -164,7 +158,32 @@ exclude_dict = {
         "EGamma"         : dataset_dict["2022"]["Muon"],
         "MuonEG"         : dataset_dict["2022"]["Muon"] + dataset_dict["2022"]["EGamma"],
     },
-    "2023": {
+    "C1": {
+        "Muon"           : [],
+        "EGamma"         : dataset_dict["2023"]["Muon"],
+        "MuonEG"         : dataset_dict["2023"]["Muon"] + dataset_dict["2023"]["EGamma"],
+    },
+    "C2": {
+        "Muon"           : [],
+        "EGamma"         : dataset_dict["2023"]["Muon"],
+        "MuonEG"         : dataset_dict["2023"]["Muon"] + dataset_dict["2023"]["EGamma"],
+    },
+    "C3": {
+        "Muon"           : [],
+        "EGamma"         : dataset_dict["2023"]["Muon"],
+        "MuonEG"         : dataset_dict["2023"]["Muon"] + dataset_dict["2023"]["EGamma"],
+    },
+    "C4": {
+        "Muon"           : [],
+        "EGamma"         : dataset_dict["2023"]["Muon"],
+        "MuonEG"         : dataset_dict["2023"]["Muon"] + dataset_dict["2023"]["EGamma"],
+    },
+    "D1": {
+        "Muon"           : [],
+        "EGamma"         : dataset_dict["2023"]["Muon"],
+        "MuonEG"         : dataset_dict["2023"]["Muon"] + dataset_dict["2023"]["EGamma"],
+    },
+    "D2": {
         "Muon"           : [],
         "EGamma"         : dataset_dict["2023"]["Muon"],
         "MuonEG"         : dataset_dict["2023"]["Muon"] + dataset_dict["2023"]["EGamma"],
@@ -191,12 +210,12 @@ def add2lmask_dilepton(events,year,isData,sample_name,is2022,is2023):
     mask = filters & nlep_2
 
     # SFs:
-    events['sf_4l_muon'] = leps_padded[:,0].sf_nom_muon*leps_padded[:,1].sf_nom_muon
-    events['sf_4l_elec'] = leps_padded[:,0].sf_nom_elec*leps_padded[:,1].sf_nom_elec
-    events['sf_4l_hi_muon'] = leps_padded[:,0].sf_hi_muon*leps_padded[:,1].sf_hi_muon
-    events['sf_4l_hi_elec'] = leps_padded[:,0].sf_hi_elec*leps_padded[:,1].sf_hi_elec
-    events['sf_4l_lo_muon'] = leps_padded[:,0].sf_lo_muon*leps_padded[:,1].sf_lo_muon
-    events['sf_4l_lo_elec'] = leps_padded[:,0].sf_lo_elec*leps_padded[:,1].sf_lo_elec
+    events['sf_2l_muon'] = leps_padded[:,0].sf_nom_muon*leps_padded[:,1].sf_nom_muon
+    events['sf_2l_elec'] = leps_padded[:,0].sf_nom_elec*leps_padded[:,1].sf_nom_elec
+    events['sf_2l_hi_muon'] = leps_padded[:,0].sf_hi_muon*leps_padded[:,1].sf_hi_muon
+    events['sf_2l_hi_elec'] = leps_padded[:,0].sf_hi_elec*leps_padded[:,1].sf_hi_elec
+    events['sf_2l_lo_muon'] = leps_padded[:,0].sf_lo_muon*leps_padded[:,1].sf_lo_muon
+    events['sf_2l_lo_elec'] = leps_padded[:,0].sf_lo_elec*leps_padded[:,1].sf_lo_elec
 
     events['is2l_dil'] = ak.fill_none(mask,False)
 
@@ -208,24 +227,24 @@ def attach_dilepton_preselection_mask(events,lep_collection):
     pt_mask = ak.fill_none(pt_mask,False) # Replace the None with False in the mask just to make it easier to think about
 
     # SFOS and OPOS masks
-    os_mask = ak.any((((lep_collection[:,0:1].pdgId)*(lep_collection[:,1:2].pdgId)) < 0),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
-    sf_mask = ak.any((((lep_collection[:,0:1].pdgId) + (lep_collection[:,1:2].pdgId)) == 0),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
-    of_mask = ak.any((abs(lep_collection[:,0:1].pdgId) != abs(lep_collection[:,1:2].pdgId)),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
-    ee_mask = ak.any((abs(lep_collection[:,0:1].pdgId) == 11),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
-    mumu_mask = ak.any((abs(lep_collection[:,0:1].pdgId) == 13),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
+    os_mask = ak.any((((lep_collection[:,0:1].pdgId)*(lep_collection[:,1:2].pdgId)) < 0),axis=1) 
+    sf_mask = ak.any((((lep_collection[:,0:1].pdgId) + (lep_collection[:,1:2].pdgId)) == 0),axis=1) 
+    of_mask = ak.any((abs(lep_collection[:,0:1].pdgId) != abs(lep_collection[:,1:2].pdgId)),axis=1) 
+    ee_mask = ak.any((abs(lep_collection[:,0:1].pdgId) == 11),axis=1) 
+    mumu_mask = ak.any((abs(lep_collection[:,0:1].pdgId) == 13),axis=1) 
 
-    os_mask = ak.fill_none(os_mask,False) # Replace the None with False in the mask just to make it easier to think about
-    sf_mask = ak.fill_none(sf_mask,False) # Replace the None with False in the mask just to make it easier to think about
-    of_mask = ak.fill_none(of_mask,False) # Replace the None with False in the mask just to make it easier to think about
-    ee_mask = ak.fill_none(ee_mask,False) # Replace the None with False in the mask just to make it easier to think about
-    mumu_mask = ak.fill_none(mumu_mask,False) # Replace the None with False in the mask just to make it easier to think about
+    os_mask = ak.fill_none(os_mask,False) 
+    sf_mask = ak.fill_none(sf_mask,False) 
+    of_mask = ak.fill_none(of_mask,False) 
+    ee_mask = ak.fill_none(ee_mask,False) 
+    mumu_mask = ak.fill_none(mumu_mask,False)
 
     # mLL masks
-    z_mass_mask = ak.any((abs(((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) - get_ec_param("zmass")) < 10.0),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
-    z_mass_mask = ak.fill_none(z_mass_mask,False) # Replace the None with False in the mask just to make it easier to think about
+    z_mass_mask = ak.any((abs(((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) - get_ec_param("zmass")) < 15.0),axis=1) 
+    z_mass_mask = ak.fill_none(z_mass_mask,False) 
 
-    of_mass_mask = ak.any((((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) > 20.0),axis=1) # Use ak.any() here so that instead of e.g [[None],None,...] we have [False,None,...]
-    of_mass_mask = ak.fill_none(of_mass_mask,False) # Replace the None with False in the mask just to make it easier to think about
+    of_mass_mask = ak.any((((lep_collection[:,0:1] + lep_collection[:,1:2]).mass) > 20.0),axis=1) 
+    of_mass_mask = ak.fill_none(of_mass_mask,False) 
 
     # The final preselection mask
     dil_presel_mask = (os_mask & pt_mask)
