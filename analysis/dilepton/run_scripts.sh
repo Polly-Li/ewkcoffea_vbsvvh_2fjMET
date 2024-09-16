@@ -2,7 +2,7 @@
 #time python run_dilepton.py ../../input_samples/cfgs/dilepton_skims/run3_dilepton.cfg -o dilepton_run3 -x futures -n 200
 
 # Run 2
-time python run_dilepton.py ../../input_samples/cfgs/dilepton_skims/run2_dilepton.cfg -o dilepton_run2 -x futures -n 200
+#time python run_dilepton.py ../../input_samples/cfgs/dilepton_skims/run2_dilepton.cfg -o dilepton_run2 -x futures -n 200
 
 # 2016APV
 #time python run_dilepton.py ../../input_samples/cfgs/dilepton_skims/dilepton_2016APV.cfg -o dilepton_16APV -x futures -n 200
@@ -32,4 +32,4 @@ time python run_dilepton.py ../../input_samples/cfgs/dilepton_skims/run2_dilepto
 #time python run_dilepton.py ../../input_samples/cfgs/dilepton_skims/y22_dilepton.cfg -o dilepton_y22 -x futures -n 200
 
 # 2023 & 2023BPix (y23)
-#time python run_dilepton.py ../../input_samples/cfgs/dilepton_skims/y23_dilepton.cfg -o dilepton_y23 -x futures -n 200
+time python run_dilepton.py ../../input_samples/cfgs/dilepton_skims/y23_dilepton.cfg -o dilepton_y23 -x futures -n 200
