@@ -279,6 +279,11 @@ class AnalysisProcessor(processor.ProcessorABC):
         mu   = events.Muon
         tau  = events.Tau
         jets = events.Jet
+        if (is2022 or is2023):
+            rho = events.Rho.fixedGridRhoFastjetAll
+        else:
+            rho = events.fixedGridRhoFastjetAll
+
 
         # An array of lenght events that is just 1 for each event
         # Probably there's a better way to do this, but we use this method elsewhere so I guess why not..
@@ -420,26 +425,27 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
+        do_full_list = True
 
-        obj_correction_systs = [
-            "AbsoluteMPFBias_correlatedDown","AbsoluteScale_correlatedDown","FlavorQCD_correlatedDown","Fragmentation_correlatedDown","PileUpDataMC_correlatedDown",
-            "PileUpPtBB_correlatedDown","PileUpPtEC1_correlatedDown","PileUpPtEC2_correlatedDown","PileUpPtHF_correlatedDown","PileUpPtRef_correlatedDown",
-            "RelativeFSR_correlatedDown","RelativeJERHF_correlatedDown","RelativePtBB_correlatedDown","RelativePtHF_correlatedDown","RelativeBal_correlatedDown",
-            "SinglePionECAL_correlatedDown","SinglePionHCAL_correlatedDown",
+        if do_full_list:
+            obj_correction_systs = [
+                "AbsoluteMPFBias_correlated","AbsoluteScale_correlated","FlavorQCD_correlated","Fragmentation_correlated","PileUpDataMC_correlated",
+                "PileUpPtBB_correlated","PileUpPtEC1_correlated","PileUpPtEC2_correlated","PileUpPtHF_correlated","PileUpPtRef_correlated",
+                "RelativeFSR_correlated","RelativeJERHF_correlated","RelativePtBB_correlated","RelativePtHF_correlated","RelativeBal_correlated",
+                "SinglePionECAL_correlated","SinglePionHCAL_correlated",
 
-            "AbsoluteMPFBias_correlatedUp","AbsoluteScale_correlatedUp","FlavorQCD_correlatedUp","Fragmentation_correlatedUp","PileUpDataMC_correlatedUp",
-            "PileUpPtBB_correlatedUp","PileUpPtEC1_correlatedUp","PileUpPtEC2_correlatedUp","PileUpPtHF_correlatedUp","PileUpPtRef_correlatedUp",
-            "RelativeFSR_correlatedUp","RelativeJERHF_correlatedUp","RelativePtBB_correlatedUp","RelativePtHF_correlatedUp","RelativeBal_correlatedUp",
-            "SinglePionECAL_correlatedUp","SinglePionHCAL_correlatedUp",
+                f"AbsoluteStat_uncorrelated_{year}",f"RelativeJEREC1_uncorrelated_{year}",f"RelativeJEREC2_uncorrelated_{year}",f"RelativePtEC1_uncorrelated_{year}",f"RelativePtEC2_uncorrelated_{year}",
+                f"TimePtEta_uncorrelated_{year}",f"RelativeSample_uncorrelated_{year}",f"RelativeStatEC_uncorrelated_{year}",f"RelativeStatFSR_uncorrelated_{year}",f"RelativeStatHF_uncorrelated_{year}",
 
-            f"AbsoluteStat_uncorrelated_{year}Down",f"RelativeJEREC1_uncorrelated_{year}Down",f"RelativeJEREC2_uncorrelated_{year}Down",f"RelativePtEC1_uncorrelated_{year}Down",f"RelativePtEC2_uncorrelated_{year}Down",
-            f"TimePtEta_uncorrelated_{year}Down",f"RelativeSample_uncorrelated_{year}Down",f"RelativeStatEC_uncorrelated_{year}Down",f"RelativeStatFSR_uncorrelated_{year}Down",f"RelativeStatHF_uncorrelated_{year}Down",
+                f"JER_{year}",
+            ]
+        else:
+            obj_correction_systs = [
+                f"JEC_{year}",
 
-            f"AbsoluteStat_uncorrelated_{year}Up",f"RelativeJEREC1_uncorrelated_{year}Up",f"RelativeJEREC2_uncorrelated_{year}Up",f"RelativePtEC1_uncorrelated_{year}Up",f"RelativePtEC2_uncorrelated_{year}Up",
-            f"TimePtEta_uncorrelated_{year}Up",f"RelativeSample_uncorrelated_{year}Up",f"RelativeStatEC_uncorrelated_{year}Up",f"RelativeStatFSR_uncorrelated_{year}Up",f"RelativeStatHF_uncorrelated_{year}Up",
-
-            f"JER_{year}Up",f"JER_{year}Down",
-        ]
+                f"JER_{year}",
+            ]
+        obj_correction_systs = append_up_down_to_sys_base(obj_correction_systs)
 
         # If we're doing systematics and this isn't data, we will loop over the obj correction syst lst list
         if self._do_systematics and not isData: obj_corr_syst_var_list = ["nominal"] + obj_correction_systs
@@ -462,10 +468,10 @@ class AnalysisProcessor(processor.ProcessorABC):
             if not isData:
                 cleanedJets["pt_gen"] = ak.fill_none(cleanedJets.matched_gen.pt, -1)
             else:
-                cleanedJets["pt_gen"] = ak.ones_like(cleanedJets.pt)
+                cleanedJets["pt_gen"] = ak.ones_like(cleanedJets.pt) #Assign data a fake value
 
-            #Attach the JEC/JER corrected PT to cleanedJets
-            cor_ec.jerc_corrections(year,era,isData,obj_corr_syst_var,cleanedJets,events)
+            #Attach the JEC/JER corrected pT to cleanedJets
+            cor_ec.jerc_corrections(year,era,isData,obj_corr_syst_var,cleanedJets,rho,events.event)
 
             # Selecting jets and cleaning them
             jetptname = "pt"
@@ -598,7 +604,10 @@ class AnalysisProcessor(processor.ProcessorABC):
             ######### Masks we need for the selection ##########
 
             # Pass trigger mask
-            pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=era)
+            if is2022 or is2023:
+                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=era)
+            else:
+                pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=None)
             pass_trg = (pass_trg & es_ec.trg_matching(events,year))
 
             # b jet masks

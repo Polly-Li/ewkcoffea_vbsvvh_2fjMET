@@ -423,7 +423,7 @@ def get_jec_keys(year,isdata,era):
     return jet_type,key
 
 
-def jerc_corrections(year,era,isdata,correction,jet_collection,events):
+def jerc_corrections(year,era,isdata,correction,jet_collection,rho,event):
 
     #Get the correct files
     smear_fname = ewkcoffea_path("data/wwz_jerc/jer_smear.json")
@@ -470,14 +470,9 @@ def jerc_corrections(year,era,isdata,correction,jet_collection,events):
     jet_raw_pt = (1 - jet_collection.rawFactor)*jet_collection.pt
     jet_eta = jet_collection.eta
     jet_area = jet_collection.area
-    if year in ["2022","2022EE","2023","2023BPix"]:
-        rho = events.Rho.fixedGridRhoFastjetAll
-    elif year in ["2016APV","2016","2017","2018"]:
-        rho = events.fixedGridRhoFastjetAll
-    event = events.event
     jet_genpt = jet_collection.pt_gen
 
-    #We need to broadcast Rho  and Event Number to have the same shape as jet pt
+    #We need to broadcast Rho and Event Number to have the same shape as jet pt
     fixed_rho, _ = ak.broadcast_arrays(rho, jet_raw_pt)
     fixed_event, _ = ak.broadcast_arrays(event, jet_raw_pt)
 
