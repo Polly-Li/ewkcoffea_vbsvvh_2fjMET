@@ -521,7 +521,10 @@ def jerc_corrections(year,era,isdata,correction,jet_collection,rho,event):
                 raise Exception("JEC uncertainty should be up or down!")
 
             #Get the factor for the up/down variation for JEC systematics
-            factor = jec_pt_final * jerc_ceval[f"{key}_{syst}_{jet_type}"].evaluate(jet_eta_flat,jec_pt_final)
+            if syst.startswith("JEC"):
+                factor = jec_pt_final * jerc_ceval[f"{key}_Total_{jet_type}"].evaluate(jet_eta_flat,jec_pt_final)
+            else:
+                factor = jec_pt_final * jerc_ceval[f"{key}_{syst}_{jet_type}"].evaluate(jet_eta_flat,jec_pt_final)
 
             if updown == "Up":
                 jec_pt_final = jec_pt_final + factor

@@ -425,7 +425,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
-        do_full_list = True
+        do_full_list = False
 
         if do_full_list:
             obj_correction_systs = [

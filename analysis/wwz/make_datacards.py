@@ -24,6 +24,25 @@ jerc_list = [
 "SinglePionECAL_correlated","SinglePionHCAL_correlated"
 ]
 
+SYSTS_SPECIAL_RUN2_JEC_Total = {
+    "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+
+    "JER_2016APV"                      : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "JER_2016"                         : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "JER_2017"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "JER_2018"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    "JEC_2016APV"                      : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "JEC_2016"                         : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    "JEC_2017"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "JEC_2018"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+}
 
 # Systs that are not correlated across years
 SYSTS_SPECIAL_RUN2 = {
@@ -241,13 +260,19 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,extra_lines=No
 #   - Because of how we fill in the processor, the yields for per year systs come _only_ from that year
 #   - So this function adds the nominal yields from the other three years to the up/down variation for the relevant year
 #   - Note the in_dict is modifed in place (we do not return a copy of the dict)
-def handle_per_year_systs_for_fr(in_dict,year):
+def handle_per_year_systs_for_fr(in_dict,year,jec_tot):
     if year == "all":
         systs_special=SYSTS_SPECIAL_ALL
+
     if year in ["2022","2022EE","run3","y22","y23"]:
         systs_special=SYSTS_SPECIAL_RUN3
+
     if year in ["UL16","UL16APV","UL17","UL18","run2"]:
-        systs_special=SYSTS_SPECIAL_RUN2
+        if jec_tot:
+            systs_special = SYSTS_SPECIAL_RUN2_JEC_Total
+        else:
+            systs_special=SYSTS_SPECIAL_RUN2
+
     for cat in in_dict["FR"].keys():
         for sys in systs_special:
             # Find up/down variation for the year relevant to that syst
@@ -281,9 +306,6 @@ def handle_negatives(in_dict):
                 out_dict[cat]["nominal"][proc][1] = (abs(val) + np.sqrt(var))**2
                 for syst in out_dict[cat]:
                     if syst == "nominal": continue # Already handled this one
-                    if (proc == "other" and cat == "sr_4l_of_2") and (syst == "AbsoluteMPFBias_correlatedUp" or syst == "AbsoluteMPFBias_correlatedDown"):
-                        print (syst)
-                        print(out_dict[cat][syst][proc][0])
                     syst_var_orig = out_dict[cat][syst][proc][0] # Dont bother messsing with mc stat error on the syst variation
                     out_dict[cat][syst][proc][0] = (syst_var_orig - val) + SMALL # Center around SMALL
 
@@ -340,23 +362,6 @@ def fix_updown_same(nom,up,down):
     kappa_down = (nom - diff)/nom
     return kappa_up, kappa_down
 
-def determine_updo_same(nom,up,down):
-    if nom < 0:
-        raise Exception("Negative values should have been fixed by this point!")
-    elif ((up > nom) and (down > nom)):
-        return True
-    elif ((up < nom) and (down < nom)):
-        return True
-    else: return False
-
-def fix_updown_same(nom,up,down):
-    diff_1 = abs(nom - up)
-    diff_2 = abs(nom - down)
-    diff = max(diff_1,diff_2)
-    kappa_up = (nom + diff)/nom
-    kappa_down = (nom - diff)/nom
-    return kappa_up, kappa_down
-
 # Get kappa dict (e.g. up/nom ratios) from the dict of all histograms
 def get_kappa_dict(in_dict_mc,in_dict_data):
 
@@ -388,7 +393,8 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
 
                 # Handle negative cases
                 if (valvar_kappa_up[0]<=0) and (valvar_kappa_do[0]<=0):
-                    raise Exception(f"Both Kappas Neagtive for process: {proc}, category: {cat}, systematic: {sys}")
+                    #raise Exception(f"Both Kappas Neagtive for process: {proc}, category: {cat}, systematic: {sys}")
+                    valvar_kappa_up[0], valvar_kappa_do[0] = fix_updown_same(valvar_nom[0],valvar_up[0],valvar_do[0])
                 if valvar_kappa_up[0] <= 0:
                     print(f"WARNING: Up var for {sys} for {proc} for {cat} is negative, setting to {SMALL}.")
                     valvar_kappa_up[0] = SMALL
@@ -507,6 +513,7 @@ def main():
     parser.add_argument("-s","--do-nuisance",action="store_true",help="Include nuisance parameters")
     parser.add_argument("--do-tf",action="store_true",help="Do the TF data-driven background estimation")
     parser.add_argument("--bdt",action="store_true",help="Use BDT SR bins")
+    parser.add_argument("--jec-tot",action="store_true",help="Use Total JEC Uncertainty")
     parser.add_argument("--unblind",action="store_true",help="If set, use real data, otherwise use asimov data")
     parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["all","run2","run3","y22","y23"])
 
@@ -515,6 +522,7 @@ def main():
     out_dir = args.out_dir
     do_nuis = args.do_nuisance
     do_tf   = args.do_tf
+    jec_tot = args.jec_tot
     use_bdt_sr = args.bdt
     unblind = args.unblind
     run = args.run
@@ -562,7 +570,7 @@ def main():
     for year in sample_names_dict_mc:
         yld_dict_mc_allyears[year] = yt.get_yields(histo,sample_names_dict_mc[year])
     if do_nuis:
-        handle_per_year_systs_for_fr(yld_dict_mc_allyears,run)
+        handle_per_year_systs_for_fr(yld_dict_mc_allyears,run,jec_tot)
 
     yld_dict_mc = yld_dict_mc_allyears["FR"]
     yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR"])
