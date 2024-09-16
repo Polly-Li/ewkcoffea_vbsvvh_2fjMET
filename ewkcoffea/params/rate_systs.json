@@ -1,9 +1,14 @@
 {
     "rate_uncertainties_all_proc" : {
-        "lumi": 1.016
+        "lumi": {
+            "run2" : 1.016,
+            "run3" : 1.014,
+            "y22"  : 1.014,
+            "y23"  : 1.014
+        }
     },
     "rate_uncertainties_some_proc" : {
-        "fake_fake": {
+        "fake": {
             "procs": ["WZ"],
             "val": "1.3"
         }

@@ -229,18 +229,22 @@ def handle_negatives(in_dict):
 
 # Get the rate systs from the intput json, dump into dict (with nested keys: syst, proc)
 # Outputs strings, ready to be dumped into datacard
-def get_rate_systs(proc_lst):
+def get_rate_systs(proc_lst,year_tag):
     syst_json = ewkcoffea_path("params/rate_systs.json")
     with open(syst_json) as f_systs: rate_systs_dict = json.load(f_systs)
 
     # Build up the dictionary
     out_dict = {}
 
-    # Make row for rate uncertainties that impact all processes (for now just lumi)
+    # Make row for rate uncertainties that impact all processes
     for uncty_name in rate_systs_dict["rate_uncertainties_all_proc"]:
         out_dict[uncty_name] = {}
         for proc in proc_lst:
-            out_dict[uncty_name][proc] = str(rate_systs_dict["rate_uncertainties_all_proc"][uncty_name])
+            if uncty_name == "lumi":
+                # The lumi uncty is different depending on year
+                out_dict[uncty_name][proc] = str(rate_systs_dict["rate_uncertainties_all_proc"][uncty_name][year_tag])
+            else:
+                out_dict[uncty_name][proc] = str(rate_systs_dict["rate_uncertainties_all_proc"][uncty_name])
 
     # Make rows for rate uncertainties that impact a subset of the processes
     for uncty_name in rate_systs_dict["rate_uncertainties_some_proc"]:
@@ -439,7 +443,7 @@ def main():
     parser.add_argument("--do-tf",action="store_true",help="Do the TF data-driven background estimation")
     parser.add_argument("--bdt",action="store_true",help="Use BDT SR bins")
     parser.add_argument("--unblind",action="store_true",help="If set, use real data, otherwise use asimov data")
-    parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["all","run2","run3","y22","y23"])
+    parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["run2","run3","y22","y23"])
 
     args = parser.parse_args()
     in_file = args.in_file_name
@@ -456,7 +460,6 @@ def main():
         os.makedirs(out_dir)
 
     # Set list of years from the run name
-    if   run == "all" : yrs_lst = ["UL16APV","UL16","UL17","UL18", "2022","2022EE","2023","2023BPix"]
     elif run == "run2": yrs_lst = ["UL16APV","UL16","UL17","UL18"]
     elif run == "run3": yrs_lst = ["2022","2022EE","2023","2023BPix"]
     elif run == "y22" : yrs_lst = ["2022","2022EE"]
@@ -559,7 +562,7 @@ def main():
         gmn_for_dc_ch   = None
         if do_nuis:
             kappa_for_dc_ch = get_kappa_for_dc(kappa_dict,ch)
-            kappa_for_dc_ch.update(get_rate_systs(sg.PROC_LST)) # Append in the ones from rate json
+            kappa_for_dc_ch.update(get_rate_systs(sg.PROC_LST,run)) # Append in the ones from rate json
         if do_nuis and do_tf and (ch not in cat_lst_cr):
             # TF calculation not meaningful for CRs
             gmn_for_dc_ch = get_gmn_for_dc(gmn_dict[ch],proc_lst=sg.PROC_LST)
