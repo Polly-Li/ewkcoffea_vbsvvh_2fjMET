@@ -86,6 +86,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             "mll_wl0_wl1" : axis.Regular(180, 0, 350, name="mll_wl0_wl1", label="mll(W lep0, W lep1)"),
             "mll_zl0_zl1" : axis.Regular(180, 0, 200, name="mll_zl0_zl1", label="mll(Z lep0, Z lep1)"),
 
+            "w_lep0_genPartFlav"  : axis.Regular(20, 0, 20, name="w_lep0_genPartFlav", label="Leading W lep genPartFlav"),
+            "w_lep1_genPartFlav"  : axis.Regular(20, 0, 20, name="w_lep1_genPartFlav", label="Subleading W lep genPartFlav"),
+            "z_lep0_genPartFlav"  : axis.Regular(20, 0, 20, name="z_lep0_genPartFlav", label="Leading Z lep genPartFlav"),
+            "z_lep1_genPartFlav"  : axis.Regular(20, 0, 20, name="z_lep1_genPartFlav", label="Subleading Z lep genPartFlav"),
+
             "pt_zl0_zl1" : axis.Regular(180, 0, 300, name="pt_zl0_zl1", label="pt(Zl0 + Zl1)"),
             "pt_wl0_wl1" : axis.Regular(180, 0, 300, name="pt_wl0_wl1", label="pt(Wl0 + Wl1)"),
             "dr_zl0_zl1" : axis.Regular(180, 0, 5, name="dr_zl0_zl1", label="dr(Zl0,Zl1)"),
@@ -747,6 +752,11 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mlb_max" : mlb_max,
 
             }
+            # Include the genPartFlav, though this is only defined for MC, so just fill with 1 if data
+            dense_variables_dict["w_lep0_genPartFlav"] = w_lep0.genPartFlav if not isData else events.nom
+            dense_variables_dict["w_lep1_genPartFlav"] = w_lep1.genPartFlav if not isData else events.nom
+            dense_variables_dict["z_lep0_genPartFlav"] = z_lep0.genPartFlav if not isData else events.nom
+            dense_variables_dict["z_lep1_genPartFlav"] = z_lep1.genPartFlav if not isData else events.nom
 
 
             ######### Evaluate the BDTs (get WWZ, ZH, and WZ scores for SF and OF) #########
@@ -1054,6 +1064,11 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mll_zl0_zl1" : ["all_events"],
 
                 "abs_pdgid_sum" : ["all_events"],
+
+                "w_lep0_genPartFlav" : ["all_events"],
+                "w_lep1_genPartFlav" : ["all_events"],
+                "z_lep0_genPartFlav" : ["all_events"],
+                "z_lep1_genPartFlav" : ["all_events"],
 
                 "pt_zl0_zl1" : ["all_events"],
                 "pt_wl0_wl1" : ["all_events"],
