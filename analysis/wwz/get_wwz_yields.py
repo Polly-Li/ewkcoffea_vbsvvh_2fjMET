@@ -30,6 +30,7 @@ import yld_dicts_for_comp as yd
 #Other = (205, 205, 205) #CDCDCD
 CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"] # If need extra color, "skyblue" is nice
 #CLR_LST = ["#F09B9B","#00D091","#CDF09B"]
+#CLR_LST = ["#A39B2F"] # Only WWZ
 
 
 BDT_INPUT_LST = [
@@ -729,7 +730,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
             # Rebin and set some x axis ranges (for the continous variables)
             # Skip this for discrete variables
             rangex = None
-            if var_name not in ["njets","nbtagsl","nleps","bdt_of_bin","bdt_sf_bin","bdt_of_bin_coarse","bdt_sf_bin_coarse","abs_pdgid_sum"]:
+            if var_name not in ["njets","nbtagsl","nleps","bdt_of_bin","bdt_sf_bin","bdt_of_bin_coarse","bdt_sf_bin_coarse","abs_pdgid_sum","w_lep0_genPartFlav","w_lep1_genPartFlav","z_lep0_genPartFlav","z_lep1_genPartFlav"]:
                 # Zoom in on mll around Z for Z CR
                 if (cat_name == "cr_4l_sf") and (var_name in ["mll_zl0_zl1","mll_wl0_wl1"]):
                     histo = rebin(histo,1)
@@ -900,9 +901,11 @@ def main():
 
         # Dump latex table for summary of CB, BDT, CRs
         hlines = [2,5] # Just summary categories
-        sr_cats_to_print = ["sr_of_all_cutbased","sr_sf_all_cutbased","sr_all_cutbased"] + ["sr_of_all_bdt","sr_sf_all_bdt","sr_all_bdt"] + ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]
         #hlines = [2,3,7,8,9,17,18,26,27,28] # All CB and BDT categories
+        #hlines = [2,3,7,8,9,13,14,18,19,20] # All CB and BDT categories for coarse binning
+        sr_cats_to_print = ["sr_of_all_cutbased","sr_sf_all_cutbased","sr_all_cutbased"] + ["sr_of_all_bdt","sr_sf_all_bdt","sr_all_bdt"] + ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]
         #sr_cats_to_print = sg.SR_SF_CB + ["sr_sf_all_cutbased"] + sg.SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"] + sg.SR_SF_BDT + ["sr_sf_all_bdt"] + sg.SR_OF_BDT + ["sr_of_all_bdt","sr_all_bdt"] + ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]
+        #sr_cats_to_print = sg.SR_SF_CB + ["sr_sf_all_cutbased"] + sg.SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"] + sg.SR_SF_BDT_COARSE + ["sr_sf_all_bdtCoarse"] + sg.SR_OF_BDT_COARSE + ["sr_of_all_bdtCoarse","sr_all_bdtCoarse"] + ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]
         procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg"]
         print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines,ref_dict=ref_ylds)
         #exit()
