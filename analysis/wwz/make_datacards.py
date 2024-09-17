@@ -235,10 +235,9 @@ def get_rate_systs(proc_lst,year_tag):
 
         # If the uncty has a decorrelation_dict defined, use that to append a tag to the name of the uncty
         # E.g., for the fake uncertianty, we append the run so that it is fake_run2 or fake_run3
+        tag = ""
         if "decorrelation_dict" in rate_systs_dict["rate_uncertainties_some_proc"][uncty_name]:
             tag = "_" + rate_systs_dict["rate_uncertainties_some_proc"][uncty_name]["decorrelation_dict"][year_tag]
-        else:
-            uncty_name_tag = ""
 
         # Loop over procs and put in the uncty or "-" if NA
         for proc_of_interest in rate_systs_dict["rate_uncertainties_some_proc"][uncty_name]["procs"]:
