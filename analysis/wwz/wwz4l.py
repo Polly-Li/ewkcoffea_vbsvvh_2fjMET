@@ -233,6 +233,13 @@ class AnalysisProcessor(processor.ProcessorABC):
         is2022 = year in ["2022","2022EE"]
         is2023 = year in ["2023","2023BPix"]
 
+        if is2022 or is2023:
+            run_tag = "run3"
+        elif year in ["2016","2016APV","2017","2018"]:
+            run_tag = "run2"
+        else:
+            raise Exception(f"ERROR: Unknown year {year}.")
+
         # If this is a 2022 sample, get the era info
         if isData and (is2022 or is2023):
             era = self._samples[json_name]["era"]
@@ -407,14 +414,14 @@ class AnalysisProcessor(processor.ProcessorABC):
                 weights_obj_base.add("PU", cor_ec.run3_pu_attach(events.Pileup,year,"nominal"), cor_ec.run3_pu_attach(events.Pileup,year,"hi"), cor_ec.run3_pu_attach(events.Pileup,year,"lo"))
 
             # Lepton SFs and systs
-            weights_obj_base.add("lepSF_muon", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
-            weights_obj_base.add("lepSF_elec", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
+            weights_obj_base.add(f"lepSF_muon_{run_tag}", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
+            weights_obj_base.add(f"lepSF_elec_{run_tag}", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
 
 
         # Set up the list of systematics that are handled via event weight variations
         wgt_correction_syst_lst_common = [
             "btagSFbc_correlated", f"btagSFbc_uncorrelated_{year}",
-            "lepSF_elec", "lepSF_muon", "PU",
+            f"lepSF_elec_{run_tag}", f"lepSF_muon_{run_tag}", "PU",
             "renorm", "fact", "ISR", "FSR",
         ]
         if not (is2022 or is2023):
