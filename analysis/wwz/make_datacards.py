@@ -51,22 +51,6 @@ SYSTS_SPECIAL = {
         "btagSFbc_uncorrelated_2023BPix"   : {"yr_rel":"2023BPix", "yr_notrel": ["2023"]},
     },
 
-    "all" : {
-        "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16","UL17","UL18","2022","2022EE","2023","2023BPix"]},
-        "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16","UL17","UL18","2022","2022EE","2023","2023BPix"]},
-        "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV","UL17","UL18","2022","2022EE","2023","2023BPix"]},
-        "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV","UL17","UL18","2022","2022EE","2023","2023BPix"]},
-        "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV","UL16","UL18","2022","2022EE","2023","2023BPix"]},
-        "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV","UL16","UL18","2022","2022EE","2023","2023BPix"]},
-        "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV","UL16","UL17","2022","2022EE","2023","2023BPix"]},
-        "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV","UL16","UL17","2022","2022EE","2023","2023BPix"]},
-
-        "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["UL16APV","UL16","UL17","UL18","2022EE","2023","2023BPix"]},
-        "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["UL16APV","UL16","UL17","UL18","2022","2023","2023BPix"]},
-        "btagSFbc_uncorrelated_2023"       : {"yr_rel":"2023", "yr_notrel": ["UL16APV","UL16","UL17","UL18","2022","2022EE","2023BPix"]},
-        "btagSFbc_uncorrelated_2023BPix"   : {"yr_rel":"2023BPix", "yr_notrel": ["UL16APV","UL16","UL17","UL18","2022","2022EE","2023"]},
-    }
-
 }
 
 
@@ -546,9 +530,7 @@ def main():
     cat_lst_cr = ["cr_4l_btag_of_1b", "cr_4l_btag_of_2b", "cr_4l_btag_of_3b", "cr_4l_btag_sf_offZ_met80_1b", "cr_4l_btag_sf_offZ_met80_2b", "cr_4l_btag_sf_offZ_met80_3b","cr_4l_sf"]
     cat_lst_sr = sg.CAT_LST_CB
     if use_bdt_sr:
-        if run == "all":
-            cat_lst_sr = sg.CAT_LST_BDT
-        elif run in ["run2"]:
+        if run in ["run2"]:
             cat_lst_sr = sg.CAT_LST_BDT
         elif run in ["run3", "y22", "y23"]:
             cat_lst_sr = sg.CAT_LST_BDT_COARSE
