@@ -526,7 +526,7 @@ def main():
     #### Make the cards for each channel ####
 
     # Get list of channels
-    cat_lst_cr = ["cr_4l_btag_of_1b", "cr_4l_btag_of_2b", "cr_4l_btag_of_3b", "cr_4l_btag_sf_offZ_met80_1b", "cr_4l_btag_sf_offZ_met80_2b", "cr_4l_btag_sf_offZ_met80_3b","cr_4l_sf"]
+    cat_lst_cr = ["cr_4l_btag_of_1b", "cr_4l_btag_of_2b", "cr_4l_btag_sf_offZ_met80_1b", "cr_4l_btag_sf_offZ_met80_2b","cr_4l_sf"]
     cat_lst_sr = sg.CAT_LST_CB
     if use_bdt_sr:
         if run in ["run2"]:

@@ -29,6 +29,7 @@ import yld_dicts_for_comp as yd
 #tWZ   = (205, 240, 155) #CDF09B
 #Other = (205, 205, 205) #CDCDCD
 CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"] # If need extra color, "skyblue" is nice
+#CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD","skyblue"] # If need extra color, "skyblue" is nice
 #CLR_LST = ["#F09B9B","#00D091","#CDF09B"]
 #CLR_LST = ["#A39B2F"] # Only WWZ
 
@@ -258,7 +259,9 @@ def print_yields(yld_dict_in,cats_to_print,procs_to_print,do_comp=True,ref_dict=
         print_end_info=True,
         print_errs=True,
         column_variable="subkeys",
+        #column_variable="keys",
         size="tiny",
+        hz_line_lst=hlines,
     )
     if not do_comp: return
 
@@ -719,6 +722,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
             # Skip some of the cats if you want to
             #if "bdt" in cat_name: continue
             #if cat_name not in ["sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn"]: continue # TMP
+            #if cat_name not in ["sr_4l_sf_incl", "sr_4l_of_incl"]: continue
             #if cat_name not in ["cr_4l_sf_higgs"]: continue
             #if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]: continue
             if cat_name not in ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "sr_4l_bdt_sf_trn", "sr_4l_bdt_of_trn"]: continue
@@ -899,6 +903,14 @@ def main():
         if args.ul_year in ["run2","UL18","UL17","UL16","UL16APV"]: ref_ylds = ref_dict=yd.EWK_REF
         if args.ul_year in ["run3","y22","y23","2022","2022EE","2023","2023BPix"]: ref_ylds = ref_dict=yd.EWK_REF_2022
 
+        # Dump latex table for cutflow
+        # Might want to swap order of rows and columns in print_yields
+        hlines = [0,1,3]
+        sr_cats_to_print = ["all_events", "4l_presel", "sr_4l_bdt_of_presel", "sr_4l_bdt_sf_presel", "sr_4l_bdt_of_trn", "sr_4l_bdt_sf_trn"]
+        procs_to_print = ["WWZ","ZH","ZZ","ttZ","tWZ","WZ","other"]
+        print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines,ref_dict=None,do_comp=False)
+        #exit()
+
         # Dump latex table for summary of CB, BDT, CRs
         hlines = [2,5] # Just summary categories
         #hlines = [2,3,7,8,9,17,18,26,27,28] # All CB and BDT categories
@@ -908,7 +920,7 @@ def main():
         #sr_cats_to_print = sg.SR_SF_CB + ["sr_sf_all_cutbased"] + sg.SR_OF_CB + ["sr_of_all_cutbased","sr_all_cutbased"] + sg.SR_SF_BDT_COARSE + ["sr_sf_all_bdtCoarse"] + sg.SR_OF_BDT_COARSE + ["sr_of_all_bdtCoarse","sr_all_bdtCoarse"] + ["cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf"]
         procs_to_print = ["WWZ","ZH","Sig","ZZ","ttZ","tWZ","WZ","other","Bkg"]
         print_yields(yld_dict,sr_cats_to_print,procs_to_print,hlines=hlines,ref_dict=ref_ylds)
-        #exit()
+        exit()
 
         # Dump latex table for cut based
         hlines = [2,3,7,8]
