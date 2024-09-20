@@ -1,7 +1,7 @@
 # Some example commands for running at scale
 
 
-### Examples with 3l skim configs ###
+### Examples with 3l skim configs (OLD) ###
 
 # Run at scale with futures DO NOT RUN THIS ON LOGIN NODE!
 #time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/mc_sig_bkg_samples.cfg,../../input_samples/cfgs/wwz_analysis/data_samples.cfg -o wwz_histos -x futures -n 128
@@ -16,12 +16,12 @@
 ### Examples with 4l skims configs ### (ONLY WORKS AT UAF. SAMPLES HAVE NOT BEEN MOVED TO HPG!)
 
 # Run at scale with futures
-#time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_run2_v1.cfg -x futures -n 200 -s 100000000 -o wwz_histos --hist-list bdt
-#time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_run2_v1.cfg -x futures -n 200 -s 100000000 -o wwz_histos --hist-list njets njets_counts --do-systs
+#time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_run2_v1.cfg -x futures -n 200 -s 100000000 -o r2_wwz_histos_noSyst --hist-list bdt
+time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_run2_v1.cfg -x futures -n 200 -s 100000000 -o r2_wwz_histos_withSyst --hist-list njets njets_counts --do-systs
 
 # Run with the siphon turned on (might want to comment out data in the input cfg)
-#time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_run2_v1.cfg -x futures -n 200 -o wwz_histos_siphon --siphon
+#time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_run2_v1.cfg -x futures -n 200 -o r2_wwz_histos_noSyst_siphon --siphon
 
 # Run at scale with wq
-#time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_run2_v1.cfg -o wwz_histos_noSys --hist-list bdt
-time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_run2_v1.cfg -o wwz_histos_withSys --hist-list njets njets_counts --do-systs
+#time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_run2_v1.cfg -o r2_wwz_histos_noSyst --hist-list bdt
+#time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_run2_v1.cfg -o r2_wwz_histos_withSyst --hist-list njets njets_counts --do-systs
