@@ -85,11 +85,7 @@
             null
         ],
         "cr_4l_btag_of_2b_counts": [
-            141.0,
-            null
-        ],
-        "cr_4l_btag_of_3b_counts": [
-            23.0,
+            164.0,
             null
         ],
         "cr_4l_btag_sf_offZ_met80_1b_counts": [
@@ -97,11 +93,7 @@
             null
         ],
         "cr_4l_btag_sf_offZ_met80_2b_counts": [
-            57.0,
-            null
-        ],
-        "cr_4l_btag_sf_offZ_met80_3b_counts": [
-            12.0,
+            69.0,
             null
         ],
         "sr_4l_bdt_sf_1_counts": [
@@ -305,11 +297,7 @@
             null
         ],
         "cr_4l_btag_of_2b": [
-            0.16339887317148746,
-            null
-        ],
-        "cr_4l_btag_of_3b": [
-            0.036928270979461865,
+            0.2003271441509493,
             null
         ],
         "cr_4l_btag_sf_offZ_met80_1b": [
@@ -317,11 +305,7 @@
             null
         ],
         "cr_4l_btag_sf_offZ_met80_2b": [
-            0.06263347611175435,
-            null
-        ],
-        "cr_4l_btag_sf_offZ_met80_3b": [
-            0.017881120829277012,
+            0.08051459694103139,
             null
         ],
         "sr_4l_bdt_sf_1": [
