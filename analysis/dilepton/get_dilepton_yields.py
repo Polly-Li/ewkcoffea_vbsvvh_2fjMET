@@ -246,7 +246,7 @@ def main():
     parser.add_argument("pkl_file_path", help = "The path to the pkl file")
     parser.add_argument("-o", "--output-path", default="plots", help = "The path the output files should be saved to")
     parser.add_argument('-p', "--make-plots", action='store_true', help = "Make plots from the pkl file")
-    parser.add_argument('-u', "--ul-year", default='run2', help = "Which year to process", choices=["all","run2","run3","yr22","yr23","UL16APV","UL16","UL17","UL18","2022","2022EE","2023","2023BPix"])
+    parser.add_argument('-u', "--ul-year", default='run2', help = "Which year to process", choices=["all","run2","run3","y22","y23","UL16APV","UL16","UL17","UL18","2022","2022EE","2023","2023BPix"])
     args = parser.parse_args()
 
     # Get the counts from the input hiso

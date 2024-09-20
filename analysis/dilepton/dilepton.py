@@ -94,7 +94,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         is2023 = year in ["2023","2023BPix"]
 
         # If this is a 2022 sample, get the era info
-        if isData and is2022:
+        if isData and (is2022 or is2023):
             era = self._samples[json_name]["era"]
         else:
             era = None
@@ -206,8 +206,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 weights_obj_base.add("PU", cor_ec.run3_pu_attach(events.Pileup,year,"nominal"), cor_ec.run3_pu_attach(events.Pileup,year,"hi"), cor_ec.run3_pu_attach(events.Pileup,year,"lo"))
 
             # Lepton SFs and systs
-            weights_obj_base.add("lepSF_muon", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
-            weights_obj_base.add("lepSF_elec", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
+            weights_obj_base.add("lepSF_muon", events.sf_2l_muon, copy.deepcopy(events.sf_2l_hi_muon), copy.deepcopy(events.sf_2l_lo_muon))
+            weights_obj_base.add("lepSF_elec", events.sf_2l_elec, copy.deepcopy(events.sf_2l_hi_elec), copy.deepcopy(events.sf_2l_lo_elec))
 
 
         # Set up the list of systematics that are handled via event weight variations
@@ -288,9 +288,6 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Pass trigger mask
             pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=era)
 
-
-            ######### WWZ event selection stuff #########
-
             # Get some preliminary things we'll need
             es_ec.attach_dilepton_preselection_mask(events,l_dil_t_padded[:,0:2])
 
@@ -324,11 +321,10 @@ class AnalysisProcessor(processor.ProcessorABC):
             # SRs
             selections.add("mumu_2l_sf" ,(pass_trg & events.is2l_dil & events.dil_presel_sf_mumu))
             selections.add("ee_2l_sf"   ,(pass_trg & events.is2l_dil & events.dil_presel_sf_ee))
-            #selections.add("emu_2l_of", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
 
             cat_dict = {
                 "lep_chan_lst" : [
-                    "mumu_2l_sf","ee_2l_sf",#"emu_2l_of",
+                    "mumu_2l_sf","ee_2l_sf",
                 ]
             }
 
@@ -339,7 +335,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
             # List the hists that are only defined for some categories
-            analysis_cats = ["mumu_2l_sf","ee_2l_sf"] #,"emu_2l_of"]
+            analysis_cats = ["mumu_2l_sf","ee_2l_sf"]
             exclude_var_dict = {}
 
             # Set up the list of weight fluctuations to loop over

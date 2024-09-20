@@ -20,7 +20,7 @@ BKG_LST = ["W","WW","TT"]
 
 # The "official" groupings
 SAMPLE_DICT_BASE = {
-    "DY" : ["DYJetsToLL_M_50_MLM","DYJetsToLL_M_10to50_MLM"],
+    "DY" : ["DYJetsToLL_M_50_MLM"],
     "W" : ["WJetsToLNu"],
     "WW" : ["WWTo2L2Nu"],
     "TT" : ["TTTo2L2Nu"],
@@ -30,7 +30,6 @@ SAMPLE_DICT_BASE = {
 # Processes indiviudally
 SAMPLE_DICT_BASE_INDIV = {
     "DYJetsToLL_M_50_MLM"      : ["DYJetsToLL_M_50_MLM"],
-    "DYJetsToLL_M_10to50_MLM"  : ["DYJetsToLL_M_10to50_MLM"],
     "WJetsToLNu"               : ["WJetsToLNu"],
     "WWTo2L2Nu"                : ["WWTo2L2Nu"],
     "TTTo2L2Nu"                : ["TTTo2L2Nu"],
@@ -43,19 +42,21 @@ def create_mc_sample_dict(year):
     out_dict = {}
     r2_years = ["UL16APV","UL16","UL17","UL18"]
     r3_years = ["2022","2022EE","2023","2023BPix"]
+    y22_years = ["2022","2022EE"]
+    y23_years = ["2023","2023BPix"]
     if year == "all":
-        raise Exception("ERROR: We are not ready to sum Run2 and Run3.")
+        raise Exception("ERROR: We are not ready to sum Run2 and Run3 for dilepton analysis.")
     elif year == "run2":
         years = r2_years
         sample_dict_base = SAMPLE_DICT_BASE
     elif year == "run3":
         years = r3_years
         sample_dict_base = SAMPLE_DICT_BASE
-    elif year == "yr23":
-        years = ["2023","2023BPix"]
+    elif year == "y23":
+        years = y23_years
         sample_dict_base = SAMPLE_DICT_BASE
-    elif year == "yr22":
-        years = ["2022","2022EE"]
+    elif year == "y22":
+        years = y22_years
         sample_dict_base = SAMPLE_DICT_BASE
     else:
         years = [year]
@@ -82,9 +83,9 @@ def create_data_sample_dict(year):
         grouping_data = {'data': ["UL16APV_data","UL16_data","UL17_data","UL18_data"]}
     elif year == "run3":
         grouping_data = {'data': ["2022_data","2022EE_data","2023_data","2023BPix_data"]}
-    elif year == "yr22":
+    elif year == "y22":
         grouping_data = {'data': ["2022_data","2022EE_data"]}
-    elif year == "yr23":
+    elif year == "y23":
         grouping_data = {'data': ["2023_data","2023BPix_data"]}
     else:
         grouping_data = {'data': [f"{year}_data"]}
