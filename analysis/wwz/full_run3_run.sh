@@ -14,7 +14,7 @@
 #################################################################################################################################
 
 #Run at scale (with futures) for JUST 2022
-#time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_2022_v1.cfg -o y22_wwz_histos_noSyst -x futures -n 200 --hist-list bdt
+time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_2022_v1.cfg -o y22_wwz_histos_JEC -x futures -n 200
 #time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_2022_v1.cfg -o y22_wwz_histos_withSyst -x futures -n 200 --do-systs --hist-list njets njets_counts
 
 # Run at scale (with futures) for JUST 2023
@@ -23,4 +23,4 @@
 
 # 2022 + 2023
 #time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_2022_v1.cfg,../../input_samples/cfgs/wwz_analysis/samples_4lskim_2023_v1.cfg -o r3_wwz_histos_noSyst -x futures -n 200 --hist-list bdt
-time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_2022_v1.cfg,../../input_samples/cfgs/wwz_analysis/samples_4lskim_2023_v1.cfg -o r3_wwz_histos_withSyst -x futures -n 200 --do-systs --hist-list njets njets_counts
+#time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_2022_v1.cfg,../../input_samples/cfgs/wwz_analysis/samples_4lskim_2023_v1.cfg -o r3_wwz_histos_withSyst -x futures -n 200 --do-systs --hist-list njets njets_counts

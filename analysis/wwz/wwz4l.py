@@ -425,7 +425,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
-        do_full_list = False
+        do_full_list = True
 
         if do_full_list:
             obj_correction_systs = [
@@ -463,18 +463,28 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Clean with dr (though another option is to use jetIdx)
             cleanedJets = os_ec.get_cleaned_collection(l_wwz_t,jets)
+            jetptname = "pt_nom" if hasattr(cleanedJets, "pt_nom") else "pt"
 
-            #Get the GenJet pt (or -1 if None)
+            ##### JERC Stuff #####
+            cleanedJets["pt_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.pt
+
+            if year in ["2022","2022EE","2023","2023BPix"]:
+                cleanedJets["rho"] = ak.broadcast_arrays(events.Rho.fixedGridRhoFastjetAll, cleanedJets.pt)[0]
+            elif year in ["2016APV","2016","2017","2018"]:
+                cleanedJets["rho"] = ak.broadcast_arrays(events.fixedGridRhoFastjetAll, cleanedJets.pt)[0]
+
+            cleanedJets["eventID"] = ak.broadcast_arrays(events.event, cleanedJets.pt)[0]
+
             if not isData:
-                cleanedJets["pt_gen"] = ak.fill_none(cleanedJets.matched_gen.pt, -1)
+                cleanedJets["pt_gen"] =ak.values_astype(ak.fill_none(cleanedJets.matched_gen.pt, -1), np.float32)
             else:
-                cleanedJets["pt_gen"] = ak.ones_like(cleanedJets.pt) #Assign data a fake value
+                cleanedJets["pt_gen"] = ak.ones_like(cleanedJets.pt)
 
-            #Attach the JEC/JER corrected pT to cleanedJets
-            cor_ec.jerc_corrections(year,era,isData,obj_corr_syst_var,cleanedJets,rho,events.event)
+            cor_ec.jerc_corrections(year,era,isData,obj_corr_syst_var,cleanedJets)
+
+            ##### End of JERC #####
 
             # Selecting jets and cleaning them
-            jetptname = "pt"
             cleanedJets["is_good"] = os_tc.is_tight_jet(getattr(cleanedJets, jetptname), cleanedJets.eta, cleanedJets.jetId, pt_cut=20., eta_cut=get_ec_param("wwz_eta_j_cut"), id_cut=get_ec_param("wwz_jet_id_cut"))
             goodJets = cleanedJets[cleanedJets.is_good]
 
