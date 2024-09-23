@@ -79,7 +79,7 @@ jerc_dict = {
         "jer": "Summer22EE_22Sep2023_JRV1"             
     },
     "2023": {
-        "jec_mc": "Summer23Prompt23",
+        "jec_mc": "Summer23Prompt23_V1_MC",
         "jec_data": {
             "C1": "Summer23Prompt23_RunCv123_V1_DATA",
             "C2": "Summer23Prompt23_RunCv123_V1_DATA",
@@ -600,6 +600,7 @@ def jerc_corrections(year,era,isdata,correction,jet_collection):
     #Inputs we will need
     jet_raw_pt = jet_collection.pt_raw
     jet_eta = jet_collection.eta
+    jet_phi = jet_collection.phi
     jet_area = jet_collection.area
     jet_rho = jet_collection.rho
     jet_event = jet_collection.eventID
@@ -609,6 +610,7 @@ def jerc_corrections(year,era,isdata,correction,jet_collection):
     jet_rho_flat = ak.flatten(jet_rho)
     jet_raw_pt_flat = ak.flatten(jet_raw_pt)
     jet_eta_flat = ak.flatten(jet_eta)
+    jet_phi_flat = ak.flatten(jet_phi)
     jet_area_flat = ak.flatten(jet_area)
     jet_event_flat = ak.flatten(jet_event)
     jet_genpt_flat = ak.flatten(jet_genpt)
@@ -626,8 +628,12 @@ def jerc_corrections(year,era,isdata,correction,jet_collection):
     l1_fj = jerc_ceval[f"{jec_key}_L1FastJet_{jet_algo}"].evaluate(jet_area_flat,jet_eta_flat,jet_raw_pt_flat,jet_rho_flat)
     pt_l1 = l1_fj * jet_raw_pt_flat
     #L2Relative
-    l2_rel = jerc_ceval[f"{jec_key}_L2Relative_{jet_algo}"].evaluate(jet_eta_flat,pt_l1)
-    pt_l2 = l2_rel * pt_l1
+    if year == "2023BPix":
+        l2_rel = jerc_ceval[f"{jec_key}_L2Relative_{jet_algo}"].evaluate(jet_eta_flat,jet_phi_flat,pt_l1)
+        pt_l2 = l2_rel * pt_l1
+    else:
+        l2_rel = jerc_ceval[f"{jec_key}_L2Relative_{jet_algo}"].evaluate(jet_eta_flat,pt_l1)
+        pt_l2 = l2_rel * pt_l1
     #L3Absolute 
     l3_abs = jerc_ceval[f"{jec_key}_L3Absolute_{jet_algo}"].evaluate(jet_eta_flat,pt_l2)
     pt_l3 = l3_abs * pt_l2
