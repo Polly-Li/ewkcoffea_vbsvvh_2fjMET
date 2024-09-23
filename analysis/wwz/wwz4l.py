@@ -86,6 +86,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             "mll_wl0_wl1" : axis.Regular(180, 0, 350, name="mll_wl0_wl1", label="mll(W lep0, W lep1)"),
             "mll_zl0_zl1" : axis.Regular(180, 0, 200, name="mll_zl0_zl1", label="mll(Z lep0, Z lep1)"),
 
+            "w_lep0_genPartFlav"  : axis.Regular(20, 0, 20, name="w_lep0_genPartFlav", label="Leading W lep genPartFlav"),
+            "w_lep1_genPartFlav"  : axis.Regular(20, 0, 20, name="w_lep1_genPartFlav", label="Subleading W lep genPartFlav"),
+            "z_lep0_genPartFlav"  : axis.Regular(20, 0, 20, name="z_lep0_genPartFlav", label="Leading Z lep genPartFlav"),
+            "z_lep1_genPartFlav"  : axis.Regular(20, 0, 20, name="z_lep1_genPartFlav", label="Subleading Z lep genPartFlav"),
+
             "pt_zl0_zl1" : axis.Regular(180, 0, 300, name="pt_zl0_zl1", label="pt(Zl0 + Zl1)"),
             "pt_wl0_wl1" : axis.Regular(180, 0, 300, name="pt_wl0_wl1", label="pt(Wl0 + Wl1)"),
             "dr_zl0_zl1" : axis.Regular(180, 0, 5, name="dr_zl0_zl1", label="dr(Zl0,Zl1)"),
@@ -122,7 +127,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
-            "nbtagsl" : axis.Regular(4, 0, 4, name="nbtagsl", label="Loose btag multiplicity"),
+            "nbtagsl" : axis.Regular(3, 0, 3, name="nbtagsl", label="Loose btag multiplicity"),
             "nbtagsm" : axis.Regular(4, 0, 4, name="nbtagsm", label="Medium btag multiplicity"),
 
             "njets_counts"   : axis.Regular(30, 0, 30, name="njets_counts",   label="Jet multiplicity counts"),
@@ -227,6 +232,13 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Set a flag for Run3 years
         is2022 = year in ["2022","2022EE"]
         is2023 = year in ["2023","2023BPix"]
+
+        if is2022 or is2023:
+            run_tag = "run3"
+        elif year in ["2016","2016APV","2017","2018"]:
+            run_tag = "run2"
+        else:
+            raise Exception(f"ERROR: Unknown year {year}.")
 
         # Era Needed for all samples
         if isData:
@@ -407,14 +419,14 @@ class AnalysisProcessor(processor.ProcessorABC):
                 weights_obj_base.add("PU", cor_ec.run3_pu_attach(events.Pileup,year,"nominal"), cor_ec.run3_pu_attach(events.Pileup,year,"hi"), cor_ec.run3_pu_attach(events.Pileup,year,"lo"))
 
             # Lepton SFs and systs
-            weights_obj_base.add("lepSF_muon", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
-            weights_obj_base.add("lepSF_elec", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
+            weights_obj_base.add(f"lepSF_muon_{run_tag}", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
+            weights_obj_base.add(f"lepSF_elec_{run_tag}", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
 
 
         # Set up the list of systematics that are handled via event weight variations
         wgt_correction_syst_lst_common = [
             "btagSFbc_correlated", f"btagSFbc_uncorrelated_{year}",
-            "lepSF_elec", "lepSF_muon", "PU",
+            f"lepSF_elec_{run_tag}", f"lepSF_muon_{run_tag}", "PU",
             "renorm", "fact", "ISR", "FSR",
         ]
         if not (is2022 or is2023):
@@ -425,7 +437,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
-        do_full_list = False
+        do_full_list = True
 
         if do_full_list:
             obj_correction_systs = [
@@ -793,6 +805,11 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mlb_max" : mlb_max,
 
             }
+            # Include the genPartFlav, though this is only defined for MC, so just fill with 1 if data
+            dense_variables_dict["w_lep0_genPartFlav"] = w_lep0.genPartFlav if not isData else events.nom
+            dense_variables_dict["w_lep1_genPartFlav"] = w_lep1.genPartFlav if not isData else events.nom
+            dense_variables_dict["z_lep0_genPartFlav"] = z_lep0.genPartFlav if not isData else events.nom
+            dense_variables_dict["z_lep1_genPartFlav"] = z_lep1.genPartFlav if not isData else events.nom
 
 
             ######### Evaluate the BDTs (get WWZ, ZH, and WZ scores for SF and OF) #########
@@ -943,11 +960,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             selections.add("cr_4l_btag_sf_offZ_met80", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0)))
 
             selections.add("cr_4l_btag_of_1b",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of & (nbtagsl==1)))
-            selections.add("cr_4l_btag_of_2b",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of & (nbtagsl==2)))
-            selections.add("cr_4l_btag_of_3b",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of & (nbtagsl>=3)))
+            selections.add("cr_4l_btag_of_2b",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of & (nbtagsl>=2)))
             selections.add("cr_4l_btag_sf_offZ_met80_1b", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0) & (nbtagsl==1)))
-            selections.add("cr_4l_btag_sf_offZ_met80_2b", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0) & (nbtagsl==2)))
-            selections.add("cr_4l_btag_sf_offZ_met80_3b", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0) & (nbtagsl>=3)))
+            selections.add("cr_4l_btag_sf_offZ_met80_2b", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0) & (nbtagsl>=2)))
 
             selections.add("cr_4l_sf", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
             # H->ZZ validation region: note, this is not enforced to be orthogonal to the SR, but it has effectively zero signal in it
@@ -1062,7 +1077,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C","sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4",
                     "all_events","4l_presel", "sr_4l_sf", "sr_4l_of", "sr_4l_sf_incl", "sr_4l_of_incl",
                     "cr_4l_btag_of", "cr_4l_btag_sf_offZ_met80", "cr_4l_sf", "cr_4l_sf_higgs",
-                    "cr_4l_btag_of_1b", "cr_4l_btag_of_2b", "cr_4l_btag_of_3b", "cr_4l_btag_sf_offZ_met80_1b", "cr_4l_btag_sf_offZ_met80_2b", "cr_4l_btag_sf_offZ_met80_3b",
+                    "cr_4l_btag_of_1b", "cr_4l_btag_of_2b", "cr_4l_btag_sf_offZ_met80_1b", "cr_4l_btag_sf_offZ_met80_2b",
                 ]
             }
 
@@ -1100,6 +1115,11 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mll_zl0_zl1" : ["all_events"],
 
                 "abs_pdgid_sum" : ["all_events"],
+
+                "w_lep0_genPartFlav" : ["all_events"],
+                "w_lep1_genPartFlav" : ["all_events"],
+                "z_lep0_genPartFlav" : ["all_events"],
+                "z_lep1_genPartFlav" : ["all_events"],
 
                 "pt_zl0_zl1" : ["all_events"],
                 "pt_wl0_wl1" : ["all_events"],

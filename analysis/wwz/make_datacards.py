@@ -24,128 +24,272 @@ jerc_list = [
 "SinglePionECAL_correlated","SinglePionHCAL_correlated"
 ]
 
-SYSTS_SPECIAL_RUN2_JEC_Total = {
-    "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-    "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#SYSTS_SPECIAL_RUN2_JEC_Total = {
+#    "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#    "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#    "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#    "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#    "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#    "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#    "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#    "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#
+#    "JER_2016APV"                      : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#    "JER_2016"                         : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#    "JER_2017"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#    "JER_2018"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#    "JEC_2016APV"                      : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#    "JEC_2016"                         : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#    "JEC_2017"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#    "JEC_2018"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#}
+#
+## Systs that are not correlated across years
+#SYSTS_SPECIAL_RUN2 = {
+#    "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#    "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#    "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#    "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#    "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#    "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#    "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#    "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#
+#
+#    "AbsoluteStat_uncorrelated_2016APV"   : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#    "RelativeJEREC1_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#    "RelativeJEREC2_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#    "RelativePtEC1_uncorrelated_2016APV"  : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#    "RelativePtEC2_uncorrelated_2016APV"  : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#    "TimePtEta_uncorrelated_2016APV"      : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#    "RelativeSample_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#    "RelativeStatEC_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#    "RelativeStatFSR_uncorrelated_2016APV": {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#    "RelativeStatHF_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#    "JER_2016APV"                         : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+#
+#    "AbsoluteStat_uncorrelated_2016"   : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#    "RelativeJEREC1_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#    "RelativeJEREC2_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#    "RelativePtEC1_uncorrelated_2016"  : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#    "RelativePtEC2_uncorrelated_2016"  : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#    "TimePtEta_uncorrelated_2016"      : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#    "RelativeSample_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#    "RelativeStatEC_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#    "RelativeStatFSR_uncorrelated_2016": {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#    "RelativeStatHF_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#    "JER_2016"                         : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+#
+#    "AbsoluteStat_uncorrelated_2017"   : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#    "RelativeJEREC1_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#    "RelativeJEREC2_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#    "RelativePtEC1_uncorrelated_2017"  : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#    "RelativePtEC2_uncorrelated_2017"  : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#    "TimePtEta_uncorrelated_2017"      : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#    "RelativeSample_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#    "RelativeStatEC_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#    "RelativeStatFSR_uncorrelated_2017": {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#    "RelativeStatHF_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#    "JER_2017"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+#
+#    "AbsoluteStat_uncorrelated_2018"   : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#    "RelativeJEREC1_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#    "RelativeJEREC2_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#    "RelativePtEC1_uncorrelated_2018"  : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#    "RelativePtEC2_uncorrelated_2018"  : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#    "TimePtEta_uncorrelated_2018"      : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#    "RelativeSample_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#    "RelativeStatEC_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#    "RelativeStatFSR_uncorrelated_2018": {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#    "RelativeStatHF_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#    "JER_2018"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+#}
+#SYSTS_SPECIAL_RUN3 = {
+#    "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+#    "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+#
+#    "AbsoluteStat_uncorrelated_2022"   : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+#    "RelativeJEREC1_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+#    "RelativeJEREC2_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+#    "RelativePtEC1_uncorrelated_2022"  : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+#    "RelativePtEC2_uncorrelated_2022"  : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+#    "TimePtEta_uncorrelated_2022"      : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+#    "RelativeSample_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+#    "RelativeStatEC_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+#    "RelativeStatFSR_uncorrelated_2022": {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+#    "RelativeStatHF_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+#    "JER_2022"                         : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+#
+#    "AbsoluteStat_uncorrelated_2022EE"   : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+#    "RelativeJEREC1_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+#    "RelativeJEREC2_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+#    "RelativePtEC1_uncorrelated_2022EE"  : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+#    "RelativePtEC2_uncorrelated_2022EE"  : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+#    "TimePtEta_uncorrelated_2022EE"      : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+#    "RelativeSample_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+#    "RelativeStatEC_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+#    "RelativeStatFSR_uncorrelated_2022EE": {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+#    "RelativeStatHF_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+#    "JER_2022EE"                         : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
 
-    "JER_2016APV"                      : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "JER_2016"                         : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "JER_2017"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "JER_2018"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-    "JEC_2016APV"                      : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "JEC_2016"                         : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "JEC_2017"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "JEC_2018"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-}
+# What each recognized year grouping consists of
+ALL_YEARS_LST = ["UL16","UL16APV","UL17","UL18", "2022","2022EE", "2023","2023BPix"]
 
 # Systs that are not correlated across years
-SYSTS_SPECIAL_RUN2 = {
-    "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-    "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
 
+SYSTS_SPECIAL = {
 
-    "AbsoluteStat_uncorrelated_2016APV"   : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "RelativeJEREC1_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "RelativeJEREC2_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "RelativePtEC1_uncorrelated_2016APV"  : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "RelativePtEC2_uncorrelated_2016APV"  : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "TimePtEta_uncorrelated_2016APV"      : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "RelativeSample_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "RelativeStatEC_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "RelativeStatFSR_uncorrelated_2016APV": {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "RelativeStatHF_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-    "JER_2016APV"                         : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+    "run2" : {
+        "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "AbsoluteStat_uncorrelated_2016APV"   : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "RelativeJEREC1_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "RelativeJEREC2_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "RelativePtEC1_uncorrelated_2016APV"  : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "RelativePtEC2_uncorrelated_2016APV"  : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "TimePtEta_uncorrelated_2016APV"      : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "RelativeSample_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "RelativeStatEC_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "RelativeStatFSR_uncorrelated_2016APV": {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "RelativeStatHF_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "JER_2016APV"                         : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "AbsoluteStat_uncorrelated_2016"   : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "RelativeJEREC1_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "RelativeJEREC2_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "RelativePtEC1_uncorrelated_2016"  : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "RelativePtEC2_uncorrelated_2016"  : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "TimePtEta_uncorrelated_2016"      : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "RelativeSample_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "RelativeStatEC_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "RelativeStatFSR_uncorrelated_2016": {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "RelativeStatHF_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "JER_2016"                         : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "AbsoluteStat_uncorrelated_2017"   : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "RelativeJEREC1_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "RelativeJEREC2_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "RelativePtEC1_uncorrelated_2017"  : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "RelativePtEC2_uncorrelated_2017"  : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "TimePtEta_uncorrelated_2017"      : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "RelativeSample_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "RelativeStatEC_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "RelativeStatFSR_uncorrelated_2017": {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "RelativeStatHF_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "JER_2017"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "AbsoluteStat_uncorrelated_2018"   : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "RelativeJEREC1_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "RelativeJEREC2_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "RelativePtEC1_uncorrelated_2018"  : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "RelativePtEC2_uncorrelated_2018"  : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "TimePtEta_uncorrelated_2018"      : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "RelativeSample_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "RelativeStatEC_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "RelativeStatFSR_uncorrelated_2018": {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "RelativeStatHF_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "JER_2018"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    },
+    "total_run2" : {
+        "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "JER_2016APV"                      : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "JER_2016"                         : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "JER_2017"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "JER_2018"                         : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "JEC_2016APV"                      : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "JEC_2016"                         : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "JEC_2017"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "JEC_2018"                         : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
 
-    "AbsoluteStat_uncorrelated_2016"   : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "RelativeJEREC1_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "RelativeJEREC2_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "RelativePtEC1_uncorrelated_2016"  : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "RelativePtEC2_uncorrelated_2016"  : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "TimePtEta_uncorrelated_2016"      : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "RelativeSample_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "RelativeStatEC_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "RelativeStatFSR_uncorrelated_2016": {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "RelativeStatHF_uncorrelated_2016" : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-    "JER_2016"                         : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+    },
 
-    "AbsoluteStat_uncorrelated_2017"   : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "RelativeJEREC1_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "RelativeJEREC2_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "RelativePtEC1_uncorrelated_2017"  : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "RelativePtEC2_uncorrelated_2017"  : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "TimePtEta_uncorrelated_2017"      : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "RelativeSample_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "RelativeStatEC_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "RelativeStatFSR_uncorrelated_2017": {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "RelativeStatHF_uncorrelated_2017" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-    "JER_2017"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+    "run3" : {
+        "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "btagSFbc_uncorrelated_2023"       : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "btagSFbc_uncorrelated_2023BPix"   : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "AbsoluteStat_uncorrelated_2022"   : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "RelativeJEREC1_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "RelativeJEREC2_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "RelativePtEC1_uncorrelated_2022"  : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "RelativePtEC2_uncorrelated_2022"  : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "TimePtEta_uncorrelated_2022"      : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "RelativeSample_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "RelativeStatEC_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "RelativeStatFSR_uncorrelated_2022": {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "RelativeStatHF_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "JER_2022"                         : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "AbsoluteStat_uncorrelated_2022EE"   : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "RelativeJEREC1_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "RelativeJEREC2_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "RelativePtEC1_uncorrelated_2022EE"  : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "RelativePtEC2_uncorrelated_2022EE"  : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "TimePtEta_uncorrelated_2022EE"      : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "RelativeSample_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "RelativeStatEC_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "RelativeStatFSR_uncorrelated_2022EE": {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "RelativeStatHF_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "JER_2022EE"                         : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "AbsoluteStat_uncorrelated_2023"   : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "RelativeJEREC1_uncorrelated_2023" : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "RelativeJEREC2_uncorrelated_2023" : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "RelativePtEC1_uncorrelated_2023"  : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "RelativePtEC2_uncorrelated_2023"  : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "TimePtEta_uncorrelated_2023"      : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "RelativeSample_uncorrelated_2023" : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "RelativeStatEC_uncorrelated_2023" : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "RelativeStatFSR_uncorrelated_2023": {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "RelativeStatHF_uncorrelated_2023" : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "JER_2023"                         : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "AbsoluteStat_uncorrelated_2023BPix"   : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "RelativeJEREC1_uncorrelated_2023BPix" : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "RelativeJEREC2_uncorrelated_2023BPix" : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "RelativePtEC1_uncorrelated_2023BPix"  : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "RelativePtEC2_uncorrelated_2023BPix"  : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "TimePtEta_uncorrelated_2023BPix"      : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "RelativeSample_uncorrelated_2023BPix" : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "RelativeStatEC_uncorrelated_2023BPix" : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "RelativeStatFSR_uncorrelated_2023BPix": {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "RelativeStatHF_uncorrelated_2023BPix" : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "JER_2023BPix"                         : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+    },
+    "total_run3" : {
+        "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "btagSFbc_uncorrelated_2023"       : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "btagSFbc_uncorrelated_2023BPix"   : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "JER_2022"                         : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "JER_2022EE"                         : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "JER_2023"                         : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "JER_2023BPix"                         : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "JEC_2022"                         : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "JEC_2022EE"                         : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "JEC_2023"                         : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "JEC_2023BPix"                         : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+    },
 
-    "AbsoluteStat_uncorrelated_2018"   : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-    "RelativeJEREC1_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-    "RelativeJEREC2_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-    "RelativePtEC1_uncorrelated_2018"  : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-    "RelativePtEC2_uncorrelated_2018"  : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-    "TimePtEta_uncorrelated_2018"      : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-    "RelativeSample_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-    "RelativeStatEC_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-    "RelativeStatFSR_uncorrelated_2018": {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-    "RelativeStatHF_uncorrelated_2018" : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-    "JER_2018"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+    "y22" : {
+        "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+        "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+    },
+
+    "y23" : {
+        "btagSFbc_uncorrelated_2023"       : {"yr_rel":"2023", "yr_notrel": ["2023BPix"]},
+        "btagSFbc_uncorrelated_2023BPix"   : {"yr_rel":"2023BPix", "yr_notrel": ["2023"]},
+    },
+
 }
-SYSTS_SPECIAL_RUN3 = {
-    "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
-    "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
 
-    "AbsoluteStat_uncorrelated_2022"   : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
-    "RelativeJEREC1_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
-    "RelativeJEREC2_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
-    "RelativePtEC1_uncorrelated_2022"  : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
-    "RelativePtEC2_uncorrelated_2022"  : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
-    "TimePtEta_uncorrelated_2022"      : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
-    "RelativeSample_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
-    "RelativeStatEC_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
-    "RelativeStatFSR_uncorrelated_2022": {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
-    "RelativeStatHF_uncorrelated_2022" : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
-    "JER_2022"                         : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
-
-    "AbsoluteStat_uncorrelated_2022EE"   : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
-    "RelativeJEREC1_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
-    "RelativeJEREC2_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
-    "RelativePtEC1_uncorrelated_2022EE"  : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
-    "RelativePtEC2_uncorrelated_2022EE"  : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
-    "TimePtEta_uncorrelated_2022EE"      : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
-    "RelativeSample_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
-    "RelativeStatEC_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
-    "RelativeStatFSR_uncorrelated_2022EE": {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
-    "RelativeStatHF_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
-    "JER_2022EE"                         : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
-}
-
-SYSTS_SPECIAL_ALL = {
-    "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18", "2022", "2022EE"]},
-    "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18", "2022", "2022EE"]},
-    "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18", "2022", "2022EE"]},
-    "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18", "2022", "2022EE"]},
-    "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18", "2022", "2022EE"]},
-    "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18", "2022", "2022EE"]},
-    "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17", "2022", "2022EE"]},
-    "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17", "2022", "2022EE"]},
-
-    "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["UL16APV","UL16","UL17","UL18","2022EE"]},
-    "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["UL16APV","UL16","UL17","UL18","2022"]},
-}
 
 # Hard code the rateParam lines to put at the end of the card (for background normalization)
 RATE_PARAM_LINES = [
@@ -158,7 +302,7 @@ RATE_PARAM_LINES = [
 ########### Writing the datacard ###########
 
 # Make the datacard for a given channel
-def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,extra_lines=None,out_dir="."):
+def make_ch_card(ch,proc_order,year_name,ch_ylds,ch_kappas=None,ch_gmn=None,extra_lines=None,out_dir="."):
 
     # Building blocks we'll need to build the card formatting
     bin_str = f"bin_{ch}"
@@ -169,7 +313,7 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,extra_lines=No
     left_width = max(syst_width+len("shape")+1,left_width)
 
     # The output name, location
-    outf_card_name = f"wwz4l_card_{ch}.txt"
+    outf_card_name = f"wwz4l_card_{ch}_{year_name}.txt"
     print(f"Generating text file: {out_dir}/{outf_card_name}")
     outf_card_name = os.path.join(out_dir,outf_card_name)
 
@@ -260,19 +404,11 @@ def make_ch_card(ch,proc_order,ch_ylds,ch_kappas=None,ch_gmn=None,extra_lines=No
 #   - Because of how we fill in the processor, the yields for per year systs come _only_ from that year
 #   - So this function adds the nominal yields from the other three years to the up/down variation for the relevant year
 #   - Note the in_dict is modifed in place (we do not return a copy of the dict)
-def handle_per_year_systs_for_fr(in_dict,year,jec_tot):
-    if year == "all":
-        systs_special=SYSTS_SPECIAL_ALL
-
-    if year in ["2022","2022EE","run3","y22","y23"]:
-        systs_special=SYSTS_SPECIAL_RUN3
-
-    if year in ["UL16","UL16APV","UL17","UL18","run2"]:
-        if jec_tot:
-            systs_special = SYSTS_SPECIAL_RUN2_JEC_Total
-        else:
-            systs_special=SYSTS_SPECIAL_RUN2
-
+def handle_per_year_systs_for_fr(in_dict,year_name,do_tot):
+    if do_tot:
+        systs_special = SYSTS_SPECIAL[f"total_{year_name}"]
+    else:
+        systs_special = SYSTS_SPECIAL[year_name]
     for cat in in_dict["FR"].keys():
         for sys in systs_special:
             # Find up/down variation for the year relevant to that syst
@@ -317,31 +453,44 @@ def handle_negatives(in_dict):
 
 # Get the rate systs from the intput json, dump into dict (with nested keys: syst, proc)
 # Outputs strings, ready to be dumped into datacard
-def get_rate_systs(proc_lst):
+def get_rate_systs(proc_lst,year_tag):
     syst_json = ewkcoffea_path("params/rate_systs.json")
     with open(syst_json) as f_systs: rate_systs_dict = json.load(f_systs)
 
     # Build up the dictionary
     out_dict = {}
 
-    # Make row for rate uncertainties that impact all processes (for now just lumi)
+    # Make row for rate uncertainties that impact all processes
     for uncty_name in rate_systs_dict["rate_uncertainties_all_proc"]:
         out_dict[uncty_name] = {}
         for proc in proc_lst:
-            out_dict[uncty_name][proc] = str(rate_systs_dict["rate_uncertainties_all_proc"][uncty_name])
+            if uncty_name == "lumi":
+                # The lumi uncty is different depending on year
+                out_dict[uncty_name][proc] = str(rate_systs_dict["rate_uncertainties_all_proc"][uncty_name][year_tag])
+            else:
+                out_dict[uncty_name][proc] = str(rate_systs_dict["rate_uncertainties_all_proc"][uncty_name])
 
     # Make rows for rate uncertainties that impact a subset of the processes
     for uncty_name in rate_systs_dict["rate_uncertainties_some_proc"]:
+
+        # If the uncty has a decorrelation_dict defined, use that to append a tag to the name of the uncty
+        # E.g., for the fake uncertianty, we append the run so that it is fake_run2 or fake_run3
+        tag = ""
+        if "decorrelation_dict" in rate_systs_dict["rate_uncertainties_some_proc"][uncty_name]:
+            tag = "_" + rate_systs_dict["rate_uncertainties_some_proc"][uncty_name]["decorrelation_dict"][year_tag]
+
+        # Loop over procs and put in the uncty or "-" if NA
         for proc_of_interest in rate_systs_dict["rate_uncertainties_some_proc"][uncty_name]["procs"]:
-            out_dict[f"{uncty_name}_{proc_of_interest}"] = {}
+            out_dict[f"{uncty_name}_{proc_of_interest}{tag}"] = {}
             for proc_itr in proc_lst:
                 if proc_itr == proc_of_interest:
                     uncty = str(rate_systs_dict["rate_uncertainties_some_proc"][uncty_name]["val"])
                 else:
                     uncty = "-"
-                out_dict[f"{uncty_name}_{proc_of_interest}"][proc_itr] = uncty
+                out_dict[f"{uncty_name}_{proc_of_interest}{tag}"][proc_itr] = uncty
 
     return out_dict
+
 
 #Determines if the up and down variations of a systematic are in the same direction
 def determine_updo_same(nom,up,down):
@@ -363,7 +512,7 @@ def fix_updown_same(nom,up,down):
     return kappa_up, kappa_down
 
 # Get kappa dict (e.g. up/nom ratios) from the dict of all histograms
-def get_kappa_dict(in_dict_mc,in_dict_data):
+def get_kappa_dict(in_dict_mc,in_dict_data,yrs_lst):
 
     # Get the list of systematic base names (i.e. without the up and down tags)
     #     - Assumes each syst has a "systnameUp" and a "systnameDown"
@@ -382,8 +531,15 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
     for cat in in_dict_mc.keys():
         kappa_dict[cat] = {}
         for sys in get_syst_base_name_lst(list(in_dict_mc[cat].keys())):
+
+            # Skip year specific systs that are not relevant
+            # E.g. if the pkl file is all r3, but we're only making a 22 datacard, skip btagSFbc_uncorrelated_2023BPix variation
+            # Do this by checking if the syst name ends with a year, and then if that year is in our list for this card
+            if (sys.split("_")[-1] in ALL_YEARS_LST) and (sys.split("_")[-1] not in yrs_lst): continue
+
             kappa_dict[cat][sys] = {}
             for proc in in_dict_mc[cat]["nominal"]:
+
                 kappa_dict[cat][sys][proc] = {}
                 valvar_up = in_dict_mc[cat][f"{sys}Up"][proc]
                 valvar_do = in_dict_mc[cat][f"{sys}Down"][proc]
@@ -393,8 +549,14 @@ def get_kappa_dict(in_dict_mc,in_dict_data):
 
                 # Handle negative cases
                 if (valvar_kappa_up[0]<=0) and (valvar_kappa_do[0]<=0):
-                    #raise Exception(f"Both Kappas Neagtive for process: {proc}, category: {cat}, systematic: {sys}")
-                    valvar_kappa_up[0], valvar_kappa_do[0] = fix_updown_same(valvar_nom[0],valvar_up[0],valvar_do[0])
+                    #if (set(yrs_lst) == set(["2022","2022EE","2023","2023BPix"])) and (cat=="sr_4l_bdt_of_1") and (sys=="FSR") and (proc=="ttZ"):
+                        # One known case of this: FSR for ttZ for sr_4l_bdt_of_1 for r3
+                        #   - Does not matter since we don't use this bin, so skip it
+                        #   - Super super hard coded skip for this case:
+                    print("Kappas in same direction, but we don't care right now.")
+#                    else:
+#                        # Otherwise raise an error, we should stop and take a look at what's happening
+#                        raise Exception(f"Both Kappas Neagtive for process: {proc}, category: {cat}, systematic: {sys}")
                 if valvar_kappa_up[0] <= 0:
                     print(f"WARNING: Up var for {sys} for {proc} for {cat} is negative, setting to {SMALL}.")
                     valvar_kappa_up[0] = SMALL
@@ -515,7 +677,7 @@ def main():
     parser.add_argument("--bdt",action="store_true",help="Use BDT SR bins")
     parser.add_argument("--jec-tot",action="store_true",help="Use Total JEC Uncertainty")
     parser.add_argument("--unblind",action="store_true",help="If set, use real data, otherwise use asimov data")
-    parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["all","run2","run3","y22","y23"])
+    parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["run2","run3","y22","y23"])
 
     args = parser.parse_args()
     in_file = args.in_file_name
@@ -532,6 +694,13 @@ def main():
         print(f"Making dir \"{out_dir}\"")
         os.makedirs(out_dir)
 
+    # Set list of years from the run name
+    if run == "run2": yrs_lst = ["UL16APV","UL16","UL17","UL18"]
+    elif run == "run3": yrs_lst = ["2022","2022EE","2023","2023BPix"]
+    elif run == "y22" : yrs_lst = ["2022","2022EE"]
+    elif run == "y23" : yrs_lst = ["2023","2023BPix"]
+    else: raise Exception("Unknown year")
+
     # Get the histo
     f = pickle.load(gzip.open(in_file))
     histo = f["njets"] # Let's use njets
@@ -539,31 +708,8 @@ def main():
     # Get the dictionary defining the mc sample grouping
     sample_names_dict_data = {"FR" : sg.create_data_sample_dict(run)}
     sample_names_dict_mc   = {"FR" : sg.create_mc_sample_dict(run)}
-    if run == "all":
-        sample_names_dict_mc["UL16APV"] = sg.create_mc_sample_dict("UL16APV")
-        sample_names_dict_mc["UL16"]    = sg.create_mc_sample_dict("UL16")
-        sample_names_dict_mc["UL17"]    = sg.create_mc_sample_dict("UL17")
-        sample_names_dict_mc["UL18"]    = sg.create_mc_sample_dict("UL18")
-        sample_names_dict_mc["2022"]    = sg.create_mc_sample_dict("2022")
-        sample_names_dict_mc["2022EE"]  = sg.create_mc_sample_dict("2022EE")
-        #sample_names_dict_mc["2023"]  = sg.create_mc_sample_dict("2023")
-        #sample_names_dict_mc["2023BPix"]  = sg.create_mc_sample_dict("2023BPix")
-    if run == "run2":
-        sample_names_dict_mc["UL16APV"] = sg.create_mc_sample_dict("UL16APV")
-        sample_names_dict_mc["UL16"]    = sg.create_mc_sample_dict("UL16")
-        sample_names_dict_mc["UL17"]    = sg.create_mc_sample_dict("UL17")
-        sample_names_dict_mc["UL18"]    = sg.create_mc_sample_dict("UL18")
-    if run == "run3":
-        sample_names_dict_mc["2022"]    = sg.create_mc_sample_dict("2022")
-        sample_names_dict_mc["2022EE"]  = sg.create_mc_sample_dict("2022EE")
-        #sample_names_dict_mc["2023"]  = sg.create_mc_sample_dict("2023")
-        #sample_names_dict_mc["2023BPix"]  = sg.create_mc_sample_dict("2023BPix")
-    if run == "y22":
-        sample_names_dict_mc["2022"]    = sg.create_mc_sample_dict("2022")
-        sample_names_dict_mc["2022EE"]  = sg.create_mc_sample_dict("2022EE")
-    if run == "y23":
-        sample_names_dict_mc["2023"]  = sg.create_mc_sample_dict("2023")
-        sample_names_dict_mc["2023BPix"]  = sg.create_mc_sample_dict("2023BPix")
+    for year_indiv_name in yrs_lst:
+        sample_names_dict_mc[year_indiv_name] = sg.create_mc_sample_dict(year_indiv_name)
 
     # Get yield dictionary (nested in the order: year,cat,syst,proc)
     yld_dict_mc_allyears = {}
@@ -608,8 +754,11 @@ def main():
     # Get the syst ratios to nominal (i.e. kappas)
     kappa_dict = None
     if do_nuis:
-        kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data)
-        kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,skip_procs=["ZZ","ttZ"])
+        kappa_dict = get_kappa_dict(yld_dict_mc,yld_dict_data,yrs_lst)
+        # Don't do mc stats kappas for data-driven bkg if doing TFs
+        if do_tf: skip_stats_kappas_lst = ["ZZ","ttZ"]
+        else: skip_stats_kappas_lst = []
+        kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,skip_procs=skip_stats_kappas_lst)
 
     # Do the TF calculation
     if do_tf:
@@ -619,12 +768,10 @@ def main():
     #### Make the cards for each channel ####
 
     # Get list of channels
-    cat_lst_cr = ["cr_4l_btag_of_1b", "cr_4l_btag_of_2b", "cr_4l_btag_of_3b", "cr_4l_btag_sf_offZ_met80_1b", "cr_4l_btag_sf_offZ_met80_2b", "cr_4l_btag_sf_offZ_met80_3b","cr_4l_sf"]
+    cat_lst_cr = ["cr_4l_btag_of_1b", "cr_4l_btag_of_2b", "cr_4l_btag_sf_offZ_met80_1b", "cr_4l_btag_sf_offZ_met80_2b","cr_4l_sf"]
     cat_lst_sr = sg.CAT_LST_CB
     if use_bdt_sr:
-        if run == "all":
-            cat_lst_sr = sg.CAT_LST_BDT
-        elif run in ["run2"]:
+        if run in ["run2"]:
             cat_lst_sr = sg.CAT_LST_BDT
         elif run in ["run3", "y22", "y23"]:
             cat_lst_sr = sg.CAT_LST_BDT_COARSE
@@ -648,7 +795,7 @@ def main():
         gmn_for_dc_ch   = None
         if do_nuis:
             kappa_for_dc_ch = get_kappa_for_dc(kappa_dict,ch)
-            kappa_for_dc_ch.update(get_rate_systs(sg.PROC_LST)) # Append in the ones from rate json
+            kappa_for_dc_ch.update(get_rate_systs(sg.PROC_LST,run)) # Append in the ones from rate json
         if do_nuis and do_tf and (ch not in cat_lst_cr):
             # TF calculation not meaningful for CRs
             gmn_for_dc_ch = get_gmn_for_dc(gmn_dict[ch],proc_lst=sg.PROC_LST)
@@ -658,6 +805,7 @@ def main():
         make_ch_card(
             ch,
             sg.PROC_LST,
+            run,
             rate_for_dc_ch,
             kappa_for_dc_ch,
             gmn_for_dc_ch,

@@ -1,0 +1,25 @@
+{
+    "xsec": 1.0,
+    "year": "2023",
+    "treeName": "Events",
+    "histAxisName": "2023_data",
+    "options": "",
+    "era": "C2",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run3_09102024/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Dilepton_Run3_09102024/output_8.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run3_09102024/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Dilepton_Run3_09102024/output_6.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run3_09102024/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Dilepton_Run3_09102024/output_5.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run3_09102024/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Dilepton_Run3_09102024/output_7.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run3_09102024/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Dilepton_Run3_09102024/output_1.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run3_09102024/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Dilepton_Run3_09102024/output_4.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run3_09102024/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Dilepton_Run3_09102024/output_3.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run3_09102024/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Dilepton_Run3_09102024/output_2.root"
+    ],
+    "nEvents": 135980,
+    "nGenEvents": 135980,
+    "nSumOfWeights": 135980,
+    "isData": true,
+    "path": "/store/user/mdittric/skim/WWZ_Dilepton_Run3_09102024/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Dilepton_Run3_09102024/",
+    "nSumOfLheWeights": null
+}

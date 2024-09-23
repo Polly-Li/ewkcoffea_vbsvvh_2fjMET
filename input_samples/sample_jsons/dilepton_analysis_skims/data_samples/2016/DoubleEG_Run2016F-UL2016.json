@@ -1,0 +1,22 @@
+{
+    "xsec": 1.0,
+    "year": "2016",
+    "treeName": "Events",
+    "histAxisName": "UL16_data",
+    "options": "",
+    "era": "F",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2016/DoubleEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_5.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2016/DoubleEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_1.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2016/DoubleEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_4.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2016/DoubleEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_3.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2016/DoubleEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_2.root"
+    ],
+    "nEvents": 391008,
+    "nGenEvents": 391008,
+    "nSumOfWeights": 391008,
+    "isData": true,
+    "path": "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2016/DoubleEG_Run2016F-UL2016_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/",
+    "nSumOfLheWeights": null
+}
