@@ -105,19 +105,16 @@ def get_jerc_keys(year,era,isdata):
         jet_algo = 'AK4PFchs'
     # jerc keys
     if not isdata:
-        jec_data_key = None
-        jec_mc_key   = jerc_dict[year]['jec_mc']
+        jec_key   = jerc_dict[year]['jec_mc']
         jer_key      = jerc_dict[year]['jer']
     else:
         if year in ['2016','2022','2023BPix']:
-            jec_data_key = jerc_dict[year]['jec_data']
-            jec_mc_key   = None
+            jec_key = jerc_dict[year]['jec_data']
             jer_key      = None
         else:
-            jec_data_key = jerc_dict[year]['jec_data'][era]
-            jec_mc_key   = None
+            jec_key = jerc_dict[year]['jec_data'][era]
             jer_key      = None
-    return jet_algo,jec_data_key,jec_mc_key,jer_key
+    return jet_algo,jec_key,jer_key
 
 ###### Muon: tight (topmva) ######
 extLepSF.add_weight_sets(["MuonTightSF_2016 NUM_LeptonMvaTight_DEN_TrackerMuons/abseta_pt_value %s" % ewkcoffea_path('data/topmva_lep_sf/NUM_LeptonMvaTight_DEN_TrackerMuons_abseta_pt_UL16.json')])
@@ -570,7 +567,8 @@ def run3_pu_attach(pileup,year,sys):
 #            jet_pt_final = jet_pt_flat - factor
 #
 #        jet_collection["pt"] = ak.unflatten(jet_pt_final,ak.num(jet_collection.pt))
-def jerc_corrections(year,era,isdata,correction,jet_collection):
+
+def jerc_corrections(year,era,isdata,correction,jet_collection,events):
 
     #Get the correct files
     smear_fname = ewkcoffea_path("data/wwz_jerc/jer_smear.json")
@@ -597,31 +595,33 @@ def jerc_corrections(year,era,isdata,correction,jet_collection):
     jerc_ceval = correctionlib.CorrectionSet.from_file(fname)
     smear_ceval = correctionlib.CorrectionSet.from_file(smear_fname)
 
-    #Inputs we will need
-    jet_raw_pt = jet_collection.pt_raw
+
+    jet_raw_pt = (1 - jet_collection.rawFactor)*jet_collection.pt
     jet_eta = jet_collection.eta
-    jet_phi = jet_collection.phi
     jet_area = jet_collection.area
-    jet_rho = jet_collection.rho
-    jet_event = jet_collection.eventID
+    if year in ["2022","2022EE","2023","2023BPix"]:
+        rho = events.Rho.fixedGridRhoFastjetAll
+    elif year in ["2016APV","2016","2017","2018"]:
+        rho = events.fixedGridRhoFastjetAll
+    event = events.event
     jet_genpt = jet_collection.pt_gen
+    jet_phi = jet_collection.phi
+
+    #We need to broadcast Rho  and Event Number to have the same shape as jet pt
+    fixed_rho, _ = ak.broadcast_arrays(rho, jet_raw_pt)
+    fixed_event, _ = ak.broadcast_arrays(event, jet_raw_pt)
 
     #We need to flatten the arrays
-    jet_rho_flat = ak.flatten(jet_rho)
+    jet_rho_flat = ak.flatten(fixed_rho)
     jet_raw_pt_flat = ak.flatten(jet_raw_pt)
     jet_eta_flat = ak.flatten(jet_eta)
-    jet_phi_flat = ak.flatten(jet_phi)
     jet_area_flat = ak.flatten(jet_area)
-    jet_event_flat = ak.flatten(jet_event)
+    jet_event_flat = ak.flatten(fixed_event)
     jet_genpt_flat = ak.flatten(jet_genpt)
+    jet_phi_flat = ak.flatten(jet_phi)
     
     #Get the appropriate key and jet type
-    jet_algo,jec_data_key,jec_mc_key,jer_key = get_jerc_keys(year,era,isdata)
-
-    if isdata:
-        jec_key = jec_data_key
-    else:
-        jec_key = jec_mc_key
+    jet_algo,jec_key,jer_key = get_jerc_keys(year,era,isdata)
 
     #JEC
     #L1FastJet
