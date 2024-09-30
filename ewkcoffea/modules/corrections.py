@@ -9,6 +9,7 @@ from coffea import lookup_tools
 from topcoffea.modules.paths import topcoffea_path
 from ewkcoffea.modules.paths import ewkcoffea_path
 from topcoffea.modules.CorrectedJetsFactory import CorrectedJetsFactory
+from coffea.jetmet_tools import JECStack, CorrectedMETFactory
 
 extLepSF = lookup_tools.extractor()
 
@@ -21,8 +22,8 @@ clib_year_map = {
     "2018": "2018_UL",
     "2022": "2022_Summer22",
     "2022EE": "2022_Summer22EE",
-    "2023": "2022_Summer23",
-    "2023BPix": "2022_Summer23BPix",
+    "2023": "2023_Summer23",
+    "2023BPix": "2023_Summer23BPix",
 }
 
 #JERC dictionary for various keys
@@ -96,12 +97,12 @@ jerc_dict = {
 }
 
 # Method for extracting the jerc keys and jet algorithm from the dictionary above
-def get_jerc_keys(year,era,isdata):
+def get_jerc_keys(year,isdata,era):
 
     # Jet Algorithm
     if year in ['2022','2022EE','2023','2023BPix']:
         jet_algo = 'AK4PFPuppi'
-    elif year in ['2016','2016APV','2017','2018']:
+    elif year in ['2016','2016APV','2017','2018','2016preVFP','2016postVFP']:
         jet_algo = 'AK4PFchs'
     # jerc keys
     if not isdata:
@@ -442,258 +443,220 @@ def run3_pu_attach(pileup,year,sys):
     if sys not in ["nominal","hi","lo"]:
         raise Exception("ERROR: Not a recognized parameter.")
 
-#def ApplyJetCorrections(year, isdata, era, corr_type):
+def ApplyJetCorrections(year,isData, era, corr_type):
+
+    if year not in clib_year_map.keys():
+        raise Exception(f"Error: Unknown year \"{year}\".")
+
+    jet_algo,jec_tag,jer_tag = get_jerc_keys(year,isdata,era)
+
+    jec_year = year
+    if year.startswith("2016"):
+        jec_year = "2016preVFP" if year == "2016APV" else "2016postVFP"
+    if int(year.replace("APV", "")) < 2020:
+        jec_year += "_UL"
+    if year in ['2022','2022EE','2023','2023BPix']:
+        jec_year = year[:4] + '_Summer' + year[2:]
+
+
+    json_path = topcoffea_path(f"data/POG/JME/{jec_year}/jet_jerc.json.gz")
+    #json_path = topcoffea_path(f"data/POG/JME/{jec_year}/fatjet_jerc.json.gz")
+
+    jec_types_clib = [
+            "AbsoluteMPFBias","AbsoluteScale","FlavorQCD","Fragmentation","PileUpDataMC",
+            "PileUpPtBB","PileUpPtEC1","PileUpPtEC2","PileUpPtHF","PileUpPtRef",
+            "RelativeFSR","RelativeJERHF","RelativePtBB","RelativePtHF","RelativeBal",
+            "SinglePionECAL","SinglePionHCAL",
+            "AbsoluteStat","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2",
+            "TimePtEta","RelativeSample","RelativeStatEC","RelativeStatFSR","RelativeStatHF",
+            "Total",
+    ]
+    jec_regroup_clib = [f"Quad_{jec_tag}_MC_UncertaintySources_{jet_algo}_{jec_type}" for jec_type in jec_types_clib]
+    jec_names_clib = [
+        f"{jec_tag}_MC_L1FastJet_{jet_algo}",
+        f"{jec_tag}_MC_L2Relative_{jet_algo}",
+        f"{jec_tag}_MC_L3Absolute_{jet_algo}",
+        f"{jec_tag}_MC_L2L3Residual_{jet_algo}",
+    ]
+    jer_names_clib = [
+        f"{jer_tag}_MC_SF_{jet_algo}",
+        f"{jer_tag}_MC_PtResolution_{jet_algo}",
+    ]
+    if not isdata:
+        jec_names_clib.extend(jec_regroup_clib)
+        jec_names_clib.extend(jer_names_clib)
+    jec_names_clib.append(json_path)
+    jec_names_clib.append(True) ## This boolean will be used to realize if the user wants to save the different level corrections or not
+    jec_stack = jec_names_clib
+
+
+    name_map = {}
+    name_map['JetPt'] = 'pt'
+    name_map['JetMass'] = 'mass'
+    name_map['JetEta'] = 'eta'
+    name_map['JetPhi'] = 'phi'
+    name_map['JetA'] = 'area'
+    name_map['ptGenJet'] = 'pt_gen'
+    name_map['ptRaw'] = 'pt_raw'
+    name_map['massRaw'] = 'mass_raw'
+    name_map['Rho'] = 'rho'
+    name_map['METpt'] = 'pt'
+    name_map['METphi'] = 'phi'
+    name_map['UnClusteredEnergyDeltaX'] = 'MetUnclustEnUpDeltaX'
+    name_map['UnClusteredEnergyDeltaY'] = 'MetUnclustEnUpDeltaY'
+    if corr_type == 'met':
+        return CorrectedMETFactory(name_map)
+    return CorrectedJetsFactory(name_map, jec_stack)
+
+def ApplyJetSystematics(year,cleanedJets,syst_var):
+    if (syst_var == f'JER_{year}Up'):
+        return cleanedJets.JER.up
+    elif (syst_var == f'JER_{year}Down'):
+        return cleanedJets.JER.down
+    elif (syst_var == 'nominal'):
+        return cleanedJets
+    elif (syst_var == f'JES_{year}Up'):
+        return cleanedJets.Total.up
+    elif (syst_var == f'JES_{year}Down'):
+        return cleanedJets.Total.down
+    else:
+        try:
+            syst = syst_var.split('_')[0]
+            attribute = getattr(syst,cleanedJets)
+            if syst_var.endswith('Up'):
+                return attribute.up
+            elif syst_var.endwith('Down'):
+                return attribute.down
+        except AttributeError:
+            raise ValueError(f"Unsupported systematic variation: {syst_var}")
+
+
+#def jerc_corrections(year,era,isdata,correction,jet_collection,events):
 #
-#    if year not in clib_year_map.keys():
-#        raise Exception(f"Error: Unknown year \"{year}\".")
+#    #Get the correct files
+#    smear_fname = ewkcoffea_path("data/wwz_jerc/jer_smear.json")
+#    if year == "2016APV":
+#        fname = ewkcoffea_path("data/wwz_jerc/2016APV_jerc/jet_jerc.json")
+#    elif year == "2016":
+#        fname = ewkcoffea_path("data/wwz_jerc/2016_jerc/jet_jerc.json")
+#    elif year == "2017":
+#        fname = ewkcoffea_path("data/wwz_jerc/2017_jerc/jet_jerc.json")
+#    elif year == "2018":
+#        fname = ewkcoffea_path("data/wwz_jerc/2018_jerc/jet_jerc.json")
+#    elif year == "2022":
+#        fname = ewkcoffea_path("data/wwz_jerc/2022_jerc/jet_jerc.json")
+#    elif year == "2022EE":
+#        fname = ewkcoffea_path("data/wwz_jerc/2022EE_jerc/jet_jerc.json")
+#    elif year == "2023":
+#        fname = ewkcoffea_path("data/wwz_jerc/2023_jerc/jet_jerc.json")
+#    elif year == "2023BPix":
+#        fname = ewkcoffea_path("data/wwz_jerc/2023BPix_jerc/jet_jerc.json")
+#    else:
+#        raise Exception("Unrecognized year for jerc_corrections. Exciting!")
 #
-#    jet_algo,jec_data_key,jec_mc_key,jer_key = get_jerc_keys(year,era,isdata)
+#    # Initiliaze files we need
+#    jerc_ceval = correctionlib.CorrectionSet.from_file(fname)
+#    smear_ceval = correctionlib.CorrectionSet.from_file(smear_fname)
 #
-#    jec_year = year
-#    if year.startswith("2016"):
-#        jec_year = "2016preVFP" if year == "2016APV" else "2016postVFP"
-#    if int(year.replace("APV", "")) < 2020:
-#        jec_year += "_UL"
-#    json_path = topcoffea_path(f"data/POG/JME/{jec_year}/jet_jerc.json.gz")
 #
-#    jer_tag = jer_key
+#    jet_raw_pt = (1 - jet_collection.rawFactor)*jet_collection.pt
+#    jet_eta = jet_collection.eta
+#    jet_area = jet_collection.area
+#    if year in ["2022","2022EE","2023","2023BPix"]:
+#        rho = events.Rho.fixedGridRhoFastjetAll
+#    elif year in ["2016APV","2016","2017","2018"]:
+#        rho = events.fixedGridRhoFastjetAll
+#    event = events.event
+#    jet_genpt = jet_collection.pt_gen
+#    jet_phi = jet_collection.phi
+#
+#    #We need to broadcast Rho  and Event Number to have the same shape as jet pt
+#    fixed_rho, _ = ak.broadcast_arrays(rho, jet_raw_pt)
+#    fixed_event, _ = ak.broadcast_arrays(event, jet_raw_pt)
+#
+#    #We need to flatten the arrays
+#    jet_rho_flat = ak.flatten(fixed_rho)
+#    jet_raw_pt_flat = ak.flatten(jet_raw_pt)
+#    jet_eta_flat = ak.flatten(jet_eta)
+#    jet_area_flat = ak.flatten(jet_area)
+#    jet_event_flat = ak.flatten(fixed_event)
+#    jet_genpt_flat = ak.flatten(jet_genpt)
+#    jet_phi_flat = ak.flatten(jet_phi)
+#    
+#    #Get the appropriate key and jet type
+#    jet_algo,jec_key,jer_key = get_jerc_keys(year,era,isdata)
+#
+#    #JEC
+#    #L1FastJet
+#    l1_fj = jerc_ceval[f"{jec_key}_L1FastJet_{jet_algo}"].evaluate(jet_area_flat,jet_eta_flat,jet_raw_pt_flat,jet_rho_flat)
+#    pt_l1 = l1_fj * jet_raw_pt_flat
+#    #L2Relative
+#    if year == "2023BPix":
+#        l2_rel = jerc_ceval[f"{jec_key}_L2Relative_{jet_algo}"].evaluate(jet_eta_flat,jet_phi_flat,pt_l1)
+#        pt_l2 = l2_rel * pt_l1
+#    else:
+#        l2_rel = jerc_ceval[f"{jec_key}_L2Relative_{jet_algo}"].evaluate(jet_eta_flat,pt_l1)
+#        pt_l2 = l2_rel * pt_l1
+#    #L3Absolute 
+#    l3_abs = jerc_ceval[f"{jec_key}_L3Absolute_{jet_algo}"].evaluate(jet_eta_flat,pt_l2)
+#    pt_l3 = l3_abs * pt_l2
+#    #L2L3Residual (Note that this is not needed for MC but will always return 1)
+#    l2l3_res = jerc_ceval[f"{jec_key}_L2L3Residual_{jet_algo}"].evaluate(jet_eta_flat,pt_l3)
+#    pt_l4 = l2l3_res * pt_l3
+#
+#    jec_pt_final = pt_l4
+#
+#    #Data does not have uncertaintity or JER
 #    if isdata:
-#        jec_tag = jec_data_key
+#        jet_collection["pt"] = ak.unflatten(jec_pt_final,ak.num(jet_collection.pt))
 #    else:
-#        jec_tag = jec_mc_key
-#
-#    jec_names_clib = [
-#        f"{jec_tag}_L1FastJet_{jet_algo}",
-#        f"{jec_tag}_L2Relative_{jet_algo}",
-#        f"{jec_tag}_L3Absolute_{jet_algo}",
-#        f"{jec_tag}_L2L3Residual_{jet_algo}",
-#    ]
-#    jer_names_clib = [
-#        f"{jer_tag}_MC_SF_{jet_algo}",
-#        f"{jer_tag}_MC_PtResolution_{jet_algo}",
-#    ]
-#
-#    if not isdata:
-#        jec_names_clib += jer_names_clib
-#
-#    jec_types_clib = [
-#        'FlavorQCD', 'FlavorPureBottom', 'FlavorPureQuark', 'FlavorPureGluon', 'FlavorPureCharm',
-#        'Regrouped_BBEC1', 'Regrouped_Absolute', 'Regrouped_RelativeBal', 'RelativeSample'
-#    ]
-#    jec_regroup_clib = [f"Quad_Summer19UL{jec_tag}_MC_UncertaintySources_{jet_algo}_{jec_type}" for jec_type in jec_types_clib]
-#
-#    jec_names_clib.append(json_path)
-#    jec_names_clib.append(False) # This boolean will be used to realize if the user wants to save the different level corrections or not
-#    jec_stack = jec_names_clib
-#
-#    name_map = {}
-#    name_map['JetPt'] = 'pt'
-#    name_map['JetMass'] = 'mass'
-#    name_map['JetEta'] = 'eta'
-#    name_map['JetPhi'] = 'phi'
-#    name_map['JetA'] = 'area'
-#    name_map['ptGenJet'] = 'pt_gen'
-#    name_map['ptRaw'] = 'pt_raw'
-#    name_map['massRaw'] = 'mass_raw'
-#    name_map['Rho'] = 'rho'
-#    name_map['METpt'] = 'pt'
-#    name_map['METphi'] = 'phi'
-#    name_map['UnClusteredEnergyDeltaX'] = 'MetUnclustEnUpDeltaX'
-#    name_map['UnClusteredEnergyDeltaY'] = 'MetUnclustEnUpDeltaY'
-#    return CorrectedJetsFactory(name_map, jec_stack)
-#
-#
-#def jerc_systematics(year,era,syst,jet_collection,isdata):
-#
-#    if syst == 'nominal':
-#        jet_collection["pt"] = jet_collection.pt
-#    elif syst.startswith('JER') and syst.endswith('Up'):
-#        jet_collection["pt"] = jet_collection.JER.up.pt
-#    elif syst.startswith('JER') and syst.endswith('Down'):
-#        jet_collection["pt"] = jet_collection.JER.down.pt
-#    else:
-#        #Get the correct files
-#        if year == "2016APV":
-#            fname = ewkcoffea_path("data/wwz_jerc/2016APV_jerc/jet_jerc.json")
-#        elif year == "2016":
-#            fname = ewkcoffea_path("data/wwz_jerc/2016_jerc/jet_jerc.json")
-#        elif year == "2017":
-#            fname = ewkcoffea_path("data/wwz_jerc/2017_jerc/jet_jerc.json")
-#        elif year == "2018":
-#            fname = ewkcoffea_path("data/wwz_jerc/2018_jerc/jet_jerc.json")
-#        elif year == "2022":
-#            fname = ewkcoffea_path("data/wwz_jerc/2022_jerc/jet_jerc.json")
-#        elif year == "2022EE":
-#            fname = ewkcoffea_path("data/wwz_jerc/2022EE_jerc/jet_jerc.json")
-#        elif year == "2023":
-#            fname = ewkcoffea_path("data/wwz_jerc/2023_jerc/jet_jerc.json")
-#        elif year == "2023BPix":
-#            fname = ewkcoffea_path("data/wwz_jerc/2023BPix_jerc/jet_jerc.json")
+#        #JER smearing time
+#        if (correction.startswith("JER") and correction.endswith("Up")):
+#            up_down_nom = "up"
+#        elif (correction.startswith("JER") and correction.endswith("Down")):
+#            up_down_nom = "down"
 #        else:
-#            raise Exception("Unrecognized year for jerc systematics. Exciting!")
+#            up_down_nom = "nom"
 #
-#        # Initiliaze files we need
-#        jerc_ceval = correctionlib.CorrectionSet.from_file(fname)
+#        #Get the JER and JER SF
+#        jer = jerc_ceval[f"{jer_key}_MC_PtResolution_{jet_algo}"].evaluate(jet_eta_flat,jec_pt_final,jet_rho_flat)
 #
-#        #Inputs we will need
-#        jet_pt = jet_collection.pt
-#        jet_eta = jet_collection.eta
+#        if year in ["2016","2016APV","2017","2018"]:
+#            jer_sf = jerc_ceval[f"{jer_key}_MC_ScaleFactor_{jet_algo}"].evaluate(jet_eta_flat,up_down_nom)
 #
-#        #We need to flatten the arrays
-#        jet_pt_flat = ak.flatten(jet_pt)
-#        jet_eta_flat = ak.flatten(jet_eta)
-#        
-#        #Get the appropriate key and jet type
-#        jet_algo,jec_data_key,jec_mc_key,jer_key = get_jerc_keys(year,era,isdata)
-#        #Figure out the syst and up/down
-#        syst_type = syst.split("_")[0]
-#        updown = syst.split("_")[-1]
-#        if updown.endswith("Up"):
-#            updown = "Up"
-#        elif updown.endswith("Down"):
-#            updown = "Down"
+#        elif year in ["2022","2022EE","2023","2023BPix"]:
+#            jer_sf = jerc_ceval[f"{jer_key}_MC_ScaleFactor_{jet_algo}"].evaluate(jet_eta_flat,jec_pt_final,up_down_nom)
+#
+#        #JER Smearing
+#        smear_factor = smear_ceval["JERSmear"].evaluate(jec_pt_final,jet_eta_flat,jet_genpt_flat,jet_rho_flat,jet_event_flat,jer,jer_sf)
+#
+#        #Get new nominal pt
+#        pt_jerc_final = smear_factor*jec_pt_final
+#
+#        #If nominal or JER correction, we stop here
+#        if ((correction == 'nominal') or correction.startswith('JER')):
+#            jet_collection["pt"] = ak.unflatten(pt_jerc_final,ak.num(jet_collection.pt))
+#
 #        else:
-#            raise Exception("JEC uncertainty should be up or down!")
 #
-#        #Get the factor for the up/down variation for JEC systematics
-#        if syst.startswith("JEC"):
-#            factor = jet_pt_flat * jerc_ceval[f"{jec_mc_key}_Total_{jet_algo}"].evaluate(jet_eta_flat,jet_pt_flat)
-#        else:
-#            factor = jet_pt_flat * jerc_ceval[f"{jec_mc_key}_{syst_type}_{jet_algo}"].evaluate(jet_eta_flat,jet_pt_flat)
+#            #Figure out the syst and up/down
+#            syst = correction.split("_")[0]
+#            updown = correction.split("_")[-1]
+#            if updown.endswith("Up"):
+#                updown = "Up"
+#            elif updown.endswith("Down"):
+#                updown = "Down"
+#            else:
+#                raise Exception("JEC uncertainty should be up or down!")
 #
-#        if updown == "Up":
-#            jet_pt_final = jet_pt_flat + factor
-#        elif updown == "Down":
-#            jet_pt_final = jet_pt_flat - factor
+#            if syst == "JEC":
+#                factor = pt_jerc_final * jerc_ceval[f"{jec_key}_Total_{jet_algo}"].evaluate(jet_eta_flat,pt_jerc_final)
+#            else:
+#                factor = pt_jerc_final * jerc_ceval[f"{jec_key}_{syst}_{jet_algo}"].evaluate(jet_eta_flat,pt_jerc_final)
 #
-#        jet_collection["pt"] = ak.unflatten(jet_pt_final,ak.num(jet_collection.pt))
-
-def jerc_corrections(year,era,isdata,correction,jet_collection,events):
-
-    #Get the correct files
-    smear_fname = ewkcoffea_path("data/wwz_jerc/jer_smear.json")
-    if year == "2016APV":
-        fname = ewkcoffea_path("data/wwz_jerc/2016APV_jerc/jet_jerc.json")
-    elif year == "2016":
-        fname = ewkcoffea_path("data/wwz_jerc/2016_jerc/jet_jerc.json")
-    elif year == "2017":
-        fname = ewkcoffea_path("data/wwz_jerc/2017_jerc/jet_jerc.json")
-    elif year == "2018":
-        fname = ewkcoffea_path("data/wwz_jerc/2018_jerc/jet_jerc.json")
-    elif year == "2022":
-        fname = ewkcoffea_path("data/wwz_jerc/2022_jerc/jet_jerc.json")
-    elif year == "2022EE":
-        fname = ewkcoffea_path("data/wwz_jerc/2022EE_jerc/jet_jerc.json")
-    elif year == "2023":
-        fname = ewkcoffea_path("data/wwz_jerc/2023_jerc/jet_jerc.json")
-    elif year == "2023BPix":
-        fname = ewkcoffea_path("data/wwz_jerc/2023BPix_jerc/jet_jerc.json")
-    else:
-        raise Exception("Unrecognized year for jerc_corrections. Exciting!")
-
-    # Initiliaze files we need
-    jerc_ceval = correctionlib.CorrectionSet.from_file(fname)
-    smear_ceval = correctionlib.CorrectionSet.from_file(smear_fname)
-
-
-    jet_raw_pt = (1 - jet_collection.rawFactor)*jet_collection.pt
-    jet_eta = jet_collection.eta
-    jet_area = jet_collection.area
-    if year in ["2022","2022EE","2023","2023BPix"]:
-        rho = events.Rho.fixedGridRhoFastjetAll
-    elif year in ["2016APV","2016","2017","2018"]:
-        rho = events.fixedGridRhoFastjetAll
-    event = events.event
-    jet_genpt = jet_collection.pt_gen
-    jet_phi = jet_collection.phi
-
-    #We need to broadcast Rho  and Event Number to have the same shape as jet pt
-    fixed_rho, _ = ak.broadcast_arrays(rho, jet_raw_pt)
-    fixed_event, _ = ak.broadcast_arrays(event, jet_raw_pt)
-
-    #We need to flatten the arrays
-    jet_rho_flat = ak.flatten(fixed_rho)
-    jet_raw_pt_flat = ak.flatten(jet_raw_pt)
-    jet_eta_flat = ak.flatten(jet_eta)
-    jet_area_flat = ak.flatten(jet_area)
-    jet_event_flat = ak.flatten(fixed_event)
-    jet_genpt_flat = ak.flatten(jet_genpt)
-    jet_phi_flat = ak.flatten(jet_phi)
-    
-    #Get the appropriate key and jet type
-    jet_algo,jec_key,jer_key = get_jerc_keys(year,era,isdata)
-
-    #JEC
-    #L1FastJet
-    l1_fj = jerc_ceval[f"{jec_key}_L1FastJet_{jet_algo}"].evaluate(jet_area_flat,jet_eta_flat,jet_raw_pt_flat,jet_rho_flat)
-    pt_l1 = l1_fj * jet_raw_pt_flat
-    #L2Relative
-    if year == "2023BPix":
-        l2_rel = jerc_ceval[f"{jec_key}_L2Relative_{jet_algo}"].evaluate(jet_eta_flat,jet_phi_flat,pt_l1)
-        pt_l2 = l2_rel * pt_l1
-    else:
-        l2_rel = jerc_ceval[f"{jec_key}_L2Relative_{jet_algo}"].evaluate(jet_eta_flat,pt_l1)
-        pt_l2 = l2_rel * pt_l1
-    #L3Absolute 
-    l3_abs = jerc_ceval[f"{jec_key}_L3Absolute_{jet_algo}"].evaluate(jet_eta_flat,pt_l2)
-    pt_l3 = l3_abs * pt_l2
-    #L2L3Residual (Note that this is not needed for MC but will always return 1)
-    l2l3_res = jerc_ceval[f"{jec_key}_L2L3Residual_{jet_algo}"].evaluate(jet_eta_flat,pt_l3)
-    pt_l4 = l2l3_res * pt_l3
-
-    jec_pt_final = pt_l4
-
-    #Data does not have uncertaintity or JER
-    if isdata:
-        jet_collection["pt"] = ak.unflatten(jec_pt_final,ak.num(jet_collection.pt))
-    else:
-        #JER smearing time
-        if (correction.startswith("JER") and correction.endswith("Up")):
-            up_down_nom = "up"
-        elif (correction.startswith("JER") and correction.endswith("Down")):
-            up_down_nom = "down"
-        else:
-            up_down_nom = "nom"
-
-        #Get the JER and JER SF
-        jer = jerc_ceval[f"{jer_key}_MC_PtResolution_{jet_algo}"].evaluate(jet_eta_flat,jec_pt_final,jet_rho_flat)
-
-        if year in ["2016","2016APV","2017","2018"]:
-            jer_sf = jerc_ceval[f"{jer_key}_MC_ScaleFactor_{jet_algo}"].evaluate(jet_eta_flat,up_down_nom)
-
-        elif year in ["2022","2022EE","2023","2023BPix"]:
-            jer_sf = jerc_ceval[f"{jer_key}_MC_ScaleFactor_{jet_algo}"].evaluate(jet_eta_flat,jec_pt_final,up_down_nom)
-
-        #JER Smearing
-        smear_factor = smear_ceval["JERSmear"].evaluate(jec_pt_final,jet_eta_flat,jet_genpt_flat,jet_rho_flat,jet_event_flat,jer,jer_sf)
-
-        #Get new nominal pt
-        pt_jerc_final = smear_factor*jec_pt_final
-
-        #If nominal or JER correction, we stop here
-        if ((correction == 'nominal') or correction.startswith('JER')):
-            jet_collection["pt"] = ak.unflatten(pt_jerc_final,ak.num(jet_collection.pt))
-
-        else:
-
-            #Figure out the syst and up/down
-            syst = correction.split("_")[0]
-            updown = correction.split("_")[-1]
-            if updown.endswith("Up"):
-                updown = "Up"
-            elif updown.endswith("Down"):
-                updown = "Down"
-            else:
-                raise Exception("JEC uncertainty should be up or down!")
-
-            if syst == "JEC":
-                factor = pt_jerc_final * jerc_ceval[f"{jec_key}_Total_{jet_algo}"].evaluate(jet_eta_flat,pt_jerc_final)
-            else:
-                factor = pt_jerc_final * jerc_ceval[f"{jec_key}_{syst}_{jet_algo}"].evaluate(jet_eta_flat,pt_jerc_final)
-
-            if updown == "Up":
-                pt_jerc_final = pt_jerc_final + factor
-            elif updown == "Down":
-                pt_jerc_final = pt_jerc_final - factor
-
-            jet_collection["pt"] = ak.unflatten(pt_jerc_final,ak.num(jet_collection.pt))
+#            if updown == "Up":
+#                pt_jerc_final = pt_jerc_final + factor
+#            elif updown == "Down":
+#                pt_jerc_final = pt_jerc_final - factor
+#
+#            jet_collection["pt"] = ak.unflatten(pt_jerc_final,ak.num(jet_collection.pt))

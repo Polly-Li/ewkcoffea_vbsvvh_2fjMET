@@ -437,7 +437,6 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
-#        obj_correction_systs = []
         do_full_list = True
 
         if do_full_list:
@@ -474,19 +473,25 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             #################### Jets ####################
 
+            # Clean with dr (though another option is to use jetIdx)
+            cleanedJets = os_ec.get_cleaned_collection(l_wwz_t,jets)
+            jetptname = "pt_nom" if hasattr(cleanedJets, "pt_nom") else "pt"
+
             ##### JERC Stuff #####
 
             # Andrea Method
-            #if not isData:
-            #    cleanedJets["pt_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.pt
-            #    cleanedJets["mass_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.mass
-            #    cleanedJets["pt_gen"] =ak.values_astype(ak.fill_none(cleanedJets.matched_gen.pt, 0), np.float32)
-            #    if year in ["2022","2022EE","2023","2023BPix"]:
-            #        cleanedJets["rho"] = ak.broadcast_arrays(events.Rho.fixedGridRhoFastjetAll, cleanedJets.pt)[0]
-            #    elif year in ["2016APV","2016","2017","2018"]:
-            #        cleanedJets["rho"] = ak.broadcast_arrays(events.fixedGridRhoFastjetAll, cleanedJets.pt)[0]
-            #    events_cache = events.caches[0]
-            #    cleanedJets = cor_ec.ApplyJetCorrections(year, isData, era, corr_type='jets').build(cleanedJets, lazy_cache=events_cache)
+            if not isData:
+                cleanedJets["pt_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.pt
+                cleanedJets["mass_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.mass
+                cleanedJets["pt_gen"] =ak.values_astype(ak.fill_none(cleanedJets.matched_gen.pt, 0), np.float32)
+                if year in ["2022","2022EE","2023","2023BPix"]:
+                    cleanedJets["rho"] = ak.broadcast_arrays(events.Rho.fixedGridRhoFastjetAll, cleanedJets.pt)[0]
+                elif year in ["2016APV","2016","2017","2018"]:
+                    cleanedJets["rho"] = ak.broadcast_arrays(events.fixedGridRhoFastjetAll, cleanedJets.pt)[0]
+                events_cache = events.caches[0]
+                cleanedJets = ApplyJetCorrections(year,isData, era, corr_type='jets').build(cleanedJets, lazy_cache=events_cache)
+                cleanedJets = ApplyJetSystematics(year,cleanedJets,obj_corr_syst_var)
+                #met=ApplyJetCorrections(year,isData, era, corr_type='met').build(met, cleanedJets, lazy_cache=events_cache)
             # Matt Method
             #jets["pt_raw"] = (1 - jets.rawFactor)*jets.pt
 
@@ -494,15 +499,15 @@ class AnalysisProcessor(processor.ProcessorABC):
             #    jets["rho"] = ak.broadcast_arrays(events.Rho.fixedGridRhoFastjetAll, jets.pt)[0]
             #elif year in ["2016APV","2016","2017","2018"]:
             #    jets["rho"] = ak.broadcast_arrays(events.fixedGridRhoFastjetAll, jets.pt)[0]
-
+            #
             #jets["eventID"] = ak.broadcast_arrays(events.event, jets.pt)[0]
-
-            if not isData:
-                jets["pt_gen"] =ak.values_astype(ak.fill_none(jets.matched_gen.pt, -1), np.float32)
-            else:
-                jets["pt_gen"] = ak.ones_like(jets.pt)
-
-            cor_ec.jerc_corrections(year,era,isData,obj_corr_syst_var,jets,events)
+            #
+            #if not isData:
+            #    jets["pt_gen"] =ak.values_astype(ak.fill_none(jets.matched_gen.pt, -1), np.float32)
+            #else:
+            #    jets["pt_gen"] = ak.ones_like(jets.pt)
+            #
+            #cor_ec.jerc_corrections(year,era,isData,obj_corr_syst_var,jets,events)
 
             ##### End of JERC #####
 
