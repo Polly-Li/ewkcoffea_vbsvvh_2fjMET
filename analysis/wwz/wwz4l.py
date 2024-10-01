@@ -437,7 +437,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
-        do_full_list = True
+        do_full_list = False
 
         if do_full_list:
             obj_correction_systs = [
@@ -489,8 +489,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 elif year in ["2016APV","2016","2017","2018"]:
                     cleanedJets["rho"] = ak.broadcast_arrays(events.fixedGridRhoFastjetAll, cleanedJets.pt)[0]
                 events_cache = events.caches[0]
-                cleanedJets = ApplyJetCorrections(year,isData, era, corr_type='jets').build(cleanedJets, lazy_cache=events_cache)
-                cleanedJets = ApplyJetSystematics(year,cleanedJets,obj_corr_syst_var)
+                cleanedJets = cor_ec.ApplyJetCorrections(year,isData, era, corr_type='jets').build(cleanedJets, lazy_cache=events_cache)
+                cleanedJets = cor_ec.ApplyJetSystematics(year,cleanedJets,obj_corr_syst_var)
                 #met=ApplyJetCorrections(year,isData, era, corr_type='met').build(met, cleanedJets, lazy_cache=events_cache)
             # Matt Method
             #jets["pt_raw"] = (1 - jets.rawFactor)*jets.pt

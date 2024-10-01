@@ -549,14 +549,20 @@ def get_kappa_dict(in_dict_mc,in_dict_data,yrs_lst):
 
                 # Handle negative cases
                 if (valvar_kappa_up[0]<=0) and (valvar_kappa_do[0]<=0):
-                    #if (set(yrs_lst) == set(["2022","2022EE","2023","2023BPix"])) and (cat=="sr_4l_bdt_of_1") and (sys=="FSR") and (proc=="ttZ"):
-                        # One known case of this: FSR for ttZ for sr_4l_bdt_of_1 for r3
-                        #   - Does not matter since we don't use this bin, so skip it
-                        #   - Super super hard coded skip for this case:
-                    print("Kappas in same direction, but we don't care right now.")
+
+#                    if (set(yrs_lst) == set(["2022","2022EE","2023","2023BPix"])) and (cat=="sr_4l_bdt_of_1") and (sys=="FSR") and (proc=="ttZ"):
+#                        # One known case of this: FSR for ttZ for sr_4l_bdt_of_1 for r3
+#                        #   - Does not matter since we don't use this bin, so skip it
+#                        #   - Super super hard coded skip for this case:
 #                    else:
 #                        # Otherwise raise an error, we should stop and take a look at what's happening
 #                        raise Exception(f"Both Kappas Neagtive for process: {proc}, category: {cat}, systematic: {sys}")
+
+#                    raise Exception("Kappas in same direction, but we don't care right now.")
+
+                    valvar_kappa_up[0], valvar_kappa_do[0] = fix_updown_same(valvar_nom[0],valvar_up[0],valvar_do[0])
+
+
                 if valvar_kappa_up[0] <= 0:
                     print(f"WARNING: Up var for {sys} for {proc} for {cat} is negative, setting to {SMALL}.")
                     valvar_kappa_up[0] = SMALL

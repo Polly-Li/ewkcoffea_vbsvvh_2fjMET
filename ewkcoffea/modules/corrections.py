@@ -9,7 +9,7 @@ from coffea import lookup_tools
 from topcoffea.modules.paths import topcoffea_path
 from ewkcoffea.modules.paths import ewkcoffea_path
 from topcoffea.modules.CorrectedJetsFactory import CorrectedJetsFactory
-from coffea.jetmet_tools import JECStack, CorrectedMETFactory
+from coffea.jetmet_tools import CorrectedMETFactory
 
 extLepSF = lookup_tools.extractor()
 
@@ -31,7 +31,7 @@ jerc_dict = {
     "2016": {
         "jec_mc"  : "Summer19UL16_V7_MC",
         "jec_data": "Summer19UL16_RunFGH_V7_DATA",
-        "jer"     : "Summer20UL16_JRV3"
+        "jer"     : "Summer20UL16_JRV3_MC"
     },
     "2016APV": {
         "jec_mc": "Summer19UL16APV_V7_MC",
@@ -42,7 +42,7 @@ jerc_dict = {
             "E": "Summer19UL16APV_RunEF_V7_DATA",
             "F": "Summer19UL16APV_RunEF_V7_DATA",
         },
-        "jer": "Summer20UL16APV_JRV3"             
+        "jer": "Summer20UL16APV_JRV3_MC"             
     },
     "2017": {
         "jec_mc": "Summer19UL17_V5_MC",
@@ -53,7 +53,7 @@ jerc_dict = {
             "E": "Summer19UL17_RunE_V5_DATA",
             "F": "Summer19UL17_RunF_V5_DATA",
         },
-        "jer": "Summer19UL17_JRV2"
+        "jer": "Summer19UL17_JRV2_MC"
     },
     "2018": {
         "jec_mc": "Summer19UL18_V5_MC",
@@ -63,12 +63,12 @@ jerc_dict = {
             "C": "Summer19UL18_RunC_V5_DATA",
             "D": "Summer19UL18_RunD_V5_DATA",
         },
-        "jer": "Summer19UL18_JRV2"
+        "jer": "Summer19UL18_JRV2_MC"
     },
     "2022": {
         "jec_mc"  : "Summer22_22Sep2023_V2_MC",
         "jec_data": "Summer22_22Sep2023_RunCD_V2_DATA",
-        "jer"     : "Summer22_22Sep2023_JRV1"
+        "jer"     : "Summer22_22Sep2023_JRV1_MC"
     },
     "2022EE": {
         "jec_mc": "Summer22EE_22Sep2023_V2_MC",
@@ -77,7 +77,7 @@ jerc_dict = {
             "F": "Summer22EE_22Sep2023_RunF_V2_DATA",
             "G": "Summer22EE_22Sep2023_RunG_V2_DATA",
         },
-        "jer": "Summer22EE_22Sep2023_JRV1"             
+        "jer": "Summer22EE_22Sep2023_JRV1_MC"             
     },
     "2023": {
         "jec_mc": "Summer23Prompt23_V1_MC",
@@ -87,12 +87,12 @@ jerc_dict = {
             "C3": "Summer23Prompt23_RunCv123_V1_DATA",
             "C4": "Summer23Prompt23_RunCv4_V1_DATA",
         },
-        "jer": "Summer23Prompt23_RunCv1234_JRV1"             
+        "jer": "Summer23Prompt23_RunCv1234_JRV1_MC"             
     },
     "2023BPix": {
         "jec_mc"  : "Summer23BPixPrompt23_V1_MC",
         "jec_data": "Summer23BPixPrompt23_RunD_V1_DATA",
-        "jer"     : "Summer23BPixPrompt23_RunD_JRV1"
+        "jer"     : "Summer23BPixPrompt23_RunD_JRV1_MC"
     }
 }
 
@@ -448,12 +448,12 @@ def ApplyJetCorrections(year,isData, era, corr_type):
     if year not in clib_year_map.keys():
         raise Exception(f"Error: Unknown year \"{year}\".")
 
-    jet_algo,jec_tag,jer_tag = get_jerc_keys(year,isdata,era)
+    jet_algo,jec_tag,jer_tag = get_jerc_keys(year,isData,era)
 
     jec_year = year
     if year.startswith("2016"):
         jec_year = "2016preVFP" if year == "2016APV" else "2016postVFP"
-    if int(year.replace("APV", "")) < 2020:
+    if year in ['2016','2016APV','2017','2018','2016postVFP','2016preVFP']:
         jec_year += "_UL"
     if year in ['2022','2022EE','2023','2023BPix']:
         jec_year = year[:4] + '_Summer' + year[2:]
@@ -471,18 +471,18 @@ def ApplyJetCorrections(year,isData, era, corr_type):
             "TimePtEta","RelativeSample","RelativeStatEC","RelativeStatFSR","RelativeStatHF",
             "Total",
     ]
-    jec_regroup_clib = [f"Quad_{jec_tag}_MC_UncertaintySources_{jet_algo}_{jec_type}" for jec_type in jec_types_clib]
+    jec_regroup_clib = [f"Quad_{jec_tag}_UncertaintySources_{jec_type}_{jet_algo}" for jec_type in jec_types_clib]
     jec_names_clib = [
-        f"{jec_tag}_MC_L1FastJet_{jet_algo}",
-        f"{jec_tag}_MC_L2Relative_{jet_algo}",
-        f"{jec_tag}_MC_L3Absolute_{jet_algo}",
-        f"{jec_tag}_MC_L2L3Residual_{jet_algo}",
+        f"{jec_tag}_L1FastJet_{jet_algo}",
+        f"{jec_tag}_L2Relative_{jet_algo}",
+        f"{jec_tag}_L3Absolute_{jet_algo}",
+        f"{jec_tag}_L2L3Residual_{jet_algo}",
     ]
     jer_names_clib = [
-        f"{jer_tag}_MC_SF_{jet_algo}",
-        f"{jer_tag}_MC_PtResolution_{jet_algo}",
+        f"{jer_tag}_SF_{jet_algo}",
+        f"{jer_tag}_PtResolution_{jet_algo}",
     ]
-    if not isdata:
+    if not isData:
         jec_names_clib.extend(jec_regroup_clib)
         jec_names_clib.extend(jer_names_clib)
     jec_names_clib.append(json_path)
@@ -515,17 +515,17 @@ def ApplyJetSystematics(year,cleanedJets,syst_var):
         return cleanedJets.JER.down
     elif (syst_var == 'nominal'):
         return cleanedJets
-    elif (syst_var == f'JES_{year}Up'):
-        return cleanedJets.Total.up
-    elif (syst_var == f'JES_{year}Down'):
-        return cleanedJets.Total.down
+    elif (syst_var == f'JEC_{year}Up'):
+        return cleanedJets.JES_Total.up
+    elif (syst_var == f'JEC_{year}Down'):
+        return cleanedJets.JES_Total.down
     else:
         try:
-            syst = syst_var.split('_')[0]
-            attribute = getattr(syst,cleanedJets)
+            syst = "JES_" + syst_var.split('_')[0]
+            attribute = getattr(cleanedJets,syst)
             if syst_var.endswith('Up'):
                 return attribute.up
-            elif syst_var.endwith('Down'):
+            elif syst_var.endswith('Down'):
                 return attribute.down
         except AttributeError:
             raise ValueError(f"Unsupported systematic variation: {syst_var}")
