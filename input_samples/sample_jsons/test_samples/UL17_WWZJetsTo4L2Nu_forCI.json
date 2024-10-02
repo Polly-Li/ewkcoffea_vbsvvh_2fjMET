@@ -6,7 +6,7 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/ceph/cms/store/user/mdittric/for_ci/for_wwz/WWZJetsTo4L2Nu_4F_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_WWZ_MC_2024_0811/output_7.root"
+        "output_7.root"
     ],
     "nEvents": 2539,
     "nGenEvents": 15778,
