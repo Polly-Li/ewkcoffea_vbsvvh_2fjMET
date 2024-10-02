@@ -6,21 +6,21 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "output_1.root"
+        "/ceph/cms/store/user/mdittric/for_ci/for_wwz/WWZJetsTo4L2Nu_4F_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_WWZ_MC_2024_0811/output_7.root"
     ],
-    "nEvents": 54868,
-    "nGenEvents": 109760,
-    "nSumOfWeights": 227.15914198199997,
+    "nEvents": 2539,
+    "nGenEvents": 15778,
+    "nSumOfWeights": 32.643399267,
     "isData": false,
-    "path": "/cmsuf/data/store/user/kmohrman/test/ci_for_wwz/WWZ_r2",
+    "path": "/ceph/cms/store/user/mdittric/for_ci/for_wwz/WWZJetsTo4L2Nu_4F_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_WWZ_MC_2024_0811/",
     "nSumOfLheWeights": [
-        240.5168487561945,
-        236.51634455287,
-        233.27592728014238,
-        230.91358444751938,
-        224.05776881139798,
-        222.95829859531798,
-        219.4090775656835,
-        216.425230687383
+        34.601452447055,
+        33.99067525397,
+        33.482998717586,
+        33.21474525443,
+        32.160251359945,
+        32.066215144027,
+        31.527674026619998,
+        31.065102701849998
     ]
 }
