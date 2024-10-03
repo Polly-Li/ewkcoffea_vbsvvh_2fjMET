@@ -443,7 +443,7 @@ def run3_pu_attach(pileup,year,sys):
     if sys not in ["nominal","hi","lo"]:
         raise Exception("ERROR: Not a recognized parameter.")
 
-def ApplyJetCorrections(year,isData, era, corr_type):
+def ApplyJetCorrections(year,isData, era):
 
     if year not in clib_year_map.keys():
         raise Exception(f"Error: Unknown year \"{year}\".")
@@ -503,8 +503,6 @@ def ApplyJetCorrections(year,isData, era, corr_type):
     name_map['METphi'] = 'phi'
     name_map['UnClusteredEnergyDeltaX'] = 'MetUnclustEnUpDeltaX'
     name_map['UnClusteredEnergyDeltaY'] = 'MetUnclustEnUpDeltaY'
-    if corr_type == 'met':
-        return CorrectedMETFactory(name_map)
     return CorrectedJetsFactory(name_map, jec_stack)
 
 def ApplyJetSystematics(year,cleanedJets,syst_var):

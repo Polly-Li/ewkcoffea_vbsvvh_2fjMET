@@ -480,20 +480,23 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             ##### JME Stuff #####
 
+            cleanedJets["pt_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.pt
+            cleanedJets["mass_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.mass
+
             if not isData:
-                cleanedJets["pt_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.pt
-                cleanedJets["mass_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.mass
                 cleanedJets["pt_gen"] =ak.values_astype(ak.fill_none(cleanedJets.matched_gen.pt, 0), np.float32)
+            else:
+                cleanedJets["pt_gen"] =ak.ones_like(cleanedJets.pt)
 
-                if year in ["2022","2022EE","2023","2023BPix"]:
-                    cleanedJets["rho"] = ak.broadcast_arrays(events.Rho.fixedGridRhoFastjetAll, cleanedJets.pt)[0]
-                elif year in ["2016APV","2016","2017","2018"]:
-                    cleanedJets["rho"] = ak.broadcast_arrays(events.fixedGridRhoFastjetAll, cleanedJets.pt)[0]
+            if year in ["2022","2022EE","2023","2023BPix"]:
+                cleanedJets["rho"] = ak.broadcast_arrays(events.Rho.fixedGridRhoFastjetAll, cleanedJets.pt)[0]
+            elif year in ["2016APV","2016","2017","2018"]:
+                cleanedJets["rho"] = ak.broadcast_arrays(events.fixedGridRhoFastjetAll, cleanedJets.pt)[0]
 
-                events_cache = events.caches[0]
-                cleanedJets = cor_ec.ApplyJetCorrections(year,isData, era, corr_type='jets').build(cleanedJets, lazy_cache=events_cache)
-                cleanedJets = cor_ec.ApplyJetSystematics(year,cleanedJets,obj_corr_syst_var)
-                #met=ApplyJetCorrections(year,isData, era, corr_type='met').build(met, cleanedJets, lazy_cache=events_cache)
+            events_cache = events.caches[0]
+            cleanedJets = cor_ec.ApplyJetCorrections(year,isData, era).build(cleanedJets,lazy_cache=events_cache,isdata=isData)
+            cleanedJets = cor_ec.ApplyJetSystematics(year,cleanedJets,obj_corr_syst_var)
+            #met=ApplyJetCorrections(year,isData, era, corr_type='met').build(met, cleanedJets, lazy_cache=events_cache)
 
             ##### End of JERC #####
 
