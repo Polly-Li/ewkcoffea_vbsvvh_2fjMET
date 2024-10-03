@@ -6,21 +6,21 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "output_7.root"
+        "output_2.root"
     ],
-    "nEvents": 2539,
-    "nGenEvents": 15778,
-    "nSumOfWeights": 32.643399267,
+    "nEvents": 112603,
+    "nGenEvents": 681198,
+    "nSumOfWeights": 1410.196684038,
     "isData": false,
-    "path": "/ceph/cms/store/user/mdittric/for_ci/for_wwz/WWZJetsTo4L2Nu_4F_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_WWZ_MC_2024_0811/",
+    "path": "/home/users/mdittric/public_html/for_ci/for_wwz/WWZJetsTo4L2Nu_4F_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_WWZ_MC_2024_0811/",
     "nSumOfLheWeights": [
-        34.601452447055,
-        33.99067525397,
-        33.482998717586,
-        33.21474525443,
-        32.160251359945,
-        32.066215144027,
-        31.527674026619998,
-        31.065102701849998
+        1493.9196748783966,
+        1468.0248329944698,
+        1446.9199483633354,
+        1434.4723716873198,
+        1390.039697813769,
+        1385.2237857914258,
+        1362.2975223263684,
+        1342.9391390344656
     ]
 }
