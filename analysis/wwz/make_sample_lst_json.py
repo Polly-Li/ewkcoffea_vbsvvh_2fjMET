@@ -811,33 +811,5 @@ def main():
     #replace_xsec_for_dict_of_samples(central_UL17_bkg_dict,out_dir_bkg)
     #replace_xsec_for_dict_of_samples(central_UL18_bkg_dict,out_dir_bkg)
 
-<<<<<<< HEAD
-    # 4L Skim
-    jsons_path = "../../input_samples/sample_jsons/"
-    out_dir_data = os.path.join(jsons_path,"wwz_analysis_4l_skims_v0/data_samples")
-    os.makedirs(out_dir_data, exist_ok=True)
-    #out_dir_bkg = os.path.join(jsons_path,"wwz_analysis_4l_skims_v0/bkg_samples")
-    #os.makedirs(out_dir_bkg, exist_ok=True)
-    #out_dir_sig = os.path.join(jsons_path,"wwz_analysis_4l_skims_v0/sig_samples")
-    #os.makedirs(out_dir_sig, exist_ok=True)
-
-    #make_jsons_for_dict_of_samples(central_UL16APV_sig_4l_skim_dict, "/data/userdata/phchang/", "2016APV", out_dir_sig, on_das=False)
-    #make_jsons_for_dict_of_samples(central_UL16_sig_4l_skim_dict, "/data/userdata/phchang/", "2016", out_dir_sig, on_das=False)
-    #make_jsons_for_dict_of_samples(central_UL17_sig_4l_skim_dict, "/data/userdata/phchang/", "2017", out_dir_sig, on_das=False)
-    #make_jsons_for_dict_of_samples(central_UL18_sig_4l_skim_dict, "/data/userdata/phchang/", "2018", out_dir_sig, on_das=False)
-
-    #make_jsons_for_dict_of_samples(central_UL16APV_bkg_4l_skim_dict, "/data/userdata/phchang/", "2016APV", out_dir_bkg, on_das=False)
-    #make_jsons_for_dict_of_samples(central_UL16_bkg_4l_skim_dict, "/data/userdata/phchang/", "2016", out_dir_bkg, on_das=False)
-    #make_jsons_for_dict_of_samples(central_UL17_bkg_4l_skim_dict, "/data/userdata/phchang/", "2017", out_dir_bkg, on_das=False)
-    #make_jsons_for_dict_of_samples(central_UL18_bkg_4l_skim_dict, "/data/userdata/phchang/", "2018", out_dir_bkg, on_das=False)
-
-    #make_jsons_for_dict_of_samples(data_UL16APV_4l_skim_dict , "/data/userdata/phchang/", "2016APV", out_dir_data, on_das=False)
-    #make_jsons_for_dict_of_samples(data_UL16_4l_skim_dict , "/data/userdata/phchang/", "2016", out_dir_data, on_das=False)
-    #make_jsons_for_dict_of_samples(data_UL17_4l_skim_dict , "/data/userdata/phchang/", "2017", out_dir_data, on_das=False)
-    #make_jsons_for_dict_of_samples(data_UL18_4l_skim_dict , "/data/userdata/phchang/", "2018", out_dir_data, on_das=False)
-
-
-=======
->>>>>>> main
 if __name__ == "__main__":
     main()

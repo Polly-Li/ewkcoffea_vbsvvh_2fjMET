@@ -9,7 +9,6 @@ from coffea import lookup_tools
 from topcoffea.modules.paths import topcoffea_path
 from ewkcoffea.modules.paths import ewkcoffea_path
 from topcoffea.modules.CorrectedJetsFactory import CorrectedJetsFactory
-from coffea.jetmet_tools import CorrectedMETFactory
 
 extLepSF = lookup_tools.extractor()
 
@@ -42,7 +41,7 @@ jerc_dict = {
             "E": "Summer19UL16APV_RunEF_V7_DATA",
             "F": "Summer19UL16APV_RunEF_V7_DATA",
         },
-        "jer": "Summer20UL16APV_JRV3_MC"             
+        "jer": "Summer20UL16APV_JRV3_MC"
     },
     "2017": {
         "jec_mc": "Summer19UL17_V5_MC",
@@ -77,7 +76,7 @@ jerc_dict = {
             "F": "Summer22EE_22Sep2023_RunF_V2_DATA",
             "G": "Summer22EE_22Sep2023_RunG_V2_DATA",
         },
-        "jer": "Summer22EE_22Sep2023_JRV1_MC"             
+        "jer": "Summer22EE_22Sep2023_JRV1_MC"
     },
     "2023": {
         "jec_mc": "Summer23Prompt23_V1_MC",
@@ -87,7 +86,7 @@ jerc_dict = {
             "C3": "Summer23Prompt23_RunCv123_V1_DATA",
             "C4": "Summer23Prompt23_RunCv4_V1_DATA",
         },
-        "jer": "Summer23Prompt23_RunCv1234_JRV1_MC"             
+        "jer": "Summer23Prompt23_RunCv1234_JRV1_MC"
     },
     "2023BPix": {
         "jec_mc"  : "Summer23BPixPrompt23_V1_MC",
@@ -463,13 +462,13 @@ def ApplyJetCorrections(year,isData, era):
     #json_path = topcoffea_path(f"data/POG/JME/{jec_year}/fatjet_jerc.json.gz")
 
     jec_types_clib = [
-            "AbsoluteMPFBias","AbsoluteScale","FlavorQCD","Fragmentation","PileUpDataMC",
-            "PileUpPtBB","PileUpPtEC1","PileUpPtEC2","PileUpPtHF","PileUpPtRef",
-            "RelativeFSR","RelativeJERHF","RelativePtBB","RelativePtHF","RelativeBal",
-            "SinglePionECAL","SinglePionHCAL",
-            "AbsoluteStat","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2",
-            "TimePtEta","RelativeSample","RelativeStatEC","RelativeStatFSR","RelativeStatHF",
-            "Total",
+        "AbsoluteMPFBias","AbsoluteScale","FlavorQCD","Fragmentation","PileUpDataMC",
+        "PileUpPtBB","PileUpPtEC1","PileUpPtEC2","PileUpPtHF","PileUpPtRef",
+        "RelativeFSR","RelativeJERHF","RelativePtBB","RelativePtHF","RelativeBal",
+        "SinglePionECAL","SinglePionHCAL",
+        "AbsoluteStat","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2",
+        "TimePtEta","RelativeSample","RelativeStatEC","RelativeStatFSR","RelativeStatHF",
+        "Total",
     ]
     jec_regroup_clib = [f"Quad_{jec_tag}_UncertaintySources_{jec_type}_{jet_algo}" for jec_type in jec_types_clib]
     jec_names_clib = [
