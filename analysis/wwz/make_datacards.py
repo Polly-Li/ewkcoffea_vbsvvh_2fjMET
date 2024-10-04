@@ -445,6 +445,7 @@ def get_kappa_dict(in_dict_mc,in_dict_data,yrs_lst):
                         # One known case of this: FSR for ttZ for sr_4l_bdt_of_1 for r3
                         #   - Does not matter since we don't use this bin, so skip it
                         #   - Super super hard coded skip for this case:
+                        print("Kappas in same direction, but for a bin that's not used. So we don't care right now.")
                     else:
                         # Otherwise raise an error, we should stop and take a look at what's happening
                         raise Exception(f"Both Kappas Neagtive for process: {proc}, category: {cat}, systematic: {sys}")
