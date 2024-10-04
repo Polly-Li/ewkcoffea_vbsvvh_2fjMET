@@ -1,0 +1,30 @@
+{
+    "xsec": 1.0,
+    "year": "2017",
+    "treeName": "Events",
+    "histAxisName": "UL17_data",
+    "options": "",
+    "era": "D",
+    "WCnames": [],
+    "files": [
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2017/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_8.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2017/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_6.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2017/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_11.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2017/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_13.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2017/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_5.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2017/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_7.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2017/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_10.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2017/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_12.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2017/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_1.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2017/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_4.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2017/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_3.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2017/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_9.root",
+        "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2017/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/output_2.root"
+    ],
+    "nEvents": 692724,
+    "nGenEvents": 692724,
+    "nSumOfWeights": 692724,
+    "isData": true,
+    "path": "/store/user/mdittric/skim/WWZ_Dilepton_Run2_09112024/data/2017/MuonEG_Run2017D-UL2017_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Dilepton_Run2_09112024/",
+    "nSumOfLheWeights": null
+}
