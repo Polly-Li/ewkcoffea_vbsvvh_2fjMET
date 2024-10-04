@@ -633,8 +633,8 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
 
     for var_name in histo_dict.keys():
         #print(f"\n{var_name}")
-        if var_name != "njets": continue
-        #if var_name not in TMP_VAR_LST: continue
+        #if var_name != "njets": continue
+        if var_name not in TMP_VAR_LST: continue
         histo = histo_dict[var_name]
 
         cat_lst = [
@@ -728,22 +728,22 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 mc_down_arr = mc_down[{"process_grp":sum}].values()
 
                 # Print individual syst numbers
-                if var_name != "njets": continue
-                n = sum(sum(mc_nom.values()))
-                u = sum(mc_up_arr)
-                d = sum(mc_down_arr)
-                print("\n",syst)
-                print("nom",n)
-                print("up",u)
-                print("do",d)
-                r_up = abs((n-u)/n)
-                r_do = abs((n-d)/n)
-                r = (r_up+r_do)/2
-                print("err",np.round(100*abs(n-u)/n,1),"%")
-                print("err up",np.round(100*r_up,1),"%")
-                print("err do",np.round(100*r_do,1),"%")
-                print("err do",np.round(100*r,1),"%")
-                continue
+                #if var_name != "njets": continue
+                #n = sum(sum(mc_nom.values()))
+                #u = sum(mc_up_arr)
+                #d = sum(mc_down_arr)
+                #print("\n",syst)
+                #print("nom",n)
+                #print("up",u)
+                #print("do",d)
+                #r_up = abs((n-u)/n)
+                #r_do = abs((n-d)/n)
+                #r = (r_up+r_do)/2
+                #print("err",np.round(100*abs(n-u)/n,1),"%")
+                #print("err up",np.round(100*r_up,1),"%")
+                #print("err do",np.round(100*r_do,1),"%")
+                #print("err do",np.round(100*r,1),"%")
+                #continue
 
                 fig = make_syst_fig(mc_nom,mc_up_arr,mc_down_arr,syst,title=f"{var_name}_{yeartag}_{cat}_{syst}")
 
@@ -1081,8 +1081,8 @@ def main():
 
     # Make plots
     if args.make_plots:
-        #make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path,apply_nsf_to_cr=False)
-        make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
+        make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path,apply_nsf_to_cr=False)
+        #make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
         #make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data,args.ul_year,ana_type="cb") # Make plot of all SR yields in one plot
 
 
