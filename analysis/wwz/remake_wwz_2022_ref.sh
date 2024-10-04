@@ -3,7 +3,7 @@
 
 # Get the file the CI uses, and move it to the directory the JSON expects
 printf "\nDownloading root file...\n"
-wget -nc http://uaf-10.t2.ucsd.edu/~kmohrman/for_ci/for_wwz/WWZto4L2Nu_4F_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_Run3_MC_4L_04022024_Loose/output_7.root
+wget -nc http://uaf-10.t2.ucsd.edu/~mdittric/for_ci/for_wwz/WWZto4L2Nu_4F_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2_NANOAODSIM_WWZ_MC_2024_0811/output_9.root
 
 # Run the processor
 printf "\nRunning the processor...\n"
