@@ -438,7 +438,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
 
-        do_full_list = True # toggle switch for total uncertainty or full 27
+        do_full_list = False # toggle switch for total uncertainty or full 27
 
         if do_full_list:
             obj_correction_systs = [

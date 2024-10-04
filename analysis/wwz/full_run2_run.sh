@@ -16,7 +16,7 @@
 ### Examples with 4l skims configs ### (ONLY WORKS AT UAF. SAMPLES HAVE NOT BEEN MOVED TO HPG!)
 
 # Run at scale with futures
-time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_run2_v1.cfg -x futures -n 200 -s 100000000 -o r2_jerc_nom
+time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_run2_v1.cfg -x futures -n 200 -s 100000000 -o r2_wwz_histos_nosyst
 #time python run_wwz4l.py ../../input_samples/cfgs/wwz_analysis/samples_4lskim_run2_v1.cfg -x futures -n 200 -s 100000000 -o r2_wwz_histos_withSyst --hist-list njets njets_counts --do-systs
 
 # Run with the siphon turned on (might want to comment out data in the input cfg)
