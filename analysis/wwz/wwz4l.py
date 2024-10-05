@@ -425,14 +425,15 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Set up the list of systematics that are handled via event weight variations
         wgt_correction_syst_lst_common = [
-            "btagSFbc_correlated", f"btagSFbc_uncorrelated_{year}",
+            "btagSFbc_correlated", "btagSFlight_correlated", f"btagSFbc_uncorrelated_{year}",
             f"lepSF_elec_{run_tag}", f"lepSF_muon_{run_tag}", "PU",
             "renorm", "fact", "ISR", "FSR",
         ]
+        wgt_correction_syst_lst = wgt_correction_syst_lst_common
         if not (is2022 or is2023):
-            wgt_correction_syst_lst = wgt_correction_syst_lst_common + ["PreFiring","btagSFlight_correlated",f"btagSFlight_uncorrelated_{year}"]
-        else:
-            wgt_correction_syst_lst = wgt_correction_syst_lst_common + ["btagSFlight"]
+            # These are only for R2
+            wgt_correction_syst_lst = wgt_correction_syst_lst + ["PreFiring",f"btagSFlight_uncorrelated_{year}"]
+
         wgt_correction_syst_lst = append_up_down_to_sys_base(wgt_correction_syst_lst)
 
 
@@ -604,7 +605,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                         wgt_light_up   = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light_up, jets_light.btagDeepFlavB>btagwpl)
                         wgt_light_down = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light_down, jets_light.btagDeepFlavB>btagwpl)
                         # Note, up and down weights scaled by 1/wgt_btag_nom so that don't double count the central btag correction (i.e. don't apply it also in the case of up and down variations)
-                        weights_obj_base_for_kinematic_syst.add("btagSFlight", events.nom, wgt_light_up*wgt_bc/wgt_btag_nom, wgt_light_down*wgt_bc/wgt_btag_nom)
+                        weights_obj_base_for_kinematic_syst.add("btagSFlight_correlated", events.nom, wgt_light_up*wgt_bc/wgt_btag_nom, wgt_light_down*wgt_bc/wgt_btag_nom)
 
                     # Run2 btagging systematics stuff
                     else:
