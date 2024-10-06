@@ -1020,7 +1020,7 @@ def main():
 
         # Get the ref dict, for the relevant year
         if args.ul_year in ["run2","UL18","UL17","UL16","UL16APV"]: ref_ylds = ref_dict=yd.EWK_REF
-        if args.ul_year in ["run3","y22","y23","2022","2022EE","2023","2023BPix"]: ref_ylds = ref_dict=yd.EWK_REF_2022
+        if args.ul_year in ["run3","y22","y23","2022","2022EE","2023","2023BPix"]: ref_ylds = ref_dict=yd.EWK_REF_R3
 
         # Dump latex table for cutflow
         # Might want to swap order of rows and columns in print_yields
