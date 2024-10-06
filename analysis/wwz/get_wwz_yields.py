@@ -686,30 +686,18 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 #if "ISR" not in syst and "FSR" not in syst: continue
                 #if "renorm" not in syst and "fact" not in syst: continue
 
-                if (("uncorrelated" in syst) or (syst.startswith("JER"))):
-                    if "2016APV" in syst:
-                        blacklist_years = ["2016","2017","2018","2022","2022EE"]
-                    elif "2016" in syst:
-                        blacklist_years = ["2016APV","2017","2018","2022","2022EE"]
-                    elif "2017" in syst:
-                        blacklist_years = ["2016APV","2016","2018","2022","2022EE"]
-                    elif "2018" in syst:
-                        blacklist_years = ["2016APV","2016","2017","2022","2022EE"]
-                    elif "2022" in syst:
-                        blacklist_years = ["2016APV","2016","2017","2018","2022EE"]
-                    elif "2022EE" in syst:
-                        blacklist_years = ["2016APV","2016","2017","2018","2022"]
-                else:
-                    # Skip the variations that don't apply (TODO: why are these in the hist to begin with??)
-                    if year == "UL16APV": blacklist_years = ["2016","2017","2018","2022","2022EE"]
-                    if year == "UL16": blacklist_years = ["2016APV","2017","2018","2022","2022EE"]
-                    if year == "UL17": blacklist_years = ["2016APV","2016","2018","2022","2022EE"]
-                    if year == "UL18": blacklist_years = ["2016APV","2016","2017","2022","2022EE"]
-                    if year == "2022": blacklist_years = ["2016APV","2016","2017","2018","2022EE"]
-                    if year == "2022EE": blacklist_years = ["2016APV","2016","2017","2018","2022"]
-                    if year == "run3": blacklist_years = ["2016APV","2016","2017","2018"]
-                    if year == "run2": blacklist_years = ["2022","2022EE"]
-                    if year == "all": blacklist_years = []
+                # Skip the variations that don't apply (TODO: why are these in the hist to begin with??)
+                if year == "UL16APV": blacklist_years = ["2016","2017","2018","2022","2022EE","2023","2023BPix"]
+                if year == "UL16": blacklist_years = ["2016APV","2017","2018","2022","2022EE","2023","2023BPix"]
+                if year == "UL17": blacklist_years = ["2016APV","2016","2018","2022","2022EE","2023","2023BPix"]
+                if year == "UL18": blacklist_years = ["2016APV","2016","2017","2022","2022EE","2023","2023BPix"]
+                if year == "2022": blacklist_years = ["2016APV","2016","2017","2018","2022EE","2023","2023BPix"]
+                if year == "2022EE": blacklist_years = ["2016APV","2016","2017","2018","2022","2023","2023BPix"]
+                if year == "2023": blacklist_years = ["2016APV","2016","2017","2018","2022","2022EE","2023BPix"]
+                if year == "2023BPix": blacklist_years = ["2016APV","2016","2017","2018","2022","2022EE","2023"]
+                if year == "run3": blacklist_years = ["2016APV","2016","2017","2018"]
+                if year == "run2": blacklist_years = ["2022","2022EE","2023","2023BPix"]
+                if year == "all": blacklist_years = []
                 skip = False
                 for y in blacklist_years:
                     if syst.endswith(y):

@@ -525,3 +525,44 @@ def ApplyJetSystematics(year,cleanedJets,syst_var):
                 return attribute.down
         except AttributeError:
             raise ValueError(f"Unsupported systematic variation: {syst_var}")
+
+def ApplyJetVetoMaps(jets,year):
+
+    # Get the right json and key
+    if year in ['2016','2016APV','2017','2018']:
+        raise Exception("We do not apply jet veto maps to run 2!") 
+    elif year == "2022":
+        fname = ewkcoffea_path("data/wwz_jerc/2022_jerc/jetvetomaps.json")
+        key = "Summer22_23Sep2023_RunCD_V1"
+    elif year == "2022EE":
+        fname = ewkcoffea_path("data/wwz_jerc/2022EE_jerc/jetvetomaps.json")
+        key = "Summer22EE_23Sep2023_RunEFG_V1"
+    elif year == "2023":
+        fname = ewkcoffea_path("data/wwz_jerc/2023_jerc/jetvetomaps.json")
+        key = "Summer23Prompt23_RunC_V1"
+    elif year == "2023BPix":
+        fname = ewkcoffea_path("data/wwz_jerc/2023BPix_jerc/jetvetomaps.json")
+        key = "Summer23BPixPrompt23_RunD_V1"
+    else:
+        raise Exception("Unrecognized year. Exciting!")
+
+    # Grab the json
+    ceval = correctionlib.CorrectionSet.from_file(fname)
+
+    # Flatten the inputs
+    eta_flat = ak.flatten(jets.eta)
+    phi_flat = ak.flatten(jets.phi)
+
+    #Put mins and maxes on the accepted values 
+    eta_flat_bound = ak.where(eta_flat>5.19,5.19,ak.where(eta_flat<-5.19,-5.19,eta_flat))
+    phi_flat_bound = ak.where(phi_flat>3.14159,3.14159,ak.where(phi_flat<-3.14159,-3.14159,phi_flat))
+
+    #Get pass/fail values for each jet (0 is pass and >0 is fail)
+    jet_vetomap_flat = ceval[key].evaluate('jetvetomap',eta_flat_bound,phi_flat_bound)
+
+    #Unflatten the array
+    jet_vetomap_score = ak.unflatten(jet_vetomap_flat,ak.num(jets.phi))
+
+    #Sum the outputs for each event (if the sum is >0, the event will fail)
+    veto_map_event = ak.sum(jet_vetomap_score, axis=-1)
+    return veto_map_event
