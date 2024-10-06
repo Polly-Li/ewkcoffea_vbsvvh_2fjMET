@@ -243,9 +243,9 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Era Needed for all samples
         if isData:
             era = self._samples[json_name]["era"]
-            era_trig_check = era if (is2022 or is2023) else None
         else:
-            era = era_trig_check = None
+            era = None
+
 
         # Get up down weights from input dict
         if (self._do_systematics and not isData):
@@ -495,10 +495,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 cleanedJets["pt_gen"] =ak.ones_like(cleanedJets.pt)
 
             # Need to broadcast Rho to have same structure as cleanedJets
-            if year in ["2022","2022EE","2023","2023BPix"]:
-                cleanedJets["rho"] = ak.broadcast_arrays(rho, cleanedJets.pt)[0]
-            elif year in ["2016APV","2016","2017","2018"]:
-                cleanedJets["rho"] = ak.broadcast_arrays(rho, cleanedJets.pt)[0]
+            cleanedJets["rho"] = ak.broadcast_arrays(rho, cleanedJets.pt)[0]
 
             events_cache = events.caches[0] # used for storing intermediary values for corrections
             cleanedJets = cor_ec.ApplyJetCorrections(year,isData, era).build(cleanedJets,lazy_cache=events_cache,isdata=isData)
@@ -637,7 +634,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             ######### Masks we need for the selection ##########
 
             # Pass trigger mask
-            pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=era_trig_check)
+            era_for_trg_check = era
+            if not (is2022 or is2023):
+                # Era not used for R2
+                era_for_trg_check = None
+            pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=era_for_trg_check)
             pass_trg = (pass_trg & es_ec.trg_matching(events,year))
 
             # b jet masks
