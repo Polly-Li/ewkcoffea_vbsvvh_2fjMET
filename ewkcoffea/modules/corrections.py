@@ -530,7 +530,7 @@ def ApplyJetVetoMaps(jets,year):
 
     # Get the right json and key
     if year in ['2016','2016APV','2017','2018']:
-        raise Exception("We do not apply jet veto maps to run 2!") 
+        raise Exception("We do not apply jet veto maps to run 2!")
     elif year == "2022":
         fname = ewkcoffea_path("data/wwz_jerc/2022_jerc/jetvetomaps.json")
         key = "Summer22_23Sep2023_RunCD_V1"
@@ -553,7 +553,7 @@ def ApplyJetVetoMaps(jets,year):
     eta_flat = ak.flatten(jets.eta)
     phi_flat = ak.flatten(jets.phi)
 
-    #Put mins and maxes on the accepted values 
+    #Put mins and maxes on the accepted values
     eta_flat_bound = ak.where(eta_flat>5.19,5.19,ak.where(eta_flat<-5.19,-5.19,eta_flat))
     phi_flat_bound = ak.where(phi_flat>3.14159,3.14159,ak.where(phi_flat<-3.14159,-3.14159,phi_flat))
 
