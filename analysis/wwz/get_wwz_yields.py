@@ -17,6 +17,7 @@ import ewkcoffea.modules.yield_tools as yt
 import ewkcoffea.modules.sample_groupings as sg
 
 import yld_dicts_for_comp as yd
+import for_jec_27_var as jecref
 
 # This script opens a pkl file of histograms produced by wwz processor
 # Reads the histograms and dumps out the yields for each group of processes
@@ -98,121 +99,6 @@ SOVERROOTSPLUSB = "$S/\sqrt{S+B}$"
 
 
 
-JERC_LST = [
-    "AbsoluteMPFBias_correlated",
-    "AbsoluteScale_correlated",
-    "FlavorQCD_correlated",
-    "Fragmentation_correlated",
-    "PileUpDataMC_correlated",
-    "PileUpPtBB_correlated",
-    "PileUpPtEC1_correlated",
-    "PileUpPtEC2_correlated",
-    "PileUpPtHF_correlated",
-    "PileUpPtRef_correlated",
-    "RelativeFSR_correlated",
-    "RelativeJERHF_correlated",
-    "RelativePtBB_correlated",
-    "RelativePtHF_correlated",
-    "RelativeBal_correlated",
-    "SinglePionECAL_correlated",
-    "SinglePionHCAL_correlated",
-
-    "AbsoluteStat_uncorrelated_2016APV",
-    "RelativeJEREC1_uncorrelated_2016APV",
-    "RelativeJEREC2_uncorrelated_2016APV",
-    "RelativePtEC1_uncorrelated_2016APV",
-    "RelativePtEC2_uncorrelated_2016APV",
-    "TimePtEta_uncorrelated_2016APV",
-    "RelativeSample_uncorrelated_2016APV",
-    "RelativeStatEC_uncorrelated_2016APV",
-    "RelativeStatFSR_uncorrelated_2016APV",
-    "RelativeStatHF_uncorrelated_2016APV",
-    "JER_2016APV",
-
-    "AbsoluteStat_uncorrelated_2016",
-    "RelativeJEREC1_uncorrelated_2016",
-    "RelativeJEREC2_uncorrelated_2016",
-    "RelativePtEC1_uncorrelated_2016",
-    "RelativePtEC2_uncorrelated_2016",
-    "TimePtEta_uncorrelated_2016",
-    "RelativeSample_uncorrelated_2016",
-    "RelativeStatEC_uncorrelated_2016",
-    "RelativeStatFSR_uncorrelated_2016",
-    "RelativeStatHF_uncorrelated_2016",
-    "JER_2016",
-
-    "AbsoluteStat_uncorrelated_2017",
-    "RelativeJEREC1_uncorrelated_2017",
-    "RelativeJEREC2_uncorrelated_2017",
-    "RelativePtEC1_uncorrelated_2017",
-    "RelativePtEC2_uncorrelated_2017",
-    "TimePtEta_uncorrelated_2017",
-    "RelativeSample_uncorrelated_2017",
-    "RelativeStatEC_uncorrelated_2017",
-    "RelativeStatFSR_uncorrelated_2017",
-    "RelativeStatHF_uncorrelated_2017",
-    "JER_2017",
-
-    "AbsoluteStat_uncorrelated_2018",
-    "RelativeJEREC1_uncorrelated_2018",
-    "RelativeJEREC2_uncorrelated_2018",
-    "RelativePtEC1_uncorrelated_2018",
-    "RelativePtEC2_uncorrelated_2018",
-    "TimePtEta_uncorrelated_2018",
-    "RelativeSample_uncorrelated_2018",
-    "RelativeStatEC_uncorrelated_2018",
-    "RelativeStatFSR_uncorrelated_2018",
-    "RelativeStatHF_uncorrelated_2018",
-    "JER_2018",
-
-    "AbsoluteStat_uncorrelated_2022",
-    "RelativeJEREC1_uncorrelated_2022",
-    "RelativeJEREC2_uncorrelated_2022",
-    "RelativePtEC1_uncorrelated_2022",
-    "RelativePtEC2_uncorrelated_2022",
-    "TimePtEta_uncorrelated_2022",
-    "RelativeSample_uncorrelated_2022",
-    "RelativeStatEC_uncorrelated_2022",
-    "RelativeStatFSR_uncorrelated_2022",
-    "RelativeStatHF_uncorrelated_2022",
-    "JER_2022",
-
-    "AbsoluteStat_uncorrelated_2022EE",
-    "RelativeJEREC1_uncorrelated_2022EE",
-    "RelativeJEREC2_uncorrelated_2022EE",
-    "RelativePtEC1_uncorrelated_2022EE",
-    "RelativePtEC2_uncorrelated_2022EE",
-    "TimePtEta_uncorrelated_2022EE",
-    "RelativeSample_uncorrelated_2022EE",
-    "RelativeStatEC_uncorrelated_2022EE",
-    "RelativeStatFSR_uncorrelated_2022EE",
-    "RelativeStatHF_uncorrelated_2022EE",
-    "JER_2022EE",
-
-    "AbsoluteStat_uncorrelated_2023",
-    "RelativeJEREC1_uncorrelated_2023",
-    "RelativeJEREC2_uncorrelated_2023",
-    "RelativePtEC1_uncorrelated_2023",
-    "RelativePtEC2_uncorrelated_2023",
-    "TimePtEta_uncorrelated_2023",
-    "RelativeSample_uncorrelated_2023",
-    "RelativeStatEC_uncorrelated_2023",
-    "RelativeStatFSR_uncorrelated_2023",
-    "RelativeStatHF_uncorrelated_2023",
-    "JER_2023",
-
-    "AbsoluteStat_uncorrelated_2023BPix",
-    "RelativeJEREC1_uncorrelated_2023BPix",
-    "RelativeJEREC2_uncorrelated_2023BPix",
-    "RelativePtEC1_uncorrelated_2023BPix",
-    "RelativePtEC2_uncorrelated_2023BPix",
-    "TimePtEta_uncorrelated_2023BPix",
-    "RelativeSample_uncorrelated_2023BPix",
-    "RelativeStatEC_uncorrelated_2023BPix",
-    "RelativeStatFSR_uncorrelated_2023BPix",
-    "RelativeStatHF_uncorrelated_2023BPix",
-    "JER_2023BPix",
-]
 
 
 ################### Getting and printing yields ###################
@@ -677,7 +563,7 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
             data_nom = merge_overflow(histo_grouped_data[{"systematic":"nominal"}])
 
             for syst in syst_var_lst:
-                if syst not in JERC_LST: continue
+                if syst not in jecref.JERC_LST: continue
                 #if "btag" not in syst: continue
                 #if "uncorrelated" not in syst: continue
                 #if "lepSF" not in syst: continue
