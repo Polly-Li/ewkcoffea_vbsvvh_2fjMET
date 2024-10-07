@@ -13,7 +13,7 @@
             null
         ],
         "sr_4l_sf_A_counts": [
-            25.0,
+            23.0,
             null
         ],
         "sr_4l_sf_B_counts": [
@@ -37,7 +37,7 @@
             null
         ],
         "sr_4l_of_4_counts": [
-            47.0,
+            46.0,
             null
         ],
         "all_events_counts": [
@@ -49,27 +49,27 @@
             null
         ],
         "sr_4l_sf_counts": [
-            54.0,
+            52.0,
             null
         ],
         "sr_4l_of_counts": [
-            82.0,
+            81.0,
             null
         ],
         "sr_4l_sf_incl_counts": [
-            55.0,
+            53.0,
             null
         ],
         "sr_4l_of_incl_counts": [
-            94.0,
+            93.0,
             null
         ],
         "cr_4l_btag_of_counts": [
-            9.0,
+            8.0,
             null
         ],
         "cr_4l_btag_sf_offZ_met80_counts": [
-            16.0,
+            15.0,
             null
         ],
         "cr_4l_sf_counts": [
@@ -77,11 +77,11 @@
             null
         ],
         "cr_4l_btag_of_1b_counts": [
-            9.0,
+            8.0,
             null
         ],
         "cr_4l_btag_sf_offZ_met80_1b_counts": [
-            14.0,
+            13.0,
             null
         ],
         "cr_4l_btag_sf_offZ_met80_2b_counts": [
@@ -89,7 +89,7 @@
             null
         ],
         "sr_4l_bdt_sf_1_counts": [
-            15.0,
+            14.0,
             null
         ],
         "sr_4l_bdt_sf_2_counts": [
@@ -101,7 +101,7 @@
             null
         ],
         "sr_4l_bdt_sf_4_counts": [
-            12.0,
+            11.0,
             null
         ],
         "sr_4l_bdt_sf_5_counts": [
@@ -121,11 +121,11 @@
             null
         ],
         "sr_4l_bdt_sf_coarse_1_counts": [
-            25.0,
+            24.0,
             null
         ],
         "sr_4l_bdt_sf_coarse_2_counts": [
-            29.0,
+            28.0,
             null
         ],
         "sr_4l_bdt_sf_coarse_3_counts": [
@@ -141,7 +141,7 @@
             null
         ],
         "sr_4l_bdt_of_3_counts": [
-            36.0,
+            35.0,
             null
         ],
         "sr_4l_bdt_of_4_counts": [
@@ -169,7 +169,7 @@
             null
         ],
         "sr_4l_bdt_of_coarse_2_counts": [
-            54.0,
+            53.0,
             null
         ],
         "sr_4l_bdt_of_coarse_3_counts": [
@@ -181,7 +181,7 @@
             null
         ],
         "sr_4l_bdt_sf_wwz_counts": [
-            54.0,
+            52.0,
             null
         ],
         "sr_4l_bdt_sf_zh_counts": [
@@ -189,7 +189,7 @@
             null
         ],
         "sr_4l_bdt_of_wwz_counts": [
-            78.0,
+            77.0,
             null
         ],
         "sr_4l_bdt_of_zh_counts": [
@@ -197,23 +197,23 @@
             null
         ],
         "sr_4l_bdt_sf_presel_counts": [
-            92.0,
+            88.0,
             null
         ],
         "sr_4l_bdt_sf_trn_counts": [
-            63.0,
+            61.0,
             null
         ],
         "sr_4l_bdt_of_presel_counts": [
-            94.0,
+            93.0,
             null
         ],
         "sr_4l_bdt_of_trn_counts": [
-            94.0,
+            93.0,
             null
         ],
         "sr_4l_sf_A": [
-            0.10921293724478928,
+            0.10349767693393327,
             null
         ],
         "sr_4l_sf_B": [
@@ -237,7 +237,7 @@
             null
         ],
         "sr_4l_of_4": [
-            0.24625053591410728,
+            0.23887344026435295,
             null
         ],
         "all_events": [
@@ -249,27 +249,27 @@
             null
         ],
         "sr_4l_sf": [
-            0.26501881196803556,
+            0.25930355165717955,
             null
         ],
         "sr_4l_of": [
-            0.4470915536736803,
+            0.43971445802392595,
             null
         ],
         "sr_4l_sf_incl": [
-            0.2752886575455852,
+            0.2695733972347292,
             null
         ],
         "sr_4l_of_incl": [
-            0.49473316997120115,
+            0.4873560743214468,
             null
         ],
         "cr_4l_btag_of": [
-            0.06836240951717369,
+            0.05870526173052004,
             null
         ],
         "cr_4l_btag_sf_offZ_met80": [
-            0.07358513165412564,
+            0.07003993262204042,
             null
         ],
         "cr_4l_sf": [
@@ -277,11 +277,11 @@
             null
         ],
         "cr_4l_btag_of_1b": [
-            0.06836240951717369,
+            0.05870526173052004,
             null
         ],
         "cr_4l_btag_sf_offZ_met80_1b": [
-            0.0650065159116962,
+            0.061461316879610976,
             null
         ],
         "cr_4l_btag_sf_offZ_met80_2b": [
@@ -289,7 +289,7 @@
             null
         ],
         "sr_4l_bdt_sf_1": [
-            0.056920340464992204,
+            0.05576102640184927,
             null
         ],
         "sr_4l_bdt_sf_2": [
@@ -301,7 +301,7 @@
             null
         ],
         "sr_4l_bdt_sf_4": [
-            0.07596589343606439,
+            0.07054414242657334,
             null
         ],
         "sr_4l_bdt_sf_5": [
@@ -321,11 +321,11 @@
             null
         ],
         "sr_4l_bdt_sf_coarse_1": [
-            0.12385102705576385,
+            0.12269171299262091,
             null
         ],
         "sr_4l_bdt_sf_coarse_2": [
-            0.1458380512983073,
+            0.14041630028881624,
             null
         ],
         "sr_4l_bdt_sf_coarse_3": [
@@ -341,7 +341,7 @@
             null
         ],
         "sr_4l_bdt_of_3": [
-            0.16608310717950456,
+            0.1587060115297502,
             null
         ],
         "sr_4l_bdt_of_4": [
@@ -369,7 +369,7 @@
             null
         ],
         "sr_4l_bdt_of_coarse_2": [
-            0.2683264637036047,
+            0.26094936805385033,
             null
         ],
         "sr_4l_bdt_of_coarse_3": [
@@ -381,7 +381,7 @@
             null
         ],
         "sr_4l_bdt_sf_wwz": [
-            0.26968907835407113,
+            0.2631080132814371,
             null
         ],
         "sr_4l_bdt_sf_zh": [
@@ -389,7 +389,7 @@
             null
         ],
         "sr_4l_bdt_of_wwz": [
-            0.4013894973887651,
+            0.39401240173901075,
             null
         ],
         "sr_4l_bdt_of_zh": [
@@ -397,19 +397,19 @@
             null
         ],
         "sr_4l_bdt_sf_presel": [
-            0.5272976446943671,
+            0.513486184393534,
             null
         ],
         "sr_4l_bdt_sf_trn": [
-            0.32572255633264163,
+            0.3191414912600076,
             null
         ],
         "sr_4l_bdt_of_presel": [
-            0.49473316997120115,
+            0.4873560743214468,
             null
         ],
         "sr_4l_bdt_of_trn": [
-            0.49473316997120115,
+            0.4873560743214468,
             null
         ]
     }
