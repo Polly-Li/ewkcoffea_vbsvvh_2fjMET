@@ -1,8 +1,8 @@
 
 # This is a file for things related to the 27 JEC variations
-#   - For things that would be too long and messy to keep in our regular scripts, but want to keep them around for reference 
-#   - If we ever have to actually move to using the 27 variations, we should probably figure out a cleaner way to do these things 
-#   - But as it stands, it's not worth the effort 
+#   - For things that would be too long and messy to keep in our regular scripts, but want to keep them around for reference
+#   - If we ever have to actually move to using the 27 variations, we should probably figure out a cleaner way to do these things
+#   - But as it stands, it's not worth the effort
 
 
 # JERC Syst List
