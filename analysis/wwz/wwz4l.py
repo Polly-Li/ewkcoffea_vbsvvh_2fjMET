@@ -439,24 +439,21 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
 
-        do_full_list = False # toggle switch for total uncertainty or full 27
+        do_full_jec_list = False # toggle switch for total uncertainty or full 27
 
-        if do_full_list:
+        if do_full_jec_list:
             obj_correction_systs = [
                 "AbsoluteMPFBias_correlated","AbsoluteScale_correlated","FlavorQCD_correlated","Fragmentation_correlated","PileUpDataMC_correlated",
                 "PileUpPtBB_correlated","PileUpPtEC1_correlated","PileUpPtEC2_correlated","PileUpPtHF_correlated","PileUpPtRef_correlated",
                 "RelativeFSR_correlated","RelativeJERHF_correlated","RelativePtBB_correlated","RelativePtHF_correlated","RelativeBal_correlated",
                 "SinglePionECAL_correlated","SinglePionHCAL_correlated",
-
                 f"AbsoluteStat_uncorrelated_{year}",f"RelativeJEREC1_uncorrelated_{year}",f"RelativeJEREC2_uncorrelated_{year}",f"RelativePtEC1_uncorrelated_{year}",f"RelativePtEC2_uncorrelated_{year}",
                 f"TimePtEta_uncorrelated_{year}",f"RelativeSample_uncorrelated_{year}",f"RelativeStatEC_uncorrelated_{year}",f"RelativeStatFSR_uncorrelated_{year}",f"RelativeStatHF_uncorrelated_{year}",
-
                 f"JER_{year}",
             ]
         else:
             obj_correction_systs = [
                 f"JEC_{year}",
-
                 f"JER_{year}",
             ]
         obj_correction_systs = append_up_down_to_sys_base(obj_correction_systs)
