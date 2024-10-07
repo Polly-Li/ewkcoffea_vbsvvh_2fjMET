@@ -17,6 +17,7 @@ import ewkcoffea.modules.yield_tools as yt
 import ewkcoffea.modules.sample_groupings as sg
 
 import yld_dicts_for_comp as yd
+import for_jec_27_var as jecref
 
 # This script opens a pkl file of histograms produced by wwz processor
 # Reads the histograms and dumps out the yields for each group of processes
@@ -94,7 +95,6 @@ TMP_VAR_LST = [
 
 SOVERROOTB = "$S/\sqrt{B}$"
 SOVERROOTSPLUSB = "$S/\sqrt{S+B}$"
-
 
 
 
@@ -519,6 +519,7 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
 
     for var_name in histo_dict.keys():
         #print(f"\n{var_name}")
+        #if var_name != "njets": continue
         if var_name not in TMP_VAR_LST: continue
         histo = histo_dict[var_name]
 
@@ -546,8 +547,8 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
         syst_var_lst = []
         all_syst_var_lst = histo.axes["systematic"]
         for syst_var_name in all_syst_var_lst:
-            if syst_var_name.endswith("Up"):
-                syst_name_base = syst_var_name.replace("Up","")
+            if syst_var_name.endswith("Down"):
+                syst_name_base = syst_var_name.replace("Down","")
                 if syst_name_base not in syst_var_lst:
                     syst_var_lst.append(syst_name_base)
 
@@ -562,7 +563,8 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
             data_nom = merge_overflow(histo_grouped_data[{"systematic":"nominal"}])
 
             for syst in syst_var_lst:
-                if "btag" not in syst: continue
+                if syst not in jecref.JERC_LST: continue
+                #if "btag" not in syst: continue
                 #if "uncorrelated" not in syst: continue
                 #if "lepSF" not in syst: continue
                 #if "PreFiring" not in syst: continue
@@ -571,13 +573,16 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 #if "renorm" not in syst and "fact" not in syst: continue
 
                 # Skip the variations that don't apply (TODO: why are these in the hist to begin with??)
-                if year == "UL16APV": blacklist_years = ["2016","2017","2018","2022","2022EE"]
-                if year == "UL16": blacklist_years = ["2016APV","2017","2018","2022","2022EE"]
-                if year == "UL17": blacklist_years = ["2016APV","2016","2018","2022","2022EE"]
-                if year == "UL18": blacklist_years = ["2016APV","2016","2017","2022","2022EE"]
-                if year == "2022": blacklist_years = ["2016APV","2016","2017","2018","2022EE"]
-                if year == "2022EE": blacklist_years = ["2016APV","2016","2017","2018","2022"]
+                if year == "UL16APV": blacklist_years = ["2016","2017","2018","2022","2022EE","2023","2023BPix"]
+                if year == "UL16": blacklist_years = ["2016APV","2017","2018","2022","2022EE","2023","2023BPix"]
+                if year == "UL17": blacklist_years = ["2016APV","2016","2018","2022","2022EE","2023","2023BPix"]
+                if year == "UL18": blacklist_years = ["2016APV","2016","2017","2022","2022EE","2023","2023BPix"]
+                if year == "2022": blacklist_years = ["2016APV","2016","2017","2018","2022EE","2023","2023BPix"]
+                if year == "2022EE": blacklist_years = ["2016APV","2016","2017","2018","2022","2023","2023BPix"]
+                if year == "2023": blacklist_years = ["2016APV","2016","2017","2018","2022","2022EE","2023BPix"]
+                if year == "2023BPix": blacklist_years = ["2016APV","2016","2017","2018","2022","2022EE","2023"]
                 if year == "run3": blacklist_years = ["2016APV","2016","2017","2018"]
+                if year == "run2": blacklist_years = ["2022","2022EE","2023","2023BPix"]
                 if year == "all": blacklist_years = []
                 skip = False
                 for y in blacklist_years:
@@ -597,7 +602,7 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 mc_down_arr = mc_down[{"process_grp":sum}].values()
 
                 # Print individual syst numbers
-                #if var_name != "nleps": continue
+                #if var_name != "njets": continue
                 #n = sum(sum(mc_nom.values()))
                 #u = sum(mc_up_arr)
                 #d = sum(mc_down_arr)
@@ -901,7 +906,7 @@ def main():
 
         # Get the ref dict, for the relevant year
         if args.ul_year in ["run2","UL18","UL17","UL16","UL16APV"]: ref_ylds = ref_dict=yd.EWK_REF
-        if args.ul_year in ["run3","y22","y23","2022","2022EE","2023","2023BPix"]: ref_ylds = ref_dict=yd.EWK_REF_2022
+        if args.ul_year in ["run3","y22","y23","2022","2022EE","2023","2023BPix"]: ref_ylds = ref_dict=yd.EWK_REF_R3
 
         # Dump latex table for cutflow
         # Might want to swap order of rows and columns in print_yields

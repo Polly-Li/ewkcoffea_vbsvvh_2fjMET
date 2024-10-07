@@ -11,10 +11,13 @@ from ewkcoffea.modules.paths import ewkcoffea_path
 import ewkcoffea.modules.sample_groupings as sg
 import ewkcoffea.modules.yield_tools as yt
 
+import for_jec_27_var as jecref
+
 SMALL = 0.000001
 
 # Global variables
 PRECISION = 6   # Decimal point precision in the text datacard output
+
 
 # What each recognized year grouping consists of
 ALL_YEARS_LST = ["UL16","UL16APV","UL17","UL18", "2022","2022EE", "2023","2023BPix"]
@@ -32,23 +35,48 @@ SYSTS_SPECIAL = {
         "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
         "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
         "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "JER_2016APV"                      : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "JER_2016"                         : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "JER_2017"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "JER_2018"                         : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "JEC_2016APV"                      : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "JEC_2016"                         : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "JEC_2017"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "JEC_2018"                         : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+
     },
 
     "run3" : {
         "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "JER_2022"                         : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "JEC_2022"                         : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
         "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "JER_2022EE"                       : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "JEC_2022EE"                       : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
         "btagSFbc_uncorrelated_2023"       : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "JER_2023"                         : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "JEC_2023"                         : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
         "btagSFbc_uncorrelated_2023BPix"   : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "JER_2023BPix"                     : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "JEC_2023BPix"                     : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
     },
 
     "y22" : {
         "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+        "JER_2022"                         : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+        "JEC_2022"                         : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
         "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+        "JER_2022EE"                       : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+        "JEC_2022EE"                       : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
     },
 
     "y23" : {
         "btagSFbc_uncorrelated_2023"       : {"yr_rel":"2023", "yr_notrel": ["2023BPix"]},
+        "JER_2023"                         : {"yr_rel":"2023", "yr_notrel": ["2023BPix"]},
+        "JEC_2023"                         : {"yr_rel":"2023", "yr_notrel": ["2023BPix"]},
         "btagSFbc_uncorrelated_2023BPix"   : {"yr_rel":"2023BPix", "yr_notrel": ["2023"]},
+        "JER_2023BPix"                     : {"yr_rel":"2023BPix", "yr_notrel": ["2023"]},
+        "JEC_2023BPix"                     : {"yr_rel":"2023BPix", "yr_notrel": ["2023"]},
     },
 
 }
@@ -167,8 +195,11 @@ def make_ch_card(ch,proc_order,year_name,ch_ylds,ch_kappas=None,ch_gmn=None,extr
 #   - Because of how we fill in the processor, the yields for per year systs come _only_ from that year
 #   - So this function adds the nominal yields from the other three years to the up/down variation for the relevant year
 #   - Note the in_dict is modifed in place (we do not return a copy of the dict)
-def handle_per_year_systs_for_fr(in_dict,year_name):
-    systs_special = SYSTS_SPECIAL[year_name]
+def handle_per_year_systs_for_fr(in_dict,year_name,do_jec27):
+    if do_jec27:
+        systs_special = jecref.SYSTS_SPECIAL[year_name]
+    else:
+        systs_special = SYSTS_SPECIAL[year_name]
     for cat in in_dict["FR"].keys():
         for sys in systs_special:
             # Find up/down variation for the year relevant to that syst
@@ -281,7 +312,7 @@ def get_kappa_dict(in_dict_mc,in_dict_data,yrs_lst):
         out_lst = []
         for syst in in_lst:
             if syst.endswith("Up"):
-                syst_name_base = syst.replace("Up","")
+                syst_name_base = syst[:-2]
                 if syst_name_base not in out_lst:
                     out_lst.append(syst_name_base)
         return out_lst
@@ -316,7 +347,11 @@ def get_kappa_dict(in_dict_mc,in_dict_data,yrs_lst):
                         print("Kappas in same direction, but for a bin that's not used. So we don't care right now.")
                     else:
                         # Otherwise raise an error, we should stop and take a look at what's happening
-                        raise Exception(f"Both Kappas Neagtive for process: {proc}, category: {cat}, systematic: {sys}")
+                        #raise Exception(f"Both Kappas Neagtive for process: {proc}, category: {cat}, systematic: {sys}")
+                        print(f"WARNING!!! Both Kappas Neagtive for process: {proc}, category: {cat}, systematic: {sys}.")
+                        # Below method will fix the issue by taking the larger devation and symmetrizing across nominal
+                        #valvar_kappa_up[0], valvar_kappa_do[0] = fix_updown_same(valvar_nom[0],valvar_up[0],valvar_do[0])
+
                 if valvar_kappa_up[0] <= 0:
                     print(f"WARNING: Up var for {sys} for {proc} for {cat} is negative, setting to {SMALL}.")
                     valvar_kappa_up[0] = SMALL
@@ -435,6 +470,7 @@ def main():
     parser.add_argument("-s","--do-nuisance",action="store_true",help="Include nuisance parameters")
     parser.add_argument("--do-tf",action="store_true",help="Do the TF data-driven background estimation")
     parser.add_argument("--bdt",action="store_true",help="Use BDT SR bins")
+    parser.add_argument("--jec-do-twentyseven",action="store_true",help="Use the 27 JEC uncertainty variations :(")
     parser.add_argument("--unblind",action="store_true",help="If set, use real data, otherwise use asimov data")
     parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["run2","run3","y22","y23"])
 
@@ -443,6 +479,7 @@ def main():
     out_dir = args.out_dir
     do_nuis = args.do_nuisance
     do_tf   = args.do_tf
+    do_jec27= args.jec_do_twentyseven
     use_bdt_sr = args.bdt
     unblind = args.unblind
     run = args.run
@@ -453,7 +490,7 @@ def main():
         os.makedirs(out_dir)
 
     # Set list of years from the run name
-    elif run == "run2": yrs_lst = ["UL16APV","UL16","UL17","UL18"]
+    if run == "run2": yrs_lst = ["UL16APV","UL16","UL17","UL18"]
     elif run == "run3": yrs_lst = ["2022","2022EE","2023","2023BPix"]
     elif run == "y22" : yrs_lst = ["2022","2022EE"]
     elif run == "y23" : yrs_lst = ["2023","2023BPix"]
@@ -474,7 +511,7 @@ def main():
     for year in sample_names_dict_mc:
         yld_dict_mc_allyears[year] = yt.get_yields(histo,sample_names_dict_mc[year])
     if do_nuis:
-        handle_per_year_systs_for_fr(yld_dict_mc_allyears,run)
+        handle_per_year_systs_for_fr(yld_dict_mc_allyears,run,do_jec27)
 
     yld_dict_mc = yld_dict_mc_allyears["FR"]
     yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR"])

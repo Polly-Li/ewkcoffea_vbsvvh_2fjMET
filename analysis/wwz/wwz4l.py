@@ -240,8 +240,8 @@ class AnalysisProcessor(processor.ProcessorABC):
         else:
             raise Exception(f"ERROR: Unknown year {year}.")
 
-        # If this is a 2022 sample, get the era info
-        if isData and (is2022 or is2023):
+        # Era Needed for all samples
+        if isData:
             era = self._samples[json_name]["era"]
         else:
             era = None
@@ -291,6 +291,11 @@ class AnalysisProcessor(processor.ProcessorABC):
         mu   = events.Muon
         tau  = events.Tau
         jets = events.Jet
+        if (is2022 or is2023):
+            rho = events.Rho.fixedGridRhoFastjetAll
+        else:
+            rho = events.fixedGridRhoFastjetAll
+
 
         # An array of lenght events that is just 1 for each event
         # Probably there's a better way to do this, but we use this method elsewhere so I guess why not..
@@ -434,7 +439,24 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
 
-        obj_correction_systs = [] # Will have e.g. jes etc
+        do_full_jec_list = False # toggle switch for total uncertainty or full 27
+
+        if do_full_jec_list:
+            obj_correction_systs = [
+                "AbsoluteMPFBias_correlated","AbsoluteScale_correlated","FlavorQCD_correlated","Fragmentation_correlated","PileUpDataMC_correlated",
+                "PileUpPtBB_correlated","PileUpPtEC1_correlated","PileUpPtEC2_correlated","PileUpPtHF_correlated","PileUpPtRef_correlated",
+                "RelativeFSR_correlated","RelativeJERHF_correlated","RelativePtBB_correlated","RelativePtHF_correlated","RelativeBal_correlated",
+                "SinglePionECAL_correlated","SinglePionHCAL_correlated",
+                f"AbsoluteStat_uncorrelated_{year}",f"RelativeJEREC1_uncorrelated_{year}",f"RelativeJEREC2_uncorrelated_{year}",f"RelativePtEC1_uncorrelated_{year}",f"RelativePtEC2_uncorrelated_{year}",
+                f"TimePtEta_uncorrelated_{year}",f"RelativeSample_uncorrelated_{year}",f"RelativeStatEC_uncorrelated_{year}",f"RelativeStatFSR_uncorrelated_{year}",f"RelativeStatHF_uncorrelated_{year}",
+                f"JER_{year}",
+            ]
+        else:
+            obj_correction_systs = [
+                f"JEC_{year}",
+                f"JER_{year}",
+            ]
+        obj_correction_systs = append_up_down_to_sys_base(obj_correction_systs)
 
         # If we're doing systematics and this isn't data, we will loop over the obj correction syst lst list
         if self._do_systematics and not isData: obj_corr_syst_var_list = ["nominal"] + obj_correction_systs
@@ -452,9 +474,34 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Clean with dr (though another option is to use jetIdx)
             cleanedJets = os_ec.get_cleaned_collection(l_wwz_t,jets)
+            jetptname = "pt_nom" if hasattr(cleanedJets, "pt_nom") else "pt"
+
+            # Jet Veto Maps
+            # Zero is passing the veto map, so Run 2 will be assigned an array of length events with all zeros
+            veto_map_array = cor_ec.ApplyJetVetoMaps(cleanedJets, year) if (is2022 or is2023) else ak.zeros_like(met.pt)
+            veto_map_mask = (veto_map_array == 0)
+
+            ##### JME Stuff #####
+
+            cleanedJets["pt_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.pt
+            cleanedJets["mass_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.mass
+
+            if not isData:
+                cleanedJets["pt_gen"] =ak.values_astype(ak.fill_none(cleanedJets.matched_gen.pt, 0), np.float32)
+            else:
+                cleanedJets["pt_gen"] =ak.ones_like(cleanedJets.pt)
+
+            # Need to broadcast Rho to have same structure as cleanedJets
+            cleanedJets["rho"] = ak.broadcast_arrays(rho, cleanedJets.pt)[0]
+
+            events_cache = events.caches[0] # used for storing intermediary values for corrections
+            cleanedJets = cor_ec.ApplyJetCorrections(year,isData, era).build(cleanedJets,lazy_cache=events_cache,isdata=isData)
+            cleanedJets = cor_ec.ApplyJetSystematics(year,cleanedJets,obj_corr_syst_var)
+            #met=ApplyJetCorrections(year,isData, era, corr_type='met').build(met, cleanedJets, lazy_cache=events_cache)
+
+            ##### End of JERC #####
 
             # Selecting jets and cleaning them
-            jetptname = "pt_nom" if hasattr(cleanedJets, "pt_nom") else "pt"
             cleanedJets["is_good"] = os_tc.is_tight_jet(getattr(cleanedJets, jetptname), cleanedJets.eta, cleanedJets.jetId, pt_cut=20., eta_cut=get_ec_param("wwz_eta_j_cut"), id_cut=get_ec_param("wwz_jet_id_cut"))
             goodJets = cleanedJets[cleanedJets.is_good]
 
@@ -584,7 +631,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             ######### Masks we need for the selection ##########
 
             # Pass trigger mask
-            pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=era)
+            era_for_trg_check = era
+            if not (is2022 or is2023):
+                # Era not used for R2
+                era_for_trg_check = None
+            pass_trg = es_tc.trg_pass_no_overlap(events,isData,dataset,str(year),dataset_dict=es_ec.dataset_dict,exclude_dict=es_ec.exclude_dict,era=era_for_trg_check)
             pass_trg = (pass_trg & es_ec.trg_matching(events,year))
 
             # b jet masks
@@ -911,42 +962,42 @@ class AnalysisProcessor(processor.ProcessorABC):
             ww_me = ((abs(w_lep0.pdgId) == 13) & (abs(w_lep1.pdgId) == 11))
             lepflav_4e = ((abs(l0.pdgId)==11) & (abs(l1.pdgId)==11) & (abs(l2.pdgId)==11) & (abs(l3.pdgId)==11))
             lepflav_4m = ((abs(l0.pdgId)==13) & (abs(l1.pdgId)==13) & (abs(l2.pdgId)==13) & (abs(l3.pdgId)==13))
-            selections.add("cr_4l_btag_of",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of))
-            selections.add("cr_4l_btag_sf_offZ_met80", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0)))
+            selections.add("cr_4l_btag_of",            (veto_map_mask & pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of))
+            selections.add("cr_4l_btag_sf_offZ_met80", (veto_map_mask & pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0)))
 
-            selections.add("cr_4l_btag_of_1b",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of & (nbtagsl==1)))
-            selections.add("cr_4l_btag_of_2b",            (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of & (nbtagsl>=2)))
-            selections.add("cr_4l_btag_sf_offZ_met80_1b", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0) & (nbtagsl==1)))
-            selections.add("cr_4l_btag_sf_offZ_met80_2b", (pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0) & (nbtagsl>=2)))
+            selections.add("cr_4l_btag_of_1b",            (veto_map_mask & pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of & (nbtagsl==1)))
+            selections.add("cr_4l_btag_of_2b",            (veto_map_mask & pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_of & (nbtagsl>=2)))
+            selections.add("cr_4l_btag_sf_offZ_met80_1b", (veto_map_mask & pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0) & (nbtagsl==1)))
+            selections.add("cr_4l_btag_sf_offZ_met80_2b", (veto_map_mask & pass_trg & events.is4lWWZ & bmask_atleast1loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt > 80.0) & (nbtagsl>=2)))
 
-            selections.add("cr_4l_sf", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
+            selections.add("cr_4l_sf", (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & (~w_candidates_mll_far_from_z)))
             # H->ZZ validation region: note, this is not enforced to be orthogonal to the SR, but it has effectively zero signal in it
-            selections.add("cr_4l_sf_higgs", (pass_trg & events.is4lWWZ & events.wwz_presel_sf & ((mllll > 119) & (mllll < 131))))
+            selections.add("cr_4l_sf_higgs", (veto_map_mask & pass_trg & events.is4lWWZ & events.wwz_presel_sf & ((mllll > 119) & (mllll < 131))))
 
 
             # For Cut Based SRs
 
-            selections.add("sr_4l_sf_A", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_A))
-            selections.add("sr_4l_sf_B", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_B))
-            selections.add("sr_4l_sf_C", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_C))
-            selections.add("sr_4l_of_1", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_1 & mt2_mask))
-            selections.add("sr_4l_of_2", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_2 & mt2_mask))
-            selections.add("sr_4l_of_3", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_3 & mt2_mask))
-            selections.add("sr_4l_of_4", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_4))
+            selections.add("sr_4l_sf_A", (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_A))
+            selections.add("sr_4l_sf_B", (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_B))
+            selections.add("sr_4l_sf_C", (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & sf_C))
+            selections.add("sr_4l_of_1", (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_1 & mt2_mask))
+            selections.add("sr_4l_of_2", (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_2 & mt2_mask))
+            selections.add("sr_4l_of_3", (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_3 & mt2_mask))
+            selections.add("sr_4l_of_4", (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of & of_4))
 
             selections.add("all_events", (events.is4lWWZ | (~events.is4lWWZ))) # All events.. this logic is a bit roundabout to just get an array of True
             selections.add("4l_presel", (events.is4lWWZ)) # This matches the VVV looper selection (object selection and event selection)
 
             selections.add("sr_4l_sf", selections.any("sr_4l_sf_A","sr_4l_sf_B","sr_4l_sf_C"))
             selections.add("sr_4l_of", selections.any("sr_4l_of_1","sr_4l_of_2","sr_4l_of_3","sr_4l_of_4"))
-            selections.add("sr_4l_sf_incl", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt >= 65.0))) # Inclusive over SF sr (only applying cuts that are applied to all SF SRs), just use for visualization
-            selections.add("sr_4l_of_incl", (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)) # Inclusive over OF sr (only applying cuts that are applied to all OF SRs), just use for visualization
+            selections.add("sr_4l_sf_incl", (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & (met.pt >= 65.0))) # Inclusive over SF sr (only applying cuts that are applied to all SF SRs), just use for visualization
+            selections.add("sr_4l_of_incl", (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)) # Inclusive over OF sr (only applying cuts that are applied to all OF SRs), just use for visualization
 
             # For BDT SRs
 
-            sr_4l_bdt_sf_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z)
-            sr_4l_bdt_sf_trn    = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & mt2_mask)
-            sr_4l_bdt_of_presel = (pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)
+            sr_4l_bdt_sf_presel = (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z)
+            sr_4l_bdt_sf_trn    = (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & mt2_mask)
+            sr_4l_bdt_of_presel = (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)
             sr_4l_bdt_of_trn    = sr_4l_bdt_of_presel # For OF, presel and trn regions are the same
 
             selections.add("sr_4l_bdt_sf_presel", sr_4l_bdt_sf_presel)
