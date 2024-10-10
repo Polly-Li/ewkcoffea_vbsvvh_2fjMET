@@ -284,7 +284,6 @@ SAMPLE_DICT_BASE_INDIV_RUN3 = {
     "ggHToZZ4L"               : ["ggHToZZ4L"],
 }
 
-
 ######################## Tools ########################
 
 # Pass dictionary with the base names for the samples, and return with full list for the years
