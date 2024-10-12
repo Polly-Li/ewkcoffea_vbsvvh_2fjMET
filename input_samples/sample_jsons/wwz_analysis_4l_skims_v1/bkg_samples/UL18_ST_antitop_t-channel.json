@@ -6,22 +6,22 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/merged/merged.root"
+        "/store/user/mdittric/skim/WWZ_Skims_20241003/mc/2018/ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_Skims_20241003/merged/merged.root"
     ],
     "nEvents": 331,
     "nGenEvents": 95627000,
-    "nSumOfWeights": 6114949908.582953,
+    "nSumOfWeights": 6114949908.5829525,
     "isData": false,
-    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2018/ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_MC_2024_0811/merged/",
+    "path": "/store/user/mdittric/skim/WWZ_Skims_20241003/mc/2018/ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_WWZ_Skims_20241003/merged/",
     "nSumOfLheWeights": [
-        6435216982.033336,
+        6435216982.033335,
         6436773179.711774,
         6498786777.574562,
-        6126547299.829706,
-        6114946888.695122,
-        6137360834.56316,
-        5793440109.779,
-        5773043072.319456,
-        5770753220.749644
+        6126547299.829705,
+        6114946888.695123,
+        6137360834.563162,
+        5793440109.779001,
+        5773043072.319455,
+        5770753220.749643
     ]
 }

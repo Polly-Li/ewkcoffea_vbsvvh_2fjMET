@@ -6,19 +6,19 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_WWZ_MC_2024_0811/merged/merged.root"
+        "/store/user/mdittric/skim/WWZ_Skims_20241003/mc/2016APV/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_WWZ_Skims_20241003/merged/merged.root"
     ],
     "nEvents": 5340,
     "nGenEvents": 2850164,
-    "nSumOfWeights": 953960.4529812001,
+    "nSumOfWeights": 953960.4529812002,
     "isData": false,
-    "path": "/store/user/mdittric/skim/WWZ_Skims_1/WWZ_MC_2024_0811/2016APV/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_WWZ_MC_2024_0811/merged/",
+    "path": "/store/user/mdittric/skim/WWZ_Skims_20241003/mc/2016APV/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_WWZ_Skims_20241003/merged/",
     "nSumOfLheWeights": [
-        1051558.1612947572,
-        1040953.3977017839,
+        1051558.161294757,
+        1040953.3977017838,
         1035110.3991170366,
-        972886.3398803899,
-        953960.4529812001,
+        972886.33988039,
+        953960.4529812002,
         939581.3236910756,
         881839.6398326944,
         859783.7963013996,
