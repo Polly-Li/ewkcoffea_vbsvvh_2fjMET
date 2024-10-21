@@ -64,8 +64,8 @@ SYST_GRP = {
             'JEC_2016APV',
             'JER_2016APV',
         ],
-        #['lumi'], 
-        #['theory_norm_other_other'], 
+        #['lumi'],
+        #['theory_norm_other_other'],
         #['fake_WZ_run2']
     },
 
