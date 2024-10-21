@@ -2,38 +2,36 @@ import numpy as np
 import os
 import argparse
 
-# Check average size of systs
-
 SYST_GRP = {
 
     "run2" : {
-        "pu" : ['PU'], 
-        "prefire" : ['PreFiring'], 
-        "scale" : ['renorm', 'fact'], 
+        "pu" : ['PU'],
+        "prefire" : ['PreFiring'],
+        "scale" : ['renorm', 'fact'],
         "ps": ['ISR', 'FSR',],
         "btag" : [
-            'btagSFbc_correlated', 
-            'btagSFlight_correlated', 
-            'btagSFbc_uncorrelated_2018', 
-            'btagSFlight_uncorrelated_2018', 
-            'btagSFbc_uncorrelated_2016APV', 
-            'btagSFlight_uncorrelated_2016APV', 
-            'btagSFbc_uncorrelated_2017', 
-            'btagSFlight_uncorrelated_2017', 
-            'btagSFbc_uncorrelated_2016', 
-            'btagSFlight_uncorrelated_2016', 
+            'btagSFbc_correlated',
+            'btagSFlight_correlated',
+            'btagSFbc_uncorrelated_2018',
+            'btagSFlight_uncorrelated_2018',
+            'btagSFbc_uncorrelated_2016APV',
+            'btagSFlight_uncorrelated_2016APV',
+            'btagSFbc_uncorrelated_2017',
+            'btagSFlight_uncorrelated_2017',
+            'btagSFbc_uncorrelated_2016',
+            'btagSFlight_uncorrelated_2016',
         ],
-        "ele" : ['lepSF_elec_run2'], 
-        "mu" : ['lepSF_muon_run2'], 
+        "ele" : ['lepSF_elec_run2'],
+        "mu" : ['lepSF_muon_run2'],
         "jerc" : [
-            'JEC_2018', 
-            'JER_2018', 
-            'JEC_2017', 
-            'JER_2017', 
-            'JEC_2016', 
-            'JER_2016', 
-            'JEC_2016APV', 
-            'JER_2016APV', 
+            'JEC_2018',
+            'JER_2018',
+            'JEC_2017',
+            'JER_2017',
+            'JEC_2016',
+            'JER_2016',
+            'JEC_2016APV',
+            'JER_2016APV',
         ],
         #['lumi'], 
         #['theory_norm_other_other'], 
@@ -41,34 +39,34 @@ SYST_GRP = {
     },
 
     "run3" : {
-        "pu" : ['PU'], 
-        "scale" : ['renorm', 'fact'], 
+        "pu" : ['PU'],
+        "scale" : ['renorm', 'fact'],
         "ps": ['ISR', 'FSR',],
         "btag" : [
-            'btagSFbc_correlated', 
-            'btagSFlight_correlated', 
-            'btagSFbc_uncorrelated_2022', 
-            'btagSFbc_uncorrelated_2022EE', 
-            'btagSFbc_uncorrelated_2023', 
-            'btagSFbc_uncorrelated_2023BPix', 
+            'btagSFbc_correlated',
+            'btagSFlight_correlated',
+            'btagSFbc_uncorrelated_2022',
+            'btagSFbc_uncorrelated_2022EE',
+            'btagSFbc_uncorrelated_2023',
+            'btagSFbc_uncorrelated_2023BPix',
         ],
-        "ele" : ['lepSF_elec_run3'], 
-        "mu" : ['lepSF_muon_run3'], 
+        "ele" : ['lepSF_elec_run3'],
+        "mu" : ['lepSF_muon_run3'],
         "jerc" : [
-            'JEC_2022', 
-            'JER_2022', 
-            'JEC_2022EE', 
-            'JER_2022EE', 
-            'JEC_2023', 
-            'JER_2023', 
-            'JEC_2023BPix', 
-            'JER_2023BPix', 
+            'JEC_2022',
+            'JER_2022',
+            'JEC_2022EE',
+            'JER_2022EE',
+            'JEC_2023',
+            'JER_2023',
+            'JEC_2023BPix',
+            'JER_2023BPix',
         ],
     }
 }
 
 
-# Read the file
+# Read a text file
 def read_file(filename):
     with open(filename) as f:
         content = f.readlines()
@@ -100,12 +98,13 @@ def reformat_syst_lin(in_line):
 
     return out_line
 
-######################
-# Messy
-# Get average sizes
-def get_sizes(proc_lst,rate_lst,tag,systs_to_group,syst_dict):
 
-    # Get nominal
+
+######################
+# Get average sizes of systematics
+def get_sizes(proc_lst,rate_lst,tag,systs_to_group,syst_dict,verbose=True):
+
+    # Get nominal yield (sum over processes)
     yld_nom = 0
     for i,proc in enumerate(proc_lst):
         rate = rate_lst[i]
@@ -126,21 +125,18 @@ def get_sizes(proc_lst,rate_lst,tag,systs_to_group,syst_dict):
         quad_sum_sq = quad_sum_sq + (1-rel_err)**2
     quad_sum = quad_sum_sq**0.5
 
-    ## Average
-    ##avg = (sum(np.array(tot_up_vars)))/len(tot_up_vars)
-    ##print("tot_up_vars:",tot_up_vars)
-    ##print("nom:",yld_nom)
-    ##print("tot_up_vars/nom:",np.array(tot_up_vars)/yld_nom)
-    ##print("quad",quad_sum,"->",quad_sum*100,"%")
-
+    # Get average and print stuff
     percent = 100*(np.array(tot_up_vars)/yld_nom - 1)
     avg = sum(percent)/len(percent)
-    #print(systs_to_group,"tot_up_vars/nom:",np.array(tot_up_vars)/yld_nom,percent,"%")
-    #print("\n",systs_to_group,"\n",round(avg,2),"%")
-    print(f"  {tag}: {round(avg,2)} %")
+    if verbose:
+        print(f"  {tag}: {round(avg,2)} %")
 
     return avg
 
+
+
+#########################################
+############# Main function #############
 
 def main():
 
@@ -187,12 +183,14 @@ def main():
     }
 
 
-    out_dict = {}
+    # Loop over datacards in the set
+    syst_summary_dict = {}
     for dc_name in dc_names_dict[run_name]:
-        lines = read_file(os.path.join(base_path,dc_name))
 
-        dc_tag = dc_name.split("/")[-1][:-4]
-        out_dict[dc_tag] = {}
+        # Get lines from this datacard, set up entry in summary dict for it
+        lines = read_file(os.path.join(base_path,dc_name))
+        dc_tag = dc_name[:-4] # Drop the .txt from dc name
+        syst_summary_dict[dc_tag] = {}
 
         # Loop over lines in card to get procs and rates and systs
         syst_dict = {}
@@ -222,16 +220,19 @@ def main():
         # Get the syst vars
         print("\nCheck avg sizes for:",dc_tag)
         for systs_tag,systs_to_group in syst_grp_dict.items():
-            out_dict[dc_tag][systs_tag] = get_sizes(proc_lst,rate_lst,systs_tag,systs_to_group,syst_dict)
+            syst_summary_dict[dc_tag][systs_tag] = get_sizes(proc_lst,rate_lst,systs_tag,systs_to_group,syst_dict)
+
+
+
 
     # After
-    print(out_dict)
+    print(syst_summary_dict)
 
     for grp in syst_grp_dict:
         print("\n",grp)
         tmp_lst = []
-        for card_name in out_dict.keys():
-            tmp_lst.append(out_dict[card_name][grp])
+        for card_name in syst_summary_dict.keys():
+            tmp_lst.append(syst_summary_dict[card_name][grp])
         avg = sum(np.array(tmp_lst))/len(tmp_lst)
         #print(tmp_lst,avg)
         print(avg)
