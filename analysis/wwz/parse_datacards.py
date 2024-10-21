@@ -73,7 +73,10 @@ def read_file(filename):
     content = [x.strip() for x in content]
     return content
 
-# Turn ["syst","lnN","a/b","c/d"] into [e,f] where e is symmetrized avg of a and b, similar for f
+
+# Manipulate syst row in datacard to get list of symmetrized variations, more specifically:
+#     - Turn ["syst","lnN","a/b","c/d"] into [e,f]
+#     - Where e is symmetrized avg of a and b, similar for f
 def reformat_syst_lin(in_line):
     out_line = []
     syst_name = in_line[0]
@@ -98,6 +101,34 @@ def reformat_syst_lin(in_line):
 
     return out_line
 
+
+# From the list of lines in the datacard, get the proc list and rate list and dict of syst lists
+def get_proc_rate_syst(dc_lines):
+    # Loop over lines in card to get procs and rates and systs
+    syst_dict = {}
+    rate_lst = []
+    for line in dc_lines:
+        line_split = line.split()
+
+        # Proc line
+        if (line_split[0] == "process") and "-1" not in line_split:
+            proc_lst = line_split[1:]
+
+        # Rate line
+        if (line_split[0] == "rate"):
+            for rate in line_split[1:]:
+                rate_lst.append(float(rate))
+
+        # Get the syst lines
+        if "lnN" in line_split:
+            syst_dict[line_split[0]] = reformat_syst_lin(line_split)
+
+    # Sanity check of lenghts
+    for k,v in syst_dict.items():
+        if len(v) != len(proc_lst): raise Exception("Wrong len proc")
+        if len(v) != len(rate_lst): raise Exception("Wrong len rate")
+
+    return [proc_lst,rate_lst,syst_dict]
 
 
 ######################
@@ -192,37 +223,13 @@ def main():
         dc_tag = dc_name[:-4] # Drop the .txt from dc name
         syst_summary_dict[dc_tag] = {}
 
-        # Loop over lines in card to get procs and rates and systs
-        syst_dict = {}
-        rate_lst = []
-        for line in lines:
-            line_split = line.split()
+        # Get the proc list, the rate list, and the list for each syst
+        proc_lst, rate_lst, syst_lst_dict = get_proc_rate_syst(lines)
 
-            # Proc line
-            if (line_split[0] == "process") and "-1" not in line_split:
-                proc_lst = line_split[1:]
-
-            # Rate line
-            if (line_split[0] == "rate"):
-                for rate in line_split[1:]:
-                    rate_lst.append(float(rate))
-
-            # Get the syst lines
-            if "lnN" in line_split:
-                syst_dict[line_split[0]] = reformat_syst_lin(line_split)
-
-        # Sanity check of lenghts
-        for k,v in syst_dict.items():
-            if len(v) != len(proc_lst): raise Exception("Wrong len proc")
-            if len(v) != len(rate_lst): raise Exception("Wrong len rate")
-
-
-        # Get the syst vars
+        # Get the average syst variation
         print("\nCheck avg sizes for:",dc_tag)
         for systs_tag,systs_to_group in syst_grp_dict.items():
-            syst_summary_dict[dc_tag][systs_tag] = get_sizes(proc_lst,rate_lst,systs_tag,systs_to_group,syst_dict)
-
-
+            syst_summary_dict[dc_tag][systs_tag] = get_sizes(proc_lst,rate_lst,systs_tag,systs_to_group,syst_lst_dict)
 
 
     # After
