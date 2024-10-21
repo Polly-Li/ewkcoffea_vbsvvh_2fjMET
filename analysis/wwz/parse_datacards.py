@@ -2,6 +2,37 @@ import numpy as np
 import os
 import argparse
 
+DC_NAMES_DICT = {
+    "run2" : [
+        "wwz4l_card_sr_4l_bdt_of_1_run2.txt",
+        "wwz4l_card_sr_4l_bdt_of_2_run2.txt",
+        "wwz4l_card_sr_4l_bdt_of_3_run2.txt",
+        "wwz4l_card_sr_4l_bdt_of_4_run2.txt",
+        "wwz4l_card_sr_4l_bdt_of_5_run2.txt",
+        "wwz4l_card_sr_4l_bdt_of_6_run2.txt",
+        "wwz4l_card_sr_4l_bdt_of_7_run2.txt",
+        "wwz4l_card_sr_4l_bdt_of_8_run2.txt",
+        "wwz4l_card_sr_4l_bdt_sf_1_run2.txt",
+        "wwz4l_card_sr_4l_bdt_sf_2_run2.txt",
+        "wwz4l_card_sr_4l_bdt_sf_3_run2.txt",
+        "wwz4l_card_sr_4l_bdt_sf_4_run2.txt",
+        "wwz4l_card_sr_4l_bdt_sf_5_run2.txt",
+        "wwz4l_card_sr_4l_bdt_sf_6_run2.txt",
+        "wwz4l_card_sr_4l_bdt_sf_7_run2.txt",
+        "wwz4l_card_sr_4l_bdt_sf_8_run2.txt",
+    ],
+    "run3" : [
+        "wwz4l_card_sr_4l_bdt_of_coarse_1_run3.txt",
+        "wwz4l_card_sr_4l_bdt_of_coarse_2_run3.txt",
+        "wwz4l_card_sr_4l_bdt_of_coarse_3_run3.txt",
+        "wwz4l_card_sr_4l_bdt_of_coarse_4_run3.txt",
+        "wwz4l_card_sr_4l_bdt_sf_coarse_1_run3.txt",
+        "wwz4l_card_sr_4l_bdt_sf_coarse_2_run3.txt",
+        "wwz4l_card_sr_4l_bdt_sf_coarse_3_run3.txt",
+        "wwz4l_card_sr_4l_bdt_sf_coarse_4_run3.txt",
+    ]
+}
+
 SYST_GRP = {
 
     "run2" : {
@@ -131,9 +162,13 @@ def get_proc_rate_syst(dc_lines):
     return [proc_lst,rate_lst,syst_dict]
 
 
-######################
+
 # Get average sizes of systematics
-def get_sizes(proc_lst,rate_lst,tag,systs_to_group,syst_dict,verbose=True):
+#     - Inputs are for a single card
+#     - Inputs are process list, rate list, variation list for each syst
+#     - Also input the info about which systematics to average together
+#     - Averages the sizes of the syst effects for all systs in the group
+def get_avg_sizes(proc_lst,rate_lst,syst_dict,syst_group_tag,syst_names_to_group,verbose=True):
 
     # Get nominal yield (sum over processes)
     yld_nom = 0
@@ -142,25 +177,18 @@ def get_sizes(proc_lst,rate_lst,tag,systs_to_group,syst_dict,verbose=True):
         yld_nom = yld_nom + rate
 
     tot_up_vars = []
-    for syst_name in systs_to_group:
+    for syst_name in syst_names_to_group:
         syst_row = syst_dict[syst_name]
         yld_up = 0
         for i,proc in enumerate(proc_lst):
             yld_up  = yld_up  + rate_lst[i]*syst_row[i]
         tot_up_vars.append(yld_up)
 
-    # Sum the relative errors in quad
-    quad_sum_sq = 0
-    for up_var in tot_up_vars:
-        rel_err = up_var/yld_nom
-        quad_sum_sq = quad_sum_sq + (1-rel_err)**2
-    quad_sum = quad_sum_sq**0.5
-
     # Get average and print stuff
     percent = 100*(np.array(tot_up_vars)/yld_nom - 1)
     avg = sum(percent)/len(percent)
     if verbose:
-        print(f"  {tag}: {round(avg,2)} %")
+        print(f"  {syst_group_tag}: {round(avg,2)} %")
 
     return avg
 
@@ -176,47 +204,17 @@ def main():
     parser.add_argument("base_path", help = "The path to the cards")
     parser.add_argument('-u', "--ul-year", default='run2', help = "Which year to process", choices=["run2","run3"])
     args = parser.parse_args()
-
     run_name = args.ul_year
     base_path = args.base_path
+    #base_path = "/home/users/kmohrman/public_html/WWZ/smp24015_ref/ref_datacards/analysis_test_02_v00_oct06/bdt_withSys"
+
     syst_grp_dict = SYST_GRP[run_name]
-
-    # Get the lines fsrom the in files
-    dc_names_dict = {
-        "run2" : [
-            "wwz4l_card_sr_4l_bdt_of_1_run2.txt",
-            "wwz4l_card_sr_4l_bdt_of_2_run2.txt",
-            "wwz4l_card_sr_4l_bdt_of_3_run2.txt",
-            "wwz4l_card_sr_4l_bdt_of_4_run2.txt",
-            "wwz4l_card_sr_4l_bdt_of_5_run2.txt",
-            "wwz4l_card_sr_4l_bdt_of_6_run2.txt",
-            "wwz4l_card_sr_4l_bdt_of_7_run2.txt",
-            "wwz4l_card_sr_4l_bdt_of_8_run2.txt",
-            "wwz4l_card_sr_4l_bdt_sf_1_run2.txt",
-            "wwz4l_card_sr_4l_bdt_sf_2_run2.txt",
-            "wwz4l_card_sr_4l_bdt_sf_3_run2.txt",
-            "wwz4l_card_sr_4l_bdt_sf_4_run2.txt",
-            "wwz4l_card_sr_4l_bdt_sf_5_run2.txt",
-            "wwz4l_card_sr_4l_bdt_sf_6_run2.txt",
-            "wwz4l_card_sr_4l_bdt_sf_7_run2.txt",
-            "wwz4l_card_sr_4l_bdt_sf_8_run2.txt",
-        ],
-        "run3" : [
-            "wwz4l_card_sr_4l_bdt_of_coarse_1_run3.txt",
-            "wwz4l_card_sr_4l_bdt_of_coarse_2_run3.txt",
-            "wwz4l_card_sr_4l_bdt_of_coarse_3_run3.txt",
-            "wwz4l_card_sr_4l_bdt_of_coarse_4_run3.txt",
-            "wwz4l_card_sr_4l_bdt_sf_coarse_1_run3.txt",
-            "wwz4l_card_sr_4l_bdt_sf_coarse_2_run3.txt",
-            "wwz4l_card_sr_4l_bdt_sf_coarse_3_run3.txt",
-            "wwz4l_card_sr_4l_bdt_sf_coarse_4_run3.txt",
-        ]
-    }
+    dc_names_lst = DC_NAMES_DICT[run_name]
 
 
-    # Loop over datacards in the set
+    # Loop over datacards in the R2 or R3 set, to get the info per card
     syst_summary_dict = {}
-    for dc_name in dc_names_dict[run_name]:
+    for dc_name in dc_names_lst:
 
         # Get lines from this datacard, set up entry in summary dict for it
         lines = read_file(os.path.join(base_path,dc_name))
@@ -228,20 +226,18 @@ def main():
 
         # Get the average syst variation
         print("\nCheck avg sizes for:",dc_tag)
-        for systs_tag,systs_to_group in syst_grp_dict.items():
-            syst_summary_dict[dc_tag][systs_tag] = get_sizes(proc_lst,rate_lst,systs_tag,systs_to_group,syst_lst_dict)
+        for systs_tag,syst_names_to_group in syst_grp_dict.items():
+            syst_summary_dict[dc_tag][systs_tag] = get_avg_sizes(proc_lst,rate_lst,syst_lst_dict,systs_tag,syst_names_to_group)
 
 
-    # After
+    # Print meta averages for each group across all datacards
     print(syst_summary_dict)
-
     for grp in syst_grp_dict:
-        print("\n",grp)
         tmp_lst = []
         for card_name in syst_summary_dict.keys():
             tmp_lst.append(syst_summary_dict[card_name][grp])
         avg = sum(np.array(tmp_lst))/len(tmp_lst)
-        #print(tmp_lst,avg)
+        print(f"\n{grp}")
         print(avg)
 
 
