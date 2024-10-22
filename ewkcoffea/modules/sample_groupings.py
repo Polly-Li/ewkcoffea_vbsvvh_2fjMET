@@ -138,8 +138,8 @@ SAMPLE_DICT_BASE_RUN2 = {
         ##"TTZToLL_M_1to10","TTZToLLNuNu_M_10","TTZToQQ",
         ##"tWZ4l",
 
-        ##"DYJetsToLL_M_10to50_MLM",
-        "DYJetsToLL_M_50_MLM",
+        #"DYJetsToLL_M_10to50_MLM", # No events in SR
+        #"DYJetsToLL_M_50_MLM", # No events in SR
         "SSWW",
         "ST_antitop_t-channel",
         "ST_top_s-channel",
@@ -177,8 +177,8 @@ SAMPLE_DICT_BASE_RUN3 = {
     "tWZ" : ["tWZ4l"],
     "WZ" : ["WZTo3LNu"],
     "other" : [
-        "DYJetsToLL_M_10to50_MLM",
-        "DYJetsToLL_M_50_MLM",
+        #"DYJetsToLL_M_10to50_MLM",
+        #"DYJetsToLL_M_50_MLM",
         "SSWW_TT",
         "SSWW_TL",
         "SSWW_LL",
@@ -217,10 +217,10 @@ SAMPLE_DICT_BASE_INDIV_RUN2 = {
     "TTZToLL_M_1to10":           ["TTZToLL_M_1to10"],
     "TTZToLLNuNu_M_10":          ["TTZToLLNuNu_M_10"],
     "TTZToQQ":                   ["TTZToQQ"],
-    "tWZ4l" :                     ["tWZ4l"], # Old sample tWll
+    "tWZ4l" :                    ["tWZ4l"], # Old sample tWll
 
-    ##"DYJetsToLL_M_10to50_MLM": ["DYJetsToLL_M_10to50_MLM"],
-    "DYJetsToLL_M_50_MLM":       ["DYJetsToLL_M_50_MLM"],
+    #"DYJetsToLL_M_10to50_MLM": ["DYJetsToLL_M_10to50_MLM"],
+    #"DYJetsToLL_M_50_MLM":     ["DYJetsToLL_M_50_MLM"],
     "SSWW":                      ["SSWW"],
     "ST_antitop_t-channel":      ["ST_antitop_t-channel"],
     "ST_top_s-channel":          ["ST_top_s-channel"],
@@ -260,8 +260,8 @@ SAMPLE_DICT_BASE_INDIV_RUN3 = {
     "TTZToQQ"                 : ["TTZToQQ"],
     "tWZ4l"                   : ["tWZ4l"],
     "WZTo3LNu"                : ["WZTo3LNu"],
-    "DYJetsToLL_M_10to50_MLM" : ["DYJetsToLL_M_10to50_MLM"],
-    "DYJetsToLL_M_50_MLM"     : ["DYJetsToLL_M_50_MLM"],
+    #"DYJetsToLL_M_10to50_MLM" : ["DYJetsToLL_M_10to50_MLM"],
+    #"DYJetsToLL_M_50_MLM"     : ["DYJetsToLL_M_50_MLM"],
     "SSWW_TT"                 : ["SSWW_TT"],
     "SSWW_TL"                 : ["SSWW_TL"],
     "SSWW_LL"                 : ["SSWW_LL"],
