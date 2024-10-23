@@ -3,6 +3,8 @@ import pickle
 import gzip
 import awkward as ak
 
+from collections import OrderedDict
+
 import correctionlib
 from coffea import lookup_tools
 
@@ -190,14 +192,89 @@ def AttachElectronSF(electrons, year):
     eta = electrons.eta
     pt = electrons.pt
 
+    #############################################
+    # Correctionlib stuff to get the RECO POG SFs
+    # Should probably be its own function
+
+    # Get the right sf json for the given year
+    if year.startswith("2016"):
+        clib_year = "2016preVFP" if year == "2016APV" else "2016postVFP"
+    else:
+        clib_year = year
+
+    clib_year = clib_year_map[year]
+    json_path = topcoffea_path(f"data/POG/EGM/{clib_year}/electron.json.gz")
+    ceval = correctionlib.CorrectionSet.from_file(json_path)
+
+    eta_flat = ak.flatten(eta)
+    pt_flat = ak.flatten(pt)
+
+    pt_bins = OrderedDict([
+        ("RecoBelow20", [10, 20]),
+        ("RecoAbove20", [20, 1000])
+    ])
+
+    reco_sf_perbin = []
+    reco_up_perbin = []
+    reco_do_perbin = []
+
+    for bintag, bin_edges in pt_bins.items():
+        pt_mask = ak.flatten((pt >= bin_edges[0]) & (pt < bin_edges[1]))
+        pt_bin_flat = ak.where(~pt_mask, bin_edges[1]-0.1, pt_flat)
+        reco_sf_perbin.append(
+            ak.where(
+                ~pt_mask,
+                1,
+                ceval["UL-Electron-ID-SF"].evaluate(clib_year.replace("_UL", ""),"sf", bintag, eta_flat, pt_bin_flat)
+            )
+        )
+        reco_up_perbin.append(
+            ak.where(
+                ~pt_mask,
+                1,
+                ceval["UL-Electron-ID-SF"].evaluate(clib_year.replace("_UL", ""),"sfup", bintag, eta_flat, pt_bin_flat)
+            )
+        )
+        reco_do_perbin.append(
+            ak.where(
+                ~pt_mask,
+                1,
+                ceval["UL-Electron-ID-SF"].evaluate(clib_year.replace("_UL", ""),"sfdown", bintag, eta_flat, pt_bin_flat)
+            )
+        )
+
+    reco_sf_flat = None
+    reco_up_flat = None
+    reco_do_flat = None
+
+    for idr, reco_sf_bin_flat in enumerate(reco_sf_perbin):
+        reco_sf_bin_flat = ak.to_numpy(reco_sf_bin_flat)
+        reco_up_bin_flat = ak.to_numpy(reco_up_perbin[idr])
+        reco_do_bin_flat = ak.to_numpy(reco_do_perbin[idr])
+        if idr == 0:
+            reco_sf_flat = reco_sf_bin_flat
+            reco_up_flat = reco_up_bin_flat
+            reco_do_flat = reco_do_bin_flat
+        else:
+            reco_sf_flat *= reco_sf_bin_flat
+            reco_up_flat *= reco_up_bin_flat
+            reco_do_flat *= reco_do_bin_flat
+
+    reco_sf = ak.unflatten(reco_sf_flat, ak.num(pt))
+    reco_up = ak.unflatten(reco_up_flat, ak.num(pt))
+    reco_do = ak.unflatten(reco_do_flat, ak.num(pt))
+
+    #############################################
+
+    # Topmva SFs
     tight_sf   = SFevaluator[f'EleTightSF_{year}'](eta,pt)
     tight_syst = SFevaluator[f'EleTightSF_{year}_syst'](eta,pt)
     tight_stat = SFevaluator[f'EleTightSF_{year}_stat'](eta,pt)
     tight_err  = np.sqrt(tight_syst*tight_syst + tight_stat*tight_stat)
 
-    electrons['sf_nom_elec'] = tight_sf
-    electrons['sf_hi_elec']  = (tight_sf + tight_err)
-    electrons['sf_lo_elec']  = (tight_sf - tight_err)
+    electrons['sf_nom_elec'] = tight_sf * reco_sf
+    electrons['sf_hi_elec']  = (tight_sf + tight_err) * (reco_up)
+    electrons['sf_lo_elec']  = (tight_sf - tight_err) * (reco_do)
     electrons['sf_nom_muon'] = ak.ones_like(tight_sf)
     electrons['sf_hi_muon']  = ak.ones_like(tight_sf)
     electrons['sf_lo_muon']  = ak.ones_like(tight_sf)
