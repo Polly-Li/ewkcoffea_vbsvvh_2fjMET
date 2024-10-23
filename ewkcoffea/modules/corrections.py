@@ -3,6 +3,8 @@ import pickle
 import gzip
 import awkward as ak
 
+from collections import OrderedDict
+
 import correctionlib
 from coffea import lookup_tools
 
@@ -191,8 +193,8 @@ def AttachElectronSF(electrons, year):
     pt = electrons.pt
 
     #############################################
-    #clib
-    from collections import OrderedDict
+    # Correctionlib stuff to get the RECO POG SFs
+    # Should probably be its own function
 
     # Get the right sf json for the given year
     if year.startswith("2016"):
@@ -264,6 +266,7 @@ def AttachElectronSF(electrons, year):
 
     #############################################
 
+    # Topmva SFs
     tight_sf   = SFevaluator[f'EleTightSF_{year}'](eta,pt)
     tight_syst = SFevaluator[f'EleTightSF_{year}_syst'](eta,pt)
     tight_stat = SFevaluator[f'EleTightSF_{year}_stat'](eta,pt)
