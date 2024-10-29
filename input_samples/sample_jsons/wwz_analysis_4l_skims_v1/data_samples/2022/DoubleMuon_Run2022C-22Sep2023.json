@@ -7,23 +7,12 @@
     "era": "C",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2022/DoubleMuon_Run2022C-22Sep2023-v1_NANOAOD_WWZ_Skims_20241003/output_8.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2022/DoubleMuon_Run2022C-22Sep2023-v1_NANOAOD_WWZ_Skims_20241003/output_6.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2022/DoubleMuon_Run2022C-22Sep2023-v1_NANOAOD_WWZ_Skims_20241003/output_11.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2022/DoubleMuon_Run2022C-22Sep2023-v1_NANOAOD_WWZ_Skims_20241003/output_5.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2022/DoubleMuon_Run2022C-22Sep2023-v1_NANOAOD_WWZ_Skims_20241003/output_7.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2022/DoubleMuon_Run2022C-22Sep2023-v1_NANOAOD_WWZ_Skims_20241003/output_10.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2022/DoubleMuon_Run2022C-22Sep2023-v1_NANOAOD_WWZ_Skims_20241003/output_12.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2022/DoubleMuon_Run2022C-22Sep2023-v1_NANOAOD_WWZ_Skims_20241003/output_1.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2022/DoubleMuon_Run2022C-22Sep2023-v1_NANOAOD_WWZ_Skims_20241003/output_4.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2022/DoubleMuon_Run2022C-22Sep2023-v1_NANOAOD_WWZ_Skims_20241003/output_3.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2022/DoubleMuon_Run2022C-22Sep2023-v1_NANOAOD_WWZ_Skims_20241003/output_9.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2022/DoubleMuon_Run2022C-22Sep2023-v1_NANOAOD_WWZ_Skims_20241003/output_2.root"
+        "/data/userdata/phchang/store/user/mdittric/skim/WWZ_Skims_20241003/data/2022/DoubleMuon_Run2022C-22Sep2023-v1_NANOAOD_WWZ_Skims_20241003/merged/merged.root"
     ],
     "nEvents": 115,
     "nGenEvents": 115,
     "nSumOfWeights": 115,
     "isData": true,
-    "path": "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2022/DoubleMuon_Run2022C-22Sep2023-v1_NANOAOD_WWZ_Skims_20241003/",
+    "path": "/data/userdata/phchang/store/user/mdittric/skim/WWZ_Skims_20241003/data/2022/DoubleMuon_Run2022C-22Sep2023-v1_NANOAOD_WWZ_Skims_20241003/merged",
     "nSumOfLheWeights": null
 }

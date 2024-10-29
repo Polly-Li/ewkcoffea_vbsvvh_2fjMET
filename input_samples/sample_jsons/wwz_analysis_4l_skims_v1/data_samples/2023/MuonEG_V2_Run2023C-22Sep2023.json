@@ -7,19 +7,12 @@
     "era": "C2",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Skims_20241003/output_8.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Skims_20241003/output_6.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Skims_20241003/output_5.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Skims_20241003/output_7.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Skims_20241003/output_1.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Skims_20241003/output_4.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Skims_20241003/output_3.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Skims_20241003/output_2.root"
+        "/data/userdata/phchang/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Skims_20241003/merged/merged.root"
     ],
     "nEvents": 112,
     "nGenEvents": 112,
     "nSumOfWeights": 112,
     "isData": true,
-    "path": "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Skims_20241003/",
+    "path": "/data/userdata/phchang/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v2-v1_NANOAOD_WWZ_Skims_20241003/merged",
     "nSumOfLheWeights": null
 }
