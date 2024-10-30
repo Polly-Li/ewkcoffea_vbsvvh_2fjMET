@@ -18,6 +18,8 @@ SMALL = 0.000001
 # Global variables
 PRECISION = 6   # Decimal point precision in the text datacard output
 
+# Use this tag in front of some of our syst names
+OUR_TAG = "CMS_SMP24015"
 
 # What each recognized year grouping consists of
 ALL_YEARS_LST = ["UL16","UL16APV","UL17","UL18", "2022","2022EE", "2023","2023BPix"]
@@ -84,9 +86,9 @@ SYSTS_SPECIAL = {
 
 # Hard code the rateParam lines to put at the end of the card (for background normalization)
 RATE_PARAM_LINES = [
-    "ZZ_norm rateParam * ZZ 1 [0,5]",
-    "txZ_norm rateParam * ttZ 1 [0,5]",
-    "txZ_norm rateParam * tWZ 1 [0,5]",
+    f"{OUR_TAG}_ZZ_norm rateParam * ZZ 1 [0,5]",
+    f"{OUR_TAG}_txZ_norm rateParam * ttZ 1 [0,5]",
+    f"{OUR_TAG}_txZ_norm rateParam * tWZ 1 [0,5]",
 ]
 
 
@@ -368,7 +370,7 @@ def get_kappa_dict(in_dict_mc,in_dict_data,yrs_lst):
 
 # Get the MC stats from the yld dict and put it into kappa dict
 # Can optionally skip processes (e.g. skip data driven ZZ and ttZ since do these different via gmN)
-def add_stats_kappas(yld_mc, kappas, skip_procs=[]):
+def add_stats_kappas(yld_mc, kappas, com_tag, skip_procs=[]):
 
     kappas_out = copy.deepcopy(kappas)
 
@@ -378,11 +380,12 @@ def add_stats_kappas(yld_mc, kappas, skip_procs=[]):
         # Looping over each proc (these will be rows, i.e. one row for each proc's mc stats)
         for proc_of_interest in yld_mc[cat]["nominal"]:
             if proc_of_interest in skip_procs: continue
-            kappas_out[cat][f"CMS_SMP24015_stats_{cat}_{proc_of_interest}"] = {}
+            stats_np_name = f"{OUR_TAG}_stats_{cat}_{proc_of_interest}_{com_tag}"
+            kappas_out[cat][stats_np_name] = {}
             # Now fill the columns for proc_of_interest's row
             for proc_itr in yld_mc[cat]["nominal"]:
                 # Most columns are not relevant (will just be a "-" in the datacard)
-                kappas_out[cat][f"CMS_SMP24015_stats_{cat}_{proc_of_interest}"][proc_itr] = {"Up": [None,None], "Down": [None,None]}
+                kappas_out[cat][stats_np_name][proc_itr] = {"Up": [None,None], "Down": [None,None]}
                 # But for the column that goes with this proc_of_interest, fill the actual numbers
                 if proc_itr == proc_of_interest:
                     valvar = yld_mc[cat]["nominal"][proc_of_interest]
@@ -392,8 +395,8 @@ def add_stats_kappas(yld_mc, kappas, skip_procs=[]):
                     if do <= 0:
                         print(f"WARNING: For cat \"{cat}\" and proc \"{proc_of_interest}\", the uncertainty {np.sqrt(valvar[1])} is larger than the value {valvar[0]}. Clipping down variation to {SMALL}.")
                         do = SMALL
-                    kappas_out[cat][f"CMS_SMP24015_stats_{cat}_{proc_of_interest}"][proc_itr]["Up"]   = [up, None] # Rel err up, do not include error on the error (just leave as None)
-                    kappas_out[cat][f"CMS_SMP24015_stats_{cat}_{proc_of_interest}"][proc_itr]["Down"] = [do, None] # Rel err down, do not include error on the error (just leave as None)
+                    kappas_out[cat][stats_np_name][proc_itr]["Up"]   = [up, None] # Rel err up, do not include error on the error (just leave as None)
+                    kappas_out[cat][stats_np_name][proc_itr]["Down"] = [do, None] # Rel err down, do not include error on the error (just leave as None)
 
     return kappas_out
 
@@ -447,7 +450,7 @@ def get_gmn_for_dc(in_dict,proc_lst):
     for cr_name in in_dict:
         N = in_dict[cr_name]['N']
         if int(N)!= N: raise Exception(f"ERROR: Why is the number of events in your CR ({N}) not an int?")
-        row_name = f"CMS_SMP24015_stats_{cr_name} gmN {int(N)}"
+        row_name = f"{OUR_TAG}_stats_{cr_name} gmN {int(N)}"
         out_dict[row_name] = {}
         for p_itr in proc_lst:
             if p_itr in in_dict[cr_name]["proc_alpha"]:
@@ -488,6 +491,14 @@ def main():
     if out_dir != "." and not os.path.exists(out_dir):
         print(f"Making dir \"{out_dir}\"")
         os.makedirs(out_dir)
+
+    # Set a tag for center of mass energy
+    if run in ["run2"]:
+        com_tag = "13TeV"
+    elif run in ["run3","y22","y23"]:
+        com_tag = "13p6TeV"
+    else:
+        raise Exception("Unknown year")
 
     # Set list of years from the run name
     if run == "run2": yrs_lst = ["UL16APV","UL16","UL17","UL18"]
@@ -553,7 +564,7 @@ def main():
         # Don't do mc stats kappas for data-driven bkg if doing TFs
         if do_tf: skip_stats_kappas_lst = ["ZZ","ttZ"]
         else: skip_stats_kappas_lst = []
-        kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,skip_procs=skip_stats_kappas_lst)
+        kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,com_tag,skip_procs=skip_stats_kappas_lst)
 
     # Do the TF calculation
     if do_tf:
