@@ -296,12 +296,6 @@ class AnalysisProcessor(processor.ProcessorABC):
         else:
             rho = events.fixedGridRhoFastjetAll
 
-        # Assigns some original values that will be changed via kinematic corrections
-        met["pt_original"] = met.pt
-        met["phi_original"] = met.phi
-        jets["pt_original"] = jets.pt
-        jets["mass_original"] = jets.mass
-
 
         # An array of lenght events that is just 1 for each event
         # Probably there's a better way to do this, but we use this method elsewhere so I guess why not..
@@ -456,13 +450,11 @@ class AnalysisProcessor(processor.ProcessorABC):
                 f"AbsoluteStat_uncorrelated_{year}",f"RelativeJEREC1_uncorrelated_{year}",f"RelativeJEREC2_uncorrelated_{year}",f"RelativePtEC1_uncorrelated_{year}",f"RelativePtEC2_uncorrelated_{year}",
                 f"TimePtEta_uncorrelated_{year}",f"RelativeSample_uncorrelated_{year}",f"RelativeStatEC_uncorrelated_{year}",f"RelativeStatFSR_uncorrelated_{year}",f"RelativeStatHF_uncorrelated_{year}",
                 f"JER_{year}",
-                f"MET_pfunclustered_{year}",
             ]
         else:
             obj_correction_systs = [
                 f"JEC_{year}",
                 f"JER_{year}",
-                f"MET_pfunclustered_{year}",
             ]
         obj_correction_systs = append_up_down_to_sys_base(obj_correction_systs)
 
@@ -490,8 +482,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             veto_map_mask = (veto_map_array == 0)
 
             ##### JME Stuff #####
-            cleanedJets["pt_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.pt_original
-            cleanedJets["mass_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.mass_original
+
+            cleanedJets["pt_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.pt
+            cleanedJets["mass_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.mass
 
             if not isData:
                 cleanedJets["pt_gen"] =ak.values_astype(ak.fill_none(cleanedJets.matched_gen.pt, 0), np.float32)
@@ -504,11 +497,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             events_cache = events.caches[0] # used for storing intermediary values for corrections
             cleanedJets = cor_ec.ApplyJetCorrections(year,isData, era).build(cleanedJets,lazy_cache=events_cache,isdata=isData)
             cleanedJets = cor_ec.ApplyJetSystematics(year,cleanedJets,obj_corr_syst_var)
+            #met=ApplyJetCorrections(year,isData, era, corr_type='met').build(met, cleanedJets, lazy_cache=events_cache)
 
-            # Grab the correctable jets
-            correctionJets = os_ec.get_correctable_jets(cleanedJets)
-
-            met = cor_ec.CorrectedMETFactory(correctionJets,year,met,obj_corr_syst_var,isData)
             ##### End of JERC #####
 
             # Selecting jets and cleaning them
