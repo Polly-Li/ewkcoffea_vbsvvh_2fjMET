@@ -586,7 +586,7 @@ def ApplyJetSystematics(year,cleanedJets,syst_var):
         return cleanedJets.JER.up
     elif (syst_var == f'CMS_res_j_{year}Down'):
         return cleanedJets.JER.down
-    elif (syst_var == 'nominal') or (syst_var.startswith("MET")):
+    elif (syst_var == 'nominal') or (syst_var == f'CMS_scale_met_unclustered_energy_{year}'):
         return cleanedJets
     elif (syst_var == f'CMS_scale_j_{year}Up'):
         return cleanedJets.JES_Total.up
