@@ -18,6 +18,8 @@ SMALL = 0.000001
 # Global variables
 PRECISION = 6   # Decimal point precision in the text datacard output
 
+# Use this tag in front of some of our syst names
+OUR_TAG = "CMS_SMP24015"
 
 # What each recognized year grouping consists of
 ALL_YEARS_LST = ["UL16","UL16APV","UL17","UL18", "2022","2022EE", "2023","2023BPix"]
@@ -27,67 +29,74 @@ ALL_YEARS_LST = ["UL16","UL16APV","UL17","UL18", "2022","2022EE", "2023","2023BP
 SYSTS_SPECIAL = {
 
     "run2" : {
-        "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-        "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-        "btagSFlight_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-        "btagSFbc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-        "btagSFlight_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-        "btagSFbc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-        "btagSFlight_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-        "btagSFbc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-        "JER_2016APV"                      : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-        "JER_2016"                         : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-        "JER_2017"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-        "JER_2018"                         : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
-        "JEC_2016APV"                      : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
-        "JEC_2016"                         : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
-        "JEC_2017"                         : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
-        "JEC_2018"                         : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "CMS_btag_fixedWP_incl_light_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "CMS_btag_fixedWP_comb_bc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "CMS_btag_fixedWP_incl_light_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "CMS_btag_fixedWP_comb_bc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "CMS_btag_fixedWP_incl_light_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "CMS_btag_fixedWP_comb_bc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "CMS_btag_fixedWP_incl_light_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "CMS_btag_fixedWP_comb_bc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "CMS_res_j_2016APV"                                : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "CMS_res_j_2016"                                   : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "CMS_res_j_2017"                                   : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "CMS_res_j_2018"                                   : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
+        "CMS_scale_j_2016APV"                              : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
+        "CMS_scale_j_2016"                                 : {"yr_rel":"UL16", "yr_notrel": ["UL16APV", "UL17", "UL18"]},
+        "CMS_scale_j_2017"                                 : {"yr_rel":"UL17", "yr_notrel": ["UL16APV", "UL16", "UL18"]},
+        "CMS_scale_j_2018"                                 : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
 
     },
 
     "run3" : {
-        "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
-        "JER_2022"                         : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
-        "JEC_2022"                         : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
-        "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
-        "JER_2022EE"                       : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
-        "JEC_2022EE"                       : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
-        "btagSFbc_uncorrelated_2023"       : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
-        "JER_2023"                         : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
-        "JEC_2023"                         : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
-        "btagSFbc_uncorrelated_2023BPix"   : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
-        "JER_2023BPix"                     : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
-        "JEC_2023BPix"                     : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "CMS_btag_fixedWP_comb_bc_uncorrelated_2022"     : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "CMS_res_j_2022"                                 : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "CMS_scale_j_2022"                               : {"yr_rel":"2022", "yr_notrel": ["2022EE","2023","2023BPix"]},
+        "CMS_btag_fixedWP_comb_bc_uncorrelated_2022EE"   : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "CMS_res_j_2022EE"                               : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "CMS_scale_j_2022EE"                             : {"yr_rel":"2022EE", "yr_notrel": ["2022","2023","2023BPix"]},
+        "CMS_btag_fixedWP_comb_bc_uncorrelated_2023"     : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "CMS_res_j_2023"                                 : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "CMS_scale_j_2023"                               : {"yr_rel":"2023", "yr_notrel": ["2022","2022EE","2023BPix"]},
+        "CMS_btag_fixedWP_comb_bc_uncorrelated_2023BPix" : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "CMS_res_j_2023BPix"                             : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
+        "CMS_scale_j_2023BPix"                           : {"yr_rel":"2023BPix", "yr_notrel": ["2022","2022EE","2023"]},
     },
 
     "y22" : {
-        "btagSFbc_uncorrelated_2022"       : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
-        "JER_2022"                         : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
-        "JEC_2022"                         : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
-        "btagSFbc_uncorrelated_2022EE"     : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
-        "JER_2022EE"                       : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
-        "JEC_2022EE"                       : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+        "CMS_btag_fixedWP_comb_bc_uncorrelated_2022"   : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+        "CMS_res_j_2022"                               : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+        "CMS_scale_j_2022"                             : {"yr_rel":"2022", "yr_notrel": ["2022EE"]},
+        "CMS_btag_fixedWP_comb_bc_uncorrelated_2022EE" : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+        "CMS_res_j_2022EE"                             : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
+        "CMS_scale_j_2022EE"                           : {"yr_rel":"2022EE", "yr_notrel": ["2022"]},
     },
 
     "y23" : {
-        "btagSFbc_uncorrelated_2023"       : {"yr_rel":"2023", "yr_notrel": ["2023BPix"]},
-        "JER_2023"                         : {"yr_rel":"2023", "yr_notrel": ["2023BPix"]},
-        "JEC_2023"                         : {"yr_rel":"2023", "yr_notrel": ["2023BPix"]},
-        "btagSFbc_uncorrelated_2023BPix"   : {"yr_rel":"2023BPix", "yr_notrel": ["2023"]},
-        "JER_2023BPix"                     : {"yr_rel":"2023BPix", "yr_notrel": ["2023"]},
-        "JEC_2023BPix"                     : {"yr_rel":"2023BPix", "yr_notrel": ["2023"]},
+        "CMS_btag_fixedWP_comb_bc_uncorrelated_2023"     : {"yr_rel":"2023", "yr_notrel": ["2023BPix"]},
+        "CMS_res_j_2023"                                 : {"yr_rel":"2023", "yr_notrel": ["2023BPix"]},
+        "CMS_scale_j_2023"                               : {"yr_rel":"2023", "yr_notrel": ["2023BPix"]},
+        "CMS_btag_fixedWP_comb_bc_uncorrelated_2023BPix" : {"yr_rel":"2023BPix", "yr_notrel": ["2023"]},
+        "CMS_res_j_2023BPix"                             : {"yr_rel":"2023BPix", "yr_notrel": ["2023"]},
+        "CMS_scale_j_2023BPix"                           : {"yr_rel":"2023BPix", "yr_notrel": ["2023"]},
     },
 
 }
 
 
 # Hard code the rateParam lines to put at the end of the card (for background normalization)
-RATE_PARAM_LINES = [
-    "ZZ_norm rateParam * ZZ 1 [0,5]",
-    "txZ_norm rateParam * ttZ 1 [0,5]",
-    "txZ_norm rateParam * tWZ 1 [0,5]",
-]
+RATE_PARAM_LINES = {
+    "run2": [
+        f"{OUR_TAG}_ZZ_norm_13TeV rateParam * ZZ 1 [0,5]",
+        f"{OUR_TAG}_txZ_norm_13TeV rateParam * ttZ 1 [0,5]",
+        f"{OUR_TAG}_txZ_norm_13TeV rateParam * tWZ 1 [0,5]",
+    ],
+    "run3": [
+        f"{OUR_TAG}_ZZ_norm_13p6TeV rateParam * ZZ 1 [0,5]",
+        f"{OUR_TAG}_txZ_norm_13p6TeV rateParam * ttZ 1 [0,5]",
+        f"{OUR_TAG}_txZ_norm_13p6TeV rateParam * tWZ 1 [0,5]",
+    ]
+}
 
 
 ########### Writing the datacard ###########
@@ -368,7 +377,7 @@ def get_kappa_dict(in_dict_mc,in_dict_data,yrs_lst):
 
 # Get the MC stats from the yld dict and put it into kappa dict
 # Can optionally skip processes (e.g. skip data driven ZZ and ttZ since do these different via gmN)
-def add_stats_kappas(yld_mc, kappas, skip_procs=[]):
+def add_stats_kappas(yld_mc, kappas, com_tag, skip_procs=[]):
 
     kappas_out = copy.deepcopy(kappas)
 
@@ -378,11 +387,12 @@ def add_stats_kappas(yld_mc, kappas, skip_procs=[]):
         # Looping over each proc (these will be rows, i.e. one row for each proc's mc stats)
         for proc_of_interest in yld_mc[cat]["nominal"]:
             if proc_of_interest in skip_procs: continue
-            kappas_out[cat][f"stats_{cat}_{proc_of_interest}"] = {}
+            stats_np_name = f"{OUR_TAG}_stats_{cat}_{proc_of_interest}_{com_tag}"
+            kappas_out[cat][stats_np_name] = {}
             # Now fill the columns for proc_of_interest's row
             for proc_itr in yld_mc[cat]["nominal"]:
                 # Most columns are not relevant (will just be a "-" in the datacard)
-                kappas_out[cat][f"stats_{cat}_{proc_of_interest}"][proc_itr] = {"Up": [None,None], "Down": [None,None]}
+                kappas_out[cat][stats_np_name][proc_itr] = {"Up": [None,None], "Down": [None,None]}
                 # But for the column that goes with this proc_of_interest, fill the actual numbers
                 if proc_itr == proc_of_interest:
                     valvar = yld_mc[cat]["nominal"][proc_of_interest]
@@ -392,8 +402,8 @@ def add_stats_kappas(yld_mc, kappas, skip_procs=[]):
                     if do <= 0:
                         print(f"WARNING: For cat \"{cat}\" and proc \"{proc_of_interest}\", the uncertainty {np.sqrt(valvar[1])} is larger than the value {valvar[0]}. Clipping down variation to {SMALL}.")
                         do = SMALL
-                    kappas_out[cat][f"stats_{cat}_{proc_of_interest}"][proc_itr]["Up"]   = [up, None] # Rel err up, do not include error on the error (just leave as None)
-                    kappas_out[cat][f"stats_{cat}_{proc_of_interest}"][proc_itr]["Down"] = [do, None] # Rel err down, do not include error on the error (just leave as None)
+                    kappas_out[cat][stats_np_name][proc_itr]["Up"]   = [up, None] # Rel err up, do not include error on the error (just leave as None)
+                    kappas_out[cat][stats_np_name][proc_itr]["Down"] = [do, None] # Rel err down, do not include error on the error (just leave as None)
 
     return kappas_out
 
@@ -447,7 +457,7 @@ def get_gmn_for_dc(in_dict,proc_lst):
     for cr_name in in_dict:
         N = in_dict[cr_name]['N']
         if int(N)!= N: raise Exception(f"ERROR: Why is the number of events in your CR ({N}) not an int?")
-        row_name = f"stats_{cr_name} gmN {int(N)}"
+        row_name = f"{OUR_TAG}_stats_{cr_name} gmN {int(N)}"
         out_dict[row_name] = {}
         for p_itr in proc_lst:
             if p_itr in in_dict[cr_name]["proc_alpha"]:
@@ -488,6 +498,14 @@ def main():
     if out_dir != "." and not os.path.exists(out_dir):
         print(f"Making dir \"{out_dir}\"")
         os.makedirs(out_dir)
+
+    # Set a tag for center of mass energy
+    if run in ["run2"]:
+        com_tag = "13TeV"
+    elif run in ["run3","y22","y23"]:
+        com_tag = "13p6TeV"
+    else:
+        raise Exception("Unknown year")
 
     # Set list of years from the run name
     if run == "run2": yrs_lst = ["UL16APV","UL16","UL17","UL18"]
@@ -553,7 +571,7 @@ def main():
         # Don't do mc stats kappas for data-driven bkg if doing TFs
         if do_tf: skip_stats_kappas_lst = ["ZZ","ttZ"]
         else: skip_stats_kappas_lst = []
-        kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,skip_procs=skip_stats_kappas_lst)
+        kappa_dict = add_stats_kappas(yld_dict_mc,kappa_dict,com_tag,skip_procs=skip_stats_kappas_lst)
 
     # Do the TF calculation
     if do_tf:
@@ -604,7 +622,7 @@ def main():
             rate_for_dc_ch,
             kappa_for_dc_ch,
             gmn_for_dc_ch,
-            extra_lines=RATE_PARAM_LINES,
+            extra_lines=RATE_PARAM_LINES[run],
             out_dir=out_dir,
         )
 

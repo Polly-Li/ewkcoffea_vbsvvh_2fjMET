@@ -46,6 +46,7 @@ def fill_none_in_list(var_names,var_names_vals_map,none_val):
         out_lst.append(ak.fill_none(vals,none_val))
     return out_lst
 
+
 class AnalysisProcessor(processor.ProcessorABC):
 
     def __init__(self, samples, wc_names_lst=[], hist_lst=None, ecut_threshold=None, do_errors=False, do_systematics=False, split_by_lepton_flavor=False, skip_signal_regions=False, skip_control_regions=False, muonSyst='nominal', dtype=np.float32, siphon_bdt_data=False):
@@ -235,8 +236,10 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         if is2022 or is2023:
             run_tag = "run3"
+            com_tag = "13p6TeV"
         elif year in ["2016","2016APV","2017","2018"]:
             run_tag = "run2"
+            com_tag = "13TeV"
         else:
             raise Exception(f"ERROR: Unknown year {year}.")
 
@@ -406,33 +409,33 @@ class AnalysisProcessor(processor.ProcessorABC):
             cor_tc.AttachScaleWeights(events)
             # FSR/ISR weights
             # For now only consider variations in the numerator
-            weights_obj_base.add('ISR', events.nom, events.ISRUp, events.ISRDown)
-            weights_obj_base.add('FSR', events.nom, events.FSRUp, events.FSRDown)
+            weights_obj_base.add('ps_isr', events.nom, events.ISRUp, events.ISRDown)
+            weights_obj_base.add('ps_fsr', events.nom, events.FSRUp, events.FSRDown)
             # Renorm/fact scale
-            weights_obj_base.add('renorm', events.nom, events.renormUp*(sow/sow_renormUp), events.renormDown*(sow/sow_renormDown))
-            weights_obj_base.add('fact', events.nom, events.factUp*(sow/sow_factUp), events.factDown*(sow/sow_factDown))
+            weights_obj_base.add('QCDscale_ren', events.nom, events.renormUp*(sow/sow_renormUp), events.renormDown*(sow/sow_renormDown))
+            weights_obj_base.add('QCDscale_fac', events.nom, events.factUp*(sow/sow_factUp), events.factDown*(sow/sow_factDown))
             if not (is2022 or is2023):
                 # Misc other experimental SFs and systs
-                weights_obj_base.add('PreFiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
-                weights_obj_base.add('PU', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
+                weights_obj_base.add('CMS_l1_ecal_prefiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
+                weights_obj_base.add('CMS_pileup', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
             else:
-                weights_obj_base.add("PU", cor_ec.run3_pu_attach(events.Pileup,year,"nominal"), cor_ec.run3_pu_attach(events.Pileup,year,"hi"), cor_ec.run3_pu_attach(events.Pileup,year,"lo"))
+                weights_obj_base.add("CMS_pileup", cor_ec.run3_pu_attach(events.Pileup,year,"nominal"), cor_ec.run3_pu_attach(events.Pileup,year,"hi"), cor_ec.run3_pu_attach(events.Pileup,year,"lo"))
 
             # Lepton SFs and systs
-            weights_obj_base.add(f"lepSF_muon_{run_tag}", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
-            weights_obj_base.add(f"lepSF_elec_{run_tag}", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
+            weights_obj_base.add(f"CMS_eff_m_{com_tag}", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
+            weights_obj_base.add(f"CMS_eff_e_{com_tag}", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
 
 
         # Set up the list of systematics that are handled via event weight variations
         wgt_correction_syst_lst_common = [
-            "btagSFbc_correlated", "btagSFlight_correlated", f"btagSFbc_uncorrelated_{year}",
-            f"lepSF_elec_{run_tag}", f"lepSF_muon_{run_tag}", "PU",
-            "renorm", "fact", "ISR", "FSR",
+            "CMS_btag_fixedWP_comb_bc_correlated", "CMS_btag_fixedWP_incl_light_correlated", f"CMS_btag_fixedWP_comb_bc_uncorrelated_{year}",
+            f"CMS_eff_e_{com_tag}", f"CMS_eff_m_{com_tag}", "CMS_pileup",
+            "QCDscale_ren", "QCDscale_fac", "ps_isr", "ps_fsr",
         ]
         wgt_correction_syst_lst = wgt_correction_syst_lst_common
         if not (is2022 or is2023):
             # These are only for R2
-            wgt_correction_syst_lst = wgt_correction_syst_lst + ["PreFiring",f"btagSFlight_uncorrelated_{year}"]
+            wgt_correction_syst_lst = wgt_correction_syst_lst + ["CMS_l1_ecal_prefiring",f"CMS_btag_fixedWP_incl_light_uncorrelated_{year}"]
 
         wgt_correction_syst_lst = append_up_down_to_sys_base(wgt_correction_syst_lst)
 
@@ -453,8 +456,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             ]
         else:
             obj_correction_systs = [
-                f"JEC_{year}",
-                f"JER_{year}",
+                f"CMS_scale_j_{year}",
+                f"CMS_res_j_{year}",
             ]
         obj_correction_systs = append_up_down_to_sys_base(obj_correction_systs)
 
@@ -589,15 +592,15 @@ class AnalysisProcessor(processor.ProcessorABC):
                     # Note light correlated and uncorrelated are missing, so just using total, as suggested by the pog
                     # See this for more info: https://cms-talk.web.cern.ch/t/2022-btag-sf-recommendations/42262
                     if (is2022 or is2023):
-                        for btag_sys in ["correlated", "uncorrelated"]:
+                        for corr_str in ["correlated", "uncorrelated"]:
                             year_tag = f"_{year}"
-                            if btag_sys == "correlated": year_tag = ""
-                            btag_sf_bc_up      = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb",f"up_{btag_sys}")
-                            btag_sf_bc_down    = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb",f"down_{btag_sys}")
+                            if corr_str == "correlated": year_tag = ""
+                            btag_sf_bc_up      = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb",f"up_{corr_str}")
+                            btag_sf_bc_down    = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb",f"down_{corr_str}")
                             wgt_bc_up      = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_up,    jets_bc.btagDeepFlavB>btagwpl)
                             wgt_bc_down    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_down,    jets_bc.btagDeepFlavB>btagwpl)
                             # Note, up and down weights scaled by 1/wgt_btag_nom so that don't double count the central btag correction (i.e. don't apply it also in the case of up and down variations)
-                            weights_obj_base_for_kinematic_syst.add(f"btagSFbc_{btag_sys}{year_tag}",    events.nom, wgt_light*wgt_bc_up/wgt_btag_nom, wgt_light*wgt_bc_down/wgt_btag_nom)
+                            weights_obj_base_for_kinematic_syst.add(f"CMS_btag_fixedWP_comb_bc_{corr_str}{year_tag}",    events.nom, wgt_light*wgt_bc_up/wgt_btag_nom, wgt_light*wgt_bc_down/wgt_btag_nom)
 
                         # Light have no correlated/uncorrelated so just use total:
                         btag_sf_light_up   = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_light","up")
@@ -605,18 +608,18 @@ class AnalysisProcessor(processor.ProcessorABC):
                         wgt_light_up   = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light_up, jets_light.btagDeepFlavB>btagwpl)
                         wgt_light_down = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light_down, jets_light.btagDeepFlavB>btagwpl)
                         # Note, up and down weights scaled by 1/wgt_btag_nom so that don't double count the central btag correction (i.e. don't apply it also in the case of up and down variations)
-                        weights_obj_base_for_kinematic_syst.add("btagSFlight_correlated", events.nom, wgt_light_up*wgt_bc/wgt_btag_nom, wgt_light_down*wgt_bc/wgt_btag_nom)
+                        weights_obj_base_for_kinematic_syst.add("CMS_btag_fixedWP_incl_light_correlated", events.nom, wgt_light_up*wgt_bc/wgt_btag_nom, wgt_light_down*wgt_bc/wgt_btag_nom)
 
                     # Run2 btagging systematics stuff
                     else:
-                        for btag_sys in ["correlated", "uncorrelated"]:
+                        for corr_str in ["correlated", "uncorrelated"]:
                             year_tag = f"_{year}"
-                            if btag_sys == "correlated": year_tag = ""
+                            if corr_str == "correlated": year_tag = ""
 
-                            btag_sf_light_up   = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl",f"up_{btag_sys}")
-                            btag_sf_light_down = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl",f"down_{btag_sys}")
-                            btag_sf_bc_up      = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb",f"up_{btag_sys}")
-                            btag_sf_bc_down    = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb",f"down_{btag_sys}")
+                            btag_sf_light_up   = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl",f"up_{corr_str}")
+                            btag_sf_light_down = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl",f"down_{corr_str}")
+                            btag_sf_bc_up      = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb",f"up_{corr_str}")
+                            btag_sf_bc_down    = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb",f"down_{corr_str}")
 
                             wgt_light_up   = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light_up, jets_light.btagDeepFlavB>btagwpl)
                             wgt_bc_up      = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_up,    jets_bc.btagDeepFlavB>btagwpl)
@@ -624,8 +627,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                             wgt_bc_down    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_down,    jets_bc.btagDeepFlavB>btagwpl)
 
                             # Note, up and down weights scaled by 1/wgt_btag_nom so that don't double count the central btag correction (i.e. don't apply it also in the case of up and down variations)
-                            weights_obj_base_for_kinematic_syst.add(f"btagSFlight_{btag_sys}{year_tag}", events.nom, wgt_light_up*wgt_bc/wgt_btag_nom, wgt_light_down*wgt_bc/wgt_btag_nom)
-                            weights_obj_base_for_kinematic_syst.add(f"btagSFbc_{btag_sys}{year_tag}",    events.nom, wgt_light*wgt_bc_up/wgt_btag_nom, wgt_light*wgt_bc_down/wgt_btag_nom)
+                            weights_obj_base_for_kinematic_syst.add(f"CMS_btag_fixedWP_incl_light_{corr_str}{year_tag}", events.nom, wgt_light_up*wgt_bc/wgt_btag_nom, wgt_light_down*wgt_bc/wgt_btag_nom)
+                            weights_obj_base_for_kinematic_syst.add(f"CMS_btag_fixedWP_comb_bc_{corr_str}{year_tag}",    events.nom, wgt_light*wgt_bc_up/wgt_btag_nom, wgt_light*wgt_bc_down/wgt_btag_nom)
 
 
             ######### Masks we need for the selection ##########
