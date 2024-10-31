@@ -582,15 +582,15 @@ def ApplyJetCorrections(year,isData, era):
     return CorrectedJetsFactory(name_map, jec_stack)
 
 def ApplyJetSystematics(year,cleanedJets,syst_var):
-    if (syst_var == f'JER_{year}Up'):
+    if (syst_var == f'CMS_res_j_{year}Up'):
         return cleanedJets.JER.up
-    elif (syst_var == f'JER_{year}Down'):
+    elif (syst_var == f'CMS_res_j_{year}Down'):
         return cleanedJets.JER.down
     elif (syst_var == 'nominal') or (syst_var.startswith("MET")):
         return cleanedJets
-    elif (syst_var == f'JEC_{year}Up'):
+    elif (syst_var == f'CMS_scale_j_{year}Up'):
         return cleanedJets.JES_Total.up
-    elif (syst_var == f'JEC_{year}Down'):
+    elif (syst_var == f'CMS_scale_j_{year}Down'):
         return cleanedJets.JES_Total.down
     else:
         try:
