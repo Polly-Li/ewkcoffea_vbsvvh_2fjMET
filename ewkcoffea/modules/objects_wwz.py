@@ -17,6 +17,7 @@ def get_cleaned_collection(obj_collection_a,obj_collection_b,drcut=0.4):
 ######### WWZ 4l analysis object selection #########
 
 # Correctable Jets
+# https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETRun2Corrections#Implementation
 def get_correctable_jets(jets):
     mask = (
         (jets.pt                       > 15.0) &

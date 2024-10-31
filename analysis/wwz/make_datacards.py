@@ -95,12 +95,18 @@ SYSTS_SPECIAL = {
 
 
 # Hard code the rateParam lines to put at the end of the card (for background normalization)
-RATE_PARAM_LINES = [
-    "ZZ_norm rateParam * ZZ 1 [0,5]",
-    "txZ_norm rateParam * ttZ 1 [0,5]",
-    "txZ_norm rateParam * tWZ 1 [0,5]",
-]
-
+RATE_PARAM_LINES = {
+    "run2":[
+        "ZZ_norm_r2 rateParam * ZZ 1 [0,5]",
+        "txZ_norm_r2 rateParam * ttZ 1 [0,5]",
+        "txZ_norm_r2 rateParam * tWZ 1 [0,5]",
+    ],
+    "run3":[
+        "ZZ_norm_r3 rateParam * ZZ 1 [0,5]",
+        "txZ_norm_r3 rateParam * ttZ 1 [0,5]",
+        "txZ_norm_r3 rateParam * tWZ 1 [0,5]",
+    ],
+}
 
 ########### Writing the datacard ###########
 
@@ -607,6 +613,7 @@ def main():
             # TF calculation not meaningful for CRs
             gmn_for_dc_ch = get_gmn_for_dc(gmn_dict[ch],proc_lst=sg.PROC_LST)
 
+        rp_run = "run3" if run in ["run3","y22","y23"] else "run2"
 
         # Make the card for this chan
         make_ch_card(
@@ -616,7 +623,7 @@ def main():
             rate_for_dc_ch,
             kappa_for_dc_ch,
             gmn_for_dc_ch,
-            extra_lines=RATE_PARAM_LINES,
+            extra_lines=RATE_PARAM_LINES[rp_run],
             out_dir=out_dir,
         )
 

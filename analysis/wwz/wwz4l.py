@@ -509,7 +509,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             correctionJets = os_ec.get_correctable_jets(cleanedJets)
 
             met = cor_ec.CorrectedMETFactory(correctionJets,year,met,obj_corr_syst_var,isData)
-            ##### End of JERC #####
+            ##### End of JME #####
 
             # Selecting jets and cleaning them
             cleanedJets["is_good"] = os_tc.is_tight_jet(getattr(cleanedJets, jetptname), cleanedJets.eta, cleanedJets.jetId, pt_cut=20., eta_cut=get_ec_param("wwz_eta_j_cut"), id_cut=get_ec_param("wwz_jet_id_cut"))
