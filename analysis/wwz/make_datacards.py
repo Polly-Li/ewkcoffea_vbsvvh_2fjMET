@@ -85,11 +85,18 @@ SYSTS_SPECIAL = {
 
 
 # Hard code the rateParam lines to put at the end of the card (for background normalization)
-RATE_PARAM_LINES = [
-    f"{OUR_TAG}_ZZ_norm rateParam * ZZ 1 [0,5]",
-    f"{OUR_TAG}_txZ_norm rateParam * ttZ 1 [0,5]",
-    f"{OUR_TAG}_txZ_norm rateParam * tWZ 1 [0,5]",
-]
+RATE_PARAM_LINES = {
+    "run2": [
+        f"{OUR_TAG}_ZZ_norm_13TeV rateParam * ZZ 1 [0,5]",
+        f"{OUR_TAG}_txZ_norm_13TeV rateParam * ttZ 1 [0,5]",
+        f"{OUR_TAG}_txZ_norm_13TeV rateParam * tWZ 1 [0,5]",
+    ],
+    "run3": [
+        f"{OUR_TAG}_ZZ_norm_13p6TeV rateParam * ZZ 1 [0,5]",
+        f"{OUR_TAG}_txZ_norm_13p6TeV rateParam * ttZ 1 [0,5]",
+        f"{OUR_TAG}_txZ_norm_13p6TeV rateParam * tWZ 1 [0,5]",
+    ]
+}
 
 
 ########### Writing the datacard ###########
@@ -615,7 +622,7 @@ def main():
             rate_for_dc_ch,
             kappa_for_dc_ch,
             gmn_for_dc_ch,
-            extra_lines=RATE_PARAM_LINES,
+            extra_lines=RATE_PARAM_LINES[run],
             out_dir=out_dir,
         )
 
