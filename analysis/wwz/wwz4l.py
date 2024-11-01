@@ -448,25 +448,11 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
 
-        do_full_jec_list = False # toggle switch for total uncertainty or full 27
-
-        if do_full_jec_list:
-            obj_correction_systs = [
-                "AbsoluteMPFBias_correlated","AbsoluteScale_correlated","FlavorQCD_correlated","Fragmentation_correlated","PileUpDataMC_correlated",
-                "PileUpPtBB_correlated","PileUpPtEC1_correlated","PileUpPtEC2_correlated","PileUpPtHF_correlated","PileUpPtRef_correlated",
-                "RelativeFSR_correlated","RelativeJERHF_correlated","RelativePtBB_correlated","RelativePtHF_correlated","RelativeBal_correlated",
-                "SinglePionECAL_correlated","SinglePionHCAL_correlated",
-                f"AbsoluteStat_uncorrelated_{year}",f"RelativeJEREC1_uncorrelated_{year}",f"RelativeJEREC2_uncorrelated_{year}",f"RelativePtEC1_uncorrelated_{year}",f"RelativePtEC2_uncorrelated_{year}",
-                f"TimePtEta_uncorrelated_{year}",f"RelativeSample_uncorrelated_{year}",f"RelativeStatEC_uncorrelated_{year}",f"RelativeStatFSR_uncorrelated_{year}",f"RelativeStatHF_uncorrelated_{year}",
-                f"JER_{year}",
-                f"MET_pfunclustered_{year}",
-            ]
-        else:
-            obj_correction_systs = [
-                f"CMS_scale_j_{year}",
-                f"CMS_res_j_{year}",
-                f"CMS_scale_met_unclustered_energy_{year}",
-            ]
+        obj_correction_systs = [
+            f"CMS_scale_j_{year}",
+            f"CMS_res_j_{year}",
+            f"CMS_scale_met_unclustered_energy_{year}",
+        ]
         obj_correction_systs = append_up_down_to_sys_base(obj_correction_systs)
 
         # If we're doing systematics and this isn't data, we will loop over the obj correction syst lst list
@@ -488,14 +474,19 @@ class AnalysisProcessor(processor.ProcessorABC):
             jetptname = "pt_nom" if hasattr(cleanedJets, "pt_nom") else "pt"
 
             # Jet Veto Maps
+            # Removes events that have ANY jet in a specific eta-phi space (not required for Run 2)
             # Zero is passing the veto map, so Run 2 will be assigned an array of length events with all zeros
             veto_map_array = cor_ec.ApplyJetVetoMaps(cleanedJets, year) if (is2022 or is2023) else ak.zeros_like(met.pt)
             veto_map_mask = (veto_map_array == 0)
 
             ##### JME Stuff #####
+
+            # Getting the raw pT and raw mass for jets
             cleanedJets["pt_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.pt_original
             cleanedJets["mass_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.mass_original
 
+            # Getting the generated pT (zeros for unmatched jets)
+            # Note this is not used for data, so we use ak.ones_like to create a dummy object
             if not isData:
                 cleanedJets["pt_gen"] =ak.values_astype(ak.fill_none(cleanedJets.matched_gen.pt, 0), np.float32)
             else:
