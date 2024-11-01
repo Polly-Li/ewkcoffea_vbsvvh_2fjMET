@@ -16,6 +16,15 @@ def get_cleaned_collection(obj_collection_a,obj_collection_b,drcut=0.4):
 
 ######### WWZ 4l analysis object selection #########
 
+# Correctable Jets
+# https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETRun2Corrections#Implementation
+def get_correctable_jets(jets):
+    mask = (
+        (jets.pt                       > 15.0) &
+        (abs(jets.eta)                 <  5.1)  &
+        ((jets.chEmEF + jets.neEmEF)   <  0.9)
+    )
+    return jets[mask]
 
 # WWZ preselection for electrons
 def is_presel_wwz_ele(ele,is2022,is2023):
