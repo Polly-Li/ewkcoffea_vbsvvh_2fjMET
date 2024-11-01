@@ -593,15 +593,7 @@ def ApplyJetSystematics(year,cleanedJets,syst_var):
     elif (syst_var == f'CMS_scale_j_{year}Down'):
         return cleanedJets.JES_Total.down
     else:
-        try:
-            syst = "JES_" + syst_var.split('_')[0]
-            attribute = getattr(cleanedJets,syst)
-            if syst_var.endswith('Up'):
-                return attribute.up
-            elif syst_var.endswith('Down'):
-                return attribute.down
-        except AttributeError:
-            raise ValueError(f"Unsupported systematic variation: {syst_var}")
+        raise Exception(f"Unsupported systematic variation: {syst_var}")
 
 def ApplyJetVetoMaps(jets,year):
 
@@ -654,7 +646,7 @@ def CorrectedMETFactory(jets,year,met,syst,isdata):
     phi = np.arctan2(y,x)
 
     #Return the corrected MET unless we are looking at MET systematic
-    if not syst.startswith("MET"):
+    if not syst.startswith("CMS_scale_met_unclustered_energy"):
         met["pt"] = pt
         met["phi"] = phi
         return met
