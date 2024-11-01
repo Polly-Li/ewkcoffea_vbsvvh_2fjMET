@@ -49,7 +49,7 @@ def fill_none_in_list(var_names,var_names_vals_map,none_val):
 
 class AnalysisProcessor(processor.ProcessorABC):
 
-    def __init__(self, samples, wc_names_lst=[], hist_lst=None, ecut_threshold=None, do_errors=False, do_systematics=False, split_by_lepton_flavor=False, skip_signal_regions=False, skip_control_regions=False, muonSyst='nominal', dtype=np.float32, siphon_bdt_data=False):
+    def __init__(self, samples, wc_names_lst=[], hist_lst=None, ecut_threshold=None, do_errors=False, do_systematics=False, skip_obj_systematics=False, split_by_lepton_flavor=False, skip_signal_regions=False, skip_control_regions=False, muonSyst='nominal', dtype=np.float32, siphon_bdt_data=False):
 
         self._samples = samples
         self._wc_names_lst = wc_names_lst
@@ -205,6 +205,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Set the booleans
         self._do_errors = do_errors # Whether to calculate and store the w**2 coefficients
         self._do_systematics = do_systematics # Whether to process systematic samples
+        self._skip_obj_systematics = skip_obj_systematics # Skip the JEC/JER/MET systematics (even if running with do_systematics on)
         self._split_by_lepton_flavor = split_by_lepton_flavor # Whether to keep track of lepton flavors individually
         self._skip_signal_regions = skip_signal_regions # Whether to skip the SR categories
         self._skip_control_regions = skip_control_regions # Whether to skip the CR categories
@@ -456,7 +457,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         obj_correction_systs = append_up_down_to_sys_base(obj_correction_systs)
 
         # If we're doing systematics and this isn't data, we will loop over the obj correction syst lst list
-        if self._do_systematics and not isData: obj_corr_syst_var_list = ["nominal"] + obj_correction_systs
+        if self._do_systematics and not isData and not self._skip_obj_systematics: obj_corr_syst_var_list = ["nominal"] + obj_correction_systs
         # Otherwise loop juse once, for nominal
         else: obj_corr_syst_var_list = ['nominal']
 
