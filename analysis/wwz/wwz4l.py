@@ -865,7 +865,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             bdt_of_wwz_vs_zh_divider_threshold = 0
             bdt_sf_wwz_vs_zh_divider_threshold = 0
 
-            # Calculating the masks for OF bins
+            # OF: Calculating the bins and computing bin index for each event
             bdt_of_1 =                                (bdt_of_bkg < of_thr_wwz_1) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
             bdt_of_2 = (bdt_of_bkg >= of_thr_wwz_1) & (bdt_of_bkg < of_thr_wwz_2) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
             bdt_of_3 = (bdt_of_bkg >= of_thr_wwz_2) & (bdt_of_bkg < of_thr_wwz_3) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
@@ -884,19 +884,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             bdt_of_bin = ak.where(bdt_of_7, 6, bdt_of_bin)
             bdt_of_bin = ak.where(bdt_of_8, 7, bdt_of_bin)
 
-            # Calculating the masks for R3 OF bins (coarse binning compared to R2)
-            bdt_of_coarse_1 = (bdt_of_1 | bdt_of_2)
-            bdt_of_coarse_2 = (bdt_of_3 | bdt_of_4)
-            bdt_of_coarse_3 = (bdt_of_5 | bdt_of_6)
-            bdt_of_coarse_4 = (bdt_of_7 | bdt_of_8)
-            bdt_of_bin_coarse = ak.full_like(events.nom,-999)
-            bdt_of_bin_coarse = ak.where(bdt_of_coarse_1, 0, bdt_of_bin_coarse)
-            bdt_of_bin_coarse = ak.where(bdt_of_coarse_2, 1, bdt_of_bin_coarse)
-            bdt_of_bin_coarse = ak.where(bdt_of_coarse_3, 2, bdt_of_bin_coarse)
-            bdt_of_bin_coarse = ak.where(bdt_of_coarse_4, 3, bdt_of_bin_coarse)
-
-
-            # Calculating the bins and computing bin index for each event
+            # SF: Calculating the bins and computing bin index for each event
             bdt_sf_1 =                                (bdt_sf_bkg < sf_thr_wwz_1) & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
             bdt_sf_2 = (bdt_sf_bkg >= sf_thr_wwz_1) & (bdt_sf_bkg < sf_thr_wwz_2) & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
             bdt_sf_3 = (bdt_sf_bkg >= sf_thr_wwz_2) & (bdt_sf_bkg < sf_thr_wwz_3) & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
@@ -915,16 +903,37 @@ class AnalysisProcessor(processor.ProcessorABC):
             bdt_sf_bin = ak.where(bdt_sf_7, 6, bdt_sf_bin)
             bdt_sf_bin = ak.where(bdt_sf_8, 7, bdt_sf_bin)
 
-            # Calculating the masks for R3 SF bins (coarse binning compared to R2)
-            bdt_sf_coarse_1 = (bdt_sf_1 | bdt_sf_2)
-            bdt_sf_coarse_2 = (bdt_sf_3 | bdt_sf_4)
-            bdt_sf_coarse_3 = (bdt_sf_5 | bdt_sf_6)
-            bdt_sf_coarse_4 = (bdt_sf_7 | bdt_sf_8)
+            ######################################
+            # R3 binning
+
+            of_thr_zh_coarse_1  = 0.14
+            of_thr_wwz_coarse_1 = 0.13
+            sf_thr_zh_coarse_1  = 0.11
+            sf_thr_wwz_coarse_1 = 0.05
+
+            # Calculating the masks for OF bins
+            bdt_of_coarse_1 =                                      (bdt_of_bkg < of_thr_wwz_coarse_1) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
+            bdt_of_coarse_2 = (bdt_of_bkg >= of_thr_wwz_coarse_1)                                     & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
+            bdt_of_coarse_3 =                                      (bdt_of_bkg < of_thr_zh_coarse_1)  & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
+            bdt_of_coarse_4 = (bdt_of_bkg >= of_thr_zh_coarse_1)                                      & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
+            bdt_of_bin_coarse = ak.full_like(events.nom,-999)
+            bdt_of_bin_coarse = ak.where(bdt_of_coarse_1, 0, bdt_of_bin_coarse)
+            bdt_of_bin_coarse = ak.where(bdt_of_coarse_2, 1, bdt_of_bin_coarse)
+            bdt_of_bin_coarse = ak.where(bdt_of_coarse_3, 2, bdt_of_bin_coarse)
+            bdt_of_bin_coarse = ak.where(bdt_of_coarse_4, 3, bdt_of_bin_coarse)
+
+            # Calculating the bins and computing bin index for each event
+            bdt_sf_coarse_1 =                                     (bdt_sf_bkg < sf_thr_wwz_coarse_1) & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
+            bdt_sf_coarse_2 = (bdt_sf_bkg >= sf_thr_wwz_coarse_1)                                    & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
+            bdt_sf_coarse_3 =                                     (bdt_sf_bkg < sf_thr_zh_coarse_1)  & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
+            bdt_sf_coarse_4 = (bdt_sf_bkg >= sf_thr_zh_coarse_1)                                     & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
             bdt_sf_bin_coarse = ak.full_like(events.nom,-999)
             bdt_sf_bin_coarse = ak.where(bdt_sf_coarse_1, 0, bdt_sf_bin_coarse)
             bdt_sf_bin_coarse = ak.where(bdt_sf_coarse_2, 1, bdt_sf_bin_coarse)
             bdt_sf_bin_coarse = ak.where(bdt_sf_coarse_3, 2, bdt_sf_bin_coarse)
             bdt_sf_bin_coarse = ak.where(bdt_sf_coarse_4, 3, bdt_sf_bin_coarse)
+
+            ######################################
 
 
             # Creating the event mask for BDT regions when split between WWZ vs. ZH
