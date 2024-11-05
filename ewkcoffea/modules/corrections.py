@@ -582,26 +582,18 @@ def ApplyJetCorrections(year,isData, era):
     return CorrectedJetsFactory(name_map, jec_stack)
 
 def ApplyJetSystematics(year,cleanedJets,syst_var):
-    if (syst_var == f'JER_{year}Up'):
+    if (syst_var == f'CMS_res_j_{year}Up'):
         return cleanedJets.JER.up
-    elif (syst_var == f'JER_{year}Down'):
+    elif (syst_var == f'CMS_res_j_{year}Down'):
         return cleanedJets.JER.down
-    elif (syst_var == 'nominal'):
+    elif (syst_var == 'nominal') or (syst_var.startswith(f'CMS_scale_met_unclustered_energy_{year}')):
         return cleanedJets
-    elif (syst_var == f'JEC_{year}Up'):
+    elif (syst_var == f'CMS_scale_j_{year}Up'):
         return cleanedJets.JES_Total.up
-    elif (syst_var == f'JEC_{year}Down'):
+    elif (syst_var == f'CMS_scale_j_{year}Down'):
         return cleanedJets.JES_Total.down
     else:
-        try:
-            syst = "JES_" + syst_var.split('_')[0]
-            attribute = getattr(cleanedJets,syst)
-            if syst_var.endswith('Up'):
-                return attribute.up
-            elif syst_var.endswith('Down'):
-                return attribute.down
-        except AttributeError:
-            raise ValueError(f"Unsupported systematic variation: {syst_var}")
+        raise Exception(f"Unsupported systematic variation: {syst_var}")
 
 def ApplyJetVetoMaps(jets,year):
 
@@ -643,3 +635,34 @@ def ApplyJetVetoMaps(jets,year):
     #Sum the outputs for each event (if the sum is >0, the event will fail)
     veto_map_event = ak.sum(jet_vetomap_score, axis=-1)
     return veto_map_event
+
+def CorrectedMETFactory(jets,year,met,syst,isdata):
+
+    #Carry the JEC/JER corrections forward with some math
+    sj, cj = np.sin(jets.phi), np.cos(jets.phi)
+    x = met.pt_original * np.cos(met.phi_original) - ak.sum((jets.pt - jets.pt_original) * cj, axis=1)
+    y = met.pt_original * np.sin(met.phi_original) - ak.sum((jets.pt - jets.pt_original) * sj, axis=1)
+    pt = np.hypot(x, y)
+    phi = np.arctan2(y,x)
+
+    #Return the corrected MET unless we are looking at MET systematic
+    if not syst.startswith("CMS_scale_met_unclustered_energy"):
+        met["pt"] = pt
+        met["phi"] = phi
+        return met
+    else:
+        phi_factor_up = met.phiUnclusteredUp - met.phi_original
+        phi_factor_down = met.phiUnclusteredDown - met.phi_original
+        pt_factor_up = met.ptUnclusteredUp - met.pt_original
+        pt_factor_down = met.ptUnclusteredDown - met.pt_original
+        if syst.endswith("Up"):
+            phi_v2 = phi + phi_factor_up
+            pt_v2 = pt + pt_factor_up
+        elif syst.endswith("Down"):
+            phi_v2 = phi + phi_factor_down
+            pt_v2 = pt + pt_factor_down
+        else:
+            raise Exception("Uncertainty should end in up or down!")
+        met["pt"] = pt_v2
+        met["phi"] = phi_v2
+        return met
