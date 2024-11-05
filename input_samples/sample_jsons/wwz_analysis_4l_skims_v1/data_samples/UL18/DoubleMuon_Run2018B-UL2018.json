@@ -7,12 +7,12 @@
     "era": "B",
     "WCnames": [],
     "files": [
-        "/data/userdata/phchang/store/user/mdittric/skim/WWZ_Skims_20241003/data/2018/DoubleMuon_Run2018B-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Skims_20241003/merged/merged.root"
+        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2018/DoubleMuon_Run2018B-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Skims_20241003/merged/merged.root"
     ],
     "nEvents": 1150,
     "nGenEvents": 1150,
     "nSumOfWeights": 1150,
     "isData": true,
-    "path": "/data/userdata/phchang/store/user/mdittric/skim/WWZ_Skims_20241003/data/2018/DoubleMuon_Run2018B-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Skims_20241003/merged",
+    "path": "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2018/DoubleMuon_Run2018B-UL2018_MiniAODv2_NanoAODv9-v1_NANOAOD_WWZ_Skims_20241003/merged/",
     "nSumOfLheWeights": null
 }

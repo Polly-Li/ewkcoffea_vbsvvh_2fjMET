@@ -7,12 +7,12 @@
     "era": "C3",
     "WCnames": [],
     "files": [
-        "/data/userdata/phchang/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/Muon1_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/merged/merged.root"
+        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/Muon1_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/merged/merged.root"
     ],
     "nEvents": 133,
     "nGenEvents": 133,
     "nSumOfWeights": 133,
     "isData": true,
-    "path": "/data/userdata/phchang/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/Muon1_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/merged",
+    "path": "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/Muon1_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/merged/",
     "nSumOfLheWeights": null
 }
