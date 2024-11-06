@@ -139,8 +139,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             "bdt_sf_wwz": axis.Regular(180, 0, 1, name="bdt_sf_wwz", label="Score bdt_sf_wwz"),
             "bdt_of_zh" : axis.Regular(180, 0, 1, name="bdt_of_zh", label="Score bdt_of_zh"),
             "bdt_sf_zh" : axis.Regular(180, 0, 1, name="bdt_sf_zh", label="Score bdt_sf_zh"),
-            "bdt_of_bkg" : axis.Regular(180, 0, 1, name="bdt_of_bkg", label="Score bdt_of_bkg"),
-            "bdt_sf_bkg" : axis.Regular(180, 0, 1, name="bdt_sf_bkg", label="Score bdt_sf_bkg"),
+            "bdt_of_bkg" : axis.Regular(100, 0, 1, name="bdt_of_bkg", label="Score bdt_of_bkg"),
+            "bdt_sf_bkg" : axis.Regular(100, 0, 1, name="bdt_sf_bkg", label="Score bdt_sf_bkg"),
             "bdt_of_wwz_m_zh" : axis.Regular(180, -1, 1, name="bdt_of_wwz_m_zh", label="Score bdt_of_wwz - bdt_of_zh"),
             "bdt_sf_wwz_m_zh" : axis.Regular(180, -1, 1, name="bdt_sf_wwz_m_zh", label="Score bdt_sf_wwz - bdt_sf_zh"),
             "bdt_of_bin" : axis.Regular(8, 0, 8, name="bdt_of_bin", label="Binned bdt_of"),
@@ -843,21 +843,21 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Philip's version of the v7 binning
 
-            of_thr_zh_1 = 0.08
-            of_thr_zh_2 = 0.14
-            of_thr_zh_3 = 0.39
+            of_thr_zh_1 = 0.01
+            of_thr_zh_2 = 0.11
+            of_thr_zh_3 = 0.38
 
-            of_thr_wwz_1 = 0.04
-            of_thr_wwz_2 = 0.13
-            of_thr_wwz_3 = 0.29
+            of_thr_wwz_1 = 0.08
+            of_thr_wwz_2 = 0.21
+            of_thr_wwz_3 = 0.41
 
-            sf_thr_zh_1 = 0.04
-            sf_thr_zh_2 = 0.11
-            sf_thr_zh_3 = 0.30
+            sf_thr_zh_1 = 0.02
+            sf_thr_zh_2 = 0.10
+            sf_thr_zh_3 = 0.20
 
-            sf_thr_wwz_1 = 0.03
-            sf_thr_wwz_2 = 0.05
-            sf_thr_wwz_3 = 0.18
+            sf_thr_wwz_1 = 0.10
+            sf_thr_wwz_2 = 0.15
+            sf_thr_wwz_3 = 0.25
 
             bdt_of_wwz_vs_zh_divider = bdt_of_wwz_m_zh
             bdt_sf_wwz_vs_zh_divider = bdt_sf_wwz_m_zh
@@ -893,6 +893,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             bdt_sf_6 = (bdt_sf_bkg >= sf_thr_zh_1)  & (bdt_sf_bkg < sf_thr_zh_2)  & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
             bdt_sf_7 = (bdt_sf_bkg >= sf_thr_zh_2)  & (bdt_sf_bkg < sf_thr_zh_3)  & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
             bdt_sf_8 = (bdt_sf_bkg >= sf_thr_zh_3)                                & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
+
             bdt_sf_bin = ak.full_like(events.nom,-999)
             bdt_sf_bin = ak.where(bdt_sf_1, 0, bdt_sf_bin)
             bdt_sf_bin = ak.where(bdt_sf_2, 1, bdt_sf_bin)
@@ -906,10 +907,10 @@ class AnalysisProcessor(processor.ProcessorABC):
             ######################################
             # R3 binning
 
-            of_thr_zh_coarse_1  = 0.14
-            of_thr_wwz_coarse_1 = 0.13
-            sf_thr_zh_coarse_1  = 0.11
-            sf_thr_wwz_coarse_1 = 0.05
+            of_thr_wwz_coarse_1 = 0.16
+            of_thr_zh_coarse_1  = 0.17
+            sf_thr_wwz_coarse_1 = 0.04
+            sf_thr_zh_coarse_1  = 0.04
 
             # Calculating the masks for OF bins
             bdt_of_coarse_1 =                                      (bdt_of_bkg < of_thr_wwz_coarse_1) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
