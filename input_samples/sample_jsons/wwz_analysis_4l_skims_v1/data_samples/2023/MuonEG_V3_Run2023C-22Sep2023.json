@@ -7,22 +7,12 @@
     "era": "C3",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/output_8.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/output_6.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/output_11.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/output_5.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/output_7.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/output_10.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/output_1.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/output_4.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/output_3.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/output_9.root",
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/output_2.root"
+        "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/merged/merged.root"
     ],
     "nEvents": 130,
     "nGenEvents": 130,
     "nSumOfWeights": 130,
     "isData": true,
-    "path": "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/",
+    "path": "/store/user/mdittric/skim/WWZ_Skims_20241003/data/2023/MuonEG_Run2023C-22Sep2023_v3-v1_NANOAOD_WWZ_Skims_20241003/merged/",
     "nSumOfLheWeights": null
 }
