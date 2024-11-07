@@ -3,7 +3,7 @@
     "zmass" : 91.1876,
 
     "wwz_eta_j_cut" : 2.4,
-    "wwz_jet_id_cut" : 0,
+    "wwz_jet_id_cut" : 1,
 
     "wwz_z_sip3d"  : 4.0,
     "wwz_w_sip3d"  : 4.0,
