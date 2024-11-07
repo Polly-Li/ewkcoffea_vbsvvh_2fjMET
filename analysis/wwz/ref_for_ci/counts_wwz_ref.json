@@ -13,7 +13,7 @@
             null
         ],
         "sr_4l_sf_A_counts": [
-            5179.0,
+            5178.0,
             null
         ],
         "sr_4l_sf_B_counts": [
@@ -45,11 +45,11 @@
             null
         ],
         "4l_presel_counts": [
-            60374.0,
+            60372.0,
             null
         ],
         "sr_4l_sf_counts": [
-            10770.0,
+            10769.0,
             null
         ],
         "sr_4l_of_counts": [
@@ -57,7 +57,7 @@
             null
         ],
         "sr_4l_sf_incl_counts": [
-            11230.0,
+            11229.0,
             null
         ],
         "sr_4l_of_incl_counts": [
@@ -101,7 +101,7 @@
             null
         ],
         "sr_4l_bdt_sf_2_counts": [
-            1040.0,
+            1039.0,
             null
         ],
         "sr_4l_bdt_sf_3_counts": [
@@ -133,7 +133,7 @@
             null
         ],
         "sr_4l_bdt_sf_coarse_2_counts": [
-            6808.0,
+            6807.0,
             null
         ],
         "sr_4l_bdt_sf_coarse_3_counts": [
@@ -193,7 +193,7 @@
             null
         ],
         "sr_4l_bdt_sf_wwz_counts": [
-            10239.0,
+            10238.0,
             null
         ],
         "sr_4l_bdt_sf_zh_counts": [
@@ -209,11 +209,11 @@
             null
         ],
         "sr_4l_bdt_sf_presel_counts": [
-            18841.0,
+            18840.0,
             null
         ],
         "sr_4l_bdt_sf_trn_counts": [
-            12251.0,
+            12250.0,
             null
         ],
         "sr_4l_bdt_of_presel_counts": [
@@ -225,7 +225,7 @@
             null
         ],
         "sr_4l_sf_A": [
-            0.5390766644444513,
+            0.5389591629663171,
             null
         ],
         "sr_4l_sf_B": [
@@ -257,11 +257,11 @@
             null
         ],
         "4l_presel": [
-            6.919595529360636,
+            6.919353865540332,
             null
         ],
         "sr_4l_sf": [
-            1.127261571695626,
+            1.1271440702174917,
             null
         ],
         "sr_4l_of": [
@@ -269,7 +269,7 @@
             null
         ],
         "sr_4l_sf_incl": [
-            1.174450651778853,
+            1.174333150300719,
             null
         ],
         "sr_4l_of_incl": [
@@ -313,7 +313,7 @@
             null
         ],
         "sr_4l_bdt_sf_2": [
-            0.10900407960389577,
+            0.10888657812576158,
             null
         ],
         "sr_4l_bdt_sf_3": [
@@ -345,7 +345,7 @@
             null
         ],
         "sr_4l_bdt_sf_coarse_2": [
-            0.7147148090722345,
+            0.7145973075941003,
             null
         ],
         "sr_4l_bdt_sf_coarse_3": [
@@ -405,7 +405,7 @@
             null
         ],
         "sr_4l_bdt_sf_wwz": [
-            1.0802086300082823,
+            1.080091128530148,
             null
         ],
         "sr_4l_bdt_sf_zh": [
@@ -421,11 +421,11 @@
             null
         ],
         "sr_4l_bdt_sf_presel": [
-            1.9839960604442928,
+            1.9838785589661585,
             null
         ],
         "sr_4l_bdt_sf_trn": [
-            1.28737468311746,
+            1.287257181639326,
             null
         ],
         "sr_4l_bdt_of_presel": [
