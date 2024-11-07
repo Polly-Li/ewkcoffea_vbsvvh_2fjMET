@@ -89,27 +89,27 @@
             null
         ],
         "sr_4l_bdt_sf_1_counts": [
-            14.0,
+            36.0,
             null
         ],
         "sr_4l_bdt_sf_2_counts": [
-            10.0,
+            5.0,
             null
         ],
         "sr_4l_bdt_sf_3_counts": [
-            19.0,
-            null
-        ],
-        "sr_4l_bdt_sf_4_counts": [
-            11.0,
-            null
-        ],
-        "sr_4l_bdt_sf_5_counts": [
             4.0,
             null
         ],
+        "sr_4l_bdt_sf_4_counts": [
+            9.0,
+            null
+        ],
+        "sr_4l_bdt_sf_5_counts": [
+            1.0,
+            null
+        ],
         "sr_4l_bdt_sf_6_counts": [
-            3.0,
+            6.0,
             null
         ],
         "sr_4l_bdt_sf_8_counts": [
@@ -117,43 +117,43 @@
             null
         ],
         "sr_4l_bdt_sf_coarse_1_counts": [
-            24.0,
+            19.0,
             null
         ],
         "sr_4l_bdt_sf_coarse_2_counts": [
-            30.0,
+            35.0,
             null
         ],
         "sr_4l_bdt_sf_coarse_3_counts": [
-            7.0,
-            null
-        ],
-        "sr_4l_bdt_sf_coarse_4_counts": [
-            2.0,
-            null
-        ],
-        "sr_4l_bdt_of_2_counts": [
-            24.0,
-            null
-        ],
-        "sr_4l_bdt_of_3_counts": [
-            33.0,
-            null
-        ],
-        "sr_4l_bdt_of_4_counts": [
-            20.0,
-            null
-        ],
-        "sr_4l_bdt_of_5_counts": [
-            6.0,
-            null
-        ],
-        "sr_4l_bdt_of_6_counts": [
             4.0,
             null
         ],
+        "sr_4l_bdt_sf_coarse_4_counts": [
+            5.0,
+            null
+        ],
+        "sr_4l_bdt_of_1_counts": [
+            8.0,
+            null
+        ],
+        "sr_4l_bdt_of_2_counts": [
+            34.0,
+            null
+        ],
+        "sr_4l_bdt_of_3_counts": [
+            28.0,
+            null
+        ],
+        "sr_4l_bdt_of_4_counts": [
+            7.0,
+            null
+        ],
+        "sr_4l_bdt_of_6_counts": [
+            8.0,
+            null
+        ],
         "sr_4l_bdt_of_7_counts": [
-            3.0,
+            5.0,
             null
         ],
         "sr_4l_bdt_of_8_counts": [
@@ -161,11 +161,11 @@
             null
         ],
         "sr_4l_bdt_of_coarse_1_counts": [
-            24.0,
+            34.0,
             null
         ],
         "sr_4l_bdt_of_coarse_2_counts": [
-            53.0,
+            43.0,
             null
         ],
         "sr_4l_bdt_of_coarse_3_counts": [
@@ -285,27 +285,27 @@
             null
         ],
         "sr_4l_bdt_sf_1": [
-            0.05576102640184927,
+            0.16397866940331235,
             null
         ],
         "sr_4l_bdt_sf_2": [
-            0.06693068659077164,
+            0.030141038184029998,
             null
         ],
         "sr_4l_bdt_sf_3": [
-            0.07753981289218471,
+            0.012670572040218549,
             null
         ],
         "sr_4l_bdt_sf_4": [
-            0.07187501802030388,
+            0.06531626427754857,
             null
         ],
         "sr_4l_bdt_sf_5": [
-            0.024914860045731284,
+            0.009738842125487557,
             null
         ],
         "sr_4l_bdt_sf_6": [
-            0.017731504113784824,
+            0.03290752203402855,
             null
         ],
         "sr_4l_bdt_sf_8": [
@@ -313,43 +313,43 @@
             null
         ],
         "sr_4l_bdt_sf_coarse_1": [
-            0.12269171299262091,
+            0.08285289994898515,
             null
         ],
         "sr_4l_bdt_sf_coarse_2": [
-            0.14941483091248858,
+            0.18925364395612435,
             null
         ],
         "sr_4l_bdt_sf_coarse_3": [
-            0.0426463641595161,
+            0.024914860045731284,
             null
         ],
         "sr_4l_bdt_sf_coarse_4": [
-            0.013387113819054356,
+            0.031118617932839182,
+            null
+        ],
+        "sr_4l_bdt_of_1": [
+            0.040410513539237414,
             null
         ],
         "sr_4l_bdt_of_2": [
-            0.13306303368516043,
+            0.2057088453068814,
             null
         ],
         "sr_4l_bdt_of_3": [
-            0.14926602247270873,
+            0.10268178976622258,
             null
         ],
         "sr_4l_bdt_of_4": [
-            0.11168334558114158,
-            null
-        ],
-        "sr_4l_bdt_of_5": [
-            0.03024543379855566,
+            0.04521125312666934,
             null
         ],
         "sr_4l_bdt_of_6": [
-            0.03076464757944679,
+            0.0411146044961693,
             null
         ],
         "sr_4l_bdt_of_7": [
-            0.02170318355528116,
+            0.041598660437114306,
             null
         ],
         "sr_4l_bdt_of_8": [
@@ -357,11 +357,11 @@
             null
         ],
         "sr_4l_bdt_of_coarse_1": [
-            0.13306303368516043,
+            0.19984684500978417,
             null
         ],
         "sr_4l_bdt_of_coarse_2": [
-            0.26094936805385033,
+            0.19416555672922667,
             null
         ],
         "sr_4l_bdt_of_coarse_3": [
