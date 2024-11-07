@@ -49,7 +49,7 @@ def fill_none_in_list(var_names,var_names_vals_map,none_val):
 
 class AnalysisProcessor(processor.ProcessorABC):
 
-    def __init__(self, samples, wc_names_lst=[], hist_lst=None, ecut_threshold=None, do_errors=False, do_systematics=False, split_by_lepton_flavor=False, skip_signal_regions=False, skip_control_regions=False, muonSyst='nominal', dtype=np.float32, siphon_bdt_data=False):
+    def __init__(self, samples, wc_names_lst=[], hist_lst=None, ecut_threshold=None, do_errors=False, do_systematics=False, skip_obj_systematics=False, split_by_lepton_flavor=False, skip_signal_regions=False, skip_control_regions=False, muonSyst='nominal', dtype=np.float32, siphon_bdt_data=False):
 
         self._samples = samples
         self._wc_names_lst = wc_names_lst
@@ -139,8 +139,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             "bdt_sf_wwz": axis.Regular(180, 0, 1, name="bdt_sf_wwz", label="Score bdt_sf_wwz"),
             "bdt_of_zh" : axis.Regular(180, 0, 1, name="bdt_of_zh", label="Score bdt_of_zh"),
             "bdt_sf_zh" : axis.Regular(180, 0, 1, name="bdt_sf_zh", label="Score bdt_sf_zh"),
-            "bdt_of_bkg" : axis.Regular(180, 0, 1, name="bdt_of_bkg", label="Score bdt_of_bkg"),
-            "bdt_sf_bkg" : axis.Regular(180, 0, 1, name="bdt_sf_bkg", label="Score bdt_sf_bkg"),
+            "bdt_of_bkg" : axis.Regular(100, 0, 1, name="bdt_of_bkg", label="Score bdt_of_bkg"),
+            "bdt_sf_bkg" : axis.Regular(100, 0, 1, name="bdt_sf_bkg", label="Score bdt_sf_bkg"),
             "bdt_of_wwz_m_zh" : axis.Regular(180, -1, 1, name="bdt_of_wwz_m_zh", label="Score bdt_of_wwz - bdt_of_zh"),
             "bdt_sf_wwz_m_zh" : axis.Regular(180, -1, 1, name="bdt_sf_wwz_m_zh", label="Score bdt_sf_wwz - bdt_sf_zh"),
             "bdt_of_bin" : axis.Regular(8, 0, 8, name="bdt_of_bin", label="Binned bdt_of"),
@@ -205,6 +205,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Set the booleans
         self._do_errors = do_errors # Whether to calculate and store the w**2 coefficients
         self._do_systematics = do_systematics # Whether to process systematic samples
+        self._skip_obj_systematics = skip_obj_systematics # Skip the JEC/JER/MET systematics (even if running with do_systematics on)
         self._split_by_lepton_flavor = split_by_lepton_flavor # Whether to keep track of lepton flavors individually
         self._skip_signal_regions = skip_signal_regions # Whether to skip the SR categories
         self._skip_control_regions = skip_control_regions # Whether to skip the CR categories
@@ -456,7 +457,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         obj_correction_systs = append_up_down_to_sys_base(obj_correction_systs)
 
         # If we're doing systematics and this isn't data, we will loop over the obj correction syst lst list
-        if self._do_systematics and not isData: obj_corr_syst_var_list = ["nominal"] + obj_correction_systs
+        if self._do_systematics and not isData and not self._skip_obj_systematics: obj_corr_syst_var_list = ["nominal"] + obj_correction_systs
         # Otherwise loop juse once, for nominal
         else: obj_corr_syst_var_list = ['nominal']
 
@@ -842,21 +843,21 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Philip's version of the v7 binning
 
-            of_thr_zh_1 = 0.08
-            of_thr_zh_2 = 0.14
-            of_thr_zh_3 = 0.39
+            of_thr_zh_1 = 0.01
+            of_thr_zh_2 = 0.11
+            of_thr_zh_3 = 0.38
 
-            of_thr_wwz_1 = 0.04
-            of_thr_wwz_2 = 0.13
-            of_thr_wwz_3 = 0.29
+            of_thr_wwz_1 = 0.08
+            of_thr_wwz_2 = 0.21
+            of_thr_wwz_3 = 0.41
 
-            sf_thr_zh_1 = 0.04
-            sf_thr_zh_2 = 0.11
-            sf_thr_zh_3 = 0.30
+            sf_thr_zh_1 = 0.02
+            sf_thr_zh_2 = 0.10
+            sf_thr_zh_3 = 0.20
 
-            sf_thr_wwz_1 = 0.03
-            sf_thr_wwz_2 = 0.05
-            sf_thr_wwz_3 = 0.18
+            sf_thr_wwz_1 = 0.10
+            sf_thr_wwz_2 = 0.15
+            sf_thr_wwz_3 = 0.25
 
             bdt_of_wwz_vs_zh_divider = bdt_of_wwz_m_zh
             bdt_sf_wwz_vs_zh_divider = bdt_sf_wwz_m_zh
@@ -864,7 +865,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             bdt_of_wwz_vs_zh_divider_threshold = 0
             bdt_sf_wwz_vs_zh_divider_threshold = 0
 
-            # Calculating the masks for OF bins
+            # OF: Calculating the bins and computing bin index for each event
             bdt_of_1 =                                (bdt_of_bkg < of_thr_wwz_1) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
             bdt_of_2 = (bdt_of_bkg >= of_thr_wwz_1) & (bdt_of_bkg < of_thr_wwz_2) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
             bdt_of_3 = (bdt_of_bkg >= of_thr_wwz_2) & (bdt_of_bkg < of_thr_wwz_3) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
@@ -883,19 +884,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             bdt_of_bin = ak.where(bdt_of_7, 6, bdt_of_bin)
             bdt_of_bin = ak.where(bdt_of_8, 7, bdt_of_bin)
 
-            # Calculating the masks for R3 OF bins (coarse binning compared to R2)
-            bdt_of_coarse_1 = (bdt_of_1 | bdt_of_2)
-            bdt_of_coarse_2 = (bdt_of_3 | bdt_of_4)
-            bdt_of_coarse_3 = (bdt_of_5 | bdt_of_6)
-            bdt_of_coarse_4 = (bdt_of_7 | bdt_of_8)
-            bdt_of_bin_coarse = ak.full_like(events.nom,-999)
-            bdt_of_bin_coarse = ak.where(bdt_of_coarse_1, 0, bdt_of_bin_coarse)
-            bdt_of_bin_coarse = ak.where(bdt_of_coarse_2, 1, bdt_of_bin_coarse)
-            bdt_of_bin_coarse = ak.where(bdt_of_coarse_3, 2, bdt_of_bin_coarse)
-            bdt_of_bin_coarse = ak.where(bdt_of_coarse_4, 3, bdt_of_bin_coarse)
-
-
-            # Calculating the bins and computing bin index for each event
+            # SF: Calculating the bins and computing bin index for each event
             bdt_sf_1 =                                (bdt_sf_bkg < sf_thr_wwz_1) & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
             bdt_sf_2 = (bdt_sf_bkg >= sf_thr_wwz_1) & (bdt_sf_bkg < sf_thr_wwz_2) & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
             bdt_sf_3 = (bdt_sf_bkg >= sf_thr_wwz_2) & (bdt_sf_bkg < sf_thr_wwz_3) & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
@@ -904,6 +893,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             bdt_sf_6 = (bdt_sf_bkg >= sf_thr_zh_1)  & (bdt_sf_bkg < sf_thr_zh_2)  & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
             bdt_sf_7 = (bdt_sf_bkg >= sf_thr_zh_2)  & (bdt_sf_bkg < sf_thr_zh_3)  & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
             bdt_sf_8 = (bdt_sf_bkg >= sf_thr_zh_3)                                & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
+
             bdt_sf_bin = ak.full_like(events.nom,-999)
             bdt_sf_bin = ak.where(bdt_sf_1, 0, bdt_sf_bin)
             bdt_sf_bin = ak.where(bdt_sf_2, 1, bdt_sf_bin)
@@ -914,16 +904,37 @@ class AnalysisProcessor(processor.ProcessorABC):
             bdt_sf_bin = ak.where(bdt_sf_7, 6, bdt_sf_bin)
             bdt_sf_bin = ak.where(bdt_sf_8, 7, bdt_sf_bin)
 
-            # Calculating the masks for R3 SF bins (coarse binning compared to R2)
-            bdt_sf_coarse_1 = (bdt_sf_1 | bdt_sf_2)
-            bdt_sf_coarse_2 = (bdt_sf_3 | bdt_sf_4)
-            bdt_sf_coarse_3 = (bdt_sf_5 | bdt_sf_6)
-            bdt_sf_coarse_4 = (bdt_sf_7 | bdt_sf_8)
+            ######################################
+            # R3 binning
+
+            of_thr_wwz_coarse_1 = 0.16
+            of_thr_zh_coarse_1  = 0.17
+            sf_thr_wwz_coarse_1 = 0.04
+            sf_thr_zh_coarse_1  = 0.04
+
+            # Calculating the masks for OF bins
+            bdt_of_coarse_1 =                                      (bdt_of_bkg < of_thr_wwz_coarse_1) & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
+            bdt_of_coarse_2 = (bdt_of_bkg >= of_thr_wwz_coarse_1)                                     & (bdt_of_wwz_vs_zh_divider > bdt_of_wwz_vs_zh_divider_threshold)
+            bdt_of_coarse_3 =                                      (bdt_of_bkg < of_thr_zh_coarse_1)  & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
+            bdt_of_coarse_4 = (bdt_of_bkg >= of_thr_zh_coarse_1)                                      & (bdt_of_wwz_vs_zh_divider <= bdt_of_wwz_vs_zh_divider_threshold)
+            bdt_of_bin_coarse = ak.full_like(events.nom,-999)
+            bdt_of_bin_coarse = ak.where(bdt_of_coarse_1, 0, bdt_of_bin_coarse)
+            bdt_of_bin_coarse = ak.where(bdt_of_coarse_2, 1, bdt_of_bin_coarse)
+            bdt_of_bin_coarse = ak.where(bdt_of_coarse_3, 2, bdt_of_bin_coarse)
+            bdt_of_bin_coarse = ak.where(bdt_of_coarse_4, 3, bdt_of_bin_coarse)
+
+            # Calculating the bins and computing bin index for each event
+            bdt_sf_coarse_1 =                                     (bdt_sf_bkg < sf_thr_wwz_coarse_1) & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
+            bdt_sf_coarse_2 = (bdt_sf_bkg >= sf_thr_wwz_coarse_1)                                    & (bdt_sf_wwz_vs_zh_divider > bdt_sf_wwz_vs_zh_divider_threshold)
+            bdt_sf_coarse_3 =                                     (bdt_sf_bkg < sf_thr_zh_coarse_1)  & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
+            bdt_sf_coarse_4 = (bdt_sf_bkg >= sf_thr_zh_coarse_1)                                     & (bdt_sf_wwz_vs_zh_divider <= bdt_sf_wwz_vs_zh_divider_threshold)
             bdt_sf_bin_coarse = ak.full_like(events.nom,-999)
             bdt_sf_bin_coarse = ak.where(bdt_sf_coarse_1, 0, bdt_sf_bin_coarse)
             bdt_sf_bin_coarse = ak.where(bdt_sf_coarse_2, 1, bdt_sf_bin_coarse)
             bdt_sf_bin_coarse = ak.where(bdt_sf_coarse_3, 2, bdt_sf_bin_coarse)
             bdt_sf_bin_coarse = ak.where(bdt_sf_coarse_4, 3, bdt_sf_bin_coarse)
+
+            ######################################
 
 
             # Creating the event mask for BDT regions when split between WWZ vs. ZH
