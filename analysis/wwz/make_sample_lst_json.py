@@ -199,7 +199,7 @@ central_2023_dict = {
     "2023_tWZ4l" : {
         #Use 2022EE for now
         #"path" : "/store/user/mdittric/skim/",
-        "path" : "/store/user/mdittric/skim/WWZ_Skims_20241003/mc/2022EE/TWZ_TtoLNu_WtoLNu_Zto2L_DR1_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v3_NANOAODSIM_WWZ_Skims_20241003/merged/",
+        "path" : "/store/user/kmohrman/skim/WWZ_Skims_20241003/mc/2023/TWZ_TtoLNu_WtoLNu_Zto2L_DR1_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v2_NANOAODSIM_WWZ_Skims_2023_Missing",
         "histAxisName": "2023_tWZ4l",
         "xsecName": "TWZToLL_tlept_Wlept_13p6TeV",
     }
@@ -208,7 +208,7 @@ central_2023BPix_dict = {
     "2023BPix_tWZ4l" : {
         #Use 2022EE for now
         #"path" : "/store/user/mdittric/skim/",
-        "path" : "/store/user/mdittric/skim/WWZ_Skims_20241003/mc/2022EE/TWZ_TtoLNu_WtoLNu_Zto2L_DR1_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v3_NANOAODSIM_WWZ_Skims_20241003/merged/",
+        "path" : "/store/user/kmohrman/skim/WWZ_Skims_20241003/mc/2023BPix/TWZ_TtoLNu_WtoLNu_Zto2L_DR1_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_WWZ_Skims_2023_Missing/",
         "histAxisName": "2023BPix_tWZ4l",
         "xsecName": "TWZToLL_tlept_Wlept_13p6TeV",
     }
