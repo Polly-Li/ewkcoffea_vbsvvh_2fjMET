@@ -6,22 +6,22 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/mc/2022EE/TTZ-ZtoQQ-1Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_WWZ_Skims_20241003/merged/merged.root"
+        "/store/user/kmohrman/skim/WWZ_Skims_Nov10/TTZ-ZtoQQ-1Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_WWZ_Skims_Nov10/merged.root"
     ],
-    "nEvents": 135,
-    "nGenEvents": 1334574,
-    "nSumOfWeights": 1709477.7932904,
+    "nEvents": 48,
+    "nGenEvents": 388921,
+    "nSumOfWeights": 496544.4396564001,
     "isData": false,
-    "path": "/store/user/mdittric/skim/WWZ_Skims_20241003/mc/2022EE/TTZ-ZtoQQ-1Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_WWZ_Skims_20241003/merged/",
+    "path": "/store/user/kmohrman/skim/WWZ_Skims_Nov10/TTZ-ZtoQQ-1Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_WWZ_Skims_Nov10",
     "nSumOfLheWeights": [
-        1796116.5944595747,
-        1817308.812554047,
-        1835217.0806671984,
-        1738963.5938666768,
-        1709477.7932904,
-        1684658.628173214,
-        1608195.3718942676,
-        1555478.5601938267,
-        1511008.3317258167
+        522207.03584451205,
+        527978.700787625,
+        532903.9725856308,
+        505335.62251222983,
+        496544.4396564001,
+        489181.4917532911,
+        467182.7599389453,
+        451735.41450629407,
+        438734.6285889603
     ]
 }
