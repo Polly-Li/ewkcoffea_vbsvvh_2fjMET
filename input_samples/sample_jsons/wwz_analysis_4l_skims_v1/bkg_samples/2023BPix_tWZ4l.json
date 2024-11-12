@@ -6,21 +6,21 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/mc/2022EE/TWZ_TtoLNu_WtoLNu_Zto2L_DR1_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v3_NANOAODSIM_WWZ_Skims_20241003/merged/merged.root"
+        "/store/user/kmohrman/skim/WWZ_Skims_20241003/mc/2023BPix/TWZ_TtoLNu_WtoLNu_Zto2L_DR1_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_WWZ_Skims_2023_Missing/merged.root"
     ],
-    "nEvents": 71805,
-    "nGenEvents": 414414,
-    "nSumOfWeights": 694.2521012778,
+    "nEvents": 197075,
+    "nGenEvents": 1097000,
+    "nSumOfWeights": 1531.8924144048,
     "isData": false,
-    "path": "/store/user/mdittric/skim/WWZ_Skims_20241003/mc/2022EE/TWZ_TtoLNu_WtoLNu_Zto2L_DR1_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v3_NANOAODSIM_WWZ_Skims_20241003/merged/",
+    "path": "/store/user/kmohrman/skim/WWZ_Skims_20241003/mc/2023BPix/TWZ_TtoLNu_WtoLNu_Zto2L_DR1_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_WWZ_Skims_2023_Missing/",
     "nSumOfLheWeights": [
-        717.9234426135265,
-        720.7265589259987,
-        730.0355142956382,
-        689.2913017941204,
-        702.8740780575865,
-        659.8246569684916,
-        666.2121724080092,
-        674.2380332670251
+        1584.1062807257617,
+        1589.8018189694178,
+        1609.8872116366504,
+        1521.3370971658494,
+        1550.5438555587612,
+        1456.5885243601315,
+        1470.3651193851103,
+        1487.762154902415
     ]
 }

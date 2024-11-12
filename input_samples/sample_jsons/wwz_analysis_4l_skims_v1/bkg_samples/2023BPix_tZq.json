@@ -6,21 +6,21 @@
     "options": "",
     "WCnames": [],
     "files": [
-        "/store/user/mdittric/skim/WWZ_Skims_20241003/mc/2022EE/TZQB-Zto2L-4FS_MLL-30_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_WWZ_Skims_20241003/merged/merged.root"
+        "/store/user/kmohrman/skim/WWZ_Skims_Nov10/TZQB-Zto2L-4FS_MLL-30_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_WWZ_Skims_Nov10/merged.root"
     ],
-    "nEvents": 10443,
-    "nGenEvents": 3047512,
-    "nSumOfWeights": 249052.01062243988,
+    "nEvents": 3303,
+    "nGenEvents": 900000,
+    "nSumOfWeights": 73181.03575346002,
     "isData": false,
-    "path": "/store/user/mdittric/skim/WWZ_Skims_20241003/mc/2022EE/TZQB-Zto2L-4FS_MLL-30_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2_NANOAODSIM_WWZ_Skims_20241003/merged/",
+    "path": "/store/user/kmohrman/skim/WWZ_Skims_Nov10/TZQB-Zto2L-4FS_MLL-30_TuneCP5_13p6TeV_amcatnlo-pythia8_Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2_NANOAODSIM_WWZ_Skims_Nov10",
     "nSumOfLheWeights": [
-        267959.38606731105,
-        264973.3863531614,
-        263085.2542532714,
-        253701.22707592673,
-        245521.29805321273,
-        240238.65650171755,
-        234523.37284967225,
-        229925.58666209874
+        78679.01782914178,
+        77780.69694592018,
+        77211.19858364506,
+        74569.37725414602,
+        72127.00935246552,
+        70667.90874932442,
+        68965.751962587,
+        67597.16752447993
     ]
 }
