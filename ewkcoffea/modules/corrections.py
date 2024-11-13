@@ -2,6 +2,7 @@ import numpy as np
 import pickle
 import gzip
 import awkward as ak
+import re
 
 from collections import OrderedDict
 
@@ -534,18 +535,25 @@ def ApplyJetCorrections(year,isData, era):
     if year in ['2022','2022EE','2023','2023BPix']:
         jec_year = year[:4] + '_Summer' + year[2:]
 
+    if year in ["2016","2016APV"]:
+        reg_year = "2016"
+    else:
+        reg_year = year
 
     json_path = topcoffea_path(f"data/POG/JME/{jec_year}/jet_jerc.json.gz")
     #json_path = topcoffea_path(f"data/POG/JME/{jec_year}/fatjet_jerc.json.gz")
 
     jec_types_clib = [
-        "AbsoluteMPFBias","AbsoluteScale","FlavorQCD","Fragmentation","PileUpDataMC",
-        "PileUpPtBB","PileUpPtEC1","PileUpPtEC2","PileUpPtHF","PileUpPtRef",
-        "RelativeFSR","RelativeJERHF","RelativePtBB","RelativePtHF","RelativeBal",
-        "SinglePionECAL","SinglePionHCAL",
-        "AbsoluteStat","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2",
-        "TimePtEta","RelativeSample","RelativeStatEC","RelativeStatFSR","RelativeStatHF",
-        "Total",
+        #"AbsoluteMPFBias","AbsoluteScale","FlavorQCD","Fragmentation","PileUpDataMC",
+        #"PileUpPtBB","PileUpPtEC1","PileUpPtEC2","PileUpPtHF","PileUpPtRef",
+        #"RelativeFSR","RelativeJERHF","RelativePtBB","RelativePtHF","RelativeBal",
+        #"SinglePionECAL","SinglePionHCAL",
+        #"AbsoluteStat","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2",
+        #"TimePtEta","RelativeSample","RelativeStatEC","RelativeStatFSR","RelativeStatHF",
+        "Regrouped_FlavorQCD","Regrouped_RelativeBal","Regrouped_HF","Regrouped_BBEC1","Regrouped_EC2",
+        "Regrouped_Absolute",
+        f"Regrouped_Absolute_{reg_year}",f"Regrouped_HF_{reg_year}",f"Regrouped_EC2_{reg_year}",f"Regrouped_RelativeSample_{reg_year}",f"Regrouped_BBEC1_{reg_year}",
+        #"Total",
     ]
     jec_regroup_clib = [f"Quad_{jec_tag}_UncertaintySources_{jec_type}_{jet_algo}" for jec_type in jec_types_clib]
     jec_names_clib = [
@@ -593,7 +601,20 @@ def ApplyJetSystematics(year,cleanedJets,syst_var):
     elif (syst_var == f'CMS_scale_j_{year}Down'):
         return cleanedJets.JES_Total.down
     else:
-        raise Exception(f"Unsupported systematic variation: {syst_var}")
+        try:
+            if syst_var.startswith("Regrouped"):
+                syst = "JES_" + re.sub(r'_[^_]*$', '', syst_var)
+                if syst.endswith("APV"):
+                    syst = syst[:-3]
+            else:
+                syst = "JES_" + syst_var.split('_')[0]
+            attribute = getattr(cleanedJets,syst)
+            if syst_var.endswith('Up'):
+                return attribute.up
+            elif syst_var.endswith('Down'):
+                return attribute.down
+        except AttributeError:
+            raise ValueError(f"Unsupported systematic variation: {syst} and {syst_var}")
 
 def ApplyJetVetoMaps(jets,year):
 

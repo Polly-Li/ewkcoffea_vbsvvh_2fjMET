@@ -131,7 +131,22 @@ JERC_LST = [
 ]
 
 SYSTS_SPECIAL = {
-
+    "UL18" : {
+        "CMS_btag_fixedWP_incl_light_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": []},
+        "CMS_btag_fixedWP_comb_bc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": []},
+        "AbsoluteStat_uncorrelated_2018"                   : {"yr_rel":"UL18", "yr_notrel": []},
+        "RelativeJEREC1_uncorrelated_2018"                 : {"yr_rel":"UL18", "yr_notrel": []},
+        "RelativeJEREC2_uncorrelated_2018"                 : {"yr_rel":"UL18", "yr_notrel": []},
+        "RelativePtEC1_uncorrelated_2018"                  : {"yr_rel":"UL18", "yr_notrel": []},
+        "RelativePtEC2_uncorrelated_2018"                  : {"yr_rel":"UL18", "yr_notrel": []},
+        "TimePtEta_uncorrelated_2018"                      : {"yr_rel":"UL18", "yr_notrel": []},
+        "RelativeSample_uncorrelated_2018"                 : {"yr_rel":"UL18", "yr_notrel": []},
+        "RelativeStatEC_uncorrelated_2018"                 : {"yr_rel":"UL18", "yr_notrel": []},
+        "RelativeStatFSR_uncorrelated_2018"                : {"yr_rel":"UL18", "yr_notrel": []},
+        "RelativeStatHF_uncorrelated_2018"                 : {"yr_rel":"UL18", "yr_notrel": []},
+        "CMS_res_j_2018"                                   : {"yr_rel":"UL18", "yr_notrel": []},
+        "CMS_scale_met_unclustered_energy_2018"            : {"yr_rel":"UL18", "yr_notrel": []},
+    },
     "run2" : {
         "btagSFlight_uncorrelated_2016APV" : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},
         "btagSFbc_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": ["UL16", "UL17", "UL18"]},

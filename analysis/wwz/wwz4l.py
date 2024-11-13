@@ -56,111 +56,124 @@ class AnalysisProcessor(processor.ProcessorABC):
         self._dtype = dtype
 
         # Create the dense axes for the histograms
-        self._dense_axes_dict = {
-            "mt2"   : axis.Regular(180, 0, 250, name="mt2",  label="mt2"),
-            "met"   : axis.Regular(180, 0, 300, name="met",  label="met"),
-            "metphi": axis.Regular(180, -3.1416, 3.1416, name="metphi", label="met phi"),
-            "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
-            "scalarptsum_lep" : axis.Regular(180, 0, 600, name="scalarptsum_lep", label="S_T"),
-            "scalarptsum_lepmet" : axis.Regular(180, 0, 600, name="scalarptsum_lepmet", label="S_T + metpt"),
-            "scalarptsum_lepmetjet" : axis.Regular(180, 0, 1100, name="scalarptsum_lepmetjet", label="S_T + metpt + H_T"),
-            "scalarptsum_jet" : axis.Regular(180, 0, 500, name="scalarptsum_jet", label="H_T"),
-            "mll_01": axis.Regular(180, 0, 200, name="mll_01",  label="mll_l0_l1"),
-            "mllll": axis.Regular(180, 0, 600, name="mllll",  label="mllll"),
-            "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
-            "j0pt"  : axis.Regular(180, 0, 500, name="j0pt", label="j0pt"),
+#        self._dense_axes_dict = {
+#            "mt2"   : axis.Regular(180, 0, 250, name="mt2",  label="mt2"),
+#            "met"   : axis.Regular(180, 0, 300, name="met",  label="met"),
+#            "metphi": axis.Regular(180, -3.1416, 3.1416, name="metphi", label="met phi"),
+#            "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
+#            "scalarptsum_lep" : axis.Regular(180, 0, 600, name="scalarptsum_lep", label="S_T"),
+#            "scalarptsum_lepmet" : axis.Regular(180, 0, 600, name="scalarptsum_lepmet", label="S_T + metpt"),
+#            "scalarptsum_lepmetjet" : axis.Regular(180, 0, 1100, name="scalarptsum_lepmetjet", label="S_T + metpt + H_T"),
+#            "scalarptsum_jet" : axis.Regular(180, 0, 500, name="scalarptsum_jet", label="H_T"),
+#            "mll_01": axis.Regular(180, 0, 200, name="mll_01",  label="mll_l0_l1"),
+#            "mllll": axis.Regular(180, 0, 600, name="mllll",  label="mllll"),
+#            "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
+#            "j0pt"  : axis.Regular(180, 0, 500, name="j0pt", label="j0pt"),
+#
+#            "abs_pdgid_sum" : axis.Regular(15, 40, 55, name="abs_pdgid_sum", label="Sum of abs pdgId for all 4 lep"),
+#
+#            "w_lep0_pt"  : axis.Regular(180, 0, 300, name="w_lep0_pt", label="Leading W lep pt"),
+#            "w_lep1_pt"  : axis.Regular(180, 0, 300, name="w_lep1_pt", label="Subleading W lep pt"),
+#            "z_lep0_pt"  : axis.Regular(180, 0, 300, name="z_lep0_pt", label="Leading Z lep pt"),
+#            "z_lep1_pt"  : axis.Regular(180, 0, 300, name="z_lep1_pt", label="Subleading Z lep pt"),
+#            "w_lep0_eta" : axis.Regular(180, -3, 3, name="w_lep0_eta", label="Leading W lep eta"),
+#            "w_lep1_eta" : axis.Regular(180, -3, 3, name="w_lep1_eta", label="Subleading W lep eta"),
+#            "z_lep0_eta" : axis.Regular(180, -3, 3, name="z_lep0_eta", label="Leading Z lep eta"),
+#            "z_lep1_eta" : axis.Regular(180, -3, 3, name="z_lep1_eta", label="Subleading Z lep eta"),
+#            "w_lep0_phi" : axis.Regular(180, -3.1416, 3.1416, name="w_lep0_phi", label="Leading W lep phi"),
+#            "w_lep1_phi" : axis.Regular(180, -3.1416, 3.1416, name="w_lep1_phi", label="Subleading W lep phi"),
+#            "z_lep0_phi" : axis.Regular(180, -3.1416, 3.1416, name="z_lep0_phi", label="Leading Z lep phi"),
+#            "z_lep1_phi" : axis.Regular(180, -3.1416, 3.1416, name="z_lep1_phi", label="Subleading Z lep phi"),
+#            "mll_wl0_wl1" : axis.Regular(180, 0, 350, name="mll_wl0_wl1", label="mll(W lep0, W lep1)"),
+#            "mll_zl0_zl1" : axis.Regular(180, 0, 200, name="mll_zl0_zl1", label="mll(Z lep0, Z lep1)"),
+#
+#            "w_lep0_genPartFlav"  : axis.Regular(20, 0, 20, name="w_lep0_genPartFlav", label="Leading W lep genPartFlav"),
+#            "w_lep1_genPartFlav"  : axis.Regular(20, 0, 20, name="w_lep1_genPartFlav", label="Subleading W lep genPartFlav"),
+#            "z_lep0_genPartFlav"  : axis.Regular(20, 0, 20, name="z_lep0_genPartFlav", label="Leading Z lep genPartFlav"),
+#            "z_lep1_genPartFlav"  : axis.Regular(20, 0, 20, name="z_lep1_genPartFlav", label="Subleading Z lep genPartFlav"),
+#
+#            "pt_zl0_zl1" : axis.Regular(180, 0, 300, name="pt_zl0_zl1", label="pt(Zl0 + Zl1)"),
+#            "pt_wl0_wl1" : axis.Regular(180, 0, 300, name="pt_wl0_wl1", label="pt(Wl0 + Wl1)"),
+#            "dr_zl0_zl1" : axis.Regular(180, 0, 5, name="dr_zl0_zl1", label="dr(Zl0,Zl1)"),
+#            "dr_wl0_wl1" : axis.Regular(180, 0, 5, name="dr_wl0_wl1", label="dr(Wl0,Wl1)"),
+#            "dr_wleps_zleps" : axis.Regular(180, 0, 5, name="dr_wleps_zleps", label="dr((Wl0+Wl1),(Zl0,Zl1))"),
+#            "dr_wl0_j_min" : axis.Regular(180, 0, 5, name="dr_wl0_j_min",  label="min dr(Wl0,j)"),
+#            "dr_wl1_j_min" : axis.Regular(180, 0, 5, name="dr_wl1_j_min",  label="min dr(Wl1,j)"),
+#
+#            "mt_4l_met"   : axis.Regular(180, 0, 500, name="mt_4l_met", label="mT of 4l system and met"),
+#            "mt_wleps_met": axis.Regular(180, 0, 300, name="mt_wleps_met", label="mT of W leptons system and met"),
+#            "mt_wl0_met"  : axis.Regular(180, 0, 300, name="mt_wl0_met", label="mT of W lep0 and met"),
+#            "mt_wl1_met"  : axis.Regular(180, 0, 300, name="mt_wl1_met", label="mT of W lep1 and met"),
+#
+#            "absdphi_zl0_zl1": axis.Regular(180, 0, 3.1416, name="absdphi_zl0_zl1", label="abs dphi(Zl0,Zl1)"),
+#            "absdphi_wl0_wl1": axis.Regular(180, 0, 3.1416, name="absdphi_wl0_wl1", label="abs dphi(Wl0,Wl1)"),
+#            "absdphi_z_ww"   : axis.Regular(180, 0, 3.1416, name="absdphi_z_ww", label="abs dphi((Zl0+Zl1),(Wl0+Wl1+met))"),
+#            "absdphi_4l_met" : axis.Regular(180, 0, 3.1416, name="absdphi_4l_met", label="abs dphi((Zl0+Zl1+Wl0+Wl1),met)"),
+#            "absdphi_zleps_met" : axis.Regular(180, 0, 3.1416, name="absdphi_zleps_met", label="absdphi((Zl0+Zl1),met)"),
+#            "absdphi_wleps_met" : axis.Regular(180, 0, 3.1416, name="absdphi_wleps_met", label="abs dphi((Wl0+Wl1),met)"),
+#            "absdphi_wl0_met": axis.Regular(180, 0, 3.1416, name="absdphi_wl0_met", label="abs dphi(Wl0,met)"),
+#            "absdphi_wl1_met": axis.Regular(180, 0, 3.1416, name="absdphi_wl1_met", label="abs dphi(Wl1,met)"),
+#
+#            "absdphi_min_afas" : axis.Regular(180, 0, 3.1416, name="absdphi_min_afas",  label="min(abs(delta phi of all pairs))"),
+#            "absdphi_min_afos" : axis.Regular(180, 0, 3.1416, name="absdphi_min_afos",  label="min(abs(delta phi of OS pairs))"),
+#            "absdphi_min_sfos" : axis.Regular(180, 0, 3.1416, name="absdphi_min_sfos",  label="min(abs(delta phi of SFOS pairs))"),
+#            "mll_min_afas" : axis.Regular(180, 0, 150, name="mll_min_afas",  label="min mll of all pairs"),
+#            "mll_min_afos" : axis.Regular(180, 0, 150, name="mll_min_afos",  label="min mll of OF pairs"),
+#            "mll_min_sfos" : axis.Regular(180, 0, 150, name="mll_min_sfos",  label="min mll of SFOF pairs"),
+#
+#            "cos_helicity_x" : axis.Regular(180, 0, 1, name="cos_helicity_x",  label="cos_helicity_x"),
+#
+#            "mlb_min" : axis.Regular(180, 0, 300, name="mlb_min",  label="min mass(b+l)"),
+#            "mlb_max" : axis.Regular(180, 0, 1000, name="mlb_max",  label="max mass(b+l)"),
+#
+#            "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
+#            "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
+#            "nbtagsl" : axis.Regular(3, 0, 3, name="nbtagsl", label="Loose btag multiplicity"),
+#            "nbtagsm" : axis.Regular(4, 0, 4, name="nbtagsm", label="Medium btag multiplicity"),
+#
+#            "njets_counts"   : axis.Regular(30, 0, 30, name="njets_counts",   label="Jet multiplicity counts"),
+#            "nleps_counts"   : axis.Regular(30, 0, 30, name="nleps_counts",   label="Lep multiplicity counts"),
+#            "nbtagsl_counts" : axis.Regular(30, 0, 30, name="nbtagsl_counts", label="Loose btag multiplicity counts"),
+#
+#            "bdt_of_wwz": axis.Regular(180, 0, 1, name="bdt_of_wwz", label="Score bdt_of_wwz"),
+#            "bdt_sf_wwz": axis.Regular(180, 0, 1, name="bdt_sf_wwz", label="Score bdt_sf_wwz"),
+#            "bdt_of_zh" : axis.Regular(180, 0, 1, name="bdt_of_zh", label="Score bdt_of_zh"),
+#            "bdt_sf_zh" : axis.Regular(180, 0, 1, name="bdt_sf_zh", label="Score bdt_sf_zh"),
+#            "bdt_of_bkg" : axis.Regular(100, 0, 1, name="bdt_of_bkg", label="Score bdt_of_bkg"),
+#            "bdt_sf_bkg" : axis.Regular(100, 0, 1, name="bdt_sf_bkg", label="Score bdt_sf_bkg"),
+#            "bdt_of_wwz_m_zh" : axis.Regular(180, -1, 1, name="bdt_of_wwz_m_zh", label="Score bdt_of_wwz - bdt_of_zh"),
+#            "bdt_sf_wwz_m_zh" : axis.Regular(180, -1, 1, name="bdt_sf_wwz_m_zh", label="Score bdt_sf_wwz - bdt_sf_zh"),
+#            "bdt_of_bin" : axis.Regular(8, 0, 8, name="bdt_of_bin", label="Binned bdt_of"),
+#            "bdt_sf_bin" : axis.Regular(8, 0, 8, name="bdt_sf_bin", label="Binned bdt_sf"),
+#            "bdt_of_bin_coarse" : axis.Regular(4, 0, 4, name="bdt_of_bin_coarse", label="Binned bdt_of coarse bins"),
+#            "bdt_sf_bin_coarse" : axis.Regular(4, 0, 4, name="bdt_sf_bin_coarse", label="Binned bdt_sf coarse bins"),
+#
+#        }
 
-            "abs_pdgid_sum" : axis.Regular(15, 40, 55, name="abs_pdgid_sum", label="Sum of abs pdgId for all 4 lep"),
 
-            "w_lep0_pt"  : axis.Regular(180, 0, 300, name="w_lep0_pt", label="Leading W lep pt"),
-            "w_lep1_pt"  : axis.Regular(180, 0, 300, name="w_lep1_pt", label="Subleading W lep pt"),
-            "z_lep0_pt"  : axis.Regular(180, 0, 300, name="z_lep0_pt", label="Leading Z lep pt"),
-            "z_lep1_pt"  : axis.Regular(180, 0, 300, name="z_lep1_pt", label="Subleading Z lep pt"),
-            "w_lep0_eta" : axis.Regular(180, -3, 3, name="w_lep0_eta", label="Leading W lep eta"),
-            "w_lep1_eta" : axis.Regular(180, -3, 3, name="w_lep1_eta", label="Subleading W lep eta"),
-            "z_lep0_eta" : axis.Regular(180, -3, 3, name="z_lep0_eta", label="Leading Z lep eta"),
-            "z_lep1_eta" : axis.Regular(180, -3, 3, name="z_lep1_eta", label="Subleading Z lep eta"),
-            "w_lep0_phi" : axis.Regular(180, -3.1416, 3.1416, name="w_lep0_phi", label="Leading W lep phi"),
-            "w_lep1_phi" : axis.Regular(180, -3.1416, 3.1416, name="w_lep1_phi", label="Subleading W lep phi"),
-            "z_lep0_phi" : axis.Regular(180, -3.1416, 3.1416, name="z_lep0_phi", label="Leading Z lep phi"),
-            "z_lep1_phi" : axis.Regular(180, -3.1416, 3.1416, name="z_lep1_phi", label="Subleading Z lep phi"),
-            "mll_wl0_wl1" : axis.Regular(180, 0, 350, name="mll_wl0_wl1", label="mll(W lep0, W lep1)"),
-            "mll_zl0_zl1" : axis.Regular(180, 0, 200, name="mll_zl0_zl1", label="mll(Z lep0, Z lep1)"),
 
-            "w_lep0_genPartFlav"  : axis.Regular(20, 0, 20, name="w_lep0_genPartFlav", label="Leading W lep genPartFlav"),
-            "w_lep1_genPartFlav"  : axis.Regular(20, 0, 20, name="w_lep1_genPartFlav", label="Subleading W lep genPartFlav"),
-            "z_lep0_genPartFlav"  : axis.Regular(20, 0, 20, name="z_lep0_genPartFlav", label="Leading Z lep genPartFlav"),
-            "z_lep1_genPartFlav"  : axis.Regular(20, 0, 20, name="z_lep1_genPartFlav", label="Subleading Z lep genPartFlav"),
-
-            "pt_zl0_zl1" : axis.Regular(180, 0, 300, name="pt_zl0_zl1", label="pt(Zl0 + Zl1)"),
-            "pt_wl0_wl1" : axis.Regular(180, 0, 300, name="pt_wl0_wl1", label="pt(Wl0 + Wl1)"),
-            "dr_zl0_zl1" : axis.Regular(180, 0, 5, name="dr_zl0_zl1", label="dr(Zl0,Zl1)"),
-            "dr_wl0_wl1" : axis.Regular(180, 0, 5, name="dr_wl0_wl1", label="dr(Wl0,Wl1)"),
-            "dr_wleps_zleps" : axis.Regular(180, 0, 5, name="dr_wleps_zleps", label="dr((Wl0+Wl1),(Zl0,Zl1))"),
-            "dr_wl0_j_min" : axis.Regular(180, 0, 5, name="dr_wl0_j_min",  label="min dr(Wl0,j)"),
-            "dr_wl1_j_min" : axis.Regular(180, 0, 5, name="dr_wl1_j_min",  label="min dr(Wl1,j)"),
-
-            "mt_4l_met"   : axis.Regular(180, 0, 500, name="mt_4l_met", label="mT of 4l system and met"),
-            "mt_wleps_met": axis.Regular(180, 0, 300, name="mt_wleps_met", label="mT of W leptons system and met"),
-            "mt_wl0_met"  : axis.Regular(180, 0, 300, name="mt_wl0_met", label="mT of W lep0 and met"),
-            "mt_wl1_met"  : axis.Regular(180, 0, 300, name="mt_wl1_met", label="mT of W lep1 and met"),
-
-            "absdphi_zl0_zl1": axis.Regular(180, 0, 3.1416, name="absdphi_zl0_zl1", label="abs dphi(Zl0,Zl1)"),
-            "absdphi_wl0_wl1": axis.Regular(180, 0, 3.1416, name="absdphi_wl0_wl1", label="abs dphi(Wl0,Wl1)"),
-            "absdphi_z_ww"   : axis.Regular(180, 0, 3.1416, name="absdphi_z_ww", label="abs dphi((Zl0+Zl1),(Wl0+Wl1+met))"),
-            "absdphi_4l_met" : axis.Regular(180, 0, 3.1416, name="absdphi_4l_met", label="abs dphi((Zl0+Zl1+Wl0+Wl1),met)"),
-            "absdphi_zleps_met" : axis.Regular(180, 0, 3.1416, name="absdphi_zleps_met", label="absdphi((Zl0+Zl1),met)"),
-            "absdphi_wleps_met" : axis.Regular(180, 0, 3.1416, name="absdphi_wleps_met", label="abs dphi((Wl0+Wl1),met)"),
-            "absdphi_wl0_met": axis.Regular(180, 0, 3.1416, name="absdphi_wl0_met", label="abs dphi(Wl0,met)"),
-            "absdphi_wl1_met": axis.Regular(180, 0, 3.1416, name="absdphi_wl1_met", label="abs dphi(Wl1,met)"),
-
-            "absdphi_min_afas" : axis.Regular(180, 0, 3.1416, name="absdphi_min_afas",  label="min(abs(delta phi of all pairs))"),
-            "absdphi_min_afos" : axis.Regular(180, 0, 3.1416, name="absdphi_min_afos",  label="min(abs(delta phi of OS pairs))"),
-            "absdphi_min_sfos" : axis.Regular(180, 0, 3.1416, name="absdphi_min_sfos",  label="min(abs(delta phi of SFOS pairs))"),
-            "mll_min_afas" : axis.Regular(180, 0, 150, name="mll_min_afas",  label="min mll of all pairs"),
-            "mll_min_afos" : axis.Regular(180, 0, 150, name="mll_min_afos",  label="min mll of OF pairs"),
-            "mll_min_sfos" : axis.Regular(180, 0, 150, name="mll_min_sfos",  label="min mll of SFOF pairs"),
-
-            "cos_helicity_x" : axis.Regular(180, 0, 1, name="cos_helicity_x",  label="cos_helicity_x"),
-
-            "mlb_min" : axis.Regular(180, 0, 300, name="mlb_min",  label="min mass(b+l)"),
-            "mlb_max" : axis.Regular(180, 0, 1000, name="mlb_max",  label="max mass(b+l)"),
-
-            "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
-            "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
-            "nbtagsl" : axis.Regular(3, 0, 3, name="nbtagsl", label="Loose btag multiplicity"),
-            "nbtagsm" : axis.Regular(4, 0, 4, name="nbtagsm", label="Medium btag multiplicity"),
-
-            "njets_counts"   : axis.Regular(30, 0, 30, name="njets_counts",   label="Jet multiplicity counts"),
-            "nleps_counts"   : axis.Regular(30, 0, 30, name="nleps_counts",   label="Lep multiplicity counts"),
-            "nbtagsl_counts" : axis.Regular(30, 0, 30, name="nbtagsl_counts", label="Loose btag multiplicity counts"),
-
-            "bdt_of_wwz": axis.Regular(180, 0, 1, name="bdt_of_wwz", label="Score bdt_of_wwz"),
-            "bdt_sf_wwz": axis.Regular(180, 0, 1, name="bdt_sf_wwz", label="Score bdt_sf_wwz"),
-            "bdt_of_zh" : axis.Regular(180, 0, 1, name="bdt_of_zh", label="Score bdt_of_zh"),
-            "bdt_sf_zh" : axis.Regular(180, 0, 1, name="bdt_sf_zh", label="Score bdt_sf_zh"),
-            "bdt_of_bkg" : axis.Regular(100, 0, 1, name="bdt_of_bkg", label="Score bdt_of_bkg"),
-            "bdt_sf_bkg" : axis.Regular(100, 0, 1, name="bdt_sf_bkg", label="Score bdt_sf_bkg"),
-            "bdt_of_wwz_m_zh" : axis.Regular(180, -1, 1, name="bdt_of_wwz_m_zh", label="Score bdt_of_wwz - bdt_of_zh"),
-            "bdt_sf_wwz_m_zh" : axis.Regular(180, -1, 1, name="bdt_sf_wwz_m_zh", label="Score bdt_sf_wwz - bdt_sf_zh"),
-            "bdt_of_bin" : axis.Regular(8, 0, 8, name="bdt_of_bin", label="Binned bdt_of"),
-            "bdt_sf_bin" : axis.Regular(8, 0, 8, name="bdt_sf_bin", label="Binned bdt_sf"),
-            "bdt_of_bin_coarse" : axis.Regular(4, 0, 4, name="bdt_of_bin_coarse", label="Binned bdt_of coarse bins"),
-            "bdt_sf_bin_coarse" : axis.Regular(4, 0, 4, name="bdt_sf_bin_coarse", label="Binned bdt_sf coarse bins"),
-
+        self._histo_dict = {
+            "etaphi_all": hist.Hist(
+                hist.axis.StrCategory([], growth=True, name="category", label="category"),
+                axis.Regular(40, -2.4, 2.4, name="eta",  label="eta"),
+                axis.Regular(40, -3.1416, 3.1416, name="phi",  label="phi"),
+                storage="double", # Keeps track of sumw2
+                name="Counts",
+            )
         }
+
 
         # Add histograms to dictionary that will be passed on to dict_accumulator
         dout = {}
-        for dense_axis_name in self._dense_axes_dict.keys():
-            dout[dense_axis_name] = hist.Hist(
-                hist.axis.StrCategory([], growth=True, name="process", label="process"),
-                hist.axis.StrCategory([], growth=True, name="category", label="category"),
-                hist.axis.StrCategory([], growth=True, name="systematic", label="systematic"),
-                self._dense_axes_dict[dense_axis_name],
-                storage="weight", # Keeps track of sumw2
-                name="Counts",
-            )
+#        for dense_axis_name in self._dense_axes_dict.keys():
+#            dout[dense_axis_name] = hist.Hist(
+#                hist.axis.StrCategory([], growth=True, name="process", label="process"),
+#                hist.axis.StrCategory([], growth=True, name="category", label="category"),
+#                hist.axis.StrCategory([], growth=True, name="systematic", label="systematic"),
+#                self._dense_axes_dict[dense_axis_name],
+#                storage="weight", # Keeps track of sumw2
+#                name="Counts",
+#            )
 
         # Adding list accumulators for BDT output variables and weights
         if siphon_bdt_data:
@@ -448,12 +461,40 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
+        do_full_jec_list = False # toggle switch for 27 uncertainties
+        do_reduced_jec_list = True # toggle switch for 11 uncertainties
 
-        obj_correction_systs = [
-            f"CMS_scale_j_{year}",
-            f"CMS_res_j_{year}",
-            f"CMS_scale_met_unclustered_energy_{year}",
-        ]
+        if do_full_jec_list and do_reduced_jec_list:
+            raise Exception("Cannot do both the full and reduced JEC uncertainties")
+
+        if do_full_jec_list:
+            obj_correction_systs = [
+                "AbsoluteMPFBias_correlated","AbsoluteScale_correlated","FlavorQCD_correlated","Fragmentation_correlated","PileUpDataMC_correlated",
+                "PileUpPtBB_correlated","PileUpPtEC1_correlated","PileUpPtEC2_correlated","PileUpPtHF_correlated","PileUpPtRef_correlated",
+                "RelativeFSR_correlated","RelativeJERHF_correlated","RelativePtBB_correlated","RelativePtHF_correlated","RelativeBal_correlated",
+                "SinglePionECAL_correlated","SinglePionHCAL_correlated",
+                f"AbsoluteStat_uncorrelated_{year}",f"RelativeJEREC1_uncorrelated_{year}",f"RelativeJEREC2_uncorrelated_{year}",f"RelativePtEC1_uncorrelated_{year}",f"RelativePtEC2_uncorrelated_{year}",
+                f"TimePtEta_uncorrelated_{year}",f"RelativeSample_uncorrelated_{year}",f"RelativeStatEC_uncorrelated_{year}",f"RelativeStatFSR_uncorrelated_{year}",f"RelativeStatHF_uncorrelated_{year}",
+                f"CMS_res_j_{year}",
+                f"CMS_scale_met_unclustered_energy_{year}",
+            ]
+
+        elif do_reduced_jec_list:
+            obj_correction_systs = [
+                "Regrouped_FlavorQCD_correlated","Regrouped_RelativeBal_correlated","Regrouped_HF_correlated","Regrouped_BBEC1_correlated","Regrouped_EC2_correlated",
+                "Regrouped_Absolute_correlated",
+                f"Regrouped_Absolute_{year}_uncorrelated",f"Regrouped_HF_{year}_uncorrelated",f"Regrouped_EC2_{year}_uncorrelated",f"Regrouped_RelativeSample_{year}_uncorrelated",f"Regrouped_BBEC1_{year}_uncorrelated",
+                f"CMS_res_j_{year}",
+                f"CMS_scale_met_unclustered_energy_{year}",
+            ]
+
+        else:
+            obj_correction_systs = [
+                f"CMS_scale_j_{year}",
+                f"CMS_res_j_{year}",
+                f"CMS_scale_met_unclustered_energy_{year}",
+            ]
+
         obj_correction_systs = append_up_down_to_sys_base(obj_correction_systs)
 
         # If we're doing systematics and this isn't data, we will loop over the obj correction syst lst list
@@ -1185,81 +1226,109 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             }
 
-            # Set up the list of weight fluctuations to loop over
-            # For now the syst do not depend on the category, so we can figure this out outside of the filling loop
-            wgt_var_lst = ["nominal"]
-            if self._do_systematics:
-                if not isData:
-                    if (obj_corr_syst_var != "nominal"):
-                        # In this case, we are dealing with systs that change the kinematics of the objs (e.g. JES)
-                        # So we don't want to loop over up/down weight variations here
-                        wgt_var_lst = [obj_corr_syst_var]
-                    else:
-                        # Otherwise we want to loop over the up/down weight variations
-                        wgt_var_lst = wgt_var_lst + wgt_correction_syst_lst
+#            # Set up the list of weight fluctuations to loop over
+#            # For now the syst do not depend on the category, so we can figure this out outside of the filling loop
+#            wgt_var_lst = ["nominal"]
+#            if self._do_systematics:
+#                if not isData:
+#                    if (obj_corr_syst_var != "nominal"):
+#                        # In this case, we are dealing with systs that change the kinematics of the objs (e.g. JES)
+#                        # So we don't want to loop over up/down weight variations here
+#                        wgt_var_lst = [obj_corr_syst_var]
+#                    else:
+#                        # Otherwise we want to loop over the up/down weight variations
+#                        wgt_var_lst = wgt_var_lst + wgt_correction_syst_lst
+
+            #for sr_cat in ["cr_4l_sf","cr_4l_btag_of","cr_4l_btag_sf_offZ_met80"]:
+            if isData:
+                sr_cat = "all_events"
+                cuts_lst = [sr_cat]
+                cuts_lst.append("is_good_lumi") # Apply golden json requirements if this is data
+                all_cuts_mask = selections.all(*cuts_lst)
+
+                hout = self._histo_dict
+                dense_axis_name = "etaphi_all"
+
+                jets_sel = ak.flatten(goodJets[all_cuts_mask])
+                eta_sel = jets_sel.eta
+                phi_sel = jets_sel.phi
+                weights = ak.ones_like(jets_sel.pt)
+
+
+                # Fill the histo
+
+                axes_fill_info_dict = {
+                    "category"  : sr_cat,
+                    "weight"    : weights,
+                    "eta"       : eta_sel,
+                    "phi"       : phi_sel,
+                }
+                hout[dense_axis_name].fill(**axes_fill_info_dict)
+
+                return hout
 
 
 
-            # Loop over the hists we want to fill
-            for dense_axis_name, dense_axis_vals in dense_variables_dict.items():
-                if dense_axis_name not in self._hist_lst:
-                    #print(f"Skipping \"{dense_axis_name}\", it is not in the list of hists to include.")
-                    continue
-                #print("\ndense_axis_name,vals",dense_axis_name)
-                #print("\ndense_axis_name,vals",vals)
-
-                # Loop over weight fluctuations
-                for wgt_fluct in wgt_var_lst:
-
-                    # Get the appropriate weight fluctuation
-                    if (wgt_fluct == "nominal") or (wgt_fluct in obj_corr_syst_var_list):
-                        # In the case of "nominal", no weight systematic variation is used
-                        weight = weights_obj_base_for_kinematic_syst.weight(None)
-                    else:
-                        # Otherwise get the weight from the Weights object
-                        weight = weights_obj_base_for_kinematic_syst.weight(wgt_fluct)
-
-
-                    # Loop over categories
-                    for sr_cat in cat_dict["lep_chan_lst"]:
-
-                        # Skip filling if this variable is not relevant for this selection
-                        if (dense_axis_name in exclude_var_dict) and (sr_cat in exclude_var_dict[dense_axis_name]): continue
-
-                        # If this is a counts hist, forget the weights and just fill with unit weights
-                        if dense_axis_name.endswith("_counts"): weight = events.nom
-                        #else: weights = weights_obj_base_for_kinematic_syst.partial_weight(include=["norm"]) # For testing
-                        #else: weights = weights_obj_base_for_kinematic_syst.weight(None) # For testing
-
-                        # Make the cuts mask
-                        cuts_lst = [sr_cat]
-                        if isData: cuts_lst.append("is_good_lumi") # Apply golden json requirements if this is data
-                        all_cuts_mask = selections.all(*cuts_lst)
-
-                        #run = events.run[all_cuts_mask]
-                        #luminosityBlock = events.luminosityBlock[all_cuts_mask]
-                        #event = events.event[all_cuts_mask]
-                        #w = weights[all_cuts_mask]
-                        #if dense_axis_name == "njets":
-                        #    print("\nSTARTPRINT")
-                        #    for i,j in enumerate(w):
-                        #        out_str = f"PRINTTAG {i} {dense_axis_name} {year} {sr_cat} {event[i]} {run[i]} {luminosityBlock[i]} {w[i]}"
-                        #        print(out_str,file=sys.stderr,flush=True)
-                        #    print("ENDPRINT\n")
-                        #print("\ndense_axis_name",dense_axis_name)
-                        #print("sr_cat",sr_cat)
-                        #print("dense_axis_vals[all_cuts_mask]",dense_axis_vals[all_cuts_mask])
-                        #print("end")
-
-                        # Fill the histos
-                        axes_fill_info_dict = {
-                            dense_axis_name : dense_axis_vals[all_cuts_mask],
-                            "weight"        : weight[all_cuts_mask],
-                            "process"       : histAxisName,
-                            "category"      : sr_cat,
-                            "systematic"    : wgt_fluct,
-                        }
-                        self.accumulator[dense_axis_name].fill(**axes_fill_info_dict)
+#            # Loop over the hists we want to fill
+#            for dense_axis_name, dense_axis_vals in dense_variables_dict.items():
+#                if dense_axis_name not in self._hist_lst:
+#                    #print(f"Skipping \"{dense_axis_name}\", it is not in the list of hists to include.")
+#                    continue
+#                #print("\ndense_axis_name,vals",dense_axis_name)
+#                #print("\ndense_axis_name,vals",vals)
+#
+#                # Loop over weight fluctuations
+#                for wgt_fluct in wgt_var_lst:
+#
+#                    # Get the appropriate weight fluctuation
+#                    if (wgt_fluct == "nominal") or (wgt_fluct in obj_corr_syst_var_list):
+#                        # In the case of "nominal", no weight systematic variation is used
+#                        weight = weights_obj_base_for_kinematic_syst.weight(None)
+#                    else:
+#                        # Otherwise get the weight from the Weights object
+#                        weight = weights_obj_base_for_kinematic_syst.weight(wgt_fluct)
+#
+#
+#                    # Loop over categories
+#                    for sr_cat in cat_dict["lep_chan_lst"]:
+#
+#                        # Skip filling if this variable is not relevant for this selection
+#                        if (dense_axis_name in exclude_var_dict) and (sr_cat in exclude_var_dict[dense_axis_name]): continue
+#
+#                        # If this is a counts hist, forget the weights and just fill with unit weights
+#                        if dense_axis_name.endswith("_counts"): weight = events.nom
+#                        #else: weights = weights_obj_base_for_kinematic_syst.partial_weight(include=["norm"]) # For testing
+#                        #else: weights = weights_obj_base_for_kinematic_syst.weight(None) # For testing
+#
+#                        # Make the cuts mask
+#                        cuts_lst = [sr_cat]
+#                        if isData: cuts_lst.append("is_good_lumi") # Apply golden json requirements if this is data
+#                        all_cuts_mask = selections.all(*cuts_lst)
+#
+#                        #run = events.run[all_cuts_mask]
+#                        #luminosityBlock = events.luminosityBlock[all_cuts_mask]
+#                        #event = events.event[all_cuts_mask]
+#                        #w = weights[all_cuts_mask]
+#                        #if dense_axis_name == "njets":
+#                        #    print("\nSTARTPRINT")
+#                        #    for i,j in enumerate(w):
+#                        #        out_str = f"PRINTTAG {i} {dense_axis_name} {year} {sr_cat} {event[i]} {run[i]} {luminosityBlock[i]} {w[i]}"
+#                        #        print(out_str,file=sys.stderr,flush=True)
+#                        #    print("ENDPRINT\n")
+#                        #print("\ndense_axis_name",dense_axis_name)
+#                        #print("sr_cat",sr_cat)
+#                        #print("dense_axis_vals[all_cuts_mask]",dense_axis_vals[all_cuts_mask])
+#                        #print("end")
+#
+#                        # Fill the histos
+#                        axes_fill_info_dict = {
+#                            dense_axis_name : dense_axis_vals[all_cuts_mask],
+#                            "weight"        : weight[all_cuts_mask],
+#                            "process"       : histAxisName,
+#                            "category"      : sr_cat,
+#                            "systematic"    : wgt_fluct,
+#                        }
+#                        self.accumulator[dense_axis_name].fill(**axes_fill_info_dict)
 
             # Fill the list accumulator
             if self._siphon_bdt_data:
