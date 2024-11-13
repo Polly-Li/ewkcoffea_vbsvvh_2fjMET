@@ -95,6 +95,16 @@ SYSTS_SPECIAL = {
 
 }
 
+# Construct a "group" line for the end of the datacard
+#     - Given a somename and list like ["sys1","sys1"]
+#     - The output would be "somename group = sys1 sys2"
+def get_syst_group_str(group_name,syst_names_lst):
+    syst_str = ""
+    for syst_name in syst_names_lst:
+        syst_str = syst_str + (f" {syst_name}")
+    out_str = f"{group_name} group ={syst_str}"
+    return out_str
+
 
 # Hard code the rateParam lines to put at the end of the card (for background normalization)
 RATE_PARAM_LINES = {
@@ -627,6 +637,9 @@ def main():
 
         rp_run = "run3" if run in ["run3","y22","y23"] else "run2"
 
+        # Construct a string of all systematics to append to end of card
+        syst_group_str = get_syst_group_str("syst", kappa_for_dc_ch.keys())
+
         # Make the card for this chan
         make_ch_card(
             ch,
@@ -635,7 +648,7 @@ def main():
             rate_for_dc_ch,
             kappa_for_dc_ch,
             gmn_for_dc_ch,
-            extra_lines=RATE_PARAM_LINES[rp_run],
+            extra_lines=RATE_PARAM_LINES[rp_run]+[syst_group_str],
             out_dir=out_dir,
         )
 
