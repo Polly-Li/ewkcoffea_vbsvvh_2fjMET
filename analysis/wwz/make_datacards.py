@@ -433,6 +433,21 @@ def add_stats_kappas(yld_mc, kappas, com_tag, skip_procs=[]):
     return kappas_out
 
 
+# Hard code changes to syst names, try to avoid this if possible :(
+def change_syst_names(in_dict):
+    out_dict = {}
+    for syst_name,val in in_dict.items():
+        if syst_name.endswith("_2016APV"):
+            base = syst_name[:-8]
+            syst_name_new = base+"_2016preVFP"
+        elif syst_name.endswith("_2016"):
+            base = syst_name[:-5]
+            syst_name_new = base+"_2016postVFP"
+        else:
+            syst_name_new = syst_name
+        out_dict[syst_name_new] = val
+    return out_dict
+
 
 ########### Put stuff into form to pass to the function to write out cards ###########
 
@@ -639,6 +654,9 @@ def main():
             gmn_for_dc_ch = get_gmn_for_dc(gmn_dict[ch],proc_lst=sg.PROC_LST)
 
         rp_run = "run3" if run in ["run3","y22","y23"] else "run2"
+
+        # Convert names of systs :(
+        kappa_for_dc_ch = change_syst_names(kappa_for_dc_ch)
 
         # Construct a string of all systematics to append to end of card
         syst_group_str = get_syst_group_str("syst", kappa_for_dc_ch.keys())
