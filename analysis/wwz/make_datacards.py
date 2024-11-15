@@ -284,13 +284,16 @@ def get_rate_systs(proc_lst,year_tag):
 
     # Make row for rate uncertainties that impact all processes
     for uncty_name in rate_systs_dict["rate_uncertainties_all_proc"]:
-        out_dict[uncty_name] = {}
         for proc in proc_lst:
             if uncty_name == "lumi":
                 # The lumi uncty is different depending on year
-                out_dict[uncty_name][proc] = str(rate_systs_dict["rate_uncertainties_all_proc"][uncty_name][year_tag])
+                lumi_val = rate_systs_dict["rate_uncertainties_all_proc"][uncty_name][year_tag]["val"]
+                lumi_name = rate_systs_dict["rate_uncertainties_all_proc"][uncty_name][year_tag]["name"]
+                if lumi_name not in out_dict: out_dict[lumi_name] = {}
+                out_dict[lumi_name][proc] = str(lumi_val)
             else:
-                out_dict[uncty_name][proc] = str(rate_systs_dict["rate_uncertainties_all_proc"][uncty_name])
+                raise Exception("We don't have any other systs like this right now, check to make sure it's what you want")
+                #out_dict[uncty_name][proc] = str(rate_systs_dict["rate_uncertainties_all_proc"][uncty_name])
 
     # Make rows for rate uncertainties that impact a subset of the processes
     for uncty_name in rate_systs_dict["rate_uncertainties_some_proc"]:
