@@ -433,22 +433,6 @@ def add_stats_kappas(yld_mc, kappas, com_tag, skip_procs=[]):
     return kappas_out
 
 
-# Hard code changes to syst names, try to avoid this if possible :(
-def change_syst_names(in_dict):
-    out_dict = {}
-    for syst_name,val in in_dict.items():
-        if syst_name.endswith("_2016APV"):
-            base = syst_name[:-8]
-            syst_name_new = base+"_2016preVFP"
-        elif syst_name.endswith("_2016"):
-            base = syst_name[:-5]
-            syst_name_new = base+"_2016postVFP"
-        else:
-            syst_name_new = syst_name
-        out_dict[syst_name_new] = val
-    return out_dict
-
-
 ########### Put stuff into form to pass to the function to write out cards ###########
 
 # Get just the numbers we want for rate row for datacard
@@ -505,6 +489,48 @@ def get_gmn_for_dc(in_dict,proc_lst):
             else:
                 out = "-"
             out_dict[row_name][p_itr] = out
+    return out_dict
+
+
+########### Hard coded things that should not be done this way, sorry to future users of this code :( ###########
+
+# Hard code changes to syst names, try to avoid this if possible :(
+def change_syst_names(in_dict):
+    out_dict = {}
+    for syst_name,val in in_dict.items():
+        if syst_name.endswith("_2016APV"):
+            base = syst_name[:-8]
+            syst_name_new = base+"_2016preVFP"
+        elif syst_name.endswith("_2016"):
+            base = syst_name[:-5]
+            syst_name_new = base+"_2016postVFP"
+        else:
+            syst_name_new = syst_name
+        out_dict[syst_name_new] = val
+    return out_dict
+
+# Ungroup the muR and muF (across processes) in a very ad hoc way
+def un_correlate_mur_muf(in_dict):
+    out_dict = {}
+    for syst_name,val in in_dict.items():
+
+        # For muR and muF, we need to de correlate across procs
+        if syst_name in ["QCDscale_ren","QCDscale_fac"]:
+            # We'll need a muR and muF for each proc in the proc list
+            for proc_of_interest in sg.PROC_LST:
+                new_syst_name = f"{syst_name}_{proc_of_interest}"
+                out_dict[new_syst_name] = {}
+                # Now fill the columns for this new syst row, should be "-" for all but proc of interest
+                for proc_itr in sg.PROC_LST:
+                    if proc_itr == proc_of_interest:
+                        out_dict[new_syst_name][proc_itr] = in_dict[syst_name][proc_itr]
+                    else:
+                        out_dict[new_syst_name][proc_itr] = "-"
+
+        # For all other systematics, just pass through
+        else:
+            out_dict[syst_name] = val
+
     return out_dict
 
 
@@ -655,8 +681,9 @@ def main():
 
         rp_run = "run3" if run in ["run3","y22","y23"] else "run2"
 
-        # Convert names of systs :(
+        # Do some really bad hard coded modifications to kappa dict :(
         kappa_for_dc_ch = change_syst_names(kappa_for_dc_ch)
+        kappa_for_dc_ch = un_correlate_mur_muf(kappa_for_dc_ch)
 
         # Construct a string of all systematics to append to end of card
         syst_group_str = get_syst_group_str("syst", kappa_for_dc_ch.keys())
