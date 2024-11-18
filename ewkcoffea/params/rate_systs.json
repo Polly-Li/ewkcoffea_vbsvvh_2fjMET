@@ -1,10 +1,22 @@
 {
     "rate_uncertainties_all_proc" : {
         "lumi": {
-            "run2" : 1.016,
-            "run3" : 1.014,
-            "y22"  : 1.014,
-            "y23"  : 1.014
+            "run2" : {
+                "val" : 1.016,
+                "name" : "lumi_13TeV"
+            },
+            "run3" : {
+                "val" : 1.014,
+                "name" : "lumi_13p6TeV"
+            },
+            "y22"  : {
+                "val" : 1.014,
+                "name" : "lumi_13p6TeV"
+            },
+            "y23"  : {
+                "val" : 1.014,
+                "name" : "lumi_13p6TeV"
+            }
         }
     },
     "rate_uncertainties_some_proc" : {
