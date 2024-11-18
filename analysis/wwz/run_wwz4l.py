@@ -6,6 +6,7 @@ import time
 import cloudpickle
 import gzip
 import os
+import socket
 from coffea import processor
 from coffea.nanoevents import NanoAODSchema
 NanoAODSchema.warn_missing_crossrefs = False
@@ -115,6 +116,14 @@ if __name__ == '__main__':
             print('Running a fast test with %i workers, %i chunks of %i events'%(nworkers, nchunks, chunksize))
         else:
             raise Exception(f"The \"test\" option is not set up to work with the {executor} executor. Exiting.")
+
+    # Check that if on UF login node, we're using WQ
+    hostname = socket.gethostname()
+    if "login" in hostname:
+        # We are on a UF login node, better be using WQ
+        # Note if this ends up catching more than UF, can also check for "login"&"ufhpc" in name
+        if (executor != "work_queue"):
+            raise Exception(f"\nError: We seem to be on a UF login node ({hostname}). If running from here, need to run with WQ.")
 
 
     # Set the threshold for the ecut (if not applying a cut, should be None)
