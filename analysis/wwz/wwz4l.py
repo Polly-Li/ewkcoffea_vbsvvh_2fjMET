@@ -68,7 +68,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             "mll_01": axis.Regular(180, 0, 200, name="mll_01",  label="mll_l0_l1"),
             "mllll": axis.Regular(180, 0, 600, name="mllll",  label="mllll"),
             "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
-            "j0pt"  : axis.Regular(180, 0, 500, name="j0pt", label="j0pt"),
+            "j0pt"  : axis.Regular(180, 0, 500, name="j0pt", label="j0 pt"),
+            "j0eta" : axis.Regular(180, -3, 3, name="j0eta", label="j0 eta"),
+            "j0phi" : axis.Regular(180, -3.1416, 3.1416, name="j0phi", label="j0 phi"),
 
             "abs_pdgid_sum" : axis.Regular(15, 40, 55, name="abs_pdgid_sum", label="Sum of abs pdgId for all 4 lep"),
 
@@ -693,6 +695,8 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             l0pt = l0.pt
             j0pt = ak.flatten(j0.pt) # Flatten to go from [[j0pt],[j0pt],...] -> [j0pt,j0pt,...]
+            j0eta = ak.flatten(j0.eta) # Flatten to go from [[j0pt],[j0pt],...] -> [j0pt,j0pt,...]
+            j0phi = ak.flatten(j0.phi) # Flatten to go from [[j0pt],[j0pt],...] -> [j0pt,j0pt,...]
             mll_01 = (l0+l1).mass
             mllll = (l0+l1+l2+l3).mass
             scalarptsum_lep = l0.pt + l1.pt + l2.pt + l3.pt
@@ -756,6 +760,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mllll" : mllll,
                 "l0pt" : l0pt,
                 "j0pt" : j0pt,
+                "j0eta" : j0eta,
+                "j0phi" : j0phi,
 
                 "abs_pdgid_sum": abs_pdgid_sum,
 
@@ -1113,6 +1119,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mt2" : ["all_events"],
                 "ptl4" : ["all_events"],
                 "j0pt" : ["all_events", "4l_presel", "sr_4l_sf", "sr_4l_of", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf", "cr_4l_sf_higgs"] + analysis_cats + bdt_misc_names,
+                "j0eta" : ["all_events", "4l_presel", "sr_4l_sf", "sr_4l_of", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf", "cr_4l_sf_higgs"] + analysis_cats + bdt_misc_names,
+                "j0phi" : ["all_events", "4l_presel", "sr_4l_sf", "sr_4l_of", "sr_4l_sf_incl", "sr_4l_of_incl", "cr_4l_sf", "cr_4l_sf_higgs"] + analysis_cats + bdt_misc_names,
                 "l0pt" : ["all_events"],
                 "mll_01" : ["all_events"],
                 "mllll" : ["all_events"],
