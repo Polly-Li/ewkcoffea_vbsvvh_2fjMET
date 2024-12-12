@@ -128,7 +128,7 @@ SAMPLE_DICT_BASE_RUN2 = {
 
     "tWZ" : ["tWZ4l"], # Old sample tWll
 
-    #"WZ" : ["WZTo3LNu"], # Added to 'other' for now
+    "WZ" : ["WZTo3LNu"],
 
     "other" : [
 
@@ -161,7 +161,6 @@ SAMPLE_DICT_BASE_RUN2 = {
         "ZZZ",
 
         "ggHToZZ4L",
-        "WZTo3LNu",
     ],
 }
 
@@ -176,7 +175,7 @@ SAMPLE_DICT_BASE_RUN3 = {
         "TTZToQQ",
     ],
     "tWZ" : ["tWZ4l"],
-    #"WZ" : ["WZTo3LNu"], # Added to 'other'
+    "WZ" : ["WZTo3LNu"],
     "other" : [
         #"DYJetsToLL_M_10to50_MLM",
         #"DYJetsToLL_M_50_MLM",
@@ -200,7 +199,6 @@ SAMPLE_DICT_BASE_RUN3 = {
         "WZZ",
         "ZZZ",
         "ggHToZZ4L",
-        "WZTo3LNu", # added to other for now
     ],
 }
 

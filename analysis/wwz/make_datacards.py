@@ -522,7 +522,7 @@ def un_correlate_mur_muf(in_dict):
     for syst_name,val in in_dict.items():
 
         # For muR and muF, we need to de correlate across procs
-        if syst_name in ["QCDscale_ren","QCDscale_fac"]:
+        if syst_name in ["QCDscale_ren","QCDscale_fac", "ps_isr","ps_fsr"]:
             # We'll need a muR and muF for each proc in the proc list
             for proc_of_interest in sg.PROC_LST:
                 new_syst_name = f"{syst_name}_{proc_of_interest}"
@@ -532,13 +532,14 @@ def un_correlate_mur_muf(in_dict):
                     if proc_itr == proc_of_interest:
                         out_dict[new_syst_name][proc_itr] = in_dict[syst_name][proc_itr]
                     else:
-                        out_dict[new_syst_name][proc_itr] = "-"
+                        out_dict[new_syst_name][proc_itr] = "-" 
 
         # For all other systematics, just pass through
         else:
-            out_dict[syst_name] = val
+            out_dict[syst_name] = val 
 
     return out_dict
+
 
 
 #####################################
@@ -605,7 +606,7 @@ def main():
         handle_per_year_systs_for_fr(yld_dict_mc_allyears,run,do_jec27)
 
     yld_dict_mc = yld_dict_mc_allyears["FR"]
-    yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR"])
+    yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR"],blind=False)
 
     # Scale yield for any processes (e.g. for testing impacts of small backgrounds)
     scale_dict = {"WZ":1.0}
