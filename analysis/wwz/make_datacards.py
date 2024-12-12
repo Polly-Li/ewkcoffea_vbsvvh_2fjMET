@@ -272,7 +272,7 @@ def handle_negatives(in_dict):
                 out_dict[cat]["nominal"][proc][1] = 0
                 for syst in out_dict[cat]:
                     if syst == "nominal": continue # Already handled this one
-                    out_dict[cat][syst][proc][0] = SMALL # Center around SMALL
+                    out_dict[cat][syst][proc][0] = SMALL
 
     return out_dict
 
