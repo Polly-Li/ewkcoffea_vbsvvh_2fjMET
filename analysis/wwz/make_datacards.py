@@ -259,14 +259,14 @@ def handle_negatives(in_dict):
             val = in_dict[cat]["nominal"][proc][0]
             var = in_dict[cat]["nominal"][proc][1]
             if val <= 0:
-                # !!!OLD METHOD FOR HANDLING LOW YIELD BINS!!!
+                #!!!OLD METHOD FOR HANDLING LOW YIELD BINS!!!
                 #print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and shifting up/down systematic variations accordingly.")
                 #out_dict[cat]["nominal"][proc][0] = SMALL
                 #out_dict[cat]["nominal"][proc][1] = (abs(val) + np.sqrt(var))**2
                 #for syst in out_dict[cat]:
-                    #if syst == "nominal": continue # Already handled this one
-                    #syst_var_orig = out_dict[cat][syst][proc][0] # Dont bother messsing with mc stat error on the syst variation
-                    #out_dict[cat][syst][proc][0] = (syst_var_orig - val) + SMALL # Center around SMALL
+                #    if syst == "nominal": continue # Already handled this one
+                #    syst_var_orig = out_dict[cat][syst][proc][0] # Dont bother messsing with mc stat error on the syst variation
+                #out_dict[cat][syst][proc][0] = (syst_var_orig - val) + SMALL # Center around SMALL
                 print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and setting variations to 1/1.")
                 out_dict[cat]["nominal"][proc][0] = SMALL
                 out_dict[cat]["nominal"][proc][1] = 0
@@ -532,11 +532,11 @@ def un_correlate_mur_muf(in_dict):
                     if proc_itr == proc_of_interest:
                         out_dict[new_syst_name][proc_itr] = in_dict[syst_name][proc_itr]
                     else:
-                        out_dict[new_syst_name][proc_itr] = "-" 
+                        out_dict[new_syst_name][proc_itr] = "-"
 
         # For all other systematics, just pass through
         else:
-            out_dict[syst_name] = val 
+            out_dict[syst_name] = val
 
     return out_dict
 
