@@ -606,7 +606,7 @@ def main():
         handle_per_year_systs_for_fr(yld_dict_mc_allyears,run,do_jec27)
 
     yld_dict_mc = yld_dict_mc_allyears["FR"]
-    yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR"],blind=False)
+    yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR"],blind = not unblind)
 
     # Scale yield for any processes (e.g. for testing impacts of small backgrounds)
     scale_dict = {"WZ":1.0}
