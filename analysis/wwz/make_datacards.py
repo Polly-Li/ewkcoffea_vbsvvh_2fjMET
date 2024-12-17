@@ -259,7 +259,14 @@ def handle_negatives(in_dict,zero_low_mc):
             val = in_dict[cat]["nominal"][proc][0]
             var = in_dict[cat]["nominal"][proc][1]
             if val <= 0:
-                if not zero_low_mc:
+                if zero_low_mc:
+                    print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and setting variations to 1/1.")
+                    out_dict[cat]["nominal"][proc][0] = SMALL
+                    out_dict[cat]["nominal"][proc][1] = 0
+                    for syst in out_dict[cat]:
+                        if syst == "nominal": continue # Already handled this one
+                        out_dict[cat][syst][proc][0] = SMALL
+                else:
                     print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and shifting up/down systematic variations accordingly.")
                     out_dict[cat]["nominal"][proc][0] = SMALL
                     out_dict[cat]["nominal"][proc][1] = (abs(val) + np.sqrt(var))**2
@@ -267,13 +274,6 @@ def handle_negatives(in_dict,zero_low_mc):
                         if syst == "nominal": continue # Already handled this one
                         syst_var_orig = out_dict[cat][syst][proc][0] # Dont bother messsing with mc stat error on the syst variation
                         out_dict[cat][syst][proc][0] = (syst_var_orig - val) + SMALL # Center around SMALL
-                elif zero_low_mc:
-                    print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and setting variations to 1/1.")
-                    out_dict[cat]["nominal"][proc][0] = SMALL
-                    out_dict[cat]["nominal"][proc][1] = 0
-                    for syst in out_dict[cat]:
-                        if syst == "nominal": continue # Already handled this one
-                        out_dict[cat][syst][proc][0] = SMALL
 
     return out_dict
 
