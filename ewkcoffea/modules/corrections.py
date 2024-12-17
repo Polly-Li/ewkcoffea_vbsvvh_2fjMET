@@ -11,6 +11,7 @@ from coffea import lookup_tools
 from topcoffea.modules.paths import topcoffea_path
 from ewkcoffea.modules.paths import ewkcoffea_path
 from topcoffea.modules.CorrectedJetsFactory import CorrectedJetsFactory
+from topcoffea.modules.JECStack import JECStack
 
 extLepSF = lookup_tools.extractor()
 
@@ -519,67 +520,63 @@ def run3_pu_attach(pileup,year,sys):
     if sys not in ["nominal","hi","lo"]:
         raise Exception("ERROR: Not a recognized parameter.")
 
-def ApplyJetCorrections(year,isData, era):
+def ApplyJetCorrections(year, isData, era, useclib=True, savelevels=False):
+
+    if not useclib:
+        raise Exception("ewkcoffea is only set up to use correctionlib for JEC and JER corrections!")
 
     if year not in clib_year_map.keys():
         raise Exception(f"Error: Unknown year \"{year}\".")
 
+    jec_year = clib_year_map[year]
+
+    # Handle clib case
     jet_algo,jec_tag,jer_tag = get_jerc_keys(year,isData,era)
 
-    jec_year = year
-    if year.startswith("2016"):
-        jec_year = "2016preVFP" if year == "2016APV" else "2016postVFP"
-    if year in ['2016','2016APV','2017','2018','2016postVFP','2016preVFP']:
-        jec_year += "_UL"
-    if year in ['2022','2022EE','2023','2023BPix']:
-        jec_year = year[:4] + '_Summer' + year[2:]
+    jec_levels = [
+        "L1FastJet",
+        "L2Relative",
+        "L3Absolute",
+        "L2L3Residual",
+    ]
 
+    if isData:
+        junc_types = None
+    else:
+        junc_types = ["Total"] # Only JEC uncertainty we are using is Total
 
     json_path = topcoffea_path(f"data/POG/JME/{jec_year}/jet_jerc.json.gz")
-    #json_path = topcoffea_path(f"data/POG/JME/{jec_year}/fatjet_jerc.json.gz")
 
-    jec_types_clib = [
-        "AbsoluteMPFBias","AbsoluteScale","FlavorQCD","Fragmentation","PileUpDataMC",
-        "PileUpPtBB","PileUpPtEC1","PileUpPtEC2","PileUpPtHF","PileUpPtRef",
-        "RelativeFSR","RelativeJERHF","RelativePtBB","RelativePtHF","RelativeBal",
-        "SinglePionECAL","SinglePionHCAL",
-        "AbsoluteStat","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2",
-        "TimePtEta","RelativeSample","RelativeStatEC","RelativeStatFSR","RelativeStatHF",
-        "Total",
-    ]
-    jec_regroup_clib = [f"Quad_{jec_tag}_UncertaintySources_{jec_type}_{jet_algo}" for jec_type in jec_types_clib]
-    jec_names_clib = [
-        f"{jec_tag}_L1FastJet_{jet_algo}",
-        f"{jec_tag}_L2Relative_{jet_algo}",
-        f"{jec_tag}_L3Absolute_{jet_algo}",
-        f"{jec_tag}_L2L3Residual_{jet_algo}",
-    ]
-    jer_names_clib = [
-        f"{jer_tag}_SF_{jet_algo}",
-        f"{jer_tag}_PtResolution_{jet_algo}",
-    ]
-    if not isData:
-        jec_names_clib.extend(jec_regroup_clib)
-        jec_names_clib.extend(jer_names_clib)
-    jec_names_clib.append(json_path)
-    jec_names_clib.append(True) ## This boolean will be used to realize if the user wants to save the different level corrections or not
-    jec_stack = jec_names_clib
+    # Create JECStack for clib scenario
+    jec_stack = JECStack(
+        jec_tag=jec_tag,
+        jec_levels=jec_levels,
+        jer_tag=jer_tag,
+        jet_algo=jet_algo,
+        junc_types=junc_types,
+        json_path=json_path,
+        use_clib=useclib,
+        savecorr=savelevels
+    )
 
-    name_map = {}
-    name_map['JetPt'] = 'pt'
-    name_map['JetMass'] = 'mass'
-    name_map['JetEta'] = 'eta'
-    name_map['JetPhi'] = 'phi'
-    name_map['JetA'] = 'area'
-    name_map['ptGenJet'] = 'pt_gen'
-    name_map['ptRaw'] = 'pt_raw'
-    name_map['massRaw'] = 'mass_raw'
-    name_map['Rho'] = 'rho'
-    name_map['METpt'] = 'pt'
-    name_map['METphi'] = 'phi'
-    name_map['UnClusteredEnergyDeltaX'] = 'MetUnclustEnUpDeltaX'
-    name_map['UnClusteredEnergyDeltaY'] = 'MetUnclustEnUpDeltaY'
+    # Name map for jet or MET corrections
+    name_map = {
+        'JetPt': 'pt',
+        'JetMass': 'mass',
+        'JetEta': 'eta',
+        'JetPhi': 'phi',
+        'JetA': 'area',
+        'ptGenJet': 'pt_gen',
+        'ptRaw': 'pt_raw',
+        'massRaw': 'mass_raw',
+        'Rho': 'rho',
+        'METpt': 'pt',
+        'METphi': 'phi',
+    }
+
+    # Return appropriate factory based on correction type
     return CorrectedJetsFactory(name_map, jec_stack)
+
 
 def ApplyJetSystematics(year,cleanedJets,syst_var):
     if (syst_var == f'CMS_res_j_{year}Up'):
