@@ -259,13 +259,20 @@ def handle_negatives(in_dict):
             val = in_dict[cat]["nominal"][proc][0]
             var = in_dict[cat]["nominal"][proc][1]
             if val <= 0:
-                print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and shifting up/down systematic variations accordingly.")
+                #!!!OLD METHOD FOR HANDLING LOW YIELD BINS!!!
+                #print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and shifting up/down systematic variations accordingly.")
+                #out_dict[cat]["nominal"][proc][0] = SMALL
+                #out_dict[cat]["nominal"][proc][1] = (abs(val) + np.sqrt(var))**2
+                #for syst in out_dict[cat]:
+                #    if syst == "nominal": continue # Already handled this one
+                #    syst_var_orig = out_dict[cat][syst][proc][0] # Dont bother messsing with mc stat error on the syst variation
+                #out_dict[cat][syst][proc][0] = (syst_var_orig - val) + SMALL # Center around SMALL
+                print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and setting variations to 1/1.")
                 out_dict[cat]["nominal"][proc][0] = SMALL
-                out_dict[cat]["nominal"][proc][1] = (abs(val) + np.sqrt(var))**2
+                out_dict[cat]["nominal"][proc][1] = 0
                 for syst in out_dict[cat]:
                     if syst == "nominal": continue # Already handled this one
-                    syst_var_orig = out_dict[cat][syst][proc][0] # Dont bother messsing with mc stat error on the syst variation
-                    out_dict[cat][syst][proc][0] = (syst_var_orig - val) + SMALL # Center around SMALL
+                    out_dict[cat][syst][proc][0] = SMALL
 
     return out_dict
 
@@ -515,7 +522,7 @@ def un_correlate_mur_muf(in_dict):
     for syst_name,val in in_dict.items():
 
         # For muR and muF, we need to de correlate across procs
-        if syst_name in ["QCDscale_ren","QCDscale_fac"]:
+        if syst_name in ["QCDscale_ren","QCDscale_fac", "ps_isr","ps_fsr"]:
             # We'll need a muR and muF for each proc in the proc list
             for proc_of_interest in sg.PROC_LST:
                 new_syst_name = f"{syst_name}_{proc_of_interest}"
@@ -532,6 +539,7 @@ def un_correlate_mur_muf(in_dict):
             out_dict[syst_name] = val
 
     return out_dict
+
 
 
 #####################################
@@ -598,7 +606,7 @@ def main():
         handle_per_year_systs_for_fr(yld_dict_mc_allyears,run,do_jec27)
 
     yld_dict_mc = yld_dict_mc_allyears["FR"]
-    yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR"])
+    yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR"],blind = not unblind)
 
     # Scale yield for any processes (e.g. for testing impacts of small backgrounds)
     scale_dict = {"WZ":1.0}
