@@ -57,10 +57,12 @@ def get_yields(histo,sample_dict,blind=True,zero_low_mc = False,systematic_name=
                     val = sum(sum(histo[{"category":cat_name,"process":sample_dict[proc_name],"systematic":syst_name }].values(flow=True)))
                     var = sum(sum(histo[{"category":cat_name,"process":sample_dict[proc_name],"systematic":syst_name }].variances(flow=True)))
 
-                    # Zero out bins that are consistent with zero in the nominal
-                    if (np.sqrt(var_n) >= val_n) and zero_low_mc and ("data" not in proc_name):
-                        val = 0
-                        var = 0
+                    # Optionally zero out bins that are consistent with zero in the nominal
+                    # Note we do not do this for data
+                    if zero_low_mc and ("data" not in proc_name):
+                        if (np.sqrt(var_n) >= val_n):
+                            val = 0
+                            var = 0
 
                     yld_dict[cat_name][syst_name][proc_name] = [val,var]
 
