@@ -252,20 +252,28 @@ def handle_per_year_systs_for_fr(in_dict,year_name,do_jec27):
 #   - Replace the value with SMALL
 #   - And add |value| to the stat error to be more conservative
 #   - Shift the up/down variations to be centered around SMALL (does not touch stat uncertainty on up/down)
-def handle_negatives(in_dict):
+def handle_negatives(in_dict,zero_low_mc):
     out_dict = copy.deepcopy(in_dict)
     for cat in in_dict:
         for proc in in_dict[cat]["nominal"]:
             val = in_dict[cat]["nominal"][proc][0]
             var = in_dict[cat]["nominal"][proc][1]
             if val <= 0:
-                print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and shifting up/down systematic variations accordingly.")
-                out_dict[cat]["nominal"][proc][0] = SMALL
-                out_dict[cat]["nominal"][proc][1] = (abs(val) + np.sqrt(var))**2
-                for syst in out_dict[cat]:
-                    if syst == "nominal": continue # Already handled this one
-                    syst_var_orig = out_dict[cat][syst][proc][0] # Dont bother messsing with mc stat error on the syst variation
-                    out_dict[cat][syst][proc][0] = (syst_var_orig - val) + SMALL # Center around SMALL
+                if zero_low_mc:
+                    print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and setting variations to 1/1.")
+                    out_dict[cat]["nominal"][proc][0] = SMALL
+                    out_dict[cat]["nominal"][proc][1] = 0
+                    for syst in out_dict[cat]:
+                        if syst == "nominal": continue # Already handled this one
+                        out_dict[cat][syst][proc][0] = SMALL
+                else:
+                    print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and shifting up/down systematic variations accordingly.")
+                    out_dict[cat]["nominal"][proc][0] = SMALL
+                    out_dict[cat]["nominal"][proc][1] = (abs(val) + np.sqrt(var))**2
+                    for syst in out_dict[cat]:
+                        if syst == "nominal": continue # Already handled this one
+                        syst_var_orig = out_dict[cat][syst][proc][0] # Dont bother messsing with mc stat error on the syst variation
+                        out_dict[cat][syst][proc][0] = (syst_var_orig - val) + SMALL # Center around SMALL
 
     return out_dict
 
@@ -515,7 +523,7 @@ def un_correlate_mur_muf(in_dict):
     for syst_name,val in in_dict.items():
 
         # For muR and muF, we need to de correlate across procs
-        if syst_name in ["QCDscale_ren","QCDscale_fac"]:
+        if syst_name in ["QCDscale_ren","QCDscale_fac", "ps_isr","ps_fsr"]:
             # We'll need a muR and muF for each proc in the proc list
             for proc_of_interest in sg.PROC_LST:
                 new_syst_name = f"{syst_name}_{proc_of_interest}"
@@ -534,6 +542,7 @@ def un_correlate_mur_muf(in_dict):
     return out_dict
 
 
+
 #####################################
 ########### Main function ###########
 
@@ -548,6 +557,7 @@ def main():
     parser.add_argument("--bdt",action="store_true",help="Use BDT SR bins")
     parser.add_argument("--jec-do-twentyseven",action="store_true",help="Use the 27 JEC uncertainty variations :(")
     parser.add_argument("--unblind",action="store_true",help="If set, use real data, otherwise use asimov data")
+    parser.add_argument("--zero-low-mc",action="store_true",help="If set, mc processes that are consistent with zero will be set to zero")
     parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["run2","run3","y22","y23"])
 
     args = parser.parse_args()
@@ -558,6 +568,7 @@ def main():
     do_jec27= args.jec_do_twentyseven
     use_bdt_sr = args.bdt
     unblind = args.unblind
+    zero_low_mc = args.zero_low_mc
     run = args.run
 
     # Check args
@@ -593,12 +604,12 @@ def main():
     # Get yield dictionary (nested in the order: year,cat,syst,proc)
     yld_dict_mc_allyears = {}
     for year in sample_names_dict_mc:
-        yld_dict_mc_allyears[year] = yt.get_yields(histo,sample_names_dict_mc[year])
+        yld_dict_mc_allyears[year] = yt.get_yields(histo,sample_names_dict_mc[year],zero_low_mc = zero_low_mc)
     if do_nuis:
         handle_per_year_systs_for_fr(yld_dict_mc_allyears,run,do_jec27)
 
     yld_dict_mc = yld_dict_mc_allyears["FR"]
-    yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR"])
+    yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR"],blind = not unblind)
 
     # Scale yield for any processes (e.g. for testing impacts of small backgrounds)
     scale_dict = {"WZ":1.0}
@@ -628,7 +639,7 @@ def main():
 
 
     # Get rid of negative yields (and recenter syst variations around SMALL), should happen before computing kappas
-    yld_dict_mc = handle_negatives(yld_dict_mc)
+    yld_dict_mc = handle_negatives(yld_dict_mc,zero_low_mc)
 
     # Get the syst ratios to nominal (i.e. kappas)
     kappa_dict = None
