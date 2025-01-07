@@ -34,7 +34,7 @@ def valvar_op(valvar_1, valvar_2, op):
 ############## Getting yields from a histo ##############
 
 # Get the yields (nested in the order: year,cat,syst,proc)
-def get_yields(histo,sample_dict,blind=True,zero_low_mc = False,systematic_name=None):
+def get_yields(histo,sample_dict,blind=True,systematic_name=None):
 
     yld_dict = {}
 
@@ -56,13 +56,6 @@ def get_yields(histo,sample_dict,blind=True,zero_low_mc = False,systematic_name=
 
                     val = sum(sum(histo[{"category":cat_name,"process":sample_dict[proc_name],"systematic":syst_name }].values(flow=True)))
                     var = sum(sum(histo[{"category":cat_name,"process":sample_dict[proc_name],"systematic":syst_name }].variances(flow=True)))
-
-                    # Optionally zero out bins that are consistent with zero in the nominal
-                    # Note we do not do this for data
-                    if zero_low_mc and ("data" not in proc_name):
-                        if (np.sqrt(var_n) >= val_n):
-                            val = 0
-                            var = 0
 
                     yld_dict[cat_name][syst_name][proc_name] = [val,var]
 

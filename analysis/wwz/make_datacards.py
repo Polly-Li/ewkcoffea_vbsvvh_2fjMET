@@ -258,15 +258,23 @@ def handle_negatives(in_dict,zero_low_mc):
         for proc in in_dict[cat]["nominal"]:
             val = in_dict[cat]["nominal"][proc][0]
             var = in_dict[cat]["nominal"][proc][1]
-            if val <= 0:
-                if zero_low_mc:
-                    print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and setting variations to 1/1.")
+
+            # Kill contributions that are consistent with 0
+            if zero_low_mc:
+                if val <= np.sqrt(var):
+                    if "data" in proc:
+                        # This function is only used on MC, make sure no data (especially since we do not want to zeroize any data bins)
+                        raise Exception("This function does not expect data. Something went wrong.")
+                    print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is smaller than MC stat (yield {val}, and mc stat {var**0.5}), replacing with {SMALL} and killing up/down systematic variations.")
                     out_dict[cat]["nominal"][proc][0] = SMALL
                     out_dict[cat]["nominal"][proc][1] = 0
                     for syst in out_dict[cat]:
                         if syst == "nominal": continue # Already handled this one
                         out_dict[cat][syst][proc][0] = SMALL
-                else:
+
+            # If not killing contributions that are consistent with 0, just replace 0 and negaive contributions with SMALL
+            else:
+                if val <= 0:
                     print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and shifting up/down systematic variations accordingly.")
                     out_dict[cat]["nominal"][proc][0] = SMALL
                     out_dict[cat]["nominal"][proc][1] = (abs(val) + np.sqrt(var))**2
@@ -604,7 +612,7 @@ def main():
     # Get yield dictionary (nested in the order: year,cat,syst,proc)
     yld_dict_mc_allyears = {}
     for year in sample_names_dict_mc:
-        yld_dict_mc_allyears[year] = yt.get_yields(histo,sample_names_dict_mc[year],zero_low_mc = zero_low_mc)
+        yld_dict_mc_allyears[year] = yt.get_yields(histo,sample_names_dict_mc[year])
     if do_nuis:
         handle_per_year_systs_for_fr(yld_dict_mc_allyears,run,do_jec27)
 
