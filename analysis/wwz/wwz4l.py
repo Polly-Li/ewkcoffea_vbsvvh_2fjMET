@@ -1244,10 +1244,12 @@ class AnalysisProcessor(processor.ProcessorABC):
                         if isData: cuts_lst.append("is_good_lumi") # Apply golden json requirements if this is data
                         all_cuts_mask = selections.all(*cuts_lst)
 
+                        # Print info about the events
+                        #import sys
                         #run = events.run[all_cuts_mask]
                         #luminosityBlock = events.luminosityBlock[all_cuts_mask]
                         #event = events.event[all_cuts_mask]
-                        #w = weights[all_cuts_mask]
+                        #w = weight[all_cuts_mask]
                         #if dense_axis_name == "njets":
                         #    print("\nSTARTPRINT")
                         #    for i,j in enumerate(w):
