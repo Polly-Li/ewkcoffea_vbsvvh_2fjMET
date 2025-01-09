@@ -288,7 +288,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         if isData:
             datasets = ["SingleElectron", "EGamma", "MuonEG", "DoubleMuon", "DoubleElectron", "DoubleEG","Muon"]
             if dataset not in datasets:
-                raise Exception("ERROR: Unexpected dataset name for data file.")
+                raise Exception(f"ERROR: Unexpected dataset name for data file: {dataset}")
 
         # Initialize objects
         #met  = events.MET
