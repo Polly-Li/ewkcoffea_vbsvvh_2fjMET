@@ -15,97 +15,159 @@ import get_wwz_yields as gy
 
 STYLE_DICT = {
 
-
     # Input vars in OF SR
-    "input_var_of" : {
-        "cat_of_interest" : "sr_4l_bdt_of_trn",
+    "input_vars_of" : {
+        "cats_of_interest" : ["sr_4l_bdt_of_trn"],
         "rebin" : {"run2": 18, "run3" : 30},
         "var_dict" : {
-            "mll_wl0_wl1" : {},
-            "mllll" : {},
-            "absdphi_4l_met" : {},
-            "absdphi_wleps_met" : {},
-            "absdphi_wl0_met" : {},
-            "absdphi_wl1_met" : {},
-            "dr_wl0_wl1" : {},
-            "dr_zl0_zl1" : {},
-            "dr_wleps_zleps" : {},
-            "met" : {},
-            "mt2" : {},
-            "ptl4" : {},
-            "scalarptsum_jet" : {},
-            "scalarptsum_lepmet" : {},
-            "z_lep0_pt" : {},
-            "z_lep1_pt" : {},
-            "w_lep0_pt" : {},
-            "w_lep1_pt" : {},
-            "njets" : {"rebin":{"run2":None, "run3":None}},
-            "cos_helicity_x" : {},
-            "mt_wl0_met" : {},
-            "mt_wl1_met" : {},
-            "mt_wleps_met" : {},
-            "mt_4l_met" : {},
-            "dr_wl0_j_min" : {},
-            "dr_wl1_j_min" : {},
+            "mll_wl0_wl1" : {
+            },
+            "mllll" : {
+            },
+            "absdphi_4l_met" : {
+            },
+            "absdphi_wleps_met" : {
+            },
+            "absdphi_wl0_met" : {
+            },
+            "absdphi_wl1_met" : {
+            },
+            "dr_wl0_wl1" : {
+            },
+            "dr_zl0_zl1" : {
+            },
+            "dr_wleps_zleps" : {
+            },
+            "met" : {
+            },
+            "mt2" : {
+            },
+            "ptl4" : {
+            },
+            "scalarptsum_jet" : {
+            },
+            "scalarptsum_lepmet" : {
+            },
+            "z_lep0_pt" : {
+            },
+            "z_lep1_pt" : {
+            },
+            "w_lep0_pt" : {
+            },
+            "w_lep1_pt" : {
+            },
+            "njets" : {
+                "rebin":{"run2":None, "run3":None}
+            },
+            "cos_helicity_x" : {
+            },
+            "mt_wl0_met" : {
+            },
+            "mt_wl1_met" : {
+            },
+            "mt_wleps_met" : {
+            },
+            "mt_4l_met" : {
+            },
+            "dr_wl0_j_min" : {
+            },
+            "dr_wl1_j_min" : {
+            },
         },
     },
 
     # Input vars in SF SR
-    "input_var_sf" : {
-        "cat_of_interest" : "sr_4l_bdt_sf_trn",
+    "input_vars_sf" : {
+        "cats_of_interest" : ["sr_4l_bdt_sf_trn"],
         "rebin" : {"run2": 18, "run3" : 30},
         "var_dict" : {
-            "mll_wl0_wl1" : {},
-            "mllll" : {},
-            "absdphi_4l_met" : {},
-            "absdphi_zleps_met" : {},
-            "absdphi_wleps_met" : {},
-            "absdphi_wl0_met" : {},
-            "absdphi_wl1_met" : {},
-            "dr_wl0_wl1" : {},
-            "dr_zl0_zl1" : {},
-            "dr_wleps_zleps" : {},
-            "met" : {},
-            "mt2" : {},
-            "ptl4" : {},
-            "scalarptsum_jet" : {},
-            "scalarptsum_lepmet" : {},
-            "z_lep0_pt" : {},
-            "z_lep1_pt" : {},
-            "w_lep0_pt" : {},
-            "w_lep1_pt" : {},
-            "njets" : {"rebin": {"run2":None, "run3":None}},
-            "cos_helicity_x" : {},
-            "mt_wl0_met" : {},
-            "mt_wl1_met" : {},
-            "mt_wleps_met" : {},
-            "mt_4l_met" : {},
-            "dr_wl0_j_min" : {},
-            "dr_wl1_j_min" : {},
+            "mll_wl0_wl1" : {
+            },
+            "mllll" : {
+            },
+            "absdphi_4l_met" : {
+            },
+            "absdphi_zleps_met" : {
+            },
+            "absdphi_wleps_met" : {
+            },
+            "absdphi_wl0_met" : {
+            },
+            "absdphi_wl1_met" : {
+            },
+            "dr_wl0_wl1" : {
+            },
+            "dr_zl0_zl1" : {
+            },
+            "dr_wleps_zleps" : {
+            },
+            "met" : {
+            },
+            "mt2" : {
+            },
+            "ptl4" : {
+            },
+            "scalarptsum_jet" : {
+            },
+            "scalarptsum_lepmet" : {
+            },
+            "z_lep0_pt" : {
+            },
+            "z_lep1_pt" : {
+            },
+            "w_lep0_pt" : {
+            },
+            "w_lep1_pt" : {
+            },
+            "njets" : {
+                "rebin": {"run2":None, "run3":None}
+            },
+            "cos_helicity_x" : {
+            },
+            "mt_wl0_met" : {
+            },
+            "mt_wl1_met" : {
+            },
+            "mt_wleps_met" : {
+            },
+            "mt_4l_met" : {
+            },
+            "dr_wl0_j_min" : {
+            },
+            "dr_wl1_j_min" : {
+            },
         },
     },
 
     # BDT scores in OF SR
-    "score_of" : {
-        "cat_of_interest" : "sr_4l_bdt_of_trn",
+    "scores_of" : {
+        "cats_of_interest" : ["sr_4l_bdt_of_trn"],
         "rebin" : {"run2": 18, "run3" : 30},
         "var_dict" : {
-            "bdt_of_wwz" : {},
-            "bdt_of_zh" : {},
-            "bdt_of_bkg" : {},
-            "bdt_of_wwz_m_zh" : {},
+            "bdt_of_wwz" : {
+            },
+            "bdt_of_zh" : {
+            },
+            "bdt_of_bkg" : {
+            },
+            "bdt_of_wwz_m_zh" : {
+            },
         },
     },
 
     # BDT scores in OF SR
-    "score_sf" : {
-        "cat_of_interest" : "sr_4l_bdt_sf_trn",
+    "scores_sf" : {
+        "cats_of_interest" : ["sr_4l_bdt_sf_trn"],
         "rebin" : {"run2": 18, "run3" : 30},
         "var_dict" : {
-            "bdt_sf_wwz" : {},
-            "bdt_sf_zh" : {},
-            "bdt_sf_bkg" : {},
-            "bdt_sf_wwz_m_zh" : {},
+            "bdt_sf_wwz" : {
+            },
+            "bdt_sf_zh" : {
+            },
+            "bdt_sf_bkg" : {
+            },
+            "bdt_sf_wwz_m_zh" : {
+            },
         },
     },
 }
@@ -199,47 +261,52 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
     for group_name in STYLE_DICT.keys():
 
         # Make a sub dir for this group of plots
-        save_dir_path_group = os.path.join(save_dir_path,group_name)
-        if not os.path.exists(save_dir_path_group):
-            os.mkdir(save_dir_path_group)
+        save_dir_path_year = os.path.join(save_dir_path,year)
+        save_dir_path_year_group = os.path.join(save_dir_path_year,group_name)
+        if not os.path.exists(save_dir_path_year): os.mkdir(save_dir_path_year)
+        if not os.path.exists(save_dir_path_year_group): os.mkdir(save_dir_path_year_group)
 
-        # Which SR or CR is relevant
-        cat_name = STYLE_DICT[group_name]["cat_of_interest"]
+        # Loop over the relevant regions
+        for cat_name in STYLE_DICT[group_name]["cats_of_interest"]:
 
-        # Loop over the plots in this group
-        for var_name in STYLE_DICT[group_name]["var_dict"].keys():
-            print(f"\nVar name: {var_name}")
+            # Make a sub dir for this group of plots
+            save_dir_path_year_group_cat = os.path.join(save_dir_path_year_group,cat_name)
+            if not os.path.exists(save_dir_path_year_group_cat): os.mkdir(save_dir_path_year_group_cat)
 
-            histo_cat = histo_dict[var_name][{"systematic":"nominal", "category":cat_name}]
+            ### Loop over the variabls and make plots ###
+            for var_name in STYLE_DICT[group_name]["var_dict"].keys():
+                print(f"\nVar name: {var_name}")
 
-            # Rebin and set x range
-            rangex = None
-            rangex = [50,150]
-            if var_name not in ["njets"]:
-                rebin_factor = STYLE_DICT[group_name]["rebin"][year]
-                if "rebin" in STYLE_DICT[group_name]["var_dict"][var_name]:
-                    rebin_factor = STYLE_DICT[group_name]["var_dict"][var_name]["rebin"][year]
-                histo_cat = gy.rebin(histo_cat,rebin_factor)
+                histo_cat = histo_dict[var_name][{"systematic":"nominal", "category":cat_name}]
 
-            # Group the mc and data samples
-            histo_grouped_mc = gy.group(histo_cat,"process","process_grp",grouping_mc)
-            histo_grouped_data = gy.group(histo_cat,"process","process_grp",grouping_data)
+                # Rebin and set x range
+                rangex = None
+                rangex = [50,150]
+                if var_name not in ["njets"]:
+                    rebin_factor = STYLE_DICT[group_name]["rebin"][year]
+                    if "rebin" in STYLE_DICT[group_name]["var_dict"][var_name]:
+                        rebin_factor = STYLE_DICT[group_name]["var_dict"][var_name]["rebin"][year]
+                    histo_cat = gy.rebin(histo_cat,rebin_factor)
 
-            # Merge overflow into last bin (so it shows up in the plot)
-            histo_grouped_data = gy.merge_overflow(histo_grouped_data)
-            histo_grouped_mc = gy.merge_overflow(histo_grouped_mc)
+                # Group the mc and data samples
+                histo_grouped_mc = gy.group(histo_cat,"process","process_grp",grouping_mc)
+                histo_grouped_data = gy.group(histo_cat,"process","process_grp",grouping_data)
 
-            # Make figure
-            title = f"{group_name}_{var_name}"
-            print("Making: ",title)
-            #fig = make_public_fig(histo_grouped_mc,histo_grouped_data,axisrangex=rangex,title=title)
+                # Merge overflow into last bin (so it shows up in the plot)
+                histo_grouped_data = gy.merge_overflow(histo_grouped_data)
+                histo_grouped_mc = gy.merge_overflow(histo_grouped_mc)
 
-            # Save figure
-            #fig.savefig(os.path.join(save_dir_path_group,title+".pdf"))
-            #fig.savefig(os.path.join(save_dir_path_group,title+".png"))
+                # Make figure
+                title = f"{group_name}_{var_name}"
+                print("Making: ",title)
+                #fig = make_public_fig(histo_grouped_mc,histo_grouped_data,axisrangex=rangex,title=title)
 
-        # Make html for this sub dir
-        make_html(os.path.join(os.getcwd(),save_dir_path_group))
+                # Save figure
+                #fig.savefig(os.path.join(save_dir_path_group,title+".pdf"))
+                #fig.savefig(os.path.join(save_dir_path_group,title+".png"))
+
+            # Make html for this sub dir
+            make_html(os.path.join(os.getcwd(),save_dir_path_year_group_cat))
 
 
 
