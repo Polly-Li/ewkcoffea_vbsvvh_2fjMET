@@ -169,87 +169,8 @@ STYLE_DICT = {
     },
 }
 
-def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisrangex=None):
-
-    # Create the figure
-    fig, (ax, rax) = plt.subplots(
-        nrows=2,
-        ncols=1,
-        figsize=(7,7),
-        gridspec_kw={"height_ratios": (3, 1)},
-        sharex=True
-    )
-    fig.subplots_adjust(hspace=.07)
-
-    # Plot the mc
-    histo_mc.plot1d(
-        stack=True,
-        histtype="fill",
-        color=gy.CLR_LST,
-        ax=ax,
-    )
-    # Plot the data
-    if histo_data is not None:
-        histo_data.plot1d(
-            stack=False,
-            histtype="errorbar",
-            color="k",
-            ax=ax,
-            w2=histo_data.variances(),
-            w2method="sqrt",
-        )
-    # Plot a dummy hist on rax to get the label to show up
-    histo_mc.plot1d(alpha=0, ax=rax)
-
-    ### Get the errs on MC and plot them by hand ###
-    histo_mc_sum = histo_mc[{"process_grp":sum}]
-    mc_arr = histo_mc_sum.values()
-    mc_err_arr = np.sqrt(histo_mc_sum.variances())
-    err_p = np.append(mc_arr + mc_err_arr, 0)
-    err_m = np.append(mc_arr - mc_err_arr, 0)
-    bin_edges_arr = histo_mc_sum.axes[0].edges
-    bin_centers_arr = histo_mc_sum.axes[0].centers
-    ax.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', alpha=0.5, linewidth=0.0, label='MC stat', hatch='/////')
-
-    ### Get the errs on data and ratios and plot them by hand ###
-    if histo_data is not None:
-        histo_data_sum = histo_data[{"process_grp":sum}]
-
-        data_arr = histo_data_sum.values()
-        data_err_arr = np.sqrt(histo_data_sum.variances())
-
-        err_ratio_p = np.append(1+mc_err_arr/mc_arr,1)
-        err_ratio_m = np.append(1-mc_err_arr/mc_arr,1)
-
-        data_ratio_err_p = (data_arr + data_err_arr)/mc_arr
-        data_ratio_err_m = (data_arr - data_err_arr)/mc_arr
-
-        rax.fill_between(bin_edges_arr,err_ratio_m,err_ratio_p,step='post', facecolor='none',edgecolor='gray', label='MC stat', linewidth=0.0, hatch='/////',alpha=0.5)
-        rax.scatter(bin_centers_arr,data_arr/mc_arr,facecolor='black',edgecolor='black',marker="o")
-        rax.vlines(bin_centers_arr,data_ratio_err_p,data_ratio_err_m,color='k')
-
-    # Scale the axis and set labels
-    if axisrangex is not None:
-        ax.set_xlim(axisrangex[0],axisrangex[1])
-        rax.set_xlim(axisrangex[0],axisrangex[1])
-    ax.legend(fontsize="12")
-    ax.set_title(title)
-    ax.autoscale(axis='y')
-    ax.set_xlabel(None)
-    rax.set_ylabel('Ratio')
-    rax.set_ylim(0.0,2.0)
-    rax.axhline(1.0,linestyle="-",color="k",linewidth=1)
-    ax.tick_params(axis='y', labelsize=16)
-    rax.tick_params(axis='x', labelsize=16)
-    #ax.set_yscale('log')
-
-    return fig
-
 # Takes a mc hist and data hist and plots both
-def _make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisrangex=None):
-
-    print("histo_mc",histo_mc.values())
-    print("histo_data",histo_data.values())
+def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisrangex=None,xlabel=None):
 
     # Create the figure
     fig, (ax, rax) = plt.subplots(
@@ -289,7 +210,7 @@ def _make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,
     err_m = np.append(mc_arr - mc_err_arr, 0)
     bin_edges_arr = histo_mc_sum.axes[0].edges
     bin_centers_arr = histo_mc_sum.axes[0].centers
-    ax.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', alpha=0.5, linewidth=0.0, label='MC stat', hatch='/////')
+    ax.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', alpha=0.5, linewidth=0.0, label='Stat', hatch='/////')
 
     ### Get the errs on data and ratios and plot them by hand ###
     if histo_data is not None:
@@ -312,18 +233,24 @@ def _make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,
     if axisrangex is not None:
         ax.set_xlim(axisrangex[0],axisrangex[1])
         rax.set_xlim(axisrangex[0],axisrangex[1])
+
     ax.legend(fontsize="12")
-    ax.set_title(title)
     ax.autoscale(axis='y')
     ax.set_xlabel(None)
-    rax.set_ylabel('Data/Pred.')
+    ax.tick_params(axis='y', labelsize=16)
+    ax.set_ylabel('Events',fontsize=17)
+
+    if xlabel is not None: rax.set_xlabel(xlabel,fontsize=16)
+    #rax.set_xlabel("$ \mathrm{BDT \; score} \; _{\mathrm{WWZ}}$",fontsize=16)
+    rax.set_ylabel('Data/Pred.',fontsize=15)
     rax.set_ylim(0.0,2.0)
     rax.axhline(1.0,linestyle="-",color="k",linewidth=1)
-    ax.tick_params(axis='y', labelsize=16)
     rax.tick_params(axis='x', labelsize=16)
-    #ax.set_yscale('log')
+    rax.xaxis.set_label_coords(0.82, -0.40)
+    rax.yaxis.set_label_coords(-0.09, 0.5)
 
     return fig
+
 
 
 # Main function for making CR plots
@@ -377,33 +304,10 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year="run2"):
                 # Make figure
                 title = f"{group_name}_{var_name}"
                 print("Making: ",title)
-                #fig = make_public_fig(histo_grouped_mc,histo_grouped_data,axisrangex=rangex,title=title)
                 fig = make_public_fig(histo_grouped_mc,histo_grouped_data,title=title)
-                #fig = gy.make_single_fig(histo_grouped_mc,title=title)
-                #fig = make_cr_fig_this(histo_grouped_mc,histo_grouped_data,title=title)
-                #print("type",type(fig))
 
-                #fig.savefig("test_png8.png")
-                #fig.savefig(title+".png")
                 fig.savefig(os.path.join(save_dir_path_year_group_cat,title+".pdf"))
                 fig.savefig(os.path.join(save_dir_path_year_group_cat,title+".png"))
-                #exit()
-
-                # Save figure
-                #fig.savefig(os.path.join(save_dir_path_year_group_cat,title+".pdf"))
-                #fig.savefig(os.path.join(save_dir_path_year_group_cat,title+".png"))
-
-                ########################
-                #print("histo_grouped_mc",histo_grouped_mc)
-                #print("histo_grouped_mc vals",histo_grouped_mc.values())
-                #fig, ax = plt.subplots(1, 1, figsize=[10,10])
-                #histo_grouped_mc.plot1d(
-                #    #stack=True,
-                #    #histtype="fill",
-                #    #color=gy.CLR_LST,
-                #    #yerr=True,
-                #)
-                ########################
 
             # Make html for this sub dir
             make_html(os.path.join(os.getcwd(),save_dir_path_year_group_cat))
