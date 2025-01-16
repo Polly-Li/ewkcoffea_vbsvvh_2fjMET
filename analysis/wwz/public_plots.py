@@ -10,68 +10,108 @@ import ewkcoffea.modules.yield_tools as yt
 import ewkcoffea.modules.sample_groupings as sg
 import get_wwz_yields as gy
 
+LABEL_MAP = {
+    "mll_wl0_wl1"        : "$\mathrm{m_{\ell\ell}(\ell^W_0, \; \ell^W_1) \;[GeV]}$",
+    "mllll"              : "$\mathrm{m_{\ell\ell\ell\ell} \;[GeV]}$",
+    "absdphi_4l_met"     : "$|\Delta \phi \mathrm{(\ell^Z_0 + \ell^Z_1 + \ell^W_0 + \ell^W_1, \; p_T^{miss})}|$",
+    "absdphi_zleps_met"  : "$|\Delta \phi \mathrm{(\ell^Z_0 + \ell^Z_1, \; p_T^{miss})}|$",
+    "absdphi_wleps_met"  : "$|\Delta \phi \mathrm{(\ell^W_0 + \ell^W_1, \; p_T^{miss})}|$",
+    "absdphi_wl0_met"    : "$|\Delta \phi \mathrm{(\ell^W_0, \; p_T^{miss})}|$",
+    "absdphi_wl1_met"    : "$|\Delta \phi \mathrm{(\ell^W_1, \; p_T^{miss})}|$",
+    "dr_wl0_wl1"         : "$\Delta \mathrm{R (\ell^W_0, \; \ell^W_1)}$",
+    "dr_zl0_zl1"         : "$\Delta \mathrm{R (\ell^Z_0, \; \ell^Z_1)}$",
+    "dr_wleps_zleps"     : "$\Delta \mathrm{R (\ell^Z_0 + \ell^Z_1, \; \ell^W_0 + \ell^W_1)}$",
+    "met"                : "$\mathrm{p_T^{miss} \;[GeV]}$",
+    "mt2"                : "$\mathrm{m_{T2} \;[GeV]}$",
+    "ptl4"               : "$\mathrm{p_T^{4l} \;[GeV]}$",
+    "scalarptsum_jet"    : "$\Sigma \mathrm{p_T^{j} \;[GeV]}$",
+    "scalarptsum_lepmet" : "$\Sigma \mathrm{p_T^\ell + p_T^{miss} \;[GeV]}$",
+    "z_lep0_pt"          : "$\mathrm{p_T({\ell^Z_0}) \;[GeV]}$",
+    "z_lep1_pt"          : "$\mathrm{p_T({\ell^Z_1}) \;[GeV]}$",
+    "w_lep0_pt"          : "$\mathrm{p_T({\ell^W_0}) \;[GeV]}$",
+    "w_lep1_pt"          : "$\mathrm{p_T({\ell^W_1}) \;[GeV]}$",
+    "njets"              : "$\mathrm{n_{j}}$",
+    "cos_helicity_x"     : "$cos \; helicity \; X$",
+    "mt_wl0_met"         : "$\mathrm{m_T(\ell^W_0, p_T^{miss}) \;[GeV]}$",
+    "mt_wl1_met"         : "$\mathrm{m_T(\ell^W_1, p_T^{miss}) \;[GeV]}$",
+    "mt_wleps_met"       : "$\mathrm{m_T(\ell^W_0 + \ell^W_1, p_T^{miss}) \;[GeV]}$",
+    "mt_4l_met"          : "$\mathrm{m_T(\ell^Z_0 + \ell^Z_1 + \ell^W_0 + \ell^W_1, p_T^{miss}) \;[GeV]}$",
+    "dr_wl0_j_min"       : "$\Delta \mathrm{R ( \ell^W_0, j)^{min}}$",
+    "dr_wl1_j_min"       : "$\Delta \mathrm{R ( \ell^W_1, j)^{min}}$",
+
+    "bdt_of_wwz"         : "$\mathrm{BDT \; score} \; _{\mathrm{WWZ}}$",
+    "bdt_of_zh"          : "$\mathrm{BDT \; score} \; _{\mathrm{ZH}}$",
+    "bdt_of_bkg"         : "$\mathrm{BDT \; score} \; _{\mathrm{Background}}$",
+    "bdt_of_wwz_m_zh"    : "$\mathrm{BDT \; score} \; _{\mathrm{WWZ}} \; - \; \mathrm{BDT \; score} \; _{\mathrm{ZH}}$",
+
+    "bdt_sf_wwz"         : "$\mathrm{BDT \; score} \; _{\mathrm{WWZ}}$",
+    "bdt_sf_zh"          : "$\mathrm{BDT \; score} \; _{\mathrm{ZH}}$",
+    "bdt_sf_bkg"         : "$\mathrm{BDT \; score} \; _{\mathrm{Background}}$",
+    "bdt_sf_wwz_m_zh"    : "$\mathrm{BDT \; score} \; _{\mathrm{WWZ}} \; - \; \mathrm{BDT \; score} \; _{\mathrm{ZH}}$",
+}
+
 STYLE_DICT = {
 
     # Input vars in OF SR
-    "input_vars_of" : {
-        "cats_of_interest" : ["sr_4l_bdt_of_trn"],
-        "rebin" : {"run2": 18, "run3" : 30},
-        "var_dict" : {
-            "mll_wl0_wl1" : {
-            },
-            "mllll" : {
-            },
-            "absdphi_4l_met" : {
-            },
-            "absdphi_wleps_met" : {
-            },
-            "absdphi_wl0_met" : {
-            },
-            "absdphi_wl1_met" : {
-            },
-            "dr_wl0_wl1" : {
-            },
-            "dr_zl0_zl1" : {
-            },
-            "dr_wleps_zleps" : {
-            },
-            "met" : {
-            },
-            "mt2" : {
-            },
-            "ptl4" : {
-            },
-            "scalarptsum_jet" : {
-            },
-            "scalarptsum_lepmet" : {
-            },
-            "z_lep0_pt" : {
-            },
-            "z_lep1_pt" : {
-            },
-            "w_lep0_pt" : {
-            },
-            "w_lep1_pt" : {
-            },
-            "njets" : {
-                "rebin":{"run2":None, "run3":None}
-            },
-            "cos_helicity_x" : {
-            },
-            "mt_wl0_met" : {
-            },
-            "mt_wl1_met" : {
-            },
-            "mt_wleps_met" : {
-            },
-            "mt_4l_met" : {
-            },
-            "dr_wl0_j_min" : {
-            },
-            "dr_wl1_j_min" : {
-            },
-        },
-    },
+    #"input_vars_of" : {
+    #    "cats_of_interest" : ["sr_4l_bdt_of_trn"],
+    #    "rebin" : {"run2": 18, "run3" : 30},
+    #    "var_dict" : {
+    #        "mll_wl0_wl1" : {
+    #        },
+    #        "mllll" : {
+    #        },
+    #        "absdphi_4l_met" : {
+    #        },
+    #        "absdphi_wleps_met" : {
+    #        },
+    #        "absdphi_wl0_met" : {
+    #        },
+    #        "absdphi_wl1_met" : {
+    #        },
+    #        "dr_wl0_wl1" : {
+    #        },
+    #        "dr_zl0_zl1" : {
+    #        },
+    #        "dr_wleps_zleps" : {
+    #        },
+    #        "met" : {
+    #        },
+    #        "mt2" : {
+    #        },
+    #        "ptl4" : {
+    #        },
+    #        "scalarptsum_jet" : {
+    #        },
+    #        "scalarptsum_lepmet" : {
+    #        },
+    #        "z_lep0_pt" : {
+    #        },
+    #        "z_lep1_pt" : {
+    #        },
+    #        "w_lep0_pt" : {
+    #        },
+    #        "w_lep1_pt" : {
+    #        },
+    #        "njets" : {
+    #            "rebin":{"run2":None, "run3":None}
+    #        },
+    #        "cos_helicity_x" : {
+    #        },
+    #        "mt_wl0_met" : {
+    #        },
+    #        "mt_wl1_met" : {
+    #        },
+    #        "mt_wleps_met" : {
+    #        },
+    #        "mt_4l_met" : {
+    #        },
+    #        "dr_wl0_j_min" : {
+    #        },
+    #        "dr_wl1_j_min" : {
+    #        },
+    #    },
+    #},
 
     # Input vars in SF SR
     "input_vars_sf" : {
@@ -136,37 +176,37 @@ STYLE_DICT = {
         },
     },
 
-    # BDT scores in OF SR
-    "scores_of" : {
-        "cats_of_interest" : ["sr_4l_bdt_of_trn"],
-        "rebin" : {"run2": 18, "run3" : 30},
-        "var_dict" : {
-            "bdt_of_wwz" : {
-            },
-            "bdt_of_zh" : {
-            },
-            "bdt_of_bkg" : {
-            },
-            "bdt_of_wwz_m_zh" : {
-            },
-        },
-    },
+    ## BDT scores in OF SR
+    #"scores_of" : {
+    #    "cats_of_interest" : ["sr_4l_bdt_of_trn"],
+    #    "rebin" : {"run2": 18, "run3" : 30},
+    #    "var_dict" : {
+    #        "bdt_of_wwz" : {
+    #        },
+    #        "bdt_of_zh" : {
+    #        },
+    #        "bdt_of_bkg" : {
+    #        },
+    #        "bdt_of_wwz_m_zh" : {
+    #        },
+    #    },
+    #},
 
-    # BDT scores in OF SR
-    "scores_sf" : {
-        "cats_of_interest" : ["sr_4l_bdt_sf_trn"],
-        "rebin" : {"run2": 18, "run3" : 30},
-        "var_dict" : {
-            "bdt_sf_wwz" : {
-            },
-            "bdt_sf_zh" : {
-            },
-            "bdt_sf_bkg" : {
-            },
-            "bdt_sf_wwz_m_zh" : {
-            },
-        },
-    },
+    ## BDT scores in OF SR
+    #"scores_sf" : {
+    #    "cats_of_interest" : ["sr_4l_bdt_sf_trn"],
+    #    "rebin" : {"run2": 18, "run3" : 30},
+    #    "var_dict" : {
+    #        "bdt_sf_wwz" : {
+    #        },
+    #        "bdt_sf_zh" : {
+    #        },
+    #        "bdt_sf_bkg" : {
+    #        },
+    #        "bdt_sf_wwz_m_zh" : {
+    #        },
+    #    },
+    #},
 }
 
 # Takes a mc hist and data hist and plots both
@@ -238,16 +278,15 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
     ax.autoscale(axis='y')
     ax.set_xlabel(None)
     ax.tick_params(axis='y', labelsize=16)
-    ax.set_ylabel('Events',fontsize=17)
+    ax.set_ylabel('Events',fontsize=17,loc="top")
 
-    if xlabel is not None: rax.set_xlabel(xlabel,fontsize=16)
-    #rax.set_xlabel("$ \mathrm{BDT \; score} \; _{\mathrm{WWZ}}$",fontsize=16)
+    if xlabel is not None: rax.set_xlabel(xlabel,fontsize=16,loc="right")
     rax.set_ylabel('Data/Pred.',fontsize=15)
     rax.set_ylim(0.0,2.0)
     rax.axhline(1.0,linestyle="-",color="k",linewidth=1)
     rax.tick_params(axis='x', labelsize=16)
-    rax.xaxis.set_label_coords(0.82, -0.40)
-    rax.yaxis.set_label_coords(-0.09, 0.5)
+    #rax.xaxis.set_label_coords(0.82, -0.40)
+    #rax.yaxis.set_label_coords(-0.09, 0.5)
 
     return fig
 
@@ -263,7 +302,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year="run2"):
     # Loop over the groups of plots to make
     for group_name in STYLE_DICT.keys():
 
-        if group_name != "scores_of": continue
+        #if group_name != "scores_of": continue
 
         # Make a sub dir for this group of plots
         save_dir_path_year = os.path.join(save_dir_path,year)
@@ -304,7 +343,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year="run2"):
                 # Make figure
                 title = f"{group_name}_{var_name}"
                 print("Making: ",title)
-                fig = make_public_fig(histo_grouped_mc,histo_grouped_data,title=title)
+                fig = make_public_fig(histo_grouped_mc,histo_grouped_data,title=title,xlabel=LABEL_MAP[var_name])
 
                 fig.savefig(os.path.join(save_dir_path_year_group_cat,title+".pdf"))
                 fig.savefig(os.path.join(save_dir_path_year_group_cat,title+".png"))
