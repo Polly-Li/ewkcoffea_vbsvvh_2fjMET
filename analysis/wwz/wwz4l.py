@@ -130,7 +130,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
-            "nbtagsl" : axis.Regular(3, 0, 3, name="nbtagsl", label="Loose btag multiplicity"),
+            "nbtagsl" : axis.Regular(4, 0, 4, name="nbtagsl", label="Loose btag multiplicity"),
             "nbtagsm" : axis.Regular(4, 0, 4, name="nbtagsm", label="Medium btag multiplicity"),
 
             "njets_counts"   : axis.Regular(30, 0, 30, name="njets_counts",   label="Jet multiplicity counts"),
@@ -1016,13 +1016,15 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # For BDT SRs
 
-            sr_4l_bdt_sf_presel = (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z)
-            sr_4l_bdt_sf_trn    = (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & mt2_mask)
-            sr_4l_bdt_of_presel = (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)
-            sr_4l_bdt_of_trn    = sr_4l_bdt_of_presel # For OF, presel and trn regions are the same
+            sr_4l_bdt_sf_presel        = (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z)
+            sr_4l_bdt_sf_trn           = (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & mt2_mask)
+            sr_4l_bdt_of_presel_nobreq = (veto_map_mask & pass_trg & events.is4lWWZ & events.wwz_presel_of)
+            sr_4l_bdt_of_presel        = (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)
+            sr_4l_bdt_of_trn           = sr_4l_bdt_of_presel # For OF, presel and trn regions are the same
 
             selections.add("sr_4l_bdt_sf_presel", sr_4l_bdt_sf_presel)
             selections.add("sr_4l_bdt_sf_trn"   , sr_4l_bdt_sf_trn)
+            selections.add("sr_4l_bdt_of_presel_nobreq",sr_4l_bdt_of_presel_nobreq)
             selections.add("sr_4l_bdt_of_presel", sr_4l_bdt_of_presel)
             selections.add("sr_4l_bdt_of_trn"   , sr_4l_bdt_of_trn)
 
@@ -1095,6 +1097,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             bdt_misc_names = [
                 "sr_4l_bdt_sf_presel",
                 "sr_4l_bdt_sf_trn",
+                "sr_4l_bdt_of_presel_nobreq",
                 "sr_4l_bdt_of_presel",
                 "sr_4l_bdt_of_trn",
             ]

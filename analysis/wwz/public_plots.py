@@ -10,10 +10,11 @@ import ewkcoffea.modules.yield_tools as yt
 import ewkcoffea.modules.sample_groupings as sg
 import get_wwz_yields as gy
 
+
 LABEL_MAP = {
     "mll_wl0_wl1"        : "$\mathrm{m_{\ell\ell}(\ell^W_0, \; \ell^W_1) \;[GeV]}$",
     "mllll"              : "$\mathrm{m_{\ell\ell\ell\ell} \;[GeV]}$",
-    "absdphi_4l_met"     : "$|\Delta \phi \mathrm{(\ell^Z_0 + \ell^Z_1 + \ell^W_0 + \ell^W_1, \; p_T^{miss})}|$",
+    "absdphi_4l_met"     : "$|\Delta \phi \mathrm{(4\ell, \; p_T^{miss})}|$",
     "absdphi_zleps_met"  : "$|\Delta \phi \mathrm{(\ell^Z_0 + \ell^Z_1, \; p_T^{miss})}|$",
     "absdphi_wleps_met"  : "$|\Delta \phi \mathrm{(\ell^W_0 + \ell^W_1, \; p_T^{miss})}|$",
     "absdphi_wl0_met"    : "$|\Delta \phi \mathrm{(\ell^W_0, \; p_T^{miss})}|$",
@@ -23,7 +24,7 @@ LABEL_MAP = {
     "dr_wleps_zleps"     : "$\Delta \mathrm{R (\ell^Z_0 + \ell^Z_1, \; \ell^W_0 + \ell^W_1)}$",
     "met"                : "$\mathrm{p_T^{miss} \;[GeV]}$",
     "mt2"                : "$\mathrm{m_{T2} \;[GeV]}$",
-    "ptl4"               : "$\mathrm{p_T^{4l} \;[GeV]}$",
+    "ptl4"               : "$\mathrm{p_T^{4\ell} \;[GeV]}$",
     "scalarptsum_jet"    : "$\Sigma \mathrm{p_T^{j} \;[GeV]}$",
     "scalarptsum_lepmet" : "$\Sigma \mathrm{p_T^\ell + p_T^{miss} \;[GeV]}$",
     "z_lep0_pt"          : "$\mathrm{p_T({\ell^Z_0}) \;[GeV]}$",
@@ -35,88 +36,93 @@ LABEL_MAP = {
     "mt_wl0_met"         : "$\mathrm{m_T(\ell^W_0, p_T^{miss}) \;[GeV]}$",
     "mt_wl1_met"         : "$\mathrm{m_T(\ell^W_1, p_T^{miss}) \;[GeV]}$",
     "mt_wleps_met"       : "$\mathrm{m_T(\ell^W_0 + \ell^W_1, p_T^{miss}) \;[GeV]}$",
-    "mt_4l_met"          : "$\mathrm{m_T(\ell^Z_0 + \ell^Z_1 + \ell^W_0 + \ell^W_1, p_T^{miss}) \;[GeV]}$",
+    "mt_4l_met"          : "$\mathrm{m_T(4\ell, p_T^{miss}) \;[GeV]}$",
     "dr_wl0_j_min"       : "$\Delta \mathrm{R ( \ell^W_0, j)^{min}}$",
     "dr_wl1_j_min"       : "$\Delta \mathrm{R ( \ell^W_1, j)^{min}}$",
 
-    "bdt_of_wwz"         : "$\mathrm{BDT \; score} \; _{\mathrm{WWZ}}$",
-    "bdt_of_zh"          : "$\mathrm{BDT \; score} \; _{\mathrm{ZH}}$",
-    "bdt_of_bkg"         : "$\mathrm{BDT \; score} \; _{\mathrm{Background}}$",
-    "bdt_of_wwz_m_zh"    : "$\mathrm{BDT \; score} \; _{\mathrm{WWZ}} \; - \; \mathrm{BDT \; score} \; _{\mathrm{ZH}}$",
+    "bdt_of_wwz"         : "$\mathrm{BDT \; Score} \; _{\mathrm{WWZ}}$",
+    "bdt_of_zh"          : "$\mathrm{BDT \; Score} \; _{\mathrm{ZH}}$",
+    "bdt_of_bkg"         : "$\mathrm{BDT \; Score} \; _{\mathrm{Background}}$",
+    "bdt_of_wwz_m_zh"    : "$\mathrm{BDT \; Score} \; _{\mathrm{WWZ}} \; - \; \mathrm{BDT \; score} \; _{\mathrm{ZH}}$",
 
-    "bdt_sf_wwz"         : "$\mathrm{BDT \; score} \; _{\mathrm{WWZ}}$",
-    "bdt_sf_zh"          : "$\mathrm{BDT \; score} \; _{\mathrm{ZH}}$",
-    "bdt_sf_bkg"         : "$\mathrm{BDT \; score} \; _{\mathrm{Background}}$",
-    "bdt_sf_wwz_m_zh"    : "$\mathrm{BDT \; score} \; _{\mathrm{WWZ}} \; - \; \mathrm{BDT \; score} \; _{\mathrm{ZH}}$",
+    "bdt_sf_wwz"         : "$\mathrm{BDT \; Score} \; _{\mathrm{WWZ}}$",
+    "bdt_sf_zh"          : "$\mathrm{BDT \; Score} \; _{\mathrm{ZH}}$",
+    "bdt_sf_bkg"         : "$\mathrm{BDT \; Score} \; _{\mathrm{Background}}$",
+    "bdt_sf_wwz_m_zh"    : "$\mathrm{BDT \; Score} \; _{\mathrm{WWZ}} \; - \; \mathrm{BDT \; score} \; _{\mathrm{ZH}}$",
+
+    "nbtagsl"            : "$\mathrm{n_{b}}$",
 }
 
 STYLE_DICT = {
 
     # Input vars in OF SR
-    #"input_vars_of" : {
-    #    "cats_of_interest" : ["sr_4l_bdt_of_trn"],
-    #    "rebin" : {"run2": 18, "run3" : 30},
-    #    "var_dict" : {
-    #        "mll_wl0_wl1" : {
-    #        },
-    #        "mllll" : {
-    #        },
-    #        "absdphi_4l_met" : {
-    #        },
-    #        "absdphi_wleps_met" : {
-    #        },
-    #        "absdphi_wl0_met" : {
-    #        },
-    #        "absdphi_wl1_met" : {
-    #        },
-    #        "dr_wl0_wl1" : {
-    #        },
-    #        "dr_zl0_zl1" : {
-    #        },
-    #        "dr_wleps_zleps" : {
-    #        },
-    #        "met" : {
-    #        },
-    #        "mt2" : {
-    #        },
-    #        "ptl4" : {
-    #        },
-    #        "scalarptsum_jet" : {
-    #        },
-    #        "scalarptsum_lepmet" : {
-    #        },
-    #        "z_lep0_pt" : {
-    #        },
-    #        "z_lep1_pt" : {
-    #        },
-    #        "w_lep0_pt" : {
-    #        },
-    #        "w_lep1_pt" : {
-    #        },
-    #        "njets" : {
-    #            "rebin":{"run2":None, "run3":None}
-    #        },
-    #        "cos_helicity_x" : {
-    #        },
-    #        "mt_wl0_met" : {
-    #        },
-    #        "mt_wl1_met" : {
-    #        },
-    #        "mt_wleps_met" : {
-    #        },
-    #        "mt_4l_met" : {
-    #        },
-    #        "dr_wl0_j_min" : {
-    #        },
-    #        "dr_wl1_j_min" : {
-    #        },
-    #    },
-    #},
+    "input_vars_of" : {
+        "cats_of_interest" : ["sr_4l_bdt_of_trn", "cr_4l_btag_of"],
+        "rebin" : {"run2": 18, "run3" : 30},
+        #"rebin" : {"run2": 3, "run3" : 9},
+        "var_dict" : {
+            "mll_wl0_wl1" : {
+            },
+            "mllll" : {
+            },
+            "absdphi_4l_met" : {
+            },
+            "absdphi_wleps_met" : {
+            },
+            "absdphi_wl0_met" : {
+            },
+            "absdphi_wl1_met" : {
+            },
+            "dr_wl0_wl1" : {
+            },
+            "dr_zl0_zl1" : {
+            },
+            "dr_wleps_zleps" : {
+            },
+            "met" : {
+            },
+            "mt2" : {
+            },
+            "ptl4" : {
+            },
+            "scalarptsum_jet" : {
+            },
+            "scalarptsum_lepmet" : {
+            },
+            "z_lep0_pt" : {
+            },
+            "z_lep1_pt" : {
+            },
+            "w_lep0_pt" : {
+            },
+            "w_lep1_pt" : {
+            },
+            "njets" : {
+                "rebin":{"run2":None, "run3":None}
+            },
+            "cos_helicity_x" : {
+            },
+            "mt_wl0_met" : {
+            },
+            "mt_wl1_met" : {
+            },
+            "mt_wleps_met" : {
+            },
+            "mt_4l_met" : {
+            },
+            "dr_wl0_j_min" : {
+            },
+            "dr_wl1_j_min" : {
+            },
+        },
+    },
 
     # Input vars in SF SR
     "input_vars_sf" : {
-        "cats_of_interest" : ["sr_4l_bdt_sf_trn"],
+        "cats_of_interest" : ["sr_4l_bdt_sf_trn", "cr_4l_sf", "cr_4l_btag_sf_offZ_met80"],
         "rebin" : {"run2": 18, "run3" : 30},
+        #"rebin" : {"run2": 9, "run3" : 15},
+        #"rebin" : {"run2": 3, "run3" : 9},
         "var_dict" : {
             "mll_wl0_wl1" : {
             },
@@ -176,41 +182,68 @@ STYLE_DICT = {
         },
     },
 
-    ## BDT scores in OF SR
-    #"scores_of" : {
-    #    "cats_of_interest" : ["sr_4l_bdt_of_trn"],
-    #    "rebin" : {"run2": 18, "run3" : 30},
-    #    "var_dict" : {
-    #        "bdt_of_wwz" : {
-    #        },
-    #        "bdt_of_zh" : {
-    #        },
-    #        "bdt_of_bkg" : {
-    #        },
-    #        "bdt_of_wwz_m_zh" : {
-    #        },
-    #    },
-    #},
+    # BDT scores in OF SR
+    "scores_of" : {
+        "cats_of_interest" : ["sr_4l_bdt_of_trn", "cr_4l_btag_of"],
+        "rebin" : {"run2": 18, "run3" : 30},
+        #"rebin" : {"run2": 9, "run3" : 15},
+        #"rebin" : {"run2": 3, "run3" : 9},
+        "var_dict" : {
+            "bdt_of_wwz" : {
+            },
+            "bdt_of_zh" : {
+            },
+            "bdt_of_bkg" : {
+            },
+            "bdt_of_wwz_m_zh" : {
+            },
+        },
+    },
 
-    ## BDT scores in OF SR
-    #"scores_sf" : {
-    #    "cats_of_interest" : ["sr_4l_bdt_sf_trn"],
-    #    "rebin" : {"run2": 18, "run3" : 30},
-    #    "var_dict" : {
-    #        "bdt_sf_wwz" : {
-    #        },
-    #        "bdt_sf_zh" : {
-    #        },
-    #        "bdt_sf_bkg" : {
-    #        },
-    #        "bdt_sf_wwz_m_zh" : {
-    #        },
-    #    },
-    #},
+    # BDT scores in OF SR
+    "scores_sf" : {
+        "cats_of_interest" : ["sr_4l_bdt_sf_trn", "cr_4l_sf", "cr_4l_btag_sf_offZ_met80"],
+        "rebin" : {"run2": 18, "run3" : 30},
+        #"rebin" : {"run2": 9, "run3" : 15},
+        #"rebin" : {"run2": 3, "run3" : 9},
+        "var_dict" : {
+            "bdt_sf_wwz" : {
+            },
+            "bdt_sf_zh" : {
+            },
+            "bdt_sf_bkg" : {
+            },
+            "bdt_sf_wwz_m_zh" : {
+            },
+        },
+    },
+
+    # Variables we cut on shown in pseudo preselection regions
+    "kinematic_cut_vars_of" : {
+        "cats_of_interest" : ["sr_4l_bdt_of_presel_nobreq"],
+        #"rebin" : {"run2": 18, "run3" : 30},
+        "rebin" : {"run2": 6, "run3" : 12},
+        "var_dict" : {
+            "nbtagsl" : {
+            },
+        },
+    },
+    "kinematic_cut_vars_sf" : {
+        "cats_of_interest" : ["sr_4l_bdt_sf_presel"],
+        #"rebin" : {"run2": 18, "run3" : 30},
+        "rebin" : {"run2": 12, "run3" : 18},
+        "var_dict" : {
+            "mt2" : {
+                "logscale" : True,
+                "rangex" : [0,100],
+            },
+        },
+    },
 }
 
+
 # Takes a mc hist and data hist and plots both
-def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisrangex=None,xlabel=None):
+def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisrangex=None,xlabel=None,year="run2",logscale=False):
 
     # Create the figure
     fig, (ax, rax) = plt.subplots(
@@ -271,15 +304,26 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
 
     # Scale the axis and set labels
     if axisrangex is not None:
+        # TODO: NOTE This does not touch overlflow, simply cuts the axis range that is displayed
         ax.set_xlim(axisrangex[0],axisrangex[1])
         rax.set_xlim(axisrangex[0],axisrangex[1])
 
+    # CMS text
+    plt.text(0,1.02,"CMS",fontsize=23,weight="bold",transform=ax.transAxes)
+    plt.text(0.15,1.02,"$\it{Supplementary}$",fontsize=19,transform=ax.transAxes)
+    if year == "run2":
+        plt.text(0.59,1.02,"138 $\mathrm{fb^{{-}1}}$ (13 TeV)",fontsize=18,transform=ax.transAxes)
+    elif year == "run3":
+        plt.text(0.57,1.02,"62 $\mathrm{fb^{{-}1}}$ (13.6 TeV)",fontsize=18,transform=ax.transAxes)
+
+    # Set style things on main plot
     ax.legend(fontsize="12")
     ax.autoscale(axis='y')
     ax.set_xlabel(None)
     ax.tick_params(axis='y', labelsize=16)
     ax.set_ylabel('Events',fontsize=17,loc="top")
 
+    # Set style things on ratio plot
     if xlabel is not None: rax.set_xlabel(xlabel,fontsize=16,loc="right")
     rax.set_ylabel('Data/Pred.',fontsize=15)
     rax.set_ylim(0.0,2.0)
@@ -287,6 +331,9 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
     rax.tick_params(axis='x', labelsize=16)
     #rax.xaxis.set_label_coords(0.82, -0.40)
     #rax.yaxis.set_label_coords(-0.09, 0.5)
+
+    if logscale:
+        ax.set_yscale('log')
 
     return fig
 
@@ -325,12 +372,17 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year="run2"):
 
                 # Rebin and set x range
                 rangex = None
-                rangex = [50,150]
-                if var_name not in ["njets"]:
+                if "rangex" in STYLE_DICT[group_name]["var_dict"][var_name]:
+                    rangex = STYLE_DICT[group_name]["var_dict"][var_name]["rangex"]
+                if var_name not in ["njets", "nbtagsl"]:
                     rebin_factor = STYLE_DICT[group_name]["rebin"][year]
                     if "rebin" in STYLE_DICT[group_name]["var_dict"][var_name]:
                         rebin_factor = STYLE_DICT[group_name]["var_dict"][var_name]["rebin"][year]
                     histo_cat = gy.rebin(histo_cat,rebin_factor)
+
+                logscale=False
+                if "logscale" in STYLE_DICT[group_name]["var_dict"][var_name]:
+                    logscale = STYLE_DICT[group_name]["var_dict"][var_name]["logscale"]
 
                 # Group the mc and data samples
                 histo_grouped_mc = gy.group(histo_cat,"process","process_grp",grouping_mc)
@@ -343,7 +395,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year="run2"):
                 # Make figure
                 title = f"{group_name}_{var_name}"
                 print("Making: ",title)
-                fig = make_public_fig(histo_grouped_mc,histo_grouped_data,title=title,xlabel=LABEL_MAP[var_name])
+                fig = make_public_fig(histo_grouped_mc,histo_grouped_data,title=title,xlabel=LABEL_MAP[var_name],year=year,logscale=logscale,axisrangex=rangex)
 
                 fig.savefig(os.path.join(save_dir_path_year_group_cat,title+".pdf"))
                 fig.savefig(os.path.join(save_dir_path_year_group_cat,title+".png"))
