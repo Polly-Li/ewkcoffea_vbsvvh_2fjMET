@@ -4,6 +4,8 @@ import gzip
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
+import matplotlib.patches as mp
 
 from topcoffea.scripts.make_html import make_html
 import ewkcoffea.modules.yield_tools as yt
@@ -202,6 +204,7 @@ STYLE_DICT = {
 
     # BDT scores in OF SR
     "scores_sf" : {
+        #"cats_of_interest" : ["sr_4l_bdt_sf_trn"],
         "cats_of_interest" : ["sr_4l_bdt_sf_trn", "cr_4l_sf", "cr_4l_btag_sf_offZ_met80"],
         "rebin" : {"run2": 18, "run3" : 30},
         #"rebin" : {"run2": 9, "run3" : 15},
@@ -312,31 +315,56 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
     plt.text(0,1.02,"CMS",fontsize=23,weight="bold",transform=ax.transAxes)
     plt.text(0.15,1.02,"$\it{Supplementary}$",fontsize=19,transform=ax.transAxes)
     if year == "run2":
-        plt.text(0.59,1.02,"138 $\mathrm{fb^{{-}1}}$ (13 TeV)",fontsize=18,transform=ax.transAxes)
+        extt = plt.text(0.59,1.02,"138 $\mathrm{fb^{{-}1}}$ (13 TeV)",fontsize=18,transform=ax.transAxes)
     elif year == "run3":
-        plt.text(0.57,1.02,"62 $\mathrm{fb^{{-}1}}$ (13.6 TeV)",fontsize=18,transform=ax.transAxes)
+        extt = plt.text(0.57,1.02,"62 $\mathrm{fb^{{-}1}}$ (13.6 TeV)",fontsize=18,transform=ax.transAxes)
+
+    # Internal legend
+    extr = ax.legend(loc="upper left",bbox_to_anchor=(1,1),fontsize="16", frameon=False)
 
     # Set style things on main plot
-    ax.legend(fontsize="12")
     ax.autoscale(axis='y')
     ax.set_xlabel(None)
     ax.tick_params(axis='y', labelsize=16)
-    ax.set_ylabel('Events',fontsize=17,loc="top")
+    extl = ax.set_ylabel('Events',fontsize=22,loc="top")
 
     # Set style things on ratio plot
-    if xlabel is not None: rax.set_xlabel(xlabel,fontsize=16,loc="right")
-    rax.set_ylabel('Data/Pred.',fontsize=15)
+    if xlabel is not None:
+        extb = rax.set_xlabel(xlabel,fontsize=18,loc="right")
+    rax.set_ylabel('Data/Pred.',fontsize=18)
     rax.set_ylim(0.0,2.0)
     rax.axhline(1.0,linestyle="-",color="k",linewidth=1)
     rax.tick_params(axis='x', labelsize=16)
     #rax.xaxis.set_label_coords(0.82, -0.40)
     #rax.yaxis.set_label_coords(-0.09, 0.5)
 
+    # No more than 5 main ticks for the x axis
+    ax.xaxis.set_major_locator(plt.MaxNLocator(5))
+    rax.xaxis.set_major_locator(plt.MaxNLocator(5))
+
     if logscale:
         ax.set_yscale('log')
 
-    return fig
+    return (fig,(extt,extr,extb,extl))
 
+
+# Make a standalone legend
+def make_legend():
+    lfig, lax = plt.subplots(figsize=(1.5,2.5))
+    leg_elements = [
+        mp.Patch(facecolor=gy.CLR_LST[0], lw=9, label="WWZ"),
+        mp.Patch(facecolor=gy.CLR_LST[1], lw=9, label="ZH"),
+        mp.Patch(facecolor=gy.CLR_LST[2], lw=9, label="ZZ"),
+        mp.Patch(facecolor=gy.CLR_LST[3], lw=9, label="ttZ"),
+        mp.Patch(facecolor=gy.CLR_LST[4], lw=9, label="tWZ"),
+        mp.Patch(facecolor=gy.CLR_LST[5], lw=9, label="WZ"),
+        mp.Patch(facecolor=gy.CLR_LST[6], lw=9, label="Other"),
+        mp.Patch(facecolor="none",edgecolor="gray",hatch="/////", alpha=0.5, label="Stat"),
+        Line2D([0],[0],color="black", marker="o", label="Data"),
+    ]
+    lax.axis('off')
+    lax.legend(handles=leg_elements,fontsize="12",loc="center",frameon=False)
+    return lfig
 
 
 # Main function for making CR plots
@@ -345,6 +373,10 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year="run2"):
     # Set up the output dir if it does not exist
     if not os.path.exists(save_dir_path):
         os.mkdir(save_dir_path)
+
+    # Make a standalone legend
+    lfig = make_legend()
+    lfig.savefig(os.path.join(save_dir_path,"legend.pdf"))
 
     # Loop over the groups of plots to make
     for group_name in STYLE_DICT.keys():
@@ -392,16 +424,15 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year="run2"):
                 histo_grouped_data = gy.merge_overflow(histo_grouped_data)
                 histo_grouped_mc = gy.merge_overflow(histo_grouped_mc)
 
-                # Make figure
+                # Make and save figure
                 title = f"{group_name}_{var_name}"
                 print("Making: ",title)
-                fig = make_public_fig(histo_grouped_mc,histo_grouped_data,title=title,xlabel=LABEL_MAP[var_name],year=year,logscale=logscale,axisrangex=rangex)
-
-                fig.savefig(os.path.join(save_dir_path_year_group_cat,title+".pdf"))
-                fig.savefig(os.path.join(save_dir_path_year_group_cat,title+".png"))
+                fig, ext_tup = make_public_fig(histo_grouped_mc,histo_grouped_data,title=title,xlabel=LABEL_MAP[var_name],year=year,logscale=logscale)
+                fig.savefig(os.path.join(save_dir_path_year_group_cat,title+".pdf"),bbox_extra_artists=ext_tup,bbox_inches='tight')
+                fig.savefig(os.path.join(save_dir_path_year_group_cat,title+".png"),bbox_extra_artists=ext_tup,bbox_inches='tight')
 
             # Make html for this sub dir
-            make_html(os.path.join(os.getcwd(),save_dir_path_year_group_cat))
+            make_html(os.path.join(os.getcwd(),save_dir_path_year_group_cat),width=405, height=355)
 
 
 
