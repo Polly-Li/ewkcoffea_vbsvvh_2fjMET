@@ -246,7 +246,7 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
         gridspec_kw={"height_ratios": (3, 1)},
         sharex=True
     )
-    fig.subplots_adjust(hspace=.07)
+    fig.subplots_adjust(hspace=.09)
 
     # Plot the mc
     histo_mc.plot1d(
@@ -291,9 +291,16 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
         data_ratio_err_p = (data_arr + data_err_arr)/mc_arr
         data_ratio_err_m = (data_arr - data_err_arr)/mc_arr
 
+        # Make data color list
+        data_clr_lst = []
+        for data_val in data_arr:
+            if data_val > 0: data_clr_lst.append("k")
+            else: data_clr_lst.append("none")
+
+        # Draw
         rax.fill_between(bin_edges_arr,err_ratio_m,err_ratio_p,step='post', facecolor='none',edgecolor='gray', label='MC stat', linewidth=0.0, hatch='/////',alpha=0.5)
-        rax.scatter(bin_centers_arr,data_arr/mc_arr,facecolor='black',edgecolor='black',marker="o")
-        rax.vlines(bin_centers_arr,data_ratio_err_p,data_ratio_err_m,color='k')
+        rax.scatter(bin_centers_arr,data_arr/mc_arr,facecolor=data_clr_lst,edgecolor=data_clr_lst,marker="o")
+        rax.vlines(bin_centers_arr,data_ratio_err_p,data_ratio_err_m,color=data_clr_lst)
 
     # Scale the axis and set labels
     if axisrangex is not None:
@@ -326,7 +333,7 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
     rax.axhline(1.0,linestyle="-",color="k",linewidth=1)
     rax.tick_params(axis='x', labelsize=16)
     #rax.xaxis.set_label_coords(0.82, -0.40)
-    #rax.yaxis.set_label_coords(-0.09, 0.5)
+    rax.yaxis.set_label_coords(-0.09, 0.5)
 
     # No more than 5 main ticks for the x axis
     ax.xaxis.set_major_locator(plt.MaxNLocator(5))
@@ -412,7 +419,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,out_dir_map,save_dir_path,ye
                 histo_grouped_mc = gy.merge_overflow(histo_grouped_mc)
 
                 # Make and save figure
-                title = f"{group_name}_{var_name}"
+                title = f"{group_name}__{cat_name}__{var_name}"
                 print("Making: ",title)
                 fig, ext_tup = make_public_fig(histo_grouped_mc,histo_grouped_data,title=title,xlabel=LABEL_MAP[var_name],year=year,logscale=logscale)
                 fig.savefig(os.path.join(save_dir_path_year_set,title+".pdf"),bbox_extra_artists=ext_tup,bbox_inches='tight')
@@ -447,7 +454,7 @@ def main():
 
     # This defines what the output dirs will be called
     # To skip plotting one of these groups, just comment it
-    max_n_to_plot = 1 # Plot only a limited number per set (for testing small subsets)
+    max_n_to_plot = 999 # Plot only a limited number per set (for testing small subsets)
     dir_name_map = {
 
         # Input variables (in SRs and CRs)
