@@ -61,7 +61,6 @@ STYLE_DICT = {
     "input_vars_of" : {
         "cats_of_interest" : ["sr_4l_bdt_of_trn", "cr_4l_btag_of"],
         "rebin" : {"run2": 18, "run3" : 30},
-        #"rebin" : {"run2": 3, "run3" : 9},
         "var_dict" : {
             "mll_wl0_wl1" : {
             },
@@ -123,8 +122,6 @@ STYLE_DICT = {
     "input_vars_sf" : {
         "cats_of_interest" : ["sr_4l_bdt_sf_trn", "cr_4l_sf", "cr_4l_btag_sf_offZ_met80"],
         "rebin" : {"run2": 18, "run3" : 30},
-        #"rebin" : {"run2": 9, "run3" : 15},
-        #"rebin" : {"run2": 3, "run3" : 9},
         "var_dict" : {
             "mll_wl0_wl1" : {
             },
@@ -188,8 +185,6 @@ STYLE_DICT = {
     "scores_of" : {
         "cats_of_interest" : ["sr_4l_bdt_of_trn", "cr_4l_btag_of"],
         "rebin" : {"run2": 18, "run3" : 30},
-        #"rebin" : {"run2": 9, "run3" : 15},
-        #"rebin" : {"run2": 3, "run3" : 9},
         "var_dict" : {
             "bdt_of_wwz" : {
             },
@@ -204,11 +199,8 @@ STYLE_DICT = {
 
     # BDT scores in OF SR
     "scores_sf" : {
-        #"cats_of_interest" : ["sr_4l_bdt_sf_trn"],
         "cats_of_interest" : ["sr_4l_bdt_sf_trn", "cr_4l_sf", "cr_4l_btag_sf_offZ_met80"],
         "rebin" : {"run2": 18, "run3" : 30},
-        #"rebin" : {"run2": 9, "run3" : 15},
-        #"rebin" : {"run2": 3, "run3" : 9},
         "var_dict" : {
             "bdt_sf_wwz" : {
             },
@@ -224,7 +216,6 @@ STYLE_DICT = {
     # Variables we cut on shown in pseudo preselection regions
     "kinematic_cut_vars_of" : {
         "cats_of_interest" : ["sr_4l_bdt_of_presel_nobreq"],
-        #"rebin" : {"run2": 18, "run3" : 30},
         "rebin" : {"run2": 6, "run3" : 12},
         "var_dict" : {
             "nbtagsl" : {
@@ -233,7 +224,6 @@ STYLE_DICT = {
     },
     "kinematic_cut_vars_sf" : {
         "cats_of_interest" : ["sr_4l_bdt_sf_presel"],
-        #"rebin" : {"run2": 18, "run3" : 30},
         "rebin" : {"run2": 12, "run3" : 18},
         "var_dict" : {
             "mt2" : {
@@ -368,35 +358,32 @@ def make_legend():
 
 
 # Main function for making CR plots
-def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year="run2"):
+def make_plots(histo_dict,grouping_mc,grouping_data,out_dir_map,save_dir_path,year="run2",max_nplots=9999):
 
     # Set up the output dir if it does not exist
-    if not os.path.exists(save_dir_path):
-        os.mkdir(save_dir_path)
+    save_dir_path_year = os.path.join(save_dir_path,year)
+    if not os.path.exists(save_dir_path): os.mkdir(save_dir_path)
+    if not os.path.exists(save_dir_path_year): os.mkdir(save_dir_path_year)
 
     # Make a standalone legend
     lfig = make_legend()
-    lfig.savefig(os.path.join(save_dir_path,"legend.pdf"))
+    lfig.savefig(os.path.join(save_dir_path_year,"legend.pdf"))
 
-    # Loop over the groups of plots to make
+    ### Loop over the groups of plots ###
     for group_name in STYLE_DICT.keys():
 
-        #if group_name != "scores_of": continue
-
-        # Make a sub dir for this group of plots
-        save_dir_path_year = os.path.join(save_dir_path,year)
-        save_dir_path_year_group = os.path.join(save_dir_path_year,group_name)
-        if not os.path.exists(save_dir_path_year): os.mkdir(save_dir_path_year)
-        if not os.path.exists(save_dir_path_year_group): os.mkdir(save_dir_path_year_group)
-
-        # Loop over the relevant regions
+        ### Loop over the relevant regions ###
         for cat_name in STYLE_DICT[group_name]["cats_of_interest"]:
 
-            # Make a sub dir for this group of plots
-            save_dir_path_year_group_cat = os.path.join(save_dir_path_year_group,cat_name)
-            if not os.path.exists(save_dir_path_year_group_cat): os.mkdir(save_dir_path_year_group_cat)
+            # Make a subdir for this set
+            set_tag = f"{group_name}_{cat_name}"
+            if set_tag not in out_dir_map: continue
+            else:
+                save_dir_path_year_set = os.path.join(save_dir_path_year,out_dir_map[set_tag])
+                if not os.path.exists(save_dir_path_year_set): os.mkdir(save_dir_path_year_set)
 
             ### Loop over the variabls and make plots ###
+            n_plotted = 0
             for var_name in STYLE_DICT[group_name]["var_dict"].keys():
                 print(f"\nVar name: {var_name}")
 
@@ -428,11 +415,15 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year="run2"):
                 title = f"{group_name}_{var_name}"
                 print("Making: ",title)
                 fig, ext_tup = make_public_fig(histo_grouped_mc,histo_grouped_data,title=title,xlabel=LABEL_MAP[var_name],year=year,logscale=logscale)
-                fig.savefig(os.path.join(save_dir_path_year_group_cat,title+".pdf"),bbox_extra_artists=ext_tup,bbox_inches='tight')
-                fig.savefig(os.path.join(save_dir_path_year_group_cat,title+".png"),bbox_extra_artists=ext_tup,bbox_inches='tight')
+                fig.savefig(os.path.join(save_dir_path_year_set,title+".pdf"),bbox_extra_artists=ext_tup,bbox_inches='tight')
+                fig.savefig(os.path.join(save_dir_path_year_set,title+".png"),bbox_extra_artists=ext_tup,bbox_inches='tight')
+
+                # Break if we've hit the max we'd like to plot (mainly for testing small changes)
+                n_plotted = n_plotted+1
+                if n_plotted >= max_nplots: break
 
             # Make html for this sub dir
-            make_html(os.path.join(os.getcwd(),save_dir_path_year_group_cat),width=405, height=355)
+            make_html(os.path.join(os.getcwd(),save_dir_path_year_set),width=445, height=355)
 
 
 
@@ -454,7 +445,34 @@ def main():
     sample_dict_data = sg.create_data_sample_dict(args.ul_year)
     out_path = args.output_path
 
-    make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path,year=args.ul_year)
+    # This defines what the output dirs will be called
+    # To skip plotting one of these groups, just comment it
+    max_n_to_plot = 1 # Plot only a limited number per set (for testing small subsets)
+    dir_name_map = {
+
+        # Input variables (in SRs and CRs)
+        "input_vars_of_sr_4l_bdt_of_trn"         : "input_vars_SR_OF",
+        "input_vars_sf_sr_4l_bdt_sf_trn"         : "input_vars_SR_SF",
+        "input_vars_sf_cr_4l_sf"                 : "input_vars_CR_ZZ",
+        "input_vars_of_cr_4l_btag_of"            : "input_vars_CR_ttZ_OF",
+        "input_vars_sf_cr_4l_btag_sf_offZ_met80" : "input_vars_CR_ttZ_SF",
+
+        # BDT score distributions (in SRs and CRs)
+        "scores_of_sr_4l_bdt_of_trn"             : "bdt_scores_SR_OF",
+        "scores_sf_sr_4l_bdt_sf_trn"             : "bdt_scores_SR_SF",
+        "scores_sf_cr_4l_sf"                     : "bdt_scores_CR_ZZ",
+        "scores_of_cr_4l_btag_of"                : "bdt_scores_CR_ttZ_OF",
+        "scores_sf_cr_4l_btag_sf_offZ_met80"     : "bdt_scores_CR_ttZ_SF",
+
+        # Plots to motivate kinematic cuts
+        "kinematic_cut_vars_of_sr_4l_bdt_of_presel_nobreq" : "kinematic_cut_vars_OF_nbtag",
+        "kinematic_cut_vars_sf_sr_4l_bdt_sf_presel"        : "kinematic_cut_vars_SF_mt2",
+    }
+
+    # Make the plots
+    make_plots(histo_dict,sample_dict_mc,sample_dict_data,dir_name_map,save_dir_path=out_path,year=args.ul_year,max_nplots=max_n_to_plot)
+
 
 if __name__ == "__main__":
     main()
+
