@@ -34,7 +34,7 @@ LABEL_MAP = {
     "w_lep0_pt"          : "$\mathrm{p_T({\ell^W_0}) \;[GeV]}$",
     "w_lep1_pt"          : "$\mathrm{p_T({\ell^W_1}) \;[GeV]}$",
     "njets"              : "$\mathrm{n_{j}}$",
-    "cos_helicity_x"     : "$cos \; helicity \; X$",
+    "cos_helicity_x"     : "cos(${\\theta}_{\mathrm{X}}$)",
     "mt_wl0_met"         : "$\mathrm{m_T(\ell^W_0, p_T^{miss}) \;[GeV]}$",
     "mt_wl1_met"         : "$\mathrm{m_T(\ell^W_1, p_T^{miss}) \;[GeV]}$",
     "mt_wleps_met"       : "$\mathrm{m_T(\ell^W_0 + \ell^W_1, p_T^{miss}) \;[GeV]}$",
@@ -60,7 +60,10 @@ STYLE_DICT = {
     # Input vars in OF SR
     "input_vars_of" : {
         "cats_of_interest" : ["sr_4l_bdt_of_trn", "cr_4l_btag_of"],
-        "rebin" : {"run2": 18, "run3" : 30},
+        "rebin" : {
+            "sr_4l_bdt_of_trn" : {"run2": 18, "run3" : 30},
+            "cr_4l_btag_of"    : {"run2": 18, "run3" : 30},
+        },
         "var_dict" : {
             "mll_wl0_wl1" : {
             },
@@ -121,7 +124,11 @@ STYLE_DICT = {
     # Input vars in SF SR
     "input_vars_sf" : {
         "cats_of_interest" : ["sr_4l_bdt_sf_trn", "cr_4l_sf", "cr_4l_btag_sf_offZ_met80"],
-        "rebin" : {"run2": 18, "run3" : 30},
+        "rebin" : {
+            "sr_4l_bdt_sf_trn"         : {"run2": 18, "run3" : 30},
+            "cr_4l_sf"                 : {"run2": 18, "run3" : 30},
+            "cr_4l_btag_sf_offZ_met80" : {"run2": 18, "run3" : 30},
+        },
         "var_dict" : {
             "mll_wl0_wl1" : {
             },
@@ -184,7 +191,10 @@ STYLE_DICT = {
     # BDT scores in OF SR
     "scores_of" : {
         "cats_of_interest" : ["sr_4l_bdt_of_trn", "cr_4l_btag_of"],
-        "rebin" : {"run2": 18, "run3" : 30},
+        "rebin" : {
+            "sr_4l_bdt_of_trn" : {"run2": 18, "run3" : 30},
+            "cr_4l_btag_of"    : {"run2": 18, "run3" : 30},
+        },
         "var_dict" : {
             "bdt_of_wwz" : {
             },
@@ -200,7 +210,11 @@ STYLE_DICT = {
     # BDT scores in OF SR
     "scores_sf" : {
         "cats_of_interest" : ["sr_4l_bdt_sf_trn", "cr_4l_sf", "cr_4l_btag_sf_offZ_met80"],
-        "rebin" : {"run2": 18, "run3" : 30},
+        "rebin" : {
+            "sr_4l_bdt_sf_trn"         : {"run2": 18, "run3" : 30},
+            "cr_4l_sf"                 : {"run2": 6, "run3" : 12},
+            "cr_4l_btag_sf_offZ_met80" : {"run2": 18, "run3" : 30},
+        },
         "var_dict" : {
             "bdt_sf_wwz" : {
             },
@@ -401,9 +415,9 @@ def make_plots(histo_dict,grouping_mc,grouping_data,out_dir_map,save_dir_path,ye
                 if "rangex" in STYLE_DICT[group_name]["var_dict"][var_name]:
                     rangex = STYLE_DICT[group_name]["var_dict"][var_name]["rangex"]
                 if var_name not in ["njets", "nbtagsl"]:
-                    rebin_factor = STYLE_DICT[group_name]["rebin"][year]
+                    rebin_factor = STYLE_DICT[group_name]["rebin"][cat_name][year]
                     if "rebin" in STYLE_DICT[group_name]["var_dict"][var_name]:
-                        rebin_factor = STYLE_DICT[group_name]["var_dict"][var_name]["rebin"][year]
+                        rebin_factor = STYLE_DICT[group_name]["var_dict"][var_name]["rebin"][cat_name][year]
                     histo_cat = gy.rebin(histo_cat,rebin_factor)
 
                 logscale=False
