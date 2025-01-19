@@ -212,7 +212,7 @@ STYLE_DICT = {
         "cats_of_interest" : ["sr_4l_bdt_sf_trn", "cr_4l_sf", "cr_4l_btag_sf_offZ_met80"],
         "rebin" : {
             "sr_4l_bdt_sf_trn"         : {"run2": 18, "run3" : 30},
-            "cr_4l_sf"                 : {"run2": 6, "run3" : 12},
+            "cr_4l_sf"                 : {"run2": 6, "run3" : 6},
             "cr_4l_btag_sf_offZ_met80" : {"run2": 18, "run3" : 30},
         },
         "var_dict" : {
@@ -230,7 +230,9 @@ STYLE_DICT = {
     # Variables we cut on shown in pseudo preselection regions
     "kinematic_cut_vars_of" : {
         "cats_of_interest" : ["sr_4l_bdt_of_presel_nobreq"],
-        "rebin" : {"run2": 6, "run3" : 12},
+        "rebin" : {
+            "sr_4l_bdt_of_presel_nobreq" : {"run2": 6, "run3" : 12},
+        },
         "var_dict" : {
             "nbtagsl" : {
             },
@@ -238,7 +240,9 @@ STYLE_DICT = {
     },
     "kinematic_cut_vars_sf" : {
         "cats_of_interest" : ["sr_4l_bdt_sf_presel"],
-        "rebin" : {"run2": 12, "run3" : 18},
+        "rebin" : {
+            "sr_4l_bdt_sf_presel" : {"run2": 12, "run3" : 18},
+        },
         "var_dict" : {
             "mt2" : {
                 "logscale" : True,
@@ -260,7 +264,7 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
         gridspec_kw={"height_ratios": (3, 1)},
         sharex=True
     )
-    fig.subplots_adjust(hspace=.09)
+    fig.subplots_adjust(hspace=.11)
 
     # Plot the mc
     histo_mc.plot1d(
@@ -334,9 +338,8 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
     extr = ax.legend(loc="upper left",bbox_to_anchor=(1,1),fontsize="16", frameon=False)
 
     # Set style things on main plot
-    ax.autoscale(axis='y')
     ax.set_xlabel(None)
-    ax.tick_params(axis='y', labelsize=16)
+    ax.tick_params(axis='y', labelsize=14)
     extl = ax.set_ylabel('Events',fontsize=22,loc="top")
 
     # Set style things on ratio plot
@@ -345,16 +348,29 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
     rax.set_ylabel('Data/Pred.',fontsize=18)
     rax.set_ylim(0.0,2.0)
     rax.axhline(1.0,linestyle="-",color="k",linewidth=1)
-    rax.tick_params(axis='x', labelsize=16)
+    rax.tick_params(axis='x', labelsize=15)
+    rax.tick_params(axis='y', labelsize=14)
+    rax.set_yticks((0,0.5,1,1.5,2))
     #rax.xaxis.set_label_coords(0.82, -0.40)
     rax.yaxis.set_label_coords(-0.09, 0.5)
+
+    # No extra space on the edges because apparently Philip really does not like extra space
+    ax.margins(0.0)
+    rax.margins(0.0)
+
+    # Set y axis range, use auto  scale unless data is larger (auto does not scale properly in that case)
+    ax.autoscale(axis='y')
+    auto_y = ax.get_ylim()
+    if not logscale:
+        ax.set_ylim(auto_y[0],1.1*auto_y[1])
+    else:
+        ax.set_yscale('log')
+        ax.set_ylim(auto_y[0],9.0*auto_y[1])
 
     # No more than 5 main ticks for the x axis
     ax.xaxis.set_major_locator(plt.MaxNLocator(5))
     rax.xaxis.set_major_locator(plt.MaxNLocator(5))
 
-    if logscale:
-        ax.set_yscale('log')
 
     return (fig,(extt,extr,extb,extl))
 
@@ -469,24 +485,25 @@ def main():
     # This defines what the output dirs will be called
     # To skip plotting one of these groups, just comment it
     max_n_to_plot = 999 # Plot only a limited number per set (for testing small subsets)
+    #max_n_to_plot = 1 # Plot only a limited number per set (for testing small subsets)
     dir_name_map = {
 
         # Input variables (in SRs and CRs)
-        "input_vars_of_sr_4l_bdt_of_trn"         : "input_vars_SR_OF",
-        "input_vars_sf_sr_4l_bdt_sf_trn"         : "input_vars_SR_SF",
-        "input_vars_sf_cr_4l_sf"                 : "input_vars_CR_ZZ",
-        "input_vars_of_cr_4l_btag_of"            : "input_vars_CR_ttZ_OF",
-        "input_vars_sf_cr_4l_btag_sf_offZ_met80" : "input_vars_CR_ttZ_SF",
+        #"input_vars_of_sr_4l_bdt_of_trn"         : "input_vars_SR_OF",
+        #"input_vars_sf_sr_4l_bdt_sf_trn"         : "input_vars_SR_SF",
+        #"input_vars_sf_cr_4l_sf"                 : "input_vars_CR_ZZ",
+        #"input_vars_of_cr_4l_btag_of"            : "input_vars_CR_ttZ_OF",
+        #"input_vars_sf_cr_4l_btag_sf_offZ_met80" : "input_vars_CR_ttZ_SF",
 
         # BDT score distributions (in SRs and CRs)
-        "scores_of_sr_4l_bdt_of_trn"             : "bdt_scores_SR_OF",
-        "scores_sf_sr_4l_bdt_sf_trn"             : "bdt_scores_SR_SF",
-        "scores_sf_cr_4l_sf"                     : "bdt_scores_CR_ZZ",
-        "scores_of_cr_4l_btag_of"                : "bdt_scores_CR_ttZ_OF",
-        "scores_sf_cr_4l_btag_sf_offZ_met80"     : "bdt_scores_CR_ttZ_SF",
+        #"scores_of_sr_4l_bdt_of_trn"             : "bdt_scores_SR_OF",
+        #"scores_sf_sr_4l_bdt_sf_trn"             : "bdt_scores_SR_SF",
+        #"scores_sf_cr_4l_sf"                     : "bdt_scores_CR_ZZ",
+        #"scores_of_cr_4l_btag_of"                : "bdt_scores_CR_ttZ_OF",
+        #"scores_sf_cr_4l_btag_sf_offZ_met80"     : "bdt_scores_CR_ttZ_SF",
 
         # Plots to motivate kinematic cuts
-        "kinematic_cut_vars_of_sr_4l_bdt_of_presel_nobreq" : "kinematic_cut_vars_OF_nbtag",
+        #"kinematic_cut_vars_of_sr_4l_bdt_of_presel_nobreq" : "kinematic_cut_vars_OF_nbtag",
         "kinematic_cut_vars_sf_sr_4l_bdt_sf_presel"        : "kinematic_cut_vars_SF_mt2",
     }
 
