@@ -124,6 +124,16 @@ SYSTS_SPECIAL = {
 
 }
 
+# Construct a "group" line for the end of the datacard
+#     - Given a somename and list like ["sys1","sys1"]
+#     - The output would be "somename group = sys1 sys2"
+def get_syst_group_str(group_name,syst_names_lst):
+    syst_str = ""
+    for syst_name in syst_names_lst:
+        syst_str = syst_str + (f" {syst_name}")
+    out_str = f"{group_name} group ={syst_str}"
+    return out_str
+
 
 # Hard code the rateParam lines to put at the end of the card (for background normalization)
 RATE_PARAM_LINES = {
@@ -273,20 +283,36 @@ def handle_per_year_systs_for_fr(in_dict,year_name,do_jec27,do_jec11):
 #   - Replace the value with SMALL
 #   - And add |value| to the stat error to be more conservative
 #   - Shift the up/down variations to be centered around SMALL (does not touch stat uncertainty on up/down)
-def handle_negatives(in_dict):
+def handle_negatives(in_dict,zero_low_mc):
     out_dict = copy.deepcopy(in_dict)
     for cat in in_dict:
         for proc in in_dict[cat]["nominal"]:
             val = in_dict[cat]["nominal"][proc][0]
             var = in_dict[cat]["nominal"][proc][1]
-            if val <= 0:
-                print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and shifting up/down systematic variations accordingly.")
-                out_dict[cat]["nominal"][proc][0] = SMALL
-                out_dict[cat]["nominal"][proc][1] = (abs(val) + np.sqrt(var))**2
-                for syst in out_dict[cat]:
-                    if syst == "nominal": continue # Already handled this one
-                    syst_var_orig = out_dict[cat][syst][proc][0] # Dont bother messsing with mc stat error on the syst variation
-                    out_dict[cat][syst][proc][0] = (syst_var_orig - val) + SMALL # Center around SMALL
+
+            # Kill contributions that are consistent with 0
+            if zero_low_mc:
+                if val <= np.sqrt(var):
+                    if "data" in proc:
+                        # This function is only used on MC, make sure no data (especially since we do not want to zeroize any data bins)
+                        raise Exception("This function does not expect data. Something went wrong.")
+                    print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is smaller than MC stat (yield {val}, and mc stat {var**0.5}), replacing with {SMALL} and killing up/down systematic variations.")
+                    out_dict[cat]["nominal"][proc][0] = SMALL
+                    out_dict[cat]["nominal"][proc][1] = 0
+                    for syst in out_dict[cat]:
+                        if syst == "nominal": continue # Already handled this one
+                        out_dict[cat][syst][proc][0] = SMALL
+
+            # If not killing contributions that are consistent with 0, just replace 0 and negaive contributions with SMALL
+            else:
+                if val <= 0:
+                    print(f"WARNING: Process \"{proc}\" in cat \"{cat}\" is negative ({val}), replacing with {SMALL} and shifting up/down systematic variations accordingly.")
+                    out_dict[cat]["nominal"][proc][0] = SMALL
+                    out_dict[cat]["nominal"][proc][1] = (abs(val) + np.sqrt(var))**2
+                    for syst in out_dict[cat]:
+                        if syst == "nominal": continue # Already handled this one
+                        syst_var_orig = out_dict[cat][syst][proc][0] # Dont bother messsing with mc stat error on the syst variation
+                        out_dict[cat][syst][proc][0] = (syst_var_orig - val) + SMALL # Center around SMALL
 
     return out_dict
 
@@ -305,13 +331,16 @@ def get_rate_systs(proc_lst,year_tag):
 
     # Make row for rate uncertainties that impact all processes
     for uncty_name in rate_systs_dict["rate_uncertainties_all_proc"]:
-        out_dict[uncty_name] = {}
         for proc in proc_lst:
             if uncty_name == "lumi":
                 # The lumi uncty is different depending on year
-                out_dict[uncty_name][proc] = str(rate_systs_dict["rate_uncertainties_all_proc"][uncty_name][year_tag])
+                lumi_val = rate_systs_dict["rate_uncertainties_all_proc"][uncty_name][year_tag]["val"]
+                lumi_name = rate_systs_dict["rate_uncertainties_all_proc"][uncty_name][year_tag]["name"]
+                if lumi_name not in out_dict: out_dict[lumi_name] = {}
+                out_dict[lumi_name][proc] = str(lumi_val)
             else:
-                out_dict[uncty_name][proc] = str(rate_systs_dict["rate_uncertainties_all_proc"][uncty_name])
+                raise Exception("We don't have any other systs like this right now, check to make sure it's what you want")
+                #out_dict[uncty_name][proc] = str(rate_systs_dict["rate_uncertainties_all_proc"][uncty_name])
 
     # Make rows for rate uncertainties that impact a subset of the processes
     for uncty_name in rate_systs_dict["rate_uncertainties_some_proc"]:
@@ -455,7 +484,6 @@ def add_stats_kappas(yld_mc, kappas, com_tag, skip_procs=[]):
     return kappas_out
 
 
-
 ########### Put stuff into form to pass to the function to write out cards ###########
 
 # Get just the numbers we want for rate row for datacard
@@ -515,6 +543,49 @@ def get_gmn_for_dc(in_dict,proc_lst):
     return out_dict
 
 
+########### Hard coded things that should not be done this way, sorry to future users of this code :( ###########
+
+# Hard code changes to syst names, try to avoid this if possible :(
+def change_syst_names(in_dict):
+    out_dict = {}
+    for syst_name,val in in_dict.items():
+        if syst_name.endswith("_2016APV"):
+            base = syst_name[:-8]
+            syst_name_new = base+"_2016preVFP"
+        elif syst_name.endswith("_2016"):
+            base = syst_name[:-5]
+            syst_name_new = base+"_2016postVFP"
+        else:
+            syst_name_new = syst_name
+        out_dict[syst_name_new] = val
+    return out_dict
+
+# Ungroup the muR and muF (across processes) in a very ad hoc way
+def un_correlate_mur_muf(in_dict):
+    out_dict = {}
+    for syst_name,val in in_dict.items():
+
+        # For muR and muF, we need to de correlate across procs
+        if syst_name in ["QCDscale_ren","QCDscale_fac", "ps_isr","ps_fsr"]:
+            # We'll need a muR and muF for each proc in the proc list
+            for proc_of_interest in sg.PROC_LST:
+                new_syst_name = f"{syst_name}_{proc_of_interest}"
+                out_dict[new_syst_name] = {}
+                # Now fill the columns for this new syst row, should be "-" for all but proc of interest
+                for proc_itr in sg.PROC_LST:
+                    if proc_itr == proc_of_interest:
+                        out_dict[new_syst_name][proc_itr] = in_dict[syst_name][proc_itr]
+                    else:
+                        out_dict[new_syst_name][proc_itr] = "-"
+
+        # For all other systematics, just pass through
+        else:
+            out_dict[syst_name] = val
+
+    return out_dict
+
+
+
 #####################################
 ########### Main function ###########
 
@@ -530,7 +601,8 @@ def main():
     parser.add_argument("--jec-do-twentyseven",action="store_true",help="Use the 27 JEC uncertainty variations :(")
     parser.add_argument("--jec-do-eleven",action="store_true",help="Use the 11 JEC uncertainty variations :(")
     parser.add_argument("--unblind",action="store_true",help="If set, use real data, otherwise use asimov data")
-    parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["run2","run3","y22","y23","UL18","UL16APV","UL16","UL17"])
+    parser.add_argument("--zero-low-mc",action="store_true",help="If set, mc processes that are consistent with zero will be set to zero")
+    parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["run2","run3","y22","y23"])
 
     args = parser.parse_args()
     in_file = args.in_file_name
@@ -541,6 +613,7 @@ def main():
     do_jec11= args.jec_do_eleven
     use_bdt_sr = args.bdt
     unblind = args.unblind
+    zero_low_mc = args.zero_low_mc
     run = args.run
 
     # Check args
@@ -585,7 +658,7 @@ def main():
         handle_per_year_systs_for_fr(yld_dict_mc_allyears,run,do_jec27,do_jec11)
 
     yld_dict_mc = yld_dict_mc_allyears["FR"]
-    yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR"])
+    yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR"],blind = not unblind)
 
     # Scale yield for any processes (e.g. for testing impacts of small backgrounds)
     scale_dict = {"WZ":1.0}
@@ -615,7 +688,7 @@ def main():
 
 
     # Get rid of negative yields (and recenter syst variations around SMALL), should happen before computing kappas
-    yld_dict_mc = handle_negatives(yld_dict_mc)
+    yld_dict_mc = handle_negatives(yld_dict_mc,zero_low_mc)
 
     # Get the syst ratios to nominal (i.e. kappas)
     kappa_dict = None
@@ -668,6 +741,13 @@ def main():
 
         rp_run = "run3" if run in ["run3","y22","y23"] else "run2"
 
+        # Do some really bad hard coded modifications to kappa dict :(
+        kappa_for_dc_ch = change_syst_names(kappa_for_dc_ch)
+        kappa_for_dc_ch = un_correlate_mur_muf(kappa_for_dc_ch)
+
+        # Construct a string of all systematics to append to end of card
+        syst_group_str = get_syst_group_str("syst", kappa_for_dc_ch.keys())
+
         # Make the card for this chan
         make_ch_card(
             ch,
@@ -676,7 +756,7 @@ def main():
             rate_for_dc_ch,
             kappa_for_dc_ch,
             gmn_for_dc_ch,
-            extra_lines=RATE_PARAM_LINES[rp_run],
+            extra_lines=RATE_PARAM_LINES[rp_run]+[syst_group_str],
             out_dir=out_dir,
         )
 

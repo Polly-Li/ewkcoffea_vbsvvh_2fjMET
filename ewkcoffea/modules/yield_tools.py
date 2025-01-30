@@ -51,8 +51,12 @@ def get_yields(histo,sample_dict,blind=True,systematic_name=None):
                     # If this is data and we're not in a CR category, put placeholder numbers for now
                     yld_dict[cat_name][syst_name][proc_name] = [-999,-999]
                 else:
+                    val_n = sum(sum(histo[{"category":cat_name,"process":sample_dict[proc_name],"systematic":"nominal" }].values(flow=True)))
+                    var_n = sum(sum(histo[{"category":cat_name,"process":sample_dict[proc_name],"systematic":"nominal" }].variances(flow=True)))
+
                     val = sum(sum(histo[{"category":cat_name,"process":sample_dict[proc_name],"systematic":syst_name }].values(flow=True)))
                     var = sum(sum(histo[{"category":cat_name,"process":sample_dict[proc_name],"systematic":syst_name }].variances(flow=True)))
+
                     yld_dict[cat_name][syst_name][proc_name] = [val,var]
 
     return yld_dict
