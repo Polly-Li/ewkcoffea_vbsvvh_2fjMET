@@ -235,6 +235,7 @@ STYLE_DICT = {
         },
         "var_dict" : {
             "nbtagsl" : {
+                "maxxticks" : 4,
             },
         },
     },
@@ -254,7 +255,7 @@ STYLE_DICT = {
 
 
 # Takes a mc hist and data hist and plots both
-def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisrangex=None,xlabel=None,year="run2",logscale=False):
+def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisrangex=None,xlabel=None,year="run2",logscale=False,maxxtick=None):
 
     # Create the figure
     fig, (ax, rax) = plt.subplots(
@@ -367,9 +368,10 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
         ax.set_yscale('log')
         ax.set_ylim(auto_y[0],9.0*auto_y[1])
 
-    # No more than 5 main ticks for the x axis
-    ax.xaxis.set_major_locator(plt.MaxNLocator(5))
-    rax.xaxis.set_major_locator(plt.MaxNLocator(5))
+    # No more than a certain number of main ticks for the x axis
+    if maxxtick is not None:
+        ax.xaxis.set_major_locator(plt.MaxNLocator(maxxtick))
+        rax.xaxis.set_major_locator(plt.MaxNLocator(maxxtick))
 
 
     return (fig,(extt,extr,extb,extl))
@@ -436,9 +438,13 @@ def make_plots(histo_dict,grouping_mc,grouping_data,out_dir_map,save_dir_path,ye
                         rebin_factor = STYLE_DICT[group_name]["var_dict"][var_name]["rebin"][cat_name][year]
                     histo_cat = gy.rebin(histo_cat,rebin_factor)
 
+                # Set special values
                 logscale=False
+                maxxticks=5
                 if "logscale" in STYLE_DICT[group_name]["var_dict"][var_name]:
                     logscale = STYLE_DICT[group_name]["var_dict"][var_name]["logscale"]
+                if "maxxticks" in STYLE_DICT[group_name]["var_dict"][var_name]:
+                    maxxticks = STYLE_DICT[group_name]["var_dict"][var_name]["maxxticks"]
 
                 # Group the mc and data samples
                 histo_grouped_mc = gy.group(histo_cat,"process","process_grp",grouping_mc)
@@ -451,7 +457,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,out_dir_map,save_dir_path,ye
                 # Make and save figure
                 title = f"{group_name}__{cat_name}__{var_name}"
                 print("Making: ",title)
-                fig, ext_tup = make_public_fig(histo_grouped_mc,histo_grouped_data,title=title,xlabel=LABEL_MAP[var_name],year=year,logscale=logscale)
+                fig, ext_tup = make_public_fig(histo_grouped_mc,histo_grouped_data,title=title,xlabel=LABEL_MAP[var_name],year=year,logscale=logscale,maxxtick=maxxticks)
                 fig.savefig(os.path.join(save_dir_path_year_set,title+".pdf"),bbox_extra_artists=ext_tup,bbox_inches='tight')
                 fig.savefig(os.path.join(save_dir_path_year_set,title+".png"),bbox_extra_artists=ext_tup,bbox_inches='tight')
 
@@ -489,21 +495,21 @@ def main():
     dir_name_map = {
 
         # Input variables (in SRs and CRs)
-        #"input_vars_of_sr_4l_bdt_of_trn"         : "input_vars_SR_OF",
-        #"input_vars_sf_sr_4l_bdt_sf_trn"         : "input_vars_SR_SF",
-        #"input_vars_sf_cr_4l_sf"                 : "input_vars_CR_ZZ",
-        #"input_vars_of_cr_4l_btag_of"            : "input_vars_CR_ttZ_OF",
-        #"input_vars_sf_cr_4l_btag_sf_offZ_met80" : "input_vars_CR_ttZ_SF",
+        "input_vars_of_sr_4l_bdt_of_trn"         : "input_vars_SR_OF",
+        "input_vars_sf_sr_4l_bdt_sf_trn"         : "input_vars_SR_SF",
+        "input_vars_sf_cr_4l_sf"                 : "input_vars_CR_ZZ",
+        "input_vars_of_cr_4l_btag_of"            : "input_vars_CR_ttZ_OF",
+        "input_vars_sf_cr_4l_btag_sf_offZ_met80" : "input_vars_CR_ttZ_SF",
 
         # BDT score distributions (in SRs and CRs)
-        #"scores_of_sr_4l_bdt_of_trn"             : "bdt_scores_SR_OF",
-        #"scores_sf_sr_4l_bdt_sf_trn"             : "bdt_scores_SR_SF",
-        #"scores_sf_cr_4l_sf"                     : "bdt_scores_CR_ZZ",
-        #"scores_of_cr_4l_btag_of"                : "bdt_scores_CR_ttZ_OF",
-        #"scores_sf_cr_4l_btag_sf_offZ_met80"     : "bdt_scores_CR_ttZ_SF",
+        "scores_of_sr_4l_bdt_of_trn"             : "bdt_scores_SR_OF",
+        "scores_sf_sr_4l_bdt_sf_trn"             : "bdt_scores_SR_SF",
+        "scores_sf_cr_4l_sf"                     : "bdt_scores_CR_ZZ",
+        "scores_of_cr_4l_btag_of"                : "bdt_scores_CR_ttZ_OF",
+        "scores_sf_cr_4l_btag_sf_offZ_met80"     : "bdt_scores_CR_ttZ_SF",
 
         # Plots to motivate kinematic cuts
-        #"kinematic_cut_vars_of_sr_4l_bdt_of_presel_nobreq" : "kinematic_cut_vars_OF_nbtag",
+        "kinematic_cut_vars_of_sr_4l_bdt_of_presel_nobreq" : "kinematic_cut_vars_OF_nbtag",
         "kinematic_cut_vars_sf_sr_4l_bdt_sf_presel"        : "kinematic_cut_vars_SF_mt2",
     }
 
