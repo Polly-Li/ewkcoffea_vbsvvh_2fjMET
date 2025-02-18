@@ -62,11 +62,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             "metphi": axis.Regular(180, -3.1416, 3.1416, name="metphi", label="met phi"),
             "ptl4"  : axis.Regular(180, 0, 500, name="ptl4", label="ptl4"),
             "scalarptsum_lep" : axis.Regular(180, 0, 600, name="scalarptsum_lep", label="S_T"),
-            "scalarptsum_lepmet" : axis.Regular(180, 0, 600, name="scalarptsum_lepmet", label="S_T + metpt"),
-            "scalarptsum_lepmetjet" : axis.Regular(180, 0, 1100, name="scalarptsum_lepmetjet", label="S_T + metpt + H_T"),
-            "scalarptsum_jet" : axis.Regular(180, 0, 500, name="scalarptsum_jet", label="H_T"),
+            "scalarptsum_lepmet" : axis.Regular(180, 0, 1000, name="scalarptsum_lepmet", label="S_T + metpt"),
+            "scalarptsum_lepmetjet" : axis.Regular(180, 0, 1500, name="scalarptsum_lepmetjet", label="S_T + metpt + H_T"),
+            "scalarptsum_jet" : axis.Regular(180, 0, 700, name="scalarptsum_jet", label="H_T"),
             "mll_01": axis.Regular(180, 0, 200, name="mll_01",  label="mll_l0_l1"),
-            "mllll": axis.Regular(180, 0, 600, name="mllll",  label="mllll"),
+            "mllll": axis.Regular(180, 0, 1000, name="mllll",  label="mllll"),
             "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
             "j0pt"  : axis.Regular(180, 0, 500, name="j0pt", label="j0 pt"),
             "j0eta" : axis.Regular(180, -3, 3, name="j0eta", label="j0 eta"),
@@ -102,9 +102,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             "dr_wl0_j_min" : axis.Regular(180, 0, 5, name="dr_wl0_j_min",  label="min dr(Wl0,j)"),
             "dr_wl1_j_min" : axis.Regular(180, 0, 5, name="dr_wl1_j_min",  label="min dr(Wl1,j)"),
 
-            "mt_4l_met"   : axis.Regular(180, 0, 500, name="mt_4l_met", label="mT of 4l system and met"),
-            "mt_wleps_met": axis.Regular(180, 0, 300, name="mt_wleps_met", label="mT of W leptons system and met"),
-            "mt_wl0_met"  : axis.Regular(180, 0, 300, name="mt_wl0_met", label="mT of W lep0 and met"),
+            "mt_4l_met"   : axis.Regular(180, 0, 700, name="mt_4l_met", label="mT of 4l system and met"),
+            "mt_wleps_met": axis.Regular(180, 0, 500, name="mt_wleps_met", label="mT of W leptons system and met"),
+            "mt_wl0_met"  : axis.Regular(180, 0, 500, name="mt_wl0_met", label="mT of W lep0 and met"),
             "mt_wl1_met"  : axis.Regular(180, 0, 300, name="mt_wl1_met", label="mT of W lep1 and met"),
 
             "absdphi_zl0_zl1": axis.Regular(180, 0, 3.1416, name="absdphi_zl0_zl1", label="abs dphi(Zl0,Zl1)"),
@@ -130,7 +130,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
-            "nbtagsl" : axis.Regular(3, 0, 3, name="nbtagsl", label="Loose btag multiplicity"),
+            "nbtagsl" : axis.Regular(4, 0, 4, name="nbtagsl", label="Loose btag multiplicity"),
             "nbtagsm" : axis.Regular(4, 0, 4, name="nbtagsm", label="Medium btag multiplicity"),
 
             "njets_counts"   : axis.Regular(30, 0, 30, name="njets_counts",   label="Jet multiplicity counts"),
@@ -141,8 +141,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             "bdt_sf_wwz": axis.Regular(180, 0, 1, name="bdt_sf_wwz", label="Score bdt_sf_wwz"),
             "bdt_of_zh" : axis.Regular(180, 0, 1, name="bdt_of_zh", label="Score bdt_of_zh"),
             "bdt_sf_zh" : axis.Regular(180, 0, 1, name="bdt_sf_zh", label="Score bdt_sf_zh"),
-            "bdt_of_bkg" : axis.Regular(100, 0, 1, name="bdt_of_bkg", label="Score bdt_of_bkg"),
-            "bdt_sf_bkg" : axis.Regular(100, 0, 1, name="bdt_sf_bkg", label="Score bdt_sf_bkg"),
+            "bdt_of_bkg" : axis.Regular(180, 0, 1, name="bdt_of_bkg", label="Score bdt_of_bkg"),
+            "bdt_sf_bkg" : axis.Regular(180, 0, 1, name="bdt_sf_bkg", label="Score bdt_sf_bkg"),
             "bdt_of_wwz_m_zh" : axis.Regular(180, -1, 1, name="bdt_of_wwz_m_zh", label="Score bdt_of_wwz - bdt_of_zh"),
             "bdt_sf_wwz_m_zh" : axis.Regular(180, -1, 1, name="bdt_sf_wwz_m_zh", label="Score bdt_sf_wwz - bdt_sf_zh"),
             "bdt_of_bin" : axis.Regular(8, 0, 8, name="bdt_of_bin", label="Binned bdt_of"),
@@ -1016,13 +1016,15 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # For BDT SRs
 
-            sr_4l_bdt_sf_presel = (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z)
-            sr_4l_bdt_sf_trn    = (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & mt2_mask)
-            sr_4l_bdt_of_presel = (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)
-            sr_4l_bdt_of_trn    = sr_4l_bdt_of_presel # For OF, presel and trn regions are the same
+            sr_4l_bdt_sf_presel        = (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z)
+            sr_4l_bdt_sf_trn           = (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_sf & w_candidates_mll_far_from_z & mt2_mask)
+            sr_4l_bdt_of_presel_nobreq = (veto_map_mask & pass_trg & events.is4lWWZ & events.wwz_presel_of)
+            sr_4l_bdt_of_presel        = (veto_map_mask & pass_trg & events.is4lWWZ & bmask_exactly0loose & events.wwz_presel_of)
+            sr_4l_bdt_of_trn           = sr_4l_bdt_of_presel # For OF, presel and trn regions are the same
 
             selections.add("sr_4l_bdt_sf_presel", sr_4l_bdt_sf_presel)
             selections.add("sr_4l_bdt_sf_trn"   , sr_4l_bdt_sf_trn)
+            selections.add("sr_4l_bdt_of_presel_nobreq",sr_4l_bdt_of_presel_nobreq)
             selections.add("sr_4l_bdt_of_presel", sr_4l_bdt_of_presel)
             selections.add("sr_4l_bdt_of_trn"   , sr_4l_bdt_of_trn)
 
@@ -1095,6 +1097,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             bdt_misc_names = [
                 "sr_4l_bdt_sf_presel",
                 "sr_4l_bdt_sf_trn",
+                "sr_4l_bdt_of_presel_nobreq",
                 "sr_4l_bdt_of_presel",
                 "sr_4l_bdt_of_trn",
             ]
