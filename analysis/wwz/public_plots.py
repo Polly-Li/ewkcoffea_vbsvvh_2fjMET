@@ -8,7 +8,6 @@ from matplotlib.lines import Line2D
 import matplotlib.patches as mp
 
 from topcoffea.scripts.make_html import make_html
-import ewkcoffea.modules.yield_tools as yt
 import ewkcoffea.modules.sample_groupings as sg
 import get_wwz_yields as gy
 
