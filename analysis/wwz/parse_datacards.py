@@ -234,10 +234,24 @@ def get_avg_sizes(proc_lst,rate_lst,syst_dict,syst_group_tag,syst_names_to_group
         tot_up_vars.append(yld_up)
 
     # Get average and print stuff
+
+    ### For quad sum comparison ###
+    '''
+    print("syst_group_tag", syst_group_tag)
+    x = 0
+    for up_var in tot_up_vars:
+        x = x + (up_var/yld_nom - 1)**2
+    x = 100*(x**0.5)
+    #avg = x
+    '''
+    ###
+
+
     percent = 100*(np.array(tot_up_vars)/yld_nom - 1)
     avg = sum(percent)/len(percent)
     if verbose:
         print(f"  {syst_group_tag}: {round(avg,2)} %")
+        #print(f"  {syst_group_tag}: {avg} %")
 
     return avg
 
