@@ -1,10 +1,7 @@
 import numpy as np
 import argparse
 import matplotlib.pyplot as plt
-import mpltern
-from matplotlib.patches import Rectangle
 import pandas as pd
-from array import array
 import matplotlib.lines as mlines
 
 ###############################################################################
@@ -50,7 +47,7 @@ data_color = 'black'
 include_data = True
 
 # Signal Region Bin Lines (False is no lines)
-draw_lines = True 
+draw_lines = True
 
 #Signal Region Line Width
 sr_lw = 3
@@ -206,7 +203,7 @@ def scan_file(txt_file,key):
     n_twz_events = n_event*run_flavor_dict[key]["twz_fact"]
     n_wz_events = n_event*run_flavor_dict[key]["wz_fact"]
     n_bkg_events = n_event*run_flavor_dict[key]["bkg_fact"]
-    
+
     wwz_counter = 0
     zh_counter = 0
     zz_counter = 0
@@ -214,12 +211,12 @@ def scan_file(txt_file,key):
     twz_counter = 0
     wz_counter = 0
     bkg_counter = 0
-    
+
     for x in range(len(txt_file)):
         wwz_score = txt_file[x][1]
         zh_score = txt_file[x][2]
         bkg_score = txt_file[x][3]
-        
+
         if txt_file[x][0] == 0:  # Process = WWZ
             wwz_counter += 1
             if wwz_counter > n_wwz_events:
@@ -286,8 +283,8 @@ def scan_file(txt_file,key):
 
 def make_plot(run, flavor, key):
     # Lists need to be arrays for mpltern
-    arr_p_wwz_s_wwz = np.array(p_wwz_s_wwz) 
-    arr_p_wwz_s_zh = np.array(p_wwz_s_zh) 
+    arr_p_wwz_s_wwz = np.array(p_wwz_s_wwz)
+    arr_p_wwz_s_zh = np.array(p_wwz_s_zh)
     arr_p_wwz_s_bkg = np.array(p_wwz_s_bkg)
     arr_p_zh_s_wwz = np.array(p_zh_s_wwz)
     arr_p_zh_s_zh = np.array(p_zh_s_zh)
@@ -316,10 +313,10 @@ def make_plot(run, flavor, key):
     arr_p_ttz_weights = np.array(p_ttz_weights)
     arr_p_twz_weights = np.array(p_twz_weights)
     arr_p_wz_weights = np.array(p_wz_weights)
-    arr_p_bkg_weights = np.array(p_bkg_weights) 
-    arr_p_data_weights = np.array(p_data_weights) 
+    arr_p_bkg_weights = np.array(p_bkg_weights)
+    arr_p_data_weights = np.array(p_data_weights)
 
-    # Grab the dict 
+    # Grab the dict
     rel_dict = run_flavor_dict[key]
 
     fig = plt.figure(figsize=(figsize_val,figsize_val))
@@ -422,7 +419,7 @@ def main():
     # Read the txt file containing the eventlist and scores
     txt_file = pd.read_csv(input_file, sep=' ').values
 
-    # Scan over the txt file and make 
+    # Scan over the txt file
     scan_file(txt_file, key)
 
     # Make the ternary plot

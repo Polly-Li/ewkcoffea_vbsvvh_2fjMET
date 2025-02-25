@@ -198,7 +198,7 @@ def create_txt_file(histo_dict, flavor, out_path):
 
             line = f"{proc_val} {wwz_score_val} {zh_score_val} {bkg_score_val} {weight_val}\n"
             file.write(line)
-    
+
     print(f"Output has been written to {out_path}")
 
 
