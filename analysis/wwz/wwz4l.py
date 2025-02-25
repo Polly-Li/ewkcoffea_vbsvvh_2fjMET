@@ -1277,7 +1277,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Fill the list accumulator
             if self._siphon_bdt_data:
                 for chan,mask in {"of": sr_4l_bdt_of_trn, "sf": sr_4l_bdt_sf_trn}.items():
-                    if isData: mask = mask & lumi_mask #apply golden json to data
+                    if isData: mask = mask & lumi_mask # Apply golden json to data
                     self.accumulator[f"list_bdt_{chan}_wwz"]  += dense_variables_dict[f"bdt_{chan}_wwz"][mask].to_list()
                     self.accumulator[f"list_bdt_{chan}_zh"]   += dense_variables_dict[f"bdt_{chan}_zh"][mask].to_list()
                     self.accumulator[f"list_bdt_{chan}_bkg"]  += dense_variables_dict[f"bdt_{chan}_bkg"][mask].to_list()
