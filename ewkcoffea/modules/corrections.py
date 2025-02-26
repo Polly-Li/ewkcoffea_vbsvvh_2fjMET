@@ -483,13 +483,13 @@ def run3_pu_attach(pileup,year,sys):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":
-        fname = ewkcoffea_path("data/run3_pu/pu_2022EE/puWeights.json")
+        fname = topcoffea_path("data/POG/LUM/2022_Summer22EE/puWeights.json.gz")
     elif year == "2022":
-        fname = ewkcoffea_path("data/run3_pu/pu_2022/puWeights.json")
+        fname = topcoffea_path("data/POG/LUM/2022_Summer22/puWeights.json.gz")
     elif year == "2023":
-        fname = ewkcoffea_path("data/run3_pu/pu_2023/puWeights.json")
+        fname = topcoffea_path("data/POG/LUM/2023_Summer23/puWeights.json.gz")
     elif year == "2023BPix":
-        fname = ewkcoffea_path("data/run3_pu/pu_2023BPix/puWeights.json")
+        fname = topcoffea_path("data/POG/LUM/2023_Summer23BPix/puWeights.json.gz")
     else:
         raise Exception("Trying to apply run3 SF where they shouldn't be!")
 
