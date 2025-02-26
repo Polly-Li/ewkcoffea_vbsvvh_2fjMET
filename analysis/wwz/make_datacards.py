@@ -12,7 +12,6 @@ import ewkcoffea.modules.sample_groupings as sg
 import ewkcoffea.modules.yield_tools as yt
 
 import for_jec_27_var as jecref
-import for_jec_11_var as jecref_11
 
 SMALL = 0.000001
 
@@ -23,7 +22,7 @@ PRECISION = 6   # Decimal point precision in the text datacard output
 OUR_TAG = "CMS_SMP24015"
 
 # What each recognized year grouping consists of
-ALL_YEARS_LST = ["UL16","UL16APV","UL17","UL18", "2022","2022EE", "2023","2023BPix","2016","2016APV","2017","2018"]
+ALL_YEARS_LST = ["UL16","UL16APV","UL17","UL18", "2022","2022EE", "2023","2023BPix"]
 
 # Systs that are not correlated across years
 
@@ -51,34 +50,6 @@ SYSTS_SPECIAL = {
         "CMS_scale_j_2018"                                 : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
         "CMS_scale_met_unclustered_energy_2018"            : {"yr_rel":"UL18", "yr_notrel": ["UL16APV", "UL16", "UL17"]},
 
-    },
-    "UL16APV" : {
-        "CMS_btag_fixedWP_incl_light_uncorrelated_2016APV"    : {"yr_rel":"UL16APV", "yr_notrel": []},
-        "CMS_btag_fixedWP_comb_bc_uncorrelated_2016APV"       : {"yr_rel":"UL16APV", "yr_notrel": []},
-        "CMS_res_j_2016APV"                                   : {"yr_rel":"UL16APV", "yr_notrel": []},
-        "CMS_scale_j_2016APV"                                 : {"yr_rel":"UL16APV", "yr_notrel": []},
-        "CMS_scale_met_unclustered_energy_2016APV"            : {"yr_rel":"UL16APV", "yr_notrel": []},
-    },
-    "UL16" : {
-        "CMS_btag_fixedWP_incl_light_uncorrelated_2016"    : {"yr_rel":"UL16", "yr_notrel": []},
-        "CMS_btag_fixedWP_comb_bc_uncorrelated_2016"       : {"yr_rel":"UL16", "yr_notrel": []},
-        "CMS_res_j_2016"                                   : {"yr_rel":"UL16", "yr_notrel": []},
-        "CMS_scale_j_2016"                                 : {"yr_rel":"UL16", "yr_notrel": []},
-        "CMS_scale_met_unclustered_energy_2016"            : {"yr_rel":"UL16", "yr_notrel": []},
-    },
-    "UL17" : {
-        "CMS_btag_fixedWP_incl_light_uncorrelated_2017"    : {"yr_rel":"UL17", "yr_notrel": []},
-        "CMS_btag_fixedWP_comb_bc_uncorrelated_2017"       : {"yr_rel":"UL17", "yr_notrel": []},
-        "CMS_res_j_2017"                                   : {"yr_rel":"UL17", "yr_notrel": []},
-        "CMS_scale_j_2017"                                 : {"yr_rel":"UL17", "yr_notrel": []},
-        "CMS_scale_met_unclustered_energy_2017"            : {"yr_rel":"UL17", "yr_notrel": []},
-    },
-    "UL18" : {
-        "CMS_btag_fixedWP_incl_light_uncorrelated_2018"    : {"yr_rel":"UL18", "yr_notrel": []},
-        "CMS_btag_fixedWP_comb_bc_uncorrelated_2018"       : {"yr_rel":"UL18", "yr_notrel": []},
-        "CMS_res_j_2018"                                   : {"yr_rel":"UL18", "yr_notrel": []},
-        "CMS_scale_j_2018"                                 : {"yr_rel":"UL18", "yr_notrel": []},
-        "CMS_scale_met_unclustered_energy_2018"            : {"yr_rel":"UL18", "yr_notrel": []},
     },
 
     "run3" : {
@@ -255,11 +226,9 @@ def make_ch_card(ch,proc_order,year_name,ch_ylds,ch_kappas=None,ch_gmn=None,extr
 #   - Because of how we fill in the processor, the yields for per year systs come _only_ from that year
 #   - So this function adds the nominal yields from the other three years to the up/down variation for the relevant year
 #   - Note the in_dict is modifed in place (we do not return a copy of the dict)
-def handle_per_year_systs_for_fr(in_dict,year_name,do_jec27,do_jec11):
+def handle_per_year_systs_for_fr(in_dict,year_name,do_jec27):
     if do_jec27:
         systs_special = jecref.SYSTS_SPECIAL[year_name]
-    elif do_jec11:
-        systs_special = jecref_11.SYSTS_SPECIAL[year_name]
     else:
         systs_special = SYSTS_SPECIAL[year_name]
     for cat in in_dict["FR"].keys():
@@ -408,10 +377,6 @@ def get_kappa_dict(in_dict_mc,in_dict_data,yrs_lst):
             # E.g. if the pkl file is all r3, but we're only making a 22 datacard, skip btagSFbc_uncorrelated_2023BPix variation
             # Do this by checking if the syst name ends with a year, and then if that year is in our list for this card
             if (sys.split("_")[-1] in ALL_YEARS_LST) and (sys.split("_")[-1] not in yrs_lst): continue
-            #sys_year_list = [element for element in sys.split("_") if element in ALL_YEARS_LST]
-            
-            #if any (element in ALL_YEARS_LST for element in sys.split("_")):
-                
 
             kappa_dict[cat][sys] = {}
             for proc in in_dict_mc[cat]["nominal"]:
@@ -599,7 +564,6 @@ def main():
     parser.add_argument("--do-tf",action="store_true",help="Do the TF data-driven background estimation")
     parser.add_argument("--bdt",action="store_true",help="Use BDT SR bins")
     parser.add_argument("--jec-do-twentyseven",action="store_true",help="Use the 27 JEC uncertainty variations :(")
-    parser.add_argument("--jec-do-eleven",action="store_true",help="Use the 11 JEC uncertainty variations :(")
     parser.add_argument("--unblind",action="store_true",help="If set, use real data, otherwise use asimov data")
     parser.add_argument("--zero-low-mc",action="store_true",help="If set, mc processes that are consistent with zero will be set to zero")
     parser.add_argument('-u', "--run", default='run2', help = "Which years to process", choices=["run2","run3","y22","y23"])
@@ -610,7 +574,6 @@ def main():
     do_nuis = args.do_nuisance
     do_tf   = args.do_tf
     do_jec27= args.jec_do_twentyseven
-    do_jec11= args.jec_do_eleven
     use_bdt_sr = args.bdt
     unblind = args.unblind
     zero_low_mc = args.zero_low_mc
@@ -622,7 +585,7 @@ def main():
         os.makedirs(out_dir)
 
     # Set a tag for center of mass energy
-    if run in ["run2","UL18","UL16APV","UL16","UL17"]:
+    if run in ["run2"]:
         com_tag = "13TeV"
     elif run in ["run3","y22","y23"]:
         com_tag = "13p6TeV"
@@ -631,10 +594,6 @@ def main():
 
     # Set list of years from the run name
     if run == "run2": yrs_lst = ["UL16APV","UL16","UL17","UL18"]
-    elif run == "UL16APV": yrs_lst = ["UL16APV"]
-    elif run == "UL16": yrs_lst = ["UL16"]
-    elif run == "UL17": yrs_lst = ["UL17"]
-    elif run == "UL18": yrs_lst = ["UL18"]
     elif run == "run3": yrs_lst = ["2022","2022EE","2023","2023BPix"]
     elif run == "y22" : yrs_lst = ["2022","2022EE"]
     elif run == "y23" : yrs_lst = ["2023","2023BPix"]
@@ -655,7 +614,7 @@ def main():
     for year in sample_names_dict_mc:
         yld_dict_mc_allyears[year] = yt.get_yields(histo,sample_names_dict_mc[year])
     if do_nuis:
-        handle_per_year_systs_for_fr(yld_dict_mc_allyears,run,do_jec27,do_jec11)
+        handle_per_year_systs_for_fr(yld_dict_mc_allyears,run,do_jec27)
 
     yld_dict_mc = yld_dict_mc_allyears["FR"]
     yld_dict_data = yt.get_yields(histo,sample_names_dict_data["FR"],blind = not unblind)
@@ -710,7 +669,7 @@ def main():
     cat_lst_cr = ["cr_4l_btag_of_1b", "cr_4l_btag_of_2b", "cr_4l_btag_sf_offZ_met80_1b", "cr_4l_btag_sf_offZ_met80_2b","cr_4l_sf"]
     cat_lst_sr = sg.CAT_LST_CB
     if use_bdt_sr:
-        if run in ["run2","UL16APV","UL16","UL17","UL18"]:
+        if run in ["run2"]:
             cat_lst_sr = sg.CAT_LST_BDT
         elif run in ["run3", "y22", "y23"]:
             cat_lst_sr = sg.CAT_LST_BDT_COARSE
@@ -724,7 +683,7 @@ def main():
     for ch in cat_lst:
 
         # Use real data in CRs
-        #if ch in cat_lst_cr: unblind = True
+        if ch in cat_lst_cr: unblind = True
 
         # Get just the info we want to put in the card in str form
         rate_for_dc_ch = get_rate_for_dc(yld_dict_mc,yld_dict_data,ch,unblind)

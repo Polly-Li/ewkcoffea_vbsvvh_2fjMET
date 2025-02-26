@@ -518,31 +518,24 @@ def make_syst_fig(histo_mc,mc_up_arr,mc_do_arr,syst,histo_data=None,title="test"
 def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
 
     for var_name in histo_dict.keys():
-        print(f"\n{var_name}")
+        #print(f"\n{var_name}")
         #if var_name != "njets": continue
-        #if var_name not in TMP_VAR_LST: continue
-        if var_name not in ["bdt_of_bin","bdt_sf_bin","njets","nleps"]: continue
-        #if (var_name not in BDT_INPUT_LST) and (var_name not in BDT_BINSUMMARY_LST): continue
+        if var_name not in TMP_VAR_LST: continue
         histo = histo_dict[var_name]
 
         cat_lst = [
-            #"sr_4l_sf_A",
-            #"sr_4l_sf_B",
-            #"sr_4l_sf_C",
-            #"sr_4l_of_1",
-            #"sr_4l_of_2",
-            #"sr_4l_of_3",
-            #"sr_4l_of_4",
-            #"cr_4l_sf",
-            #"cr_4l_btag_sf_offZ_met80",
-            #"cr_4l_btag_of",
-            #"sr_4l_of_incl",
-            #"sr_4l_sf_incl",
-            "cr_4l_btag_of", 
-            "cr_4l_btag_sf_offZ_met80", 
-            "cr_4l_sf", 
-            "sr_4l_bdt_sf_trn", 
-            "sr_4l_bdt_of_trn"
+            "sr_4l_sf_A",
+            "sr_4l_sf_B",
+            "sr_4l_sf_C",
+            "sr_4l_of_1",
+            "sr_4l_of_2",
+            "sr_4l_of_3",
+            "sr_4l_of_4",
+            "cr_4l_sf",
+            "cr_4l_btag_sf_offZ_met80",
+            "cr_4l_btag_of",
+            "sr_4l_of_incl",
+            "sr_4l_sf_incl",
         ]
 
         # Rebin if continous variable
@@ -570,8 +563,8 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
             data_nom = merge_overflow(histo_grouped_data[{"systematic":"nominal"}])
 
             for syst in syst_var_lst:
-                #if syst not in jecref.JERC_LST: continue
-                if "Regrouped" not in syst: continue
+                if syst not in jecref.JERC_LST: continue
+                #if "btag" not in syst: continue
                 #if "uncorrelated" not in syst: continue
                 #if "lepSF" not in syst: continue
                 #if "PreFiring" not in syst: continue
@@ -593,8 +586,7 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 if year == "all": blacklist_years = []
                 skip = False
                 for y in blacklist_years:
-                    #if syst.endswith(y):
-                    if y in syst:
+                    if syst.endswith(y):
                         skip = True
                 if skip: continue
 
@@ -963,8 +955,8 @@ def main():
 
     # Make plots
     if args.make_plots:
-        #make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path,apply_nsf_to_cr=False)
-        make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
+        make_plots(histo_dict,sample_dict_mc,sample_dict_data,save_dir_path=out_path,apply_nsf_to_cr=False)
+        #make_syst_plots(histo_dict,sample_dict_mc,sample_dict_data,out_path,args.ul_year) # Check on individual systematics
         #make_sr_comb_plot(histo_dict,sample_dict_mc,sample_dict_data,args.ul_year,ana_type="cb") # Make plot of all SR yields in one plot
 
 
@@ -972,4 +964,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
