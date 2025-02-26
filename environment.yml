@@ -8,6 +8,7 @@ dependencies:
   - ndcctools
   - conda-pack
   - dill
+  - root=6.32.10
   - xrootd
   - git
   - pyyaml
