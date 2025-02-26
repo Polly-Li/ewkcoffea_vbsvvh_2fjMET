@@ -387,16 +387,16 @@ def run3_electrons_sf_attach(electrons,year,wp):
     # Get the right sf json for the given campaign
     if year == "2022EE":
         n_year = "2022Re-recoE+PromptFG" # key for accessing the 2022EE SFs
-        fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2022EE_ele/electron.json")
+        fname = topcoffea_path("data/POG/EGM/2022_Summer22EE/electron.json.gz")
     elif year == "2022":
         n_year = "2022Re-recoBCD" # key for accessing the 2022 SFs
-        fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2022_ele/electron.json")
+        fname = topcoffea_path("data/POG/EGM/2022_Summer22/electron.json.gz")
     elif year == "2023":
         n_year = "2023PromptC" # key for accessing the 2023 SFs
-        fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2023_ele/electron.json")
+        fname = topcoffea_path("data/POG/EGM/2023_Summer23/electron.json.gz")
     elif year == "2023BPix":
         n_year = "2023PromptD" # key for accessing the 2023BPix SFs
-        fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2023BPix_ele/electron.json")
+        fname = topcoffea_path("data/POG/EGM/2023_Summer23BPix/electron.json.gz")
     else:
         raise Exception("Trying to apply run3 SF where they shouldn't be!")
 
