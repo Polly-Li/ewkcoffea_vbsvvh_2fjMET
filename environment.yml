@@ -8,11 +8,10 @@ dependencies:
   - ndcctools
   - conda-pack
   - dill
-  - root=6.32.10
   - xrootd
   - git
   - pyyaml
-  - conda-forge::root
+  - conda-forge::root=6.32.10
   - mpltern
   - scikit-learn
   - conda-forge::setuptools==70.3.0
