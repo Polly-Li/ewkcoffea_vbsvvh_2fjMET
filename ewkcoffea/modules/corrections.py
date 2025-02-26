@@ -336,13 +336,13 @@ def run3_muons_sf_attach(muons,year,id_method,iso_method):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":
-        fname = ewkcoffea_path("data/run3_lep_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_EE_schemaV2.json")
+        fname = topcoffea_path("data/POG/MUO/2022_Summer22EE/muon_Z.json.gz")
     elif year == "2022":
-        fname = ewkcoffea_path("data/run3_lep_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_schemaV2.json")
+        fname = topcoffea_path("data/POG/MUO/2022_Summer22/muon_Z.json.gz")
     elif year == "2023":
-        fname = ewkcoffea_path("data/run3_lep_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2023_schemaV2.json")
+        fname = topcoffea_path("data/POG/MUO/2023_Summer23/muon_Z.json.gz")
     elif year == "2023BPix":
-        fname = ewkcoffea_path("data/run3_lep_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2023_BPix_schemaV2.json")
+        fname = topcoffea_path("data/POG/MUO/2023_Summer23BPix/muon_Z.json.gz")
     else:
         raise Exception("Trying to apply Run3 Muon SF where they shouldn't be!")
 
