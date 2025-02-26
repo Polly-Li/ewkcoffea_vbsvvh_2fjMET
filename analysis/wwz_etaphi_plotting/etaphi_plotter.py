@@ -6,34 +6,27 @@ import matplotlib.pyplot as plt
 import numpy as np
 import awkward as ak
 
-from coffea import lookup_tools
-
-# This script is an example of how to dump some info from the btag eff histos (does not actually currently make a plot)
-# Example usage:
-#   python btageff_plotter.py ../../ewkcoffea/data/btag_eff/btag_eff_ttZ_srpresel.pkl.gz -u run2
-
-import numpy as np
-import matplotlib.pyplot as plt
+# from coffea import lookup_tools
 
 def make_2d_plot(hist, title, nbins=10):
     # Get the original x and y range
     x_min, x_max = ak.flatten(hist.axes.edges[0])[0], ak.flatten(hist.axes.edges[0])[-1]
     y_min, y_max = ak.flatten(hist.axes.edges[1])[0], ak.flatten(hist.axes.edges[1])[-1]
-    
+
     # Define new bin edges using the same range but with fewer bins
     xedges = np.linspace(x_min, x_max, nbins + 1)
     yedges = np.linspace(y_min, y_max, nbins + 1)
-    
+
     # Aggregate the original bin values to match the new binning
     bin_values = hist.values()
     new_bin_values = np.zeros((nbins, nbins))
     x_bin_width = bin_values.shape[0] // nbins
     y_bin_width = bin_values.shape[1] // nbins
-    
+
     for i in range(nbins):
         for j in range(nbins):
             new_bin_values[i, j] = bin_values[i*x_bin_width:(i+1)*x_bin_width, j*y_bin_width:(j+1)*y_bin_width].sum()
-    
+
     # Plot with the new binning
     fig, ax = plt.subplots()
     X, Y = np.meshgrid(xedges, yedges)
@@ -135,7 +128,6 @@ def main():
             fig.savefig(save_path)
             plt.close(fig)
             plt.show()
-
 
 if __name__ == "__main__":
     main()
