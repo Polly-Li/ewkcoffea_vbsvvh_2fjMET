@@ -2,7 +2,6 @@ import numpy as np
 import pickle
 import gzip
 import awkward as ak
-import re
 
 from collections import OrderedDict
 
@@ -591,20 +590,7 @@ def ApplyJetSystematics(year,cleanedJets,syst_var):
     elif (syst_var == f'CMS_scale_j_{year}Down'):
         return cleanedJets.JES_Total.down
     else:
-        try:
-            if syst_var.startswith("Regrouped"):
-                syst = "JES_" + re.sub(r'_[^_]*$', '', syst_var)
-                if syst.endswith("APV"):
-                    syst = syst[:-3]
-            else:
-                syst = "JES_" + syst_var.split('_')[0]
-            attribute = getattr(cleanedJets,syst)
-            if syst_var.endswith('Up'):
-                return attribute.up
-            elif syst_var.endswith('Down'):
-                return attribute.down
-        except AttributeError:
-            raise ValueError(f"Unsupported systematic variation: {syst} and {syst_var}")
+        raise Exception(f"Unsupported systematic variation: {syst_var}")
 
 def ApplyJetVetoMaps(jets,year):
 

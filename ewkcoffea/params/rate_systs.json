@@ -29,10 +29,6 @@
             "val"   : "1.3",
             "decorrelation_dict" : {
                 "run2" : "13TeV",
-                "UL18" : "13TeV",
-                "UL17" : "13TeV",
-                "UL16" : "13TeV",
-                "UL16APV" : "13TeV",
                 "run3" : "13p6TeV",
                 "y22"  : "13p6TeV",
                 "y23"  : "13p6TeV"
