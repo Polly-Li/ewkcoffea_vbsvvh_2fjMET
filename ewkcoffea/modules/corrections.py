@@ -598,16 +598,16 @@ def ApplyJetVetoMaps(jets,year):
     if year in ['2016','2016APV','2017','2018']:
         raise Exception("We do not apply jet veto maps to run 2!")
     elif year == "2022":
-        fname = ewkcoffea_path("data/wwz_jerc/2022_jerc/jetvetomaps.json")
+        fname = topcoffea_path("data/POG/JME/2022_Summer22/jetvetomaps.json.gz")
         key = "Summer22_23Sep2023_RunCD_V1"
     elif year == "2022EE":
-        fname = ewkcoffea_path("data/wwz_jerc/2022EE_jerc/jetvetomaps.json")
+        fname = topcoffea_path("data/POG/JME/2022_Summer22EE/jetvetomaps.json.gz")
         key = "Summer22EE_23Sep2023_RunEFG_V1"
     elif year == "2023":
-        fname = ewkcoffea_path("data/wwz_jerc/2023_jerc/jetvetomaps.json")
+        fname = topcoffea_path("data/POG/JME/2023_Summer23/jetvetomaps.json.gz")
         key = "Summer23Prompt23_RunC_V1"
     elif year == "2023BPix":
-        fname = ewkcoffea_path("data/wwz_jerc/2023BPix_jerc/jetvetomaps.json")
+        fname = topcoffea_path("data/POG/JME/2023_Summer23BPix/jetvetomaps.json.gz")
         key = "Summer23BPixPrompt23_RunD_V1"
     else:
         raise Exception("Unrecognized year. Exciting!")
