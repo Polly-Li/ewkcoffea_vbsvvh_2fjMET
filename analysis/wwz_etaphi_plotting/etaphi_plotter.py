@@ -109,9 +109,9 @@ def main():
 
     cat_list = [
         "all_events",
-#        "cr_4l_sf",
-#        "cr_4l_btag_of",
-#        "cr_4l_btag_sf_offZ_met80"
+        # "cr_4l_sf",
+        # "cr_4l_btag_of",
+        # "cr_4l_btag_sf_offZ_met80"
     ]
 
     for cat in cat_list:
