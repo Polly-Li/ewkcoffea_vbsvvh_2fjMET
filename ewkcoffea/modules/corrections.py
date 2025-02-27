@@ -336,13 +336,13 @@ def run3_muons_sf_attach(muons,year,id_method,iso_method):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":
-        fname = ewkcoffea_path("data/run3_lep_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_EE_schemaV2.json")
+        fname = topcoffea_path("data/POG/MUO/2022_Summer22EE/muon_Z.json.gz")
     elif year == "2022":
-        fname = ewkcoffea_path("data/run3_lep_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2022_schemaV2.json")
+        fname = topcoffea_path("data/POG/MUO/2022_Summer22/muon_Z.json.gz")
     elif year == "2023":
-        fname = ewkcoffea_path("data/run3_lep_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2023_schemaV2.json")
+        fname = topcoffea_path("data/POG/MUO/2023_Summer23/muon_Z.json.gz")
     elif year == "2023BPix":
-        fname = ewkcoffea_path("data/run3_lep_sf/muon_sf/ScaleFactors_Muon_Z_ID_ISO_2023_BPix_schemaV2.json")
+        fname = topcoffea_path("data/POG/MUO/2023_Summer23BPix/muon_Z.json.gz")
     else:
         raise Exception("Trying to apply Run3 Muon SF where they shouldn't be!")
 
@@ -387,16 +387,16 @@ def run3_electrons_sf_attach(electrons,year,wp):
     # Get the right sf json for the given campaign
     if year == "2022EE":
         n_year = "2022Re-recoE+PromptFG" # key for accessing the 2022EE SFs
-        fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2022EE_ele/electron.json")
+        fname = topcoffea_path("data/POG/EGM/2022_Summer22EE/electron.json.gz")
     elif year == "2022":
         n_year = "2022Re-recoBCD" # key for accessing the 2022 SFs
-        fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2022_ele/electron.json")
+        fname = topcoffea_path("data/POG/EGM/2022_Summer22/electron.json.gz")
     elif year == "2023":
         n_year = "2023PromptC" # key for accessing the 2023 SFs
-        fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2023_ele/electron.json")
+        fname = topcoffea_path("data/POG/EGM/2023_Summer23/electron.json.gz")
     elif year == "2023BPix":
         n_year = "2023PromptD" # key for accessing the 2023BPix SFs
-        fname = ewkcoffea_path("data/run3_lep_sf/electron_sf/2023BPix_ele/electron.json")
+        fname = topcoffea_path("data/POG/EGM/2023_Summer23BPix/electron.json.gz")
     else:
         raise Exception("Trying to apply run3 SF where they shouldn't be!")
 
@@ -483,13 +483,13 @@ def run3_pu_attach(pileup,year,sys):
 
     # Get the right sf json for the given campaign
     if year == "2022EE":
-        fname = ewkcoffea_path("data/run3_pu/pu_2022EE/puWeights.json")
+        fname = topcoffea_path("data/POG/LUM/2022_Summer22EE/puWeights.json.gz")
     elif year == "2022":
-        fname = ewkcoffea_path("data/run3_pu/pu_2022/puWeights.json")
+        fname = topcoffea_path("data/POG/LUM/2022_Summer22/puWeights.json.gz")
     elif year == "2023":
-        fname = ewkcoffea_path("data/run3_pu/pu_2023/puWeights.json")
+        fname = topcoffea_path("data/POG/LUM/2023_Summer23/puWeights.json.gz")
     elif year == "2023BPix":
-        fname = ewkcoffea_path("data/run3_pu/pu_2023BPix/puWeights.json")
+        fname = topcoffea_path("data/POG/LUM/2023_Summer23BPix/puWeights.json.gz")
     else:
         raise Exception("Trying to apply run3 SF where they shouldn't be!")
 
@@ -598,16 +598,16 @@ def ApplyJetVetoMaps(jets,year):
     if year in ['2016','2016APV','2017','2018']:
         raise Exception("We do not apply jet veto maps to run 2!")
     elif year == "2022":
-        fname = ewkcoffea_path("data/wwz_jerc/2022_jerc/jetvetomaps.json")
+        fname = topcoffea_path("data/POG/JME/2022_Summer22/jetvetomaps.json.gz")
         key = "Summer22_23Sep2023_RunCD_V1"
     elif year == "2022EE":
-        fname = ewkcoffea_path("data/wwz_jerc/2022EE_jerc/jetvetomaps.json")
+        fname = topcoffea_path("data/POG/JME/2022_Summer22EE/jetvetomaps.json.gz")
         key = "Summer22EE_23Sep2023_RunEFG_V1"
     elif year == "2023":
-        fname = ewkcoffea_path("data/wwz_jerc/2023_jerc/jetvetomaps.json")
+        fname = topcoffea_path("data/POG/JME/2023_Summer23/jetvetomaps.json.gz")
         key = "Summer23Prompt23_RunC_V1"
     elif year == "2023BPix":
-        fname = ewkcoffea_path("data/wwz_jerc/2023BPix_jerc/jetvetomaps.json")
+        fname = topcoffea_path("data/POG/JME/2023_Summer23BPix/jetvetomaps.json.gz")
         key = "Summer23BPixPrompt23_RunD_V1"
     else:
         raise Exception("Unrecognized year. Exciting!")
