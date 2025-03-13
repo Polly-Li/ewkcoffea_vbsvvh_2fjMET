@@ -294,7 +294,7 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
     err_m = np.append(mc_arr - mc_err_arr, 0)
     bin_edges_arr = histo_mc_sum.axes[0].edges
     bin_centers_arr = histo_mc_sum.axes[0].centers
-    ax.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', alpha=0.5, linewidth=0.0, label='Stat', hatch='/////')
+    ax.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', alpha=0.5, linewidth=0.0, label='stat. unc.', hatch='/////')
 
     ### Get the errs on data and ratios and plot them by hand ###
     if histo_data is not None:
@@ -335,7 +335,11 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
         extt = plt.text(0.57,1.02,"62 $\mathrm{fb^{{-}1}}$ (13.6 TeV)",fontsize=18,transform=ax.transAxes)
 
     # Internal legend
-    extr = ax.legend(loc="upper left",bbox_to_anchor=(1,1),fontsize="16", frameon=False)
+    # Crude way of moving data from the last entry to the first
+    handles, labels = ax.get_legend_handles_labels()
+    handles = [handles[-1]] + handles[:-1]
+    labels = [labels[-1]] + labels[:-1]
+    extr = ax.legend(handles=handles, labels=labels, loc="upper left", bbox_to_anchor=(1, 1), fontsize="16", frameon=False)
 
     # Set style things on main plot
     ax.set_xlabel(None)
@@ -380,6 +384,7 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
 def make_legend():
     lfig, lax = plt.subplots(figsize=(1.5,2.5))
     leg_elements = [
+        Line2D([0],[0],color="black", marker="o", label="data"),
         mp.Patch(facecolor=gy.CLR_LST[0], lw=9, label="WWZ"),
         mp.Patch(facecolor=gy.CLR_LST[1], lw=9, label="ZH"),
         mp.Patch(facecolor=gy.CLR_LST[2], lw=9, label="ZZ"),
@@ -387,8 +392,7 @@ def make_legend():
         mp.Patch(facecolor=gy.CLR_LST[4], lw=9, label="tWZ"),
         mp.Patch(facecolor=gy.CLR_LST[5], lw=9, label="WZ"),
         mp.Patch(facecolor=gy.CLR_LST[6], lw=9, label="Other"),
-        mp.Patch(facecolor="none",edgecolor="gray",hatch="/////", alpha=0.5, label="Stat"),
-        Line2D([0],[0],color="black", marker="o", label="Data"),
+        mp.Patch(facecolor="none",edgecolor="gray",hatch="/////", alpha=0.5, label="stat. unc."),
     ]
     lax.axis('off')
     lax.legend(handles=leg_elements,fontsize="12",loc="center",frameon=False)
