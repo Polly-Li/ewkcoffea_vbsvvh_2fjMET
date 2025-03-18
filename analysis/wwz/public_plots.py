@@ -335,7 +335,8 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
         extt = plt.text(0.57,1.02,"62 $\mathrm{fb^{{-}1}}$ (13.6 TeV)",fontsize=18,transform=ax.transAxes)
 
     # Internal legend
-    # Crude way of moving data from the last entry to the first
+    # Grabbing the handles and the labels for the legend, and moving the last one to the first entry
+    # If data is not last by default, then this may mess up the legend!
     handles, labels = ax.get_legend_handles_labels()
     handles = [handles[-1]] + handles[:-1]
     labels = [labels[-1]] + labels[:-1]
