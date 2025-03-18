@@ -22,7 +22,7 @@ figsize_val = 12.0
 
 #Size of the dots
 s_val_mc = 0.6
-s_val_data = 50
+s_val_data = 100
 
 #Rotation of the ternary plot
 rotation_val = -60
@@ -374,11 +374,15 @@ def make_plot(run, flavor, key):
         fig.text(label_x, label_y, "Same Flavor \nSignal Region", fontsize=label_size, ha='center', transform=fig.transFigure, weight="bold")
 
     # Create legend
+    legend_dot_data = mlines.Line2D([], [], marker='o', color=data_color, markersize=legend_marker_size, linestyle='None', label='data')
     legend_dot_wwz = mlines.Line2D([], [], marker='o', color=wwz_color, markersize=legend_marker_size, linestyle='None', label='WWZ')
     legend_dot_zh = mlines.Line2D([], [], marker='o', color=zh_color, markersize=legend_marker_size, linestyle='None', label='ZH')
     legend_dot_bkg = mlines.Line2D([], [], marker='o', color=bkg_color, markersize=legend_marker_size, linestyle='None', label='Backgrounds')
 
-    fig.legend(handles=[legend_dot_wwz, legend_dot_zh, legend_dot_bkg], fontsize=label_font_size, bbox_to_anchor=(legend_x, legend_y), loc='center', frameon=False)
+    if include_data:
+        fig.legend(handles=[legend_dot_data, legend_dot_wwz, legend_dot_zh, legend_dot_bkg], fontsize=label_font_size, bbox_to_anchor=(legend_x, legend_y), loc='center', frameon=False)
+    else:
+        fig.legend(handles=[legend_dot_wwz, legend_dot_zh, legend_dot_bkg], fontsize=label_font_size, bbox_to_anchor=(legend_x, legend_y), loc='center', frameon=False)
 
     # Manually put axis labels
     fig.text(zh_label_x, zh_label_y, "ZH BDT \nScore", fontsize=axis_label_size, ha='center', transform=fig.transFigure, weight="normal")
