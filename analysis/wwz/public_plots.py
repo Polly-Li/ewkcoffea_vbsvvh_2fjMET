@@ -254,7 +254,7 @@ STYLE_DICT = {
 
 
 # Takes a mc hist and data hist and plots both
-def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisrangex=None,xlabel=None,year="run2",logscale=False,maxxtick=None):
+def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisrangex=None,xlabel=None,year="run2",logscale=False,maxxtick=None,do_ratio_errors_by_hand=False):
 
     # Create the figure
     fig, (ax, rax) = plt.subplots(
@@ -281,10 +281,12 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
             color="k",
             ax=ax,
             w2=histo_data.variances(),
-            w2method="sqrt",
+            #w2method="sqrt",
+            w2method="poisson",
         )
     # Plot a dummy hist on rax to get the label to show up
     histo_mc.plot1d(alpha=0, ax=rax)
+
 
     ### Get the errs on MC and plot them by hand ###
     histo_mc_sum = histo_mc[{"process_grp":sum}]
@@ -296,9 +298,9 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
     bin_centers_arr = histo_mc_sum.axes[0].centers
     ax.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', alpha=0.5, linewidth=0.0, label='stat. unc.', hatch='/////')
 
-    ### Get the errs on data and ratios and plot them by hand ###
+    ### Get and Plot the data in the ratio plot ###
+    histo_data_sum = histo_data[{"process_grp":sum}]
     if histo_data is not None:
-        histo_data_sum = histo_data[{"process_grp":sum}]
 
         data_arr = histo_data_sum.values()
         data_err_arr = np.sqrt(histo_data_sum.variances())
@@ -309,16 +311,38 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
         data_ratio_err_p = (data_arr + data_err_arr)/mc_arr
         data_ratio_err_m = (data_arr - data_err_arr)/mc_arr
 
-        # Make data color list
-        data_clr_lst = []
-        for data_val in data_arr:
-            if data_val > 0: data_clr_lst.append("k")
-            else: data_clr_lst.append("none")
-
-        # Draw
+        # Draw MC bands
         rax.fill_between(bin_edges_arr,err_ratio_m,err_ratio_p,step='post', facecolor='none',edgecolor='gray', label='MC stat', linewidth=0.0, hatch='/////',alpha=0.5)
-        rax.scatter(bin_centers_arr,data_arr/mc_arr,facecolor=data_clr_lst,edgecolor=data_clr_lst,marker="o")
-        rax.vlines(bin_centers_arr,data_ratio_err_p,data_ratio_err_m,color=data_clr_lst)
+
+        ### Draw data errors by hand ###
+        if do_ratio_errors_by_hand:
+            # Make data color list
+            data_clr_lst = []
+            for data_val in data_arr:
+                if data_val > 0: data_clr_lst.append("k")
+                else: data_clr_lst.append("none")
+            rax.scatter(bin_centers_arr,data_arr/mc_arr,facecolor=data_clr_lst,edgecolor=data_clr_lst,marker="o")
+            rax.vlines(bin_centers_arr,data_ratio_err_p,data_ratio_err_m,color=data_clr_lst)
+
+        ### Draw data error with scikit hep hist ###
+        # This is so that we can draw poisson errors for the data for the ratio plot
+        #   - It's too hard to do by hand, so we want to plot a scikit hep hist and make use of the poisson option
+        #   - But first need to divide the data hist by the mc
+        #   - Just dividing the hists does not seem to work, but dividing by a numpy array seems to
+        #   - We can a similar mc_arr that we already found above, but note we need flow (so that the dimensions are right)
+        #   - But since flow is 0 (we've already handled it) set first and last bin to 1 to avoid divide by zero issues
+        else:
+            mc_arr_for_getting_data_over_mc = list(histo_mc_sum.values(flow=True))
+            mc_arr_for_getting_data_over_mc[0]  = 1
+            mc_arr_for_getting_data_over_mc[-1] = 1
+            data_over_mc = histo_data/mc_arr_for_getting_data_over_mc
+            data_over_mc.plot1d(
+                stack=False,
+                histtype="errorbar",
+                ax=rax,
+                color="k",
+                w2method="poisson",
+            )
 
     # Scale the axis and set labels
     if axisrangex is not None:
@@ -328,7 +352,8 @@ def make_public_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,a
 
     # CMS text
     plt.text(0,1.02,"CMS",fontsize=23,weight="bold",transform=ax.transAxes)
-    plt.text(0.15,1.02,"$\it{Supplementary}$",fontsize=19,transform=ax.transAxes)
+    #plt.text(0.15,1.02,"$\it{Supplementary}$",fontsize=19,transform=ax.transAxes)
+    plt.text(0.15,1.02,"$\it{Preliminary}$",fontsize=19,transform=ax.transAxes)
     if year == "run2":
         extt = plt.text(0.59,1.02,"138 $\mathrm{fb^{{-}1}}$ (13 TeV)",fontsize=18,transform=ax.transAxes)
     elif year == "run3":
@@ -429,6 +454,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,out_dir_map,save_dir_path,ye
             n_plotted = 0
             for var_name in STYLE_DICT[group_name]["var_dict"].keys():
                 print(f"\nVar name: {var_name}")
+                #if var_name != "mll_wl0_wl1": continue
 
                 histo_cat = histo_dict[var_name][{"systematic":"nominal", "category":cat_name}]
 
