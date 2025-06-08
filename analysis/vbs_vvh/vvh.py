@@ -316,9 +316,11 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Fat jets
             goodfatjets = fatjets[os_ec.is_good_fatjet(fatjets)]
+            #goodfatjets = os_ec.get_cleaned_collection(l_vvh_t,goodfatjets) # Clean against leps # TODO Should clean lets against FJs?
 
             # Clean with dr (though another option is to use jetIdx)
-            cleanedJets = os_ec.get_cleaned_collection(l_vvh_t,jets)
+            cleanedJets = os_ec.get_cleaned_collection(l_vvh_t,jets) # Clean against leps
+            cleanedJets = os_ec.get_cleaned_collection(goodfatjets,cleanedJets) # Clean against fat jets
             jetptname = "pt_nom" if hasattr(cleanedJets, "pt_nom") else "pt"
 
             # Jet Veto Maps
@@ -354,11 +356,15 @@ class AnalysisProcessor(processor.ProcessorABC):
             ##### End of JME #####
 
             # Selecting jets and cleaning them
-            cleanedJets["is_good"] = os_tc.is_tight_jet(getattr(cleanedJets, jetptname), cleanedJets.eta, cleanedJets.jetId, pt_cut=20., eta_cut=get_ec_param("wwz_eta_j_cut"), id_cut=get_ec_param("wwz_jet_id_cut"))
-            goodJets = cleanedJets[cleanedJets.is_good]
+            ##cleanedJets["is_good"] = os_tc.is_tight_jet(getattr(cleanedJets, jetptname), cleanedJets.eta, cleanedJets.jetId, pt_cut=20., eta_cut=get_ec_param("wwz_eta_j_cut"), id_cut=get_ec_param("wwz_jet_id_cut"))
+            cleanedJets["is_good"] = os_ec.is_good_vbs_jet(cleanedJets,year)
+            goodJets = cleanedJets[cleanedJets.is_good & (abs(cleanedJets.eta) <= 2.4)]
+            goodJets_forward = cleanedJets[cleanedJets.is_good & (abs(cleanedJets.eta) > 2.4)] # TODO probably not corrected properly
 
             # Count jets
             njets = ak.num(goodJets)
+            njets_forward = ak.num(goodJets_forward)
+            njets_tot = njets + njets_forward
             nfatjets = ak.num(goodfatjets)
             ht = ak.sum(goodJets.pt,axis=-1)
             #j0 = goodJets[ak.argmax(goodJets.pt,axis=-1,keepdims=True)]
@@ -579,7 +585,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             selections.add("exactly1lep"                  , veto_map_mask & filter_mask & (nleps==1))
             selections.add("exactly1lep_exactly1fj"       , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1))
             selections.add("exactly1lep_exactly1fj550"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>550))
-            selections.add("exactly1lep_exactly1fj550_2j" , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>550) & (njets==2))
+            selections.add("exactly1lep_exactly1fj550_2j" , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>550) & (njets_tot>=2))
 
             cat_dict = {
                 "lep_chan_lst" : [

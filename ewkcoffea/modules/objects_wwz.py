@@ -314,3 +314,17 @@ def is_good_fatjet(fatjets):
         (fatjets.jetId > 0)
     )
     return mask
+
+def is_good_vbs_jet(jets,year):
+    is2016 = (year == "2016") or (year=="2016APV")
+    mask = (
+        (jets.pt >= 20) &
+        (abs(jets.eta) <= 4.7) &
+        ( (jets.pt >= 50) | ( (jets.pt < 50) & (jets.puId != 0) ))
+    )
+    if is2016:
+        mask = mask & (jets.jetId >= 1)
+    else:
+        mask = mask & (jets.jetId >= 2)
+    return mask
+
