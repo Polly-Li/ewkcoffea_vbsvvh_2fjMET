@@ -305,3 +305,12 @@ def is_tight_vvh_ele(ele):
         (ele.lostHits == 0)
     )
     return mask
+
+def is_good_fatjet(fatjets):
+    mask = (
+        (fatjets.pt > 300) & # TODO should be corrected pt
+        (abs(fatjets.eta) <= 2.5) &
+        (fatjets.msoftdrop > 40) &
+        (fatjets.jetId > 0)
+    )
+    return mask

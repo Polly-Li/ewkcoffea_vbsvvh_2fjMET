@@ -175,6 +175,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         mu   = events.Muon
         tau  = events.Tau
         jets = events.Jet
+        fatjets = events.FatJet
         if (is2022 or is2023):
             rho = events.Rho.fixedGridRhoFastjetAll
         else:
@@ -313,6 +314,9 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             #################### Jets ####################
 
+            # Fat jets
+            goodfatjets = fatjets[os_ec.is_good_fatjet(fatjets)]
+
             # Clean with dr (though another option is to use jetIdx)
             cleanedJets = os_ec.get_cleaned_collection(l_vvh_t,jets)
             jetptname = "pt_nom" if hasattr(cleanedJets, "pt_nom") else "pt"
@@ -355,8 +359,21 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Count jets
             njets = ak.num(goodJets)
+            nfatjets = ak.num(goodfatjets)
             ht = ak.sum(goodJets.pt,axis=-1)
-            j0 = goodJets[ak.argmax(goodJets.pt,axis=-1,keepdims=True)]
+            #j0 = goodJets[ak.argmax(goodJets.pt,axis=-1,keepdims=True)]
+            #fj0 = goodfatjets[ak.argmax(goodfatjets.pt,axis=-1,keepdims=True)]
+
+            goodJets_ptordered = goodJets[ak.argsort(goodJets.pt,axis=-1,ascending=False)]
+            goodJets_ptordered_padded = ak.pad_none(goodJets_ptordered, 2)
+            j0 = goodJets_ptordered_padded[:,0]
+            j1 = goodJets_ptordered_padded[:,1]
+            mjj = (j0+j1).mass
+
+            goodfatjets_ptordered = goodfatjets[ak.argsort(goodfatjets.pt,axis=-1,ascending=False)]
+            goodfatjets_ptordered_padded = ak.pad_none(goodfatjets_ptordered, 2)
+            fj0 = goodfatjets_ptordered_padded[:,0]
+            fj1 = goodfatjets_ptordered_padded[:,1]
 
 
             # Loose DeepJet WP
@@ -503,9 +520,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             ######### Get variables we haven't already calculated #########
 
             l0pt = l0.pt
-            j0pt = ak.flatten(j0.pt) # Flatten to go from [[j0pt],[j0pt],...] -> [j0pt,j0pt,...]
-            j0eta = ak.flatten(j0.eta) # Flatten to go from [[j0pt],[j0pt],...] -> [j0pt,j0pt,...]
-            j0phi = ak.flatten(j0.phi) # Flatten to go from [[j0pt],[j0pt],...] -> [j0pt,j0pt,...]
+            j0pt = j0.pt
+            j0eta = j0.eta
+            j0phi = j0.phi
             mll_01 = (l0+l1).mass
             scalarptsum_lep = l0.pt + l1.pt 
             scalarptsum_lepmet = l0.pt + l1.pt + met.pt
@@ -558,14 +575,20 @@ class AnalysisProcessor(processor.ProcessorABC):
             # For Cut Based SRs
 
             selections.add("all_events", (veto_map_mask | (~veto_map_mask))) # All events.. this logic is a bit roundabout to just get an array of True
-            selections.add("filters", veto_map_mask & filter_mask)
-            selections.add("exactly1lep"   , veto_map_mask & filter_mask & (nleps==1))
+            selections.add("filters"                      , veto_map_mask & filter_mask)
+            selections.add("exactly1lep"                  , veto_map_mask & filter_mask & (nleps==1))
+            selections.add("exactly1lep_exactly1fj"       , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1))
+            selections.add("exactly1lep_exactly1fj550"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>550))
+            selections.add("exactly1lep_exactly1fj550_2j" , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>550) & (njets==2))
 
             cat_dict = {
                 "lep_chan_lst" : [
                     "all_events",
                     "filters",
                     "exactly1lep",
+                    "exactly1lep_exactly1fj",
+                    "exactly1lep_exactly1fj550",
+                    "exactly1lep_exactly1fj550_2j",
                 ]
             }
 
