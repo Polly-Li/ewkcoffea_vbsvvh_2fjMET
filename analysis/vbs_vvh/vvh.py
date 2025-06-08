@@ -41,24 +41,45 @@ class AnalysisProcessor(processor.ProcessorABC):
             "metphi": axis.Regular(180, -3.1416, 3.1416, name="metphi", label="met phi"),
             "scalarptsum_lep" : axis.Regular(180, 0, 600, name="scalarptsum_lep", label="S_T"),
             "scalarptsum_lepmet" : axis.Regular(180, 0, 1000, name="scalarptsum_lepmet", label="S_T + metpt"),
-            "scalarptsum_lepmetjet" : axis.Regular(180, 0, 1500, name="scalarptsum_lepmetjet", label="S_T + metpt + H_T"),
-            "scalarptsum_jet" : axis.Regular(180, 0, 700, name="scalarptsum_jet", label="H_T"),
-            "l0pt"  : axis.Regular(180, 0, 500, name="l0pt", label="l0pt"),
-            "j0pt"  : axis.Regular(180, 0, 500, name="j0pt", label="j0 pt"),
-            "j0eta" : axis.Regular(180, -3, 3, name="j0eta", label="j0 eta"),
-            "j0phi" : axis.Regular(180, -3.1416, 3.1416, name="j0phi", label="j0 phi"),
+            "l0_pt"  : axis.Regular(180, 0, 500, name="l0_pt", label="l0_pt"),
+            "l0_eta"  : axis.Regular(180, -3,3, name="l0_eta", label="l0 eta"),
 
-            "mlb_min" : axis.Regular(180, 0, 300, name="mlb_min",  label="min mass(b+l)"),
-            "mlb_max" : axis.Regular(180, 0, 1000, name="mlb_max",  label="max mass(b+l)"),
+            #"mlb_min" : axis.Regular(180, 0, 300, name="mlb_min",  label="min mass(b+l)"),
+            #"mlb_max" : axis.Regular(180, 0, 1000, name="mlb_max",  label="max mass(b+l)"),
 
             "njets"   : axis.Regular(8, 0, 8, name="njets",   label="Jet multiplicity"),
             "nleps"   : axis.Regular(5, 0, 5, name="nleps",   label="Lep multiplicity"),
             "nbtagsl" : axis.Regular(4, 0, 4, name="nbtagsl", label="Loose btag multiplicity"),
             "nbtagsm" : axis.Regular(4, 0, 4, name="nbtagsm", label="Medium btag multiplicity"),
 
-            "njets_counts"   : axis.Regular(30, 0, 30, name="njets_counts",   label="Jet multiplicity counts"),
-            "nleps_counts"   : axis.Regular(30, 0, 30, name="nleps_counts",   label="Lep multiplicity counts"),
+            "njets_counts"   : axis.Regular(30, 0, 30, name="njets_counts",   label="Jet multiplicity counts (central)"),
+            "nleps_counts"   : axis.Regular(30, 0, 30, name="nleps_counts",   label="Lep multiplicity counts (central)"),
 
+            #
+            "nfatjets"   : axis.Regular(8, 0, 8, name="nfatjets",   label="Fat jet multiplicity"),
+            "njets_forward"   : axis.Regular(8, 0, 8, name="njets_forward",   label="Jet multiplicity (forward)"),
+            "njets_tot"   : axis.Regular(8, 0, 8, name="njets_tot",   label="Jet multiplicity (central and forward)"),
+
+            "fj0_pt"  : axis.Regular(180, 0, 500, name="fj0_pt", label="fj0 pt"),
+            "fj0_mass"  : axis.Regular(180, 0, 500, name="fj0_mass", label="fj0 mass"),
+            "fj0_eta" : axis.Regular(180, -5, 5, name="fj0_eta", label="fj0 eta"),
+            "fj0_phi" : axis.Regular(180, -3.1416, 3.1416, name="fj0_phi", label="j0 phi"),
+
+            "j0central_pt"  : axis.Regular(180, 0, 500, name="j0central_pt", label="j0 pt (central jets)"), # Naming
+            "j0central_eta" : axis.Regular(180, -5, 5, name="j0central_eta", label="j0 eta (central jets)"), # Naming
+            "j0central_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0central_phi", label="j0 phi (central jets)"), # Naming
+
+            #"j0forward_pt"  : axis.Regular(180, 0, 500, name="j0forward_pt", label="j0 pt (forward jets)"),
+            #"j0forward_eta" : axis.Regular(180, -5, 5, name="j0forward_eta", label="j0 eta (forward jets)"),
+            #"j0forward_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0forward_phi", label="j0 phi (forward jets)"),
+
+            #"j0all_pt"  : axis.Regular(180, 0, 500, name="j0all_pt", label="j0 pt (all regular jets)"),
+            #"j0all_eta" : axis.Regular(180, -5, 5, name="j0all_eta", label="j0 eta (all regular jets)"),
+            #"j0all_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0all_phi", label="j0 phi (all regular jets)"),
+
+            #"dr_fj0l0" : axis.Regular(180, 0, 5, name="dr_fj0l1", label="dr between FJ and lepton"),
+            #"dr_j0fwdj1fwd" : axis.Regular(180, 0, 5, name="dr_j0fwdj1fwd", label="dr between leading two forward jets"),
+            #"dr_j0cntj1cnt" : axis.Regular(180, 0, 5, name="dr_j0cntj1cnt", label="dr between leading two central jets"),
 
         }
 
@@ -316,7 +337,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Fat jets
             goodfatjets = fatjets[os_ec.is_good_fatjet(fatjets)]
-            #goodfatjets = os_ec.get_cleaned_collection(l_vvh_t,goodfatjets) # Clean against leps # TODO Should clean lets against FJs?
+            goodfatjets = os_ec.get_cleaned_collection(l_vvh_t,goodfatjets) # Clean against leps # TODO Should clean lets against FJs?
 
             # Clean with dr (though another option is to use jetIdx)
             cleanedJets = os_ec.get_cleaned_collection(l_vvh_t,jets) # Clean against leps
@@ -525,15 +546,17 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             ######### Get variables we haven't already calculated #########
 
-            l0pt = l0.pt
-            j0pt = j0.pt
-            j0eta = j0.eta
-            j0phi = j0.phi
+            l0_pt = l0.pt
+            l0_eta = l0.eta
+            j0central_pt = j0.pt
+            j0central_eta = j0.eta
+            j0central_phi = j0.phi
             mll_01 = (l0+l1).mass
-            scalarptsum_lep = l0.pt + l1.pt 
-            scalarptsum_lepmet = l0.pt + l1.pt + met.pt
-            scalarptsum_lepmetjet = l0.pt + l1.pt + met.pt + ak.sum(goodJets.pt,axis=-1)
-            scalarptsum_jet = ak.sum(goodJets.pt,axis=-1)
+            scalarptsum_lep = ak.sum(l_vvh_t.pt,axis=-1)
+            ##scalarptsum_lep = l0.pt + l1.pt 
+            scalarptsum_lepmet = scalarptsum_lep + met.pt
+            #scalarptsum_lepmetjet = l0.pt + l1.pt + met.pt + ak.sum(goodJets.pt,axis=-1)
+            #scalarptsum_jet = ak.sum(goodJets.pt,axis=-1)
 
             # lb pairs (i.e. always one lep, one bjet)
             bjets = goodJets[isBtagJetsLoose]
@@ -547,13 +570,14 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "metphi" : met.phi,
                 "scalarptsum_lep" : scalarptsum_lep,
                 "scalarptsum_lepmet" : scalarptsum_lepmet,
-                "scalarptsum_lepmetjet" : scalarptsum_lepmetjet,
-                "scalarptsum_jet" : scalarptsum_jet,
-                "mll_01" : mll_01,
-                "l0pt" : l0pt,
-                "j0pt" : j0pt,
-                "j0eta" : j0eta,
-                "j0phi" : j0phi,
+                #"scalarptsum_lepmetjet" : scalarptsum_lepmetjet,
+                #"scalarptsum_jet" : scalarptsum_jet,
+                "l0_pt" : l0_pt,
+                "l0_eta" : l0_eta,
+
+                "j0central_pt" : j0central_pt,
+                "j0central_eta" : j0central_eta,
+                "j0central_phi" : j0central_phi,
 
                 "nleps" : nleps,
                 "njets" : njets,
@@ -563,8 +587,22 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "njets_counts" : njets,
                 "nbtagsl_counts" : nbtagsl,
 
-                "mlb_min" : mlb_min,
-                "mlb_max" : mlb_max,
+                ###
+
+                "nbtagsm" : nbtagsm,
+                "nbtagsl" : nbtagsl,
+
+                "nfatjets" : nfatjets,
+                "njets_forward" : njets_forward,
+                "njets_tot" : njets_tot,
+                "fj0_pt" : fj0.pt,
+                "fj0_mass" : fj0.mass,
+                "fj0_eta" : fj0.eta,
+                "fj0_phi" : fj0.phi,
+
+                "j0_pt" : j0.pt,
+                "j0_eta" : j0.eta,
+                "j0_phi" : j0.phi,
 
             }
 
@@ -645,6 +683,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
                         # Skip filling if this variable is not relevant for this selection
                         if (dense_axis_name in exclude_var_dict) and (sr_cat in exclude_var_dict[dense_axis_name]): continue
+                        if (dense_axis_name not in ["njets","njets_counts"]) and (sr_cat in ["all_events","filters","exactly1lep"]): continue # TMP TODO, only fill njets for the cats that dont have all objects
 
                         # If this is a counts hist, forget the weights and just fill with unit weights
                         if dense_axis_name.endswith("_counts"): weight = events.nom
@@ -673,10 +712,16 @@ class AnalysisProcessor(processor.ProcessorABC):
                         #print("dense_axis_vals[all_cuts_mask]",dense_axis_vals[all_cuts_mask])
                         #print("end")
 
+                        #print("this")
+                        #print("\ndense_axis_name",dense_axis_name)
+                        #print("\nvals",dense_axis_vals[all_cuts_mask])
+                        #print("\ncat",sr_cat)
+                        #print("this")
+
                         # Fill the histos
                         axes_fill_info_dict = {
-                            dense_axis_name : dense_axis_vals[all_cuts_mask],
-                            "weight"        : weight[all_cuts_mask],
+                            dense_axis_name : ak.fill_none(dense_axis_vals[all_cuts_mask],0),
+                            "weight"        : ak.fill_none(weight[all_cuts_mask],0),
                             "process"       : histAxisName,
                             "category"      : sr_cat,
                             "systematic"    : wgt_fluct,
