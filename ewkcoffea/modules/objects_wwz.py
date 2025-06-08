@@ -253,4 +253,55 @@ def is_tight_run3_mu_tnp(mu):
     return mask
 
 
+#######################################################################################
 
+def is_loose_vvh_muo(muo):
+    mask = (
+        (muo.pt > 5) &
+        (muo.pfIsoId >= 2) &
+        (abs(muo.eta) < 2.4) &
+        (abs(muo.dxy) < 0.2) &
+        (abs(muo.dz) < 0.5) &
+        (abs(muo.sip3d) < 8) &
+        (muo.looseId == 1)
+    )
+    return mask
+
+def is_tight_vvh_muo(muo):
+    mask = (
+        (muo.pt > 30) &
+        (muo.pfIsoId > 4) &
+        (muo.tightCharge == 2) &
+        (muo.highPurity) &
+        (muo.tightId)
+    )
+    return mask
+
+
+def is_loose_vvh_ele(ele):
+    ele_eta_sc = ele.eta + ele.deltaEtaSC
+    mask = (
+        (ele.pt >  7) &
+        (abs(ele_eta_sc) <  2.5) &
+        (( (abs(ele_eta_sc) <= 1.479) & (abs(ele.dxy) <= 0.05) & (abs(ele.dz) < 0.1)) | ( (abs(ele.dxy) <= 0.1) & (abs(ele.dz) < 0.2))) &
+        (abs(ele.sip3d) < 8) &
+        (ele.cutBased >= 2) &
+        (ele.pfRelIso03_all < 0.4) &
+        (ele.lostHits <= 1)
+    )
+    return mask
+
+def is_tight_vvh_ele(ele):
+    ele_eta_sc = ele.eta + ele.deltaEtaSC
+    mask = (
+        (ele.pt >  30) &
+        (ele.cutBased >= 4) &
+        (ele.pfRelIso03_all < 0.15) &
+        (ele.hoe < 0.1) &
+        (ele.eInvMinusPInv > -0.04) &
+        (( (abs(ele_eta_sc) <= 1.479) & (ele.sieie < 0.011)) | (ele.sieie <= 0.030)) &
+        (ele.convVeto == True) &
+        (ele.tightCharge == 2) &
+        (ele.lostHits == 0)
+    )
+    return mask
