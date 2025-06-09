@@ -37,7 +37,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Create the dense axes for the histograms
         self._dense_axes_dict = {
-            "met"   : axis.Regular(180, 0, 300, name="met",  label="met"),
+            "met"   : axis.Regular(180, 0, 500, name="met",  label="met"),
             "metphi": axis.Regular(180, -3.1416, 3.1416, name="metphi", label="met phi"),
             "scalarptsum_lep" : axis.Regular(180, 0, 600, name="scalarptsum_lep", label="S_T"),
             "scalarptsum_lepmet" : axis.Regular(180, 0, 1000, name="scalarptsum_lepmet", label="S_T + metpt"),
@@ -60,26 +60,32 @@ class AnalysisProcessor(processor.ProcessorABC):
             "njets_forward"   : axis.Regular(8, 0, 8, name="njets_forward",   label="Jet multiplicity (forward)"),
             "njets_tot"   : axis.Regular(8, 0, 8, name="njets_tot",   label="Jet multiplicity (central and forward)"),
 
-            "fj0_pt"  : axis.Regular(180, 0, 500, name="fj0_pt", label="fj0 pt"),
+            "fj0_pt"  : axis.Regular(180, 0, 900, name="fj0_pt", label="fj0 pt"),
             "fj0_mass"  : axis.Regular(180, 0, 500, name="fj0_mass", label="fj0 mass"),
             "fj0_eta" : axis.Regular(180, -5, 5, name="fj0_eta", label="fj0 eta"),
             "fj0_phi" : axis.Regular(180, -3.1416, 3.1416, name="fj0_phi", label="j0 phi"),
 
-            "j0central_pt"  : axis.Regular(180, 0, 500, name="j0central_pt", label="j0 pt (central jets)"), # Naming
+            "j0central_pt"  : axis.Regular(180, 0, 700, name="j0central_pt", label="j0 pt (central jets)"), # Naming
             "j0central_eta" : axis.Regular(180, -5, 5, name="j0central_eta", label="j0 eta (central jets)"), # Naming
             "j0central_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0central_phi", label="j0 phi (central jets)"), # Naming
 
-            #"j0forward_pt"  : axis.Regular(180, 0, 500, name="j0forward_pt", label="j0 pt (forward jets)"),
-            #"j0forward_eta" : axis.Regular(180, -5, 5, name="j0forward_eta", label="j0 eta (forward jets)"),
-            #"j0forward_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0forward_phi", label="j0 phi (forward jets)"),
 
-            #"j0all_pt"  : axis.Regular(180, 0, 500, name="j0all_pt", label="j0 pt (all regular jets)"),
-            #"j0all_eta" : axis.Regular(180, -5, 5, name="j0all_eta", label="j0 eta (all regular jets)"),
-            #"j0all_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0all_phi", label="j0 phi (all regular jets)"),
+            "j0forward_pt"  : axis.Regular(180, 0, 500, name="j0forward_pt", label="j0 pt (forward jets)"),
+            "j0forward_eta" : axis.Regular(180, -5, 5, name="j0forward_eta", label="j0 eta (forward jets)"),
+            "j0forward_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0forward_phi", label="j0 phi (forward jets)"),
 
-            #"dr_fj0l0" : axis.Regular(180, 0, 5, name="dr_fj0l1", label="dr between FJ and lepton"),
-            #"dr_j0fwdj1fwd" : axis.Regular(180, 0, 5, name="dr_j0fwdj1fwd", label="dr between leading two forward jets"),
-            #"dr_j0cntj1cnt" : axis.Regular(180, 0, 5, name="dr_j0cntj1cnt", label="dr between leading two central jets"),
+            "j0any_pt"  : axis.Regular(180, 0, 500, name="j0any_pt", label="j0 pt (all regular jets)"),
+            "j0any_eta" : axis.Regular(180, -5, 5, name="j0any_eta", label="j0 eta (all regular jets)"),
+            "j0any_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0any_phi", label="j0 phi (all regular jets)"),
+
+            "dr_fj0l0" : axis.Regular(180, 0, 5, name="dr_fj0l0", label="dr between FJ and lepton"),
+            "dr_j0fwdj1fwd" : axis.Regular(180, 0, 5, name="dr_j0fwdj1fwd", label="dr between leading two forward jets"),
+            "dr_j0centj1cent" : axis.Regular(180, 0, 5, name="dr_j0centj1cent", label="dr between leading two central jets"),
+            "dr_j0anyj1any" : axis.Regular(180, 0, 5, name="dr_j0anyj1any", label="dr between leading two jets"),
+
+            "mass_j0centj1cent" : axis.Regular(180, 0, 700, name="mass_j0centj1cent", label="mjj of two leading non-forward jets"),
+            "mass_j0fwdj1fwd" : axis.Regular(180, 0, 700, name="mass_j0fwdj1fwd", label="mjj of two leading forward jets"),
+            "mass_j0anyj1any" : axis.Regular(180, 0, 700, name="mass_j0anyj1any", label="mjj of two leading jets"),
 
         }
 
@@ -395,13 +401,22 @@ class AnalysisProcessor(processor.ProcessorABC):
             goodJets_ptordered_padded = ak.pad_none(goodJets_ptordered, 2)
             j0 = goodJets_ptordered_padded[:,0]
             j1 = goodJets_ptordered_padded[:,1]
-            mjj = (j0+j1).mass
+
+            goodJets_forward_ptordered = goodJets_forward[ak.argsort(goodJets_forward.pt,axis=-1,ascending=False)]
+            goodJets_forward_ptordered_padded = ak.pad_none(goodJets_forward_ptordered, 2)
+            j0forward = goodJets_forward_ptordered_padded[:,0]
+            j1forward = goodJets_forward_ptordered_padded[:,1]
+
+            goodJetsCentFwd = ak.with_name(ak.concatenate([goodJets,goodJets_forward],axis=1),'PtEtaPhiMLorentzVector')
+            goodJetsCentFwd_ptordered = goodJetsCentFwd[ak.argsort(goodJetsCentFwd.pt,axis=-1,ascending=False)]
+            goodJetsCentFwd_ptordered_padded = ak.pad_none(goodJetsCentFwd_ptordered, 2)
+            j0any = goodJetsCentFwd_ptordered_padded[:,0]
+            j1any = goodJetsCentFwd_ptordered_padded[:,1]
 
             goodfatjets_ptordered = goodfatjets[ak.argsort(goodfatjets.pt,axis=-1,ascending=False)]
             goodfatjets_ptordered_padded = ak.pad_none(goodfatjets_ptordered, 2)
             fj0 = goodfatjets_ptordered_padded[:,0]
             fj1 = goodfatjets_ptordered_padded[:,1]
-
 
             # Loose DeepJet WP
             btagger = "btag" # For deep flavor WPs
@@ -579,6 +594,14 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "j0central_eta" : j0central_eta,
                 "j0central_phi" : j0central_phi,
 
+                "j0forward_pt" : j0forward.pt,
+                "j0forward_eta" : j0forward.eta,
+                "j0forward_phi" : j0forward.phi,
+
+                "j0any_pt" : j0any.pt,
+                "j0any_eta" : j0any.eta,
+                "j0any_phi" : j0any.phi,
+
                 "nleps" : nleps,
                 "njets" : njets,
                 "nbtagsl" : nbtagsl,
@@ -603,6 +626,15 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "j0_pt" : j0.pt,
                 "j0_eta" : j0.eta,
                 "j0_phi" : j0.phi,
+
+                "dr_fj0l0" : fj0.delta_r(l0),
+                "dr_j0fwdj1fwd" : j0forward.delta_r(j1forward),
+                "dr_j0centj1cent" : j0.delta_r(j1),
+                "dr_j0anyj1any" : j0any.delta_r(j1any),
+
+                "mass_j0centj1cent" : (j0+j1).mass,
+                "mass_j0fwdj1fwd" : (j0forward+j1forward).mass,
+                "mass_j0anyj1any" : (j0any+j1any).mass,
 
             }
 
