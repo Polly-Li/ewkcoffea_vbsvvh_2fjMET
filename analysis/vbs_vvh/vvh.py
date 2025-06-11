@@ -37,11 +37,13 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Create the dense axes for the histograms
         self._dense_axes_dict = {
-            "met"   : axis.Regular(180, 0, 500, name="met",  label="met"),
+            "met"   : axis.Regular(180, 0, 1000, name="met",  label="met"),
             "metphi": axis.Regular(180, -3.1416, 3.1416, name="metphi", label="met phi"),
-            "scalarptsum_lep" : axis.Regular(180, 0, 600, name="scalarptsum_lep", label="S_T"),
-            "scalarptsum_lepmet" : axis.Regular(180, 0, 1000, name="scalarptsum_lepmet", label="S_T + metpt"),
-            "l0_pt"  : axis.Regular(180, 0, 500, name="l0_pt", label="l0_pt"),
+            "scalarptsum_jetCentFwd" : axis.Regular(180, 0, 1500, name="scalarptsum_jetCentFwd", label="H_T small radius"),
+            "scalarptsum_lep" : axis.Regular(180, 0, 800, name="scalarptsum_lep", label="S_T"),
+            "scalarptsum_lepmet" : axis.Regular(180, 0, 1200, name="scalarptsum_lepmet", label="S_T + metpt"),
+            "scalarptsum_lepmetFJ" : axis.Regular(180, 0, 1900, name="scalarptsum_lepmetFJ", label="S_T + metpt + FJ pt"),
+            "l0_pt"  : axis.Regular(180, 0, 1000, name="l0_pt", label="l0_pt"),
             "l0_eta"  : axis.Regular(180, -3,3, name="l0_eta", label="l0 eta"),
 
             #"mlb_min" : axis.Regular(180, 0, 300, name="mlb_min",  label="min mass(b+l)"),
@@ -60,32 +62,34 @@ class AnalysisProcessor(processor.ProcessorABC):
             "njets_forward"   : axis.Regular(8, 0, 8, name="njets_forward",   label="Jet multiplicity (forward)"),
             "njets_tot"   : axis.Regular(8, 0, 8, name="njets_tot",   label="Jet multiplicity (central and forward)"),
 
-            "fj0_pt"  : axis.Regular(180, 0, 900, name="fj0_pt", label="fj0 pt"),
-            "fj0_mass"  : axis.Regular(180, 0, 500, name="fj0_mass", label="fj0 mass"),
+            "fj0_pt"  : axis.Regular(180, 0, 2000, name="fj0_pt", label="fj0 pt"),
+            "fj0_mass"  : axis.Regular(180, 0, 400, name="fj0_mass", label="fj0 mass"),
             "fj0_eta" : axis.Regular(180, -5, 5, name="fj0_eta", label="fj0 eta"),
             "fj0_phi" : axis.Regular(180, -3.1416, 3.1416, name="fj0_phi", label="j0 phi"),
 
-            "j0central_pt"  : axis.Regular(180, 0, 700, name="j0central_pt", label="j0 pt (central jets)"), # Naming
+            "j0central_pt"  : axis.Regular(180, 0, 800, name="j0central_pt", label="j0 pt (central jets)"), # Naming
             "j0central_eta" : axis.Regular(180, -5, 5, name="j0central_eta", label="j0 eta (central jets)"), # Naming
             "j0central_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0central_phi", label="j0 phi (central jets)"), # Naming
 
 
-            "j0forward_pt"  : axis.Regular(180, 0, 500, name="j0forward_pt", label="j0 pt (forward jets)"),
+            "j0forward_pt"  : axis.Regular(180, 0, 800, name="j0forward_pt", label="j0 pt (forward jets)"),
             "j0forward_eta" : axis.Regular(180, -5, 5, name="j0forward_eta", label="j0 eta (forward jets)"),
             "j0forward_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0forward_phi", label="j0 phi (forward jets)"),
 
-            "j0any_pt"  : axis.Regular(180, 0, 500, name="j0any_pt", label="j0 pt (all regular jets)"),
+            "j0any_pt"  : axis.Regular(180, 0, 800, name="j0any_pt", label="j0 pt (all regular jets)"),
             "j0any_eta" : axis.Regular(180, -5, 5, name="j0any_eta", label="j0 eta (all regular jets)"),
             "j0any_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0any_phi", label="j0 phi (all regular jets)"),
 
-            "dr_fj0l0" : axis.Regular(180, 0, 5, name="dr_fj0l0", label="dr between FJ and lepton"),
-            "dr_j0fwdj1fwd" : axis.Regular(180, 0, 5, name="dr_j0fwdj1fwd", label="dr between leading two forward jets"),
-            "dr_j0centj1cent" : axis.Regular(180, 0, 5, name="dr_j0centj1cent", label="dr between leading two central jets"),
-            "dr_j0anyj1any" : axis.Regular(180, 0, 5, name="dr_j0anyj1any", label="dr between leading two jets"),
+            "dr_fj0l0" : axis.Regular(180, 0, 6, name="dr_fj0l0", label="dr between FJ and lepton"),
+            "dr_j0fwdj1fwd" : axis.Regular(180, 0, 6, name="dr_j0fwdj1fwd", label="dr between leading two forward jets"),
+            "dr_j0centj1cent" : axis.Regular(180, 0, 6, name="dr_j0centj1cent", label="dr between leading two central jets"),
+            "dr_j0anyj1any" : axis.Regular(180, 0, 6, name="dr_j0anyj1any", label="dr between leading two jets"),
 
-            "mass_j0centj1cent" : axis.Regular(180, 0, 700, name="mass_j0centj1cent", label="mjj of two leading non-forward jets"),
-            "mass_j0fwdj1fwd" : axis.Regular(180, 0, 700, name="mass_j0fwdj1fwd", label="mjj of two leading forward jets"),
-            "mass_j0anyj1any" : axis.Regular(180, 0, 700, name="mass_j0anyj1any", label="mjj of two leading jets"),
+            "mass_j0centj1cent" : axis.Regular(180, 0, 1500, name="mass_j0centj1cent", label="mjj of two leading non-forward jets"),
+            "mass_j0fwdj1fwd" : axis.Regular(180, 0, 1500, name="mass_j0fwdj1fwd", label="mjj of two leading forward jets"),
+            "mass_j0anyj1any" : axis.Regular(180, 0, 1500, name="mass_j0anyj1any", label="mjj of two leading jets"),
+
+            "mass_b0b1" : axis.Regular(180, 0, 500, name="mass_b0b1", label="mjj of two leading b jets"),
 
         }
 
@@ -275,7 +279,10 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Note: Here we will to the weights object the SFs that do not depend on any of the forthcoming loops
         weights_obj_base = coffea.analysis_tools.Weights(len(events),storeIndividual=True)
         if not isData:
-            genw = events["genWeight"]
+            if ak.any(events["LHEReweightingWeight"]):
+                genw = events["LHEReweightingWeight"][:,60]
+            else:
+                genw = events["genWeight"]
 
             # If it's an EFT sample, just take SM piece
             sm_wgt = 1.0
@@ -418,6 +425,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             fj0 = goodfatjets_ptordered_padded[:,0]
             fj1 = goodfatjets_ptordered_padded[:,1]
 
+            scalarptsum_jetCentFwd = ak.sum(goodJetsCentFwd.pt,axis=-1)
+
             # Loose DeepJet WP
             btagger = "btag" # For deep flavor WPs
             if year == "2017":
@@ -483,7 +492,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 wgt_bc    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc,    jets_bc.btagDeepFlavB>btagwpl)
 
                 wgt_btag_nom = wgt_light*wgt_bc
-                weights_obj_base_for_kinematic_syst.add("btagSF", wgt_btag_nom)
+                ##weights_obj_base_for_kinematic_syst.add("btagSF", wgt_btag_nom)
 
                 # Put the btagging up and down weight variations into the weights object
                 if self._do_systematics:
@@ -500,7 +509,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                             wgt_bc_up      = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_up,    jets_bc.btagDeepFlavB>btagwpl)
                             wgt_bc_down    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_down,    jets_bc.btagDeepFlavB>btagwpl)
                             # Note, up and down weights scaled by 1/wgt_btag_nom so that don't double count the central btag correction (i.e. don't apply it also in the case of up and down variations)
-                            weights_obj_base_for_kinematic_syst.add(f"CMS_btag_fixedWP_comb_bc_{corr_str}{year_tag}",    events.nom, wgt_light*wgt_bc_up/wgt_btag_nom, wgt_light*wgt_bc_down/wgt_btag_nom)
+                            ##weights_obj_base_for_kinematic_syst.add(f"CMS_btag_fixedWP_comb_bc_{corr_str}{year_tag}",    events.nom, wgt_light*wgt_bc_up/wgt_btag_nom, wgt_light*wgt_bc_down/wgt_btag_nom)
 
                         # Light have no correlated/uncorrelated so just use total:
                         btag_sf_light_up   = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_light","up")
@@ -508,7 +517,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                         wgt_light_up   = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light_up, jets_light.btagDeepFlavB>btagwpl)
                         wgt_light_down = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light_down, jets_light.btagDeepFlavB>btagwpl)
                         # Note, up and down weights scaled by 1/wgt_btag_nom so that don't double count the central btag correction (i.e. don't apply it also in the case of up and down variations)
-                        weights_obj_base_for_kinematic_syst.add("CMS_btag_fixedWP_incl_light_correlated", events.nom, wgt_light_up*wgt_bc/wgt_btag_nom, wgt_light_down*wgt_bc/wgt_btag_nom)
+                        ##weights_obj_base_for_kinematic_syst.add("CMS_btag_fixedWP_incl_light_correlated", events.nom, wgt_light_up*wgt_bc/wgt_btag_nom, wgt_light_down*wgt_bc/wgt_btag_nom)
 
                     # Run2 btagging systematics stuff
                     else:
@@ -527,8 +536,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                             wgt_bc_down    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_down,    jets_bc.btagDeepFlavB>btagwpl)
 
                             # Note, up and down weights scaled by 1/wgt_btag_nom so that don't double count the central btag correction (i.e. don't apply it also in the case of up and down variations)
-                            weights_obj_base_for_kinematic_syst.add(f"CMS_btag_fixedWP_incl_light_{corr_str}{year_tag}", events.nom, wgt_light_up*wgt_bc/wgt_btag_nom, wgt_light_down*wgt_bc/wgt_btag_nom)
-                            weights_obj_base_for_kinematic_syst.add(f"CMS_btag_fixedWP_comb_bc_{corr_str}{year_tag}",    events.nom, wgt_light*wgt_bc_up/wgt_btag_nom, wgt_light*wgt_bc_down/wgt_btag_nom)
+                            ##weights_obj_base_for_kinematic_syst.add(f"CMS_btag_fixedWP_incl_light_{corr_str}{year_tag}", events.nom, wgt_light_up*wgt_bc/wgt_btag_nom, wgt_light_down*wgt_bc/wgt_btag_nom)
+                            ##weights_obj_base_for_kinematic_syst.add(f"CMS_btag_fixedWP_comb_bc_{corr_str}{year_tag}",    events.nom, wgt_light*wgt_bc_up/wgt_btag_nom, wgt_light*wgt_bc_down/wgt_btag_nom)
 
 
             ######### Masks we need for the selection ##########
@@ -570,6 +579,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             scalarptsum_lep = ak.sum(l_vvh_t.pt,axis=-1)
             ##scalarptsum_lep = l0.pt + l1.pt 
             scalarptsum_lepmet = scalarptsum_lep + met.pt
+            scalarptsum_lepmetFJ = scalarptsum_lep + met.pt + fj0.pt
             #scalarptsum_lepmetjet = l0.pt + l1.pt + met.pt + ak.sum(goodJets.pt,axis=-1)
             #scalarptsum_jet = ak.sum(goodJets.pt,axis=-1)
 
@@ -579,12 +589,20 @@ class AnalysisProcessor(processor.ProcessorABC):
             mlb_min = ak.min((lb_pairs["l"] + lb_pairs["j"]).mass,axis=-1)
             mlb_max = ak.max((lb_pairs["l"] + lb_pairs["j"]).mass,axis=-1)
 
+            bjets_ptordered = bjets[ak.argsort(bjets.pt,axis=-1,ascending=False)]
+            bjets_ptordered_padded = ak.pad_none(bjets_ptordered, 2)
+            b0 = bjets_ptordered_padded[:,0]
+            b1 = bjets_ptordered_padded[:,1]
+            mass_b0b1 = (b0+b1).mass
+
             # Put the variables into a dictionary for easy access later
             dense_variables_dict = {
                 "met" : met.pt,
                 "metphi" : met.phi,
                 "scalarptsum_lep" : scalarptsum_lep,
+                "scalarptsum_jetCentFwd" : scalarptsum_jetCentFwd,
                 "scalarptsum_lepmet" : scalarptsum_lepmet,
+                "scalarptsum_lepmetFJ" : scalarptsum_lepmetFJ,
                 #"scalarptsum_lepmetjet" : scalarptsum_lepmetjet,
                 #"scalarptsum_jet" : scalarptsum_jet,
                 "l0_pt" : l0_pt,
@@ -636,6 +654,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mass_j0fwdj1fwd" : (j0forward+j1forward).mass,
                 "mass_j0anyj1any" : (j0any+j1any).mass,
 
+                "mass_b0b1" : mass_b0b1,
+
             }
 
 
@@ -657,6 +677,21 @@ class AnalysisProcessor(processor.ProcessorABC):
             selections.add("exactly1lep_exactly1fj550"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>550))
             selections.add("exactly1lep_exactly1fj550_2j" , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>550) & (njets_tot>=2))
 
+            selections.add("exactly1lep_exactly1fj_2j"       , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (njets_tot>=2))
+
+            selections.add("exactly1lep_exactly1fj1100"             , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>1100))
+            selections.add("exactly1lep_exactly1fj800_0j1j"         , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>800) & (njets_tot<=1))
+            selections.add("exactly1lep_exactly1fj700_0jcent1jcent" , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>700) & (njets<=1))
+            selections.add("exactly1lep_exactly1fj700_0j"           , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>700) & (njets_tot==0))
+
+            selections.add("exactly1lep_exactly1fj_STmet900"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>900))
+            selections.add("exactly1lep_exactly1fj_STmet1100"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>1100))
+            selections.add("exactly1lep_exactly1fj_ST600"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lep>600))
+
+            selections.add("exactly1lep_exactly1fj_STmetFjpt1000"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmetFJ>1000))
+            selections.add("exactly1lep_exactly1fj_STmetFjpt1500"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmetFJ>1500))
+            selections.add("exactly1lep_exactly1fj_STmetFjpt1700"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmetFJ>1700))
+
             cat_dict = {
                 "lep_chan_lst" : [
                     "all_events",
@@ -665,6 +700,21 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "exactly1lep_exactly1fj",
                     "exactly1lep_exactly1fj550",
                     "exactly1lep_exactly1fj550_2j",
+
+                    "exactly1lep_exactly1fj_2j",
+
+                    "exactly1lep_exactly1fj1100",
+                    "exactly1lep_exactly1fj800_0j1j",
+                    "exactly1lep_exactly1fj700_0jcent1jcent",
+                    "exactly1lep_exactly1fj700_0j",
+
+                    "exactly1lep_exactly1fj_STmet900",
+                    "exactly1lep_exactly1fj_STmet1100",
+                    "exactly1lep_exactly1fj_ST600",
+
+                    "exactly1lep_exactly1fj_STmetFjpt1000",
+                    "exactly1lep_exactly1fj_STmetFjpt1500",
+                    "exactly1lep_exactly1fj_STmetFjpt1700",
                 ]
             }
 
