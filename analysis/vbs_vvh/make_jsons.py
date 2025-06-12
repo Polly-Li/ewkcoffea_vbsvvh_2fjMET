@@ -3,6 +3,29 @@ import os
 import subprocess
 import topcoffea.modules.sample_lst_jsons_tools as sjt
 
+# Maria's unskimmed signal (uaf3)
+# /ceph/cms/store/user/mmazza/SignalGeneration/v2_merged/
+dataset_lst_sig_r2 = [
+    "VBSWWH_OS_VBSCuts_TuneCP5_RunIISummer20UL16-106X_privateMC_NANOGEN_v2",
+    "VBSWWH_OS_VBSCuts_TuneCP5_RunIISummer20UL16APV-106X_privateMC_NANOGEN_v2",
+    "VBSWWH_OS_VBSCuts_TuneCP5_RunIISummer20UL17-106X_privateMC_NANOGEN_v2",
+    "VBSWWH_OS_VBSCuts_TuneCP5_RunIISummer20UL18-106X_privateMC_NANOGEN_v2",
+    "VBSWWH_SS_VBSCuts_TuneCP5_RunIISummer20UL16-106X_privateMC_NANOGEN_v2",
+    "VBSWWH_SS_VBSCuts_TuneCP5_RunIISummer20UL16APV-106X_privateMC_NANOGEN_v2",
+    "VBSWWH_SS_VBSCuts_TuneCP5_RunIISummer20UL17-106X_privateMC_NANOGEN_v2",
+    "VBSWWH_SS_VBSCuts_TuneCP5_RunIISummer20UL18-106X_privateMC_NANOGEN_v2",
+    "VBSWZH_VBSCuts_TuneCP5_RunIISummer20UL16-106X_privateMC_NANOGEN_v2",
+    "VBSWZH_VBSCuts_TuneCP5_RunIISummer20UL16APV-106X_privateMC_NANOGEN_v2",
+    "VBSWZH_VBSCuts_TuneCP5_RunIISummer20UL17-106X_privateMC_NANOGEN_v2",
+    "VBSWZH_VBSCuts_TuneCP5_RunIISummer20UL18-106X_privateMC_NANOGEN_v2",
+    "VBSZZH_VBSCuts_TuneCP5_RunIISummer20UL16-106X_privateMC_NANOGEN_v2",
+    "VBSZZH_VBSCuts_TuneCP5_RunIISummer20UL16APV-106X_privateMC_NANOGEN_v2",
+    "VBSZZH_VBSCuts_TuneCP5_RunIISummer20UL17-106X_privateMC_NANOGEN_v2",
+    "VBSZZH_VBSCuts_TuneCP5_RunIISummer20UL18-106X_privateMC_NANOGEN_v2",
+]
+
+# Matthe's 1FJ+1lep skims (Jun 11, 2025)
+# /ceph/cms/store/user/mdittric/skim/nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2
 dataset_lst_bkg_r2 = [
     "EWKWminus2Jets_WToQQ_dipoleRecoilOn_TuneCP5_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2",
     "EWKWminus2Jets_WToQQ_dipoleRecoilOn_TuneCP5_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2",
@@ -228,8 +251,18 @@ def main():
     with open('xsec_rdf.json', 'r') as file:
         xsec_dict = json.load(file)
 
+    # Sig
+    dataset_lst = dataset_lst_sig_r2
+    out_dir = "../../input_samples/sample_jsons/vbs_vvh/sig"
+    path_to_datasets = "/ceph/cms/store/user/mmazza/SignalGeneration/v2_merged/"
+
+    # Bkg
+    #dataset_lst = dataset_lst_bkg_r2
+    #out_dir = "../../input_samples/sample_jsons/vbs_vvh/bkg"
+    #path_to_datasets = "/ceph/cms/store/user/mdittric/skim/nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2/"
+
     # Get the meta data for each dataset
-    for dataset_name in dataset_lst_bkg_r2:
+    for dataset_name in dataset_lst:
 
         # Get the short name for the sample, and the associated xsec
         match_xsec = False
@@ -244,20 +277,20 @@ def main():
             raise Exception("Failed to find xsec for sample",dataset_name)
 
         # Get the year, and assign a hist axis name
-        if "20UL16NanoAODAPVv9" in dataset_name:
+        if ("20UL16" in dataset_name) and ("APV" in dataset_name):
             year = "2016APV"
             hist_axis_name = f"UL16APV_{dataset_name_short}"
-        elif "20UL16NanoAODv9" in dataset_name:
+        elif ("20UL16" in dataset_name) and ("APV" not in dataset_name):
             year = "2016"
             hist_axis_name = f"UL16_{dataset_name_short}"
-        elif "20UL17NanoAODv9" in dataset_name:
+        elif "20UL17" in dataset_name:
             year = "2017"
             hist_axis_name = f"UL17_{dataset_name_short}"
-        elif "20UL18NanoAODv9" in dataset_name:
+        elif "20UL18" in dataset_name:
             year = "2018"
             hist_axis_name = f"UL18_{dataset_name_short}"
         else:
-            raise Exception("Unknown year")
+            raise Exception(f"Unknown year for dataseet: {dataset_name}")
 
         print(year,hist_axis_name ,dataset_xsec)
 
@@ -266,7 +299,7 @@ def main():
         sjt.make_json(
             sample_dir           = dataset_name,
             sample_name          = hist_axis_name,
-            prefix               = "/ceph/cms/store/user/mdittric/skim/nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2/",
+            prefix               = path_to_datasets,
             sample_yr            = year,
             xsec_name            = None,
             xsec_value           = str(dataset_xsec),
@@ -278,7 +311,6 @@ def main():
 
         # Save
         out_name = hist_axis_name+".json"
-        out_dir = "../../input_samples/sample_jsons/vbs_vvh/bkg"
         subprocess.run(["mv",out_name,out_dir])
 
 
