@@ -402,9 +402,7 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
     )
     fig.subplots_adjust(hspace=.07)
 
-    #plt.text(0.15,0.85, '[ttbar scaled by 0.0001]', fontsize = 12, transform=fig.transFigure)
-
-    # Plot all of the histos in histo_mc
+    # Plot the stack plot
     histo_mc.plot1d(
         stack=True,
         histtype="fill",
@@ -412,10 +410,7 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
         ax=ax1,
     )
 
-    # Plot a dummy hist on rax to get the label to show up
-    #histo_mc.plot1d(alpha=0, ax=rax)
-
-    ### Get the errs on MC and plot them by hand ###
+    # Get the errs on MC and plot them by hand on the stack plot
     histo_mc_sum = histo_mc[{"process_grp":sum}]
     mc_arr = histo_mc_sum.values()
     mc_err_arr = np.sqrt(histo_mc_sum.variances())
@@ -426,23 +421,7 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
     ax1.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', alpha=0.5, linewidth=0.0, label='MC stat', hatch='/////')
 
 
-    # Scale the axis and set labels
-    if axisrangex is not None:
-        ax1.set_xlim(axisrangex[0],axisrangex[1])
-        ax2.set_xlim(axisrangex[0],axisrangex[1])
-    #ax.legend(fontsize="12")
-    ax1.autoscale(axis='y')
-    extt = ax1.set_title(title)
-    extb = ax1.set_xlabel(None)
-    extl = ax2.set_ylabel('Shapes')
-    ax1.tick_params(axis='y', labelsize=16)
-    ax2.tick_params(axis='x', labelsize=16)
-    #ax.set_yscale('log')
-
-
-    ###################
-
-    # Get normalized versions of sig and bkg
+    # Get normalized hists of sig and bkg
     yld_sig = sum(sum(histo_mc_sig.values(flow=True)))
     yld_bkg = sum(sum(histo_mc_bkg.values(flow=True)))
     histo_mc_sig_scale_to_bkg = plt_tools.scale(copy.deepcopy(histo_mc_sig), "process_grp", {"Signal":yld_bkg/yld_sig})
@@ -451,16 +430,29 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
 
     # Plot the normalized shapes
     histo_mc_sig_scale_to_bkg.plot1d(color=["red"], ax=ax1,)
-    histo_mc_sig_norm.plot1d(color=["red"],  ax=ax2,)
-    histo_mc_bkg_norm.plot1d(color=["blue"], ax=ax2,)
+    histo_mc_sig_norm.plot1d(color="red",  ax=ax2,)
+    histo_mc_bkg_norm.plot1d(color="gray", ax=ax2,)
 
-    # Draw legend
+    # Draw legend, scale the axis, set labels, etc
     extr = ax1.legend(loc="upper left", bbox_to_anchor=(1, 1), fontsize="12", frameon=False)
     extr = ax2.legend(loc="upper left", bbox_to_anchor=(1, 1), fontsize="12", frameon=False)
+    plt.text(0.15,0.85, f"[Signal overlay scaled by {np.round(yld_bkg/yld_sig,2)}]", fontsize = 12, transform=fig.transFigure)
+
+    extt = ax1.set_title(title)
+    extb = ax1.set_xlabel(None)
+    extl = ax2.set_ylabel('Shapes')
+    ax1.tick_params(axis='y', labelsize=16)
+    ax2.tick_params(axis='x', labelsize=16)
 
     shapes_ymax = max( max(sum(histo_mc_sig_norm.values(flow=True))) , max(sum(histo_mc_bkg_norm.values(flow=True))) )
     ax2.set_ylim(0.0,1.8*shapes_ymax)
-    ax1.set_xlabel(None)
+    ax1.autoscale(axis='y')
+    #ax1.set_yscale('log')
+
+    if axisrangex is not None:
+        ax1.set_xlim(axisrangex[0],axisrangex[1])
+        ax2.set_xlim(axisrangex[0],axisrangex[1])
+
 
     return (fig,(extt,extr,extb,extl))
     ##################################################################
