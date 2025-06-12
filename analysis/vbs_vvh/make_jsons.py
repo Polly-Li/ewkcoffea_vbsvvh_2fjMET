@@ -1,4 +1,7 @@
 import json
+import os
+import subprocess
+import topcoffea.modules.sample_lst_jsons_tools as sjt
 
 dataset_lst_bkg_r2 = [
     "EWKWminus2Jets_WToQQ_dipoleRecoilOn_TuneCP5_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2",
@@ -76,10 +79,10 @@ dataset_lst_bkg_r2 = [
     "ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2",
     "ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2",
 
-    #"TTbb_4f_TTToHadronic_TuneCP5-Powheg-Openloops-Pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2",
-    #"TTbb_4f_TTToHadronic_TuneCP5-Powheg-Openloops-Pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2",
-    #"TTbb_4f_TTToHadronic_TuneCP5-Powheg-Openloops-Pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2",
-    #"TTbb_4f_TTToHadronic_TuneCP5-Powheg-Openloops-Pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2",
+    ##"TTbb_4f_TTToHadronic_TuneCP5-Powheg-Openloops-Pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2",
+    ##"TTbb_4f_TTToHadronic_TuneCP5-Powheg-Openloops-Pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2",
+    ##"TTbb_4f_TTToHadronic_TuneCP5-Powheg-Openloops-Pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2",
+    ##"TTbb_4f_TTToHadronic_TuneCP5-Powheg-Openloops-Pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2",
 
     "ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2",
     "ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2",
@@ -219,6 +222,7 @@ dataset_lst_bkg_r2 = [
     "ZZZ_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1_ext1-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2",
 ]
 
+
 def main():
 
     with open('xsec_rdf.json', 'r') as file:
@@ -242,20 +246,40 @@ def main():
         # Get the year, and assign a hist axis name
         if "20UL16NanoAODAPVv9" in dataset_name:
             year = "2016APV"
-            histAxisName = f"UL16APV_{dataset_name_short}"
+            hist_axis_name = f"UL16APV_{dataset_name_short}"
         elif "20UL16NanoAODv9" in dataset_name:
             year = "2016"
-            histAxisName = f"UL16_{dataset_name_short}"
+            hist_axis_name = f"UL16_{dataset_name_short}"
         elif "20UL17NanoAODv9" in dataset_name:
             year = "2017"
-            histAxisName = f"UL17_{dataset_name_short}"
+            hist_axis_name = f"UL17_{dataset_name_short}"
         elif "20UL18NanoAODv9" in dataset_name:
             year = "2018"
-            histAxisName = f"UL18_{dataset_name_short}"
+            hist_axis_name = f"UL18_{dataset_name_short}"
         else:
             raise Exception("Unknown year")
 
-        print(year,histAxisName,dataset_xsec)
+        print(year,hist_axis_name ,dataset_xsec)
+
+        # Make the json
+        print(f"\n\nMaking JSON for {hist_axis_name}...")
+        sjt.make_json(
+            sample_dir           = dataset_name,
+            sample_name          = hist_axis_name,
+            prefix               = "/ceph/cms/store/user/mdittric/skim/nanoaodv9_bkg_1FJ1Lep_11Jun2025_v2/",
+            sample_yr            = year,
+            xsec_name            = None,
+            xsec_value           = str(dataset_xsec),
+            hist_axis_name       = hist_axis_name,
+            era                  = None,
+            on_das               = False,
+            include_lhe_wgts_arr = True,
+        )
+
+        # Save
+        out_name = hist_axis_name+".json"
+        out_dir = "../../input_samples/sample_jsons/vbs_vvh/bkg"
+        subprocess.run(["mv",out_name,out_dir])
 
 
 
