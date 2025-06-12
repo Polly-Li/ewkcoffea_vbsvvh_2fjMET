@@ -271,7 +271,7 @@ def main():
                     histo.view(flow=True)[i] *= scale_dict.get(name,1) # Scale by 1 if the process is not ttZ or ZZ
 
                 title = f"{cat}__{var}"
-                fig,ext_tup = plt_tools.make_cr_fig(histo,title=title)
+                fig,ext_tup = plt_tools.make_vvh_fig(histo,title=title)
 
                 # Save
                 save_dir_path = "plots"

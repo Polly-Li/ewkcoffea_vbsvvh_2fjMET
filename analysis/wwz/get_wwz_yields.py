@@ -34,7 +34,8 @@ import for_jec_27_var as jecref
 #CLR_LST = ["#F09B9B","#00D091","#CDF09B"]
 #CLR_LST = ["#A39B2F"] # Only WWZ
 
-CLR_LST = ["#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"] # If need extra color, "skyblue" is nice
+CLR_LST = ["#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD","red","blue","green","orage"] # If need extra color, "skyblue" is nice
+#CLR_LST = ["#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"] # If need extra color, "skyblue" is nice
 #CLR_LST = ["#F09B9B","#00D091"] # If need extra color, "skyblue" is nice
 
 
@@ -359,10 +360,8 @@ def group(h, oldname, newname, grouping):
 
     return hnew
 
-
 # Takes a mc hist and data hist and plots both
 def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisrangex=None):
-
     # Create the figure
     fig, (ax, rax) = plt.subplots(
         nrows=2,
@@ -372,8 +371,6 @@ def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisr
         sharex=True
     )
     fig.subplots_adjust(hspace=.07)
-
-    plt.text(0.15,0.85, '[ttbar scaled by 0.001]', fontsize = 12, transform=fig.transFigure)
 
     # Plot the mc
     histo_mc.plot1d(
@@ -422,6 +419,61 @@ def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisr
         rax.scatter(bin_centers_arr,data_arr/mc_arr,facecolor='black',edgecolor='black',marker="o")
         rax.vlines(bin_centers_arr,data_ratio_err_p,data_ratio_err_m,color='k')
 
+    # Scale the axis and set labels
+    if axisrangex is not None:
+        ax.set_xlim(axisrangex[0],axisrangex[1])
+        rax.set_xlim(axisrangex[0],axisrangex[1])
+    ax.legend(fontsize="12")
+    ax.set_title(title)
+    ax.autoscale(axis='y')
+    ax.set_xlabel(None)
+    rax.set_ylabel('Ratio')
+    rax.set_ylim(0.0,2.0)
+    rax.axhline(1.0,linestyle="-",color="k",linewidth=1)
+    ax.tick_params(axis='y', labelsize=16)
+    rax.tick_params(axis='x', labelsize=16)
+    #ax.set_yscale('log')
+
+    return fig
+
+
+##################################################################
+# Make the figures for the vvh sudy
+def make_vvh_fig(histo_mc,title="test",unit_norm_bool=False,axisrangex=None):
+
+    # Create the figure
+    fig, (ax, rax) = plt.subplots(
+        nrows=2,
+        ncols=1,
+        figsize=(7,7),
+        gridspec_kw={"height_ratios": (3, 1)},
+        sharex=True
+    )
+    fig.subplots_adjust(hspace=.07)
+
+    #plt.text(0.15,0.85, '[ttbar scaled by 0.0001]', fontsize = 12, transform=fig.transFigure)
+
+    # Plot the mc
+    histo_mc.plot1d(
+        stack=True,
+        histtype="fill",
+        #color=CLR_LST,
+        ax=ax,
+    )
+
+    # Plot a dummy hist on rax to get the label to show up
+    histo_mc.plot1d(alpha=0, ax=rax)
+
+    ### Get the errs on MC and plot them by hand ###
+    histo_mc_sum = histo_mc[{"process_grp":sum}]
+    mc_arr = histo_mc_sum.values()
+    mc_err_arr = np.sqrt(histo_mc_sum.variances())
+    err_p = np.append(mc_arr + mc_err_arr, 0)
+    err_m = np.append(mc_arr - mc_err_arr, 0)
+    bin_edges_arr = histo_mc_sum.axes[0].edges
+    bin_centers_arr = histo_mc_sum.axes[0].centers
+    ax.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', alpha=0.5, linewidth=0.0, label='MC stat', hatch='/////')
+
 
     # Scale the axis and set labels
     if axisrangex is not None:
@@ -439,15 +491,17 @@ def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisr
     rax.tick_params(axis='x', labelsize=16)
     #ax.set_yscale('log')
 
-    ##################################################################
+
+    ###################
     # For the rato plot
 
     # Normalize
     norm_scale_dict = {
-        "WWH_OS" :  1.0/sum(sum(histo_mc[{"process_grp":["WWH_OS"]}].values())),
-        "WWH_SS" :  1.0/sum(sum(histo_mc[{"process_grp":["WWH_SS"]}].values())),
-        "WZH"    :  1.0/sum(sum(histo_mc[{"process_grp":["WZH"]}].values())),
-        "ZZH"    :  1.0/sum(sum(histo_mc[{"process_grp":["ZZH"]}].values())),
+        #"WWH_OS" :  1.0/sum(sum(histo_mc[{"process_grp":["WWH_OS"]}].values())),
+        #"WWH_SS" :  1.0/sum(sum(histo_mc[{"process_grp":["WWH_SS"]}].values())),
+        #"WZH"    :  1.0/sum(sum(histo_mc[{"process_grp":["WZH"]}].values())),
+        #"ZZH"    :  1.0/sum(sum(histo_mc[{"process_grp":["ZZH"]}].values())),
+        "Signal"  :  1.0/sum(sum(histo_mc[{"process_grp":["Signal"]}].values())),
         "ttbar"  :  1.0/sum(sum(histo_mc[{"process_grp":["ttbar"]}].values())),
     }
     norm_histo_mc = copy.deepcopy(histo_mc)
@@ -459,59 +513,12 @@ def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisr
     norm_histo_mc.plot1d(
         #stack=True,
         #histtype="step",
-        color=["#F09B9B","#00D091","#CDF09B","#A39B2F","dimgrey"],
+        #color=["#F09B9B","#00D091","#CDF09B","#A39B2F","dimgrey"],
         ax=rax,
         #density=False,
     )
     vals_ttbar = histo_mc[{"process_grp":["ttbar"]}].values(flow=True)[0]
     rax_ymax = np.max(vals_ttbar/sum(vals_ttbar))
-
-    # Get the sum over all sig
-    #GRP_DICT_SUM = { "sig" : [ "WWH_OS", "WWH_SS", "WZH", "ZZH", ], "ttbar" : ["ttbar"], }
-
-    ## Scale hists to sum to 1
-    #def scale_hist(histo,scale_dict):
-    #    for i, name in enumerate(histo.axes["process_grp"]):
-    #        # Scale the hist, see https://github.com/CoffeaTeam/coffea/discussions/705
-    #        histo.view(flow=True)[i] *= scale_dict.get(name,1)
-
-    #h_WWH_OS = histo_mc[{"process_grp":["WWH_OS"]}] 
-    #h_WWH_SS =  histo_mc[{"process_grp":["WWH_SS"]}]
-    #h_WZH    =  histo_mc[{"process_grp":["WZH"]}]
-    #h_ZZH    =  histo_mc[{"process_grp":["ZZH"]}]
-    #h_ttbar  =  histo_mc[{"process_grp":["ttbar"]}]
-    #h_sig    = group(histo_mc,"process_grp","process_grp_sig",GRP_DICT_SUM)[{"process_grp_sig":["sig"]}]
-
-    #scale_dict = {
-    #    "WWH_OS" : sum(h_WWH_OS.values(flow=True)[0])
-    #    "WWH_SS" : sum(h_WWH_SS.values(flow=True)[0])
-    #    "WZH" : sum(h_WZH.values(flow=True)[0])
-    #    "ZZH" : sum(h_ZZH.values(flow=True)[0])
-    #    "ttbar" : sum(ttbar.values(flow=True)[0])
-    #}
-
-    ##CLR_LST = ["#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"] # If need extra color, "skyblue" is nice
-    ## Plot an overlay
-    #histo_mc[{"process_grp":["WWH_OS"]}].plot1d( stack=True, density=True, ax=rax, color="#F09B9B", label="WWH_OS shape")
-    #histo_mc[{"process_grp":["WWH_SS"]}].plot1d( stack=True, density=True, ax=rax, color="#00D091", label="WWH_SS shape")
-    #histo_mc[{"process_grp":["WZH"]}].plot1d(    stack=True, density=True, ax=rax, color="#CDF09B", label="WZH")
-    #histo_mc[{"process_grp":["ZZH"]}].plot1d(    stack=True, density=True, ax=rax, color="#A39B2F", label="ZZH")
-    #histo_mc[{"process_grp":["ttbar"]}].plot1d(  stack=True, density=True, ax=rax, color="black",   label="ttbar shape")
-    ## Sum sig and plot that too
-    ## Super hacky
-    #print("this",histo_grp_sig)
-    #histo_grp_sig[{"process_grp_sig":["sig"]}].plot1d(stack=True, density=True, ax=rax, color="red", label="sig shape")
-
-    ## Super hacky get these to show up on main legend
-    #histo_grp_sig[{"process_grp_sig":["sig"]}].plot1d(stack=False, density=True, ax=ax, color="red", alpha=1, label="sig shape")
-    #histo_mc[{"process_grp":["ttbar"]}].plot1d(  stack=False, density=True, ax=ax, color="black",alpha=1,   label="ttbar shape")
-    #vals_sig = histo_grp_sig[{"process_grp_sig":["sig"]}].values(flow=True)[0]
-    #vals_bkg = histo_mc[{"process_grp":["ttbar"]}].values(flow=True)[0]
-    #print("s",np.max(vals_sig/sum(vals_sig)))
-    #print("b",np.max(vals_bkg/sum(vals_bkg)))
-    #rax_ymax = max(np.max(vals_sig/sum(vals_sig)), np.max(vals_bkg/sum(vals_bkg)))
-    #print("vals sig",vals_sig)
-    #print("vals bkg",vals_sig)
 
 
     #ax.legend(fontsize="12")
@@ -523,10 +530,9 @@ def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisr
     rax.set_ylim(0.0,2.2*rax_ymax)
     #rax.set_ylim(0.0,1)
     #rax.autoscale(axis='y')
-    ##################################################################
 
-    #return fig
     return (fig,(extt,extr,extb,extl))
+    ##################################################################
 
 
 # Plots a hist
