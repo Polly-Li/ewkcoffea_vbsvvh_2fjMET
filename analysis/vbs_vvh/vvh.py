@@ -292,8 +292,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Normalize by (xsec/sow)*genw where genw is 1 for EFT samples
             # Note that for theory systs, will need to multiply by sow/sow_wgtUP to get (xsec/sow_wgtUp)*genw and same for Down
-            #lumi = 1000.0*get_tc_param(f"lumi_{year}")
-            lumi = 1000.0*59.7 # Just 18
+            lumi = 1000.0*get_tc_param(f"lumi_{year}")
             weights_obj_base.add("norm",(xsec/sow)*genw*lumi*sm_wgt)
 
 
@@ -350,7 +349,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Fat jets
             goodfatjets = fatjets[os_ec.is_good_fatjet(fatjets)]
-            goodfatjets = os_ec.get_cleaned_collection(l_vvh_t,goodfatjets) # Clean against leps # TODO Should clean lets against FJs?
+            goodfatjets = os_ec.get_cleaned_collection(l_vvh_t,goodfatjets)
 
             # Clean with dr (though another option is to use jetIdx)
             cleanedJets = os_ec.get_cleaned_collection(l_vvh_t,jets) # Clean against leps
