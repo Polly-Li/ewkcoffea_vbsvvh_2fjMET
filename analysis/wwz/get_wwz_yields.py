@@ -30,14 +30,10 @@ import for_jec_27_var as jecref
 #WZ    = (163, 155, 47) #A39B2F
 #tWZ   = (205, 240, 155) #CDF09B
 #Other = (205, 205, 205) #CDCDCD
-#CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"] # If need extra color, "skyblue" is nice
+CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"] # If need extra color, "skyblue" is nice
 #CLR_LST = ["red","blue","#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD","skyblue"] # If need extra color, "skyblue" is nice
 #CLR_LST = ["#F09B9B","#00D091","#CDF09B"]
 #CLR_LST = ["#A39B2F"] # Only WWZ
-
-CLR_LST = ["#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD","red","blue","green","orage"] # If need extra color, "skyblue" is nice
-#CLR_LST = ["#F09B9B","#00D091","#CDF09B","#A39B2F","#CDCDCD"] # If need extra color, "skyblue" is nice
-#CLR_LST = ["#F09B9B","#00D091"] # If need extra color, "skyblue" is nice
 
 
 BDT_INPUT_LST = [
@@ -308,7 +304,7 @@ def print_counts(counts_dict):
     )
 
 
-################### Hist manipulation plotting ###################
+################### Hist plotting ###################
 
 # Takes a mc hist and data hist and plots both
 def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisrangex=None):
@@ -386,8 +382,6 @@ def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisr
     #ax.set_yscale('log')
 
     return fig
-
-
 
 
 # Plots a hist
