@@ -16,8 +16,9 @@ import topcoffea.modules.MakeLatexTable as mlt
 
 import ewkcoffea.modules.yield_tools as yt
 import ewkcoffea.modules.sample_groupings as sg
+import ewkcoffea.modules.plotting_tools as plt_tools
 
-import get_wwz_yields as plt_tools
+import get_wwz_yields as gwy
 
 HTML_PC = "/home/users/kmohrman/ref_scripts/html_stuff/index.php"
 
@@ -177,14 +178,8 @@ def main():
     #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/jun12_ref.pkl.gz"
     pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/tmp_full.pkl.gz"
 
-    # For the rwgt check
-    #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/check_wgt_genw.pkl.gz"
-    #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/check_wgt_sm.pkl.gz"
-    #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/check_wgt_rwgtscan.pkl.gz"
-
     # Get the counts from the input hiso
     histo_dict = pickle.load(gzip.open(pkl_file_path))
-
 
 
 
@@ -249,42 +244,49 @@ def main():
             print("\nCat:",cat)
             for var in histo_dict.keys():
                 print("\nVar:",var)
-
                 if var != "njets": continue # TMP
 
                 histo = copy.deepcopy(histo_dict[var][{"systematic":"nominal", "category":cat}])
 
+                # Clean up a bit (rebin, regroup, and handle overflow)
                 if var not in ["njets","nleps","nbtagsl","nbtagsm","njets_counts","nleps_counts","nfatjets","njets_forward","njets_tot"]:
                     histo = plt_tools.rebin(histo,6)
-
-                # Regroup
                 histo = plt_tools.group(histo,"process","process_grp",grouping_dict)
-
-                # Handle overflow
                 histo = plt_tools.merge_overflow(histo)
 
-                # Scale down bkg
+                # Get one hist of just sig and one of just bkg
+                grp_names_bkg_lst = list(grouping_dict.keys()) # All names, still need to drop signal
+                grp_names_bkg_lst.remove("Signal")
+                histo_sig = histo[{"process_grp":["Signal"]}]
+                histo_bkg = plt_tools.group(histo,"process_grp","process_grp",{"Background":grp_names_bkg_lst})
+                sig_yld = sum(sum(histo_sig.values(flow=True)))
+                bkg_yld = sum(sum(histo_bkg.values(flow=True)))
                 #scale_dict = {"ttbar" : 0.0001}
-                scale_dict = {"ttbar" : 1}
-                for i, name in enumerate(histo.axes["process_grp"]):
-                    # Scale the hist, see https://github.com/CoffeaTeam/coffea/discussions/705
-                    histo.view(flow=True)[i] *= scale_dict.get(name,1) # Scale by 1 if the process is not ttZ or ZZ
+                #histo = plt_tools.scale(histo,"process_grp",scale_dict)
 
+                # Make the figure
                 title = f"{cat}__{var}"
-                fig,ext_tup = plt_tools.make_vvh_fig(histo,title=title)
+                fig,ext_tup = gwy.make_vvh_fig(
+                    histo_mc = histo,
+                    histo_mc_sig = histo_sig,
+                    histo_mc_bkg = histo_bkg,
+                    title=title
+                )
 
                 # Save
                 save_dir_path = "plots"
                 save_dir_path_cat = os.path.join(save_dir_path,cat)
                 if not os.path.exists(save_dir_path_cat): os.mkdir(save_dir_path_cat)
-                #fig.savefig(os.path.join(save_dir_path_cat,title+".pdf"))
-                #fig.savefig(os.path.join(save_dir_path_cat,title+".png"))
                 fig.savefig(os.path.join(save_dir_path_cat,title+".png"),bbox_extra_artists=ext_tup,bbox_inches='tight')
                 shutil.copyfile(HTML_PC, os.path.join(save_dir_path_cat,"index.php"))
 
 
     ##### Sanity check of the different reweight points (for a hist that has extra axis to store that) ####
     if check_rwgt:
+
+        #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/check_wgt_genw.pkl.gz"
+        #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/check_wgt_sm.pkl.gz"
+        #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/check_wgt_rwgtscan.pkl.gz"
 
         var_name = "njets"
         #var_name = "njets_counts"
