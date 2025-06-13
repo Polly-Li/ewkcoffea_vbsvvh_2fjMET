@@ -1,0 +1,33 @@
+{
+    "xsec": "185300000",
+    "year": "2016APV",
+    "treeName": "Events",
+    "histAxisName": "UL16APV_QCD_HT50to100",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "QCD_HT50to100_TuneCP5_PSWeights_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_6.root",
+        "QCD_HT50to100_TuneCP5_PSWeights_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_5.root",
+        "QCD_HT50to100_TuneCP5_PSWeights_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_7.root",
+        "QCD_HT50to100_TuneCP5_PSWeights_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_1.root",
+        "QCD_HT50to100_TuneCP5_PSWeights_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_4.root",
+        "QCD_HT50to100_TuneCP5_PSWeights_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_3.root",
+        "QCD_HT50to100_TuneCP5_PSWeights_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_2.root"
+    ],
+    "nEvents": 0,
+    "nGenEvents": 12233035,
+    "nSumOfWeights": 12233035.0,
+    "isData": false,
+    "path": "QCD_HT50to100_TuneCP5_PSWeights_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2",
+    "nSumOfLheWeights": [
+        11960879.01362149,
+        14068629.354115542,
+        15773986.419906022,
+        10401363.42896071,
+        12233035.0,
+        13715081.772362765,
+        9210387.37978993,
+        10831479.74426267,
+        12143180.53433913
+    ]
+}

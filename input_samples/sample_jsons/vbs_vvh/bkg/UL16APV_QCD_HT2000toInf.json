@@ -1,0 +1,27 @@
+{
+    "xsec": "20.2",
+    "year": "2016APV",
+    "treeName": "Events",
+    "histAxisName": "UL16APV_QCD_HT2000toInf",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "QCD_HT2000toInf_TuneCP5_PSWeights_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_1.root"
+    ],
+    "nEvents": 13046,
+    "nGenEvents": 1629000,
+    "nSumOfWeights": 1629000.0,
+    "isData": false,
+    "path": "QCD_HT2000toInf_TuneCP5_PSWeights_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2",
+    "nSumOfLheWeights": [
+        2023357.8683744862,
+        1762868.4962734939,
+        1551917.321638993,
+        1869704.6528625574,
+        1629000.0,
+        1434069.9236257712,
+        1738086.3374997182,
+        1514328.6179611639,
+        1333121.8423501123
+    ]
+}

@@ -1,0 +1,29 @@
+{
+    "xsec": "2549.0",
+    "year": "2018",
+    "treeName": "Events",
+    "histAxisName": "UL18_WJetsToQQ_HT-200to400",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "WJetsToQQ_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_1.root",
+        "WJetsToQQ_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_3.root",
+        "WJetsToQQ_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_2.root"
+    ],
+    "nEvents": 30,
+    "nGenEvents": 14494966,
+    "nSumOfWeights": 14494966.0,
+    "isData": false,
+    "path": "WJetsToQQ_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2",
+    "nSumOfLheWeights": [
+        15200155.205898894,
+        15142007.278090162,
+        14990486.841280185,
+        14545575.227829996,
+        14494966.0,
+        14353853.472531257,
+        14012545.0009516,
+        13968019.140506074,
+        13835331.732487652
+    ]
+}

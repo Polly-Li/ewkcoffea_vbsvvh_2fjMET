@@ -1,0 +1,28 @@
+{
+    "xsec": "2.207",
+    "year": "2017",
+    "treeName": "Events",
+    "histAxisName": "UL17_VHToNonbb_M125",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "VHToNonbb_M125_TuneCP5_13TeV-amcatnloFXFX_madspin_pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_1.root",
+        "VHToNonbb_M125_TuneCP5_13TeV-amcatnloFXFX_madspin_pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_2.root"
+    ],
+    "nEvents": 11045,
+    "nGenEvents": 869559,
+    "nSumOfWeights": 5066302.999084999,
+    "isData": false,
+    "path": "VHToNonbb_M125_TuneCP5_13TeV-amcatnloFXFX_madspin_pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2",
+    "nSumOfLheWeights": [
+        5195059.968156226,
+        5258318.303511068,
+        5338160.920116766,
+        5008768.945042911,
+        5066302.999084998,
+        5131331.68783575,
+        4807268.581346004,
+        4862229.006334432,
+        4918958.613929797
+    ]
+}

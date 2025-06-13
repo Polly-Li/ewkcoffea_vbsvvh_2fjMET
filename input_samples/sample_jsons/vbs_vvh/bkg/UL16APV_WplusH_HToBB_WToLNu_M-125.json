@@ -1,0 +1,29 @@
+{
+    "xsec": "0.08487599411",
+    "year": "2016APV",
+    "treeName": "Events",
+    "histAxisName": "UL16APV_WplusH_HToBB_WToLNu_M-125",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "WplusH_HToBB_WToLNu_M-125_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_1.root",
+        "WplusH_HToBB_WToLNu_M-125_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_3.root",
+        "WplusH_HToBB_WToLNu_M-125_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_2.root"
+    ],
+    "nEvents": 37305,
+    "nGenEvents": 2627730,
+    "nSumOfWeights": 745714.0028800002,
+    "isData": false,
+    "path": "WplusH_HToBB_WToLNu_M-125_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2",
+    "nSumOfLheWeights": [
+        771353.6873334838,
+        765528.576261295,
+        756816.0373092312,
+        722397.1335365773,
+        745714.0028800002,
+        763002.772333709,
+        689198.3308093663,
+        720712.501157729,
+        745397.8685711778
+    ]
+}

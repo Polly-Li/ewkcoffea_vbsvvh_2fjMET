@@ -1,0 +1,29 @@
+{
+    "xsec": "10.72",
+    "year": "2016",
+    "treeName": "Events",
+    "histAxisName": "UL16_EWKZ2Jets_ZToNuNu_M-50",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "EWKZ2Jets_ZToNuNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_1.root",
+        "EWKZ2Jets_ZToNuNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_3.root",
+        "EWKZ2Jets_ZToNuNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_2.root"
+    ],
+    "nEvents": 318,
+    "nGenEvents": 1500000,
+    "nSumOfWeights": 1500000.0,
+    "isData": false,
+    "path": "EWKZ2Jets_ZToNuNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2",
+    "nSumOfLheWeights": [
+        1455475.4761583426,
+        1500000.0,
+        1531878.7748384816,
+        1455475.4761583426,
+        1500000.0,
+        1531878.7748384816,
+        1455475.4761583426,
+        1500000.0,
+        1531878.7748384816
+    ]
+}

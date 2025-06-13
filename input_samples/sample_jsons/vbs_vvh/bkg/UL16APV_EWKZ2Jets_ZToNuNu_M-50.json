@@ -1,0 +1,29 @@
+{
+    "xsec": "10.72",
+    "year": "2016APV",
+    "treeName": "Events",
+    "histAxisName": "UL16APV_EWKZ2Jets_ZToNuNu_M-50",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "EWKZ2Jets_ZToNuNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_1.root",
+        "EWKZ2Jets_ZToNuNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_3.root",
+        "EWKZ2Jets_ZToNuNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2/output_2.root"
+    ],
+    "nEvents": 276,
+    "nGenEvents": 1450000,
+    "nSumOfWeights": 1450000.0,
+    "isData": false,
+    "path": "EWKZ2Jets_ZToNuNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8_RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v2_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_12Jun2025_v2",
+    "nSumOfLheWeights": [
+        1406852.7992504623,
+        1450000.0,
+        1480916.2243341613,
+        1406852.7992504623,
+        1450000.0,
+        1480916.2243341613,
+        1406852.7992504623,
+        1450000.0,
+        1480916.2243341613
+    ]
+}
