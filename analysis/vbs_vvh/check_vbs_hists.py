@@ -38,7 +38,7 @@ GRP_DICT_FULL = {
         "QCD_HT200to300",
         "QCD_HT300to500",
         "QCD_HT500to700",
-        "QCD_HT50to100",
+        ##"QCD_HT50to100", # Has a spike
         "QCD_HT700to1000",
     ],
 
@@ -130,13 +130,12 @@ GRP_DICT_SUM = {
 
 #cat_lst = ["all_events", "filters", "exactly1lep"]
 CAT_LST = [
-    "all_events",
+    #"all_events",
     #"filters",
-    "exactly1lep",
+    #"exactly1lep",
     "exactly1lep_exactly1fj",
     #"exactly1lep_exactly1fj550",
     #"exactly1lep_exactly1fj550_2j",
-
     #"exactly1lep_exactly1fj_2j",
 
     #"exactly1lep_exactly1fj1100",
@@ -145,7 +144,7 @@ CAT_LST = [
     #"exactly1lep_exactly1fj700_0j",
 
     #"exactly1lep_exactly1fj_STmet900",
-    "exactly1lep_exactly1fj_STmet1100",
+    #"exactly1lep_exactly1fj_STmet1100",
     #"exactly1lep_exactly1fj_ST600",
 
     #"exactly1lep_exactly1fj_STmetFjpt1000",
@@ -164,7 +163,8 @@ def append_years(sample_dict_base,year_lst):
                 out_dict[proc_group].append(f"{year_str}_{proc_base_name}")
     return out_dict
 
-##################################################################
+
+
 # Make the figures for the vvh sudy
 def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None):
 
@@ -233,14 +233,126 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
 
 
     return (fig,(extt,extr,extb,extl))
-    ##################################################################
+
+
+
+##########################################################################################################
+### Main wrapper functions for each of the main functionalities (probably should be different scripts) ###
+
+
+#### Sanity check of the different reweight points (for a hist that has extra axis to store that) ####
+def check_rwgt():
+
+    #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/check_wgt_genw.pkl.gz"
+    #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/check_wgt_sm.pkl.gz"
+    #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/check_wgt_rwgtscan.pkl.gz"
+
+    var_name = "njets"
+    #var_name = "njets_counts"
+    cat = "exactly1lep_exactly1fj_STmet1100"
+
+    #cat_yld = sum(sum(histo_dict[var_name][{"systematic":"nominal", "category":cat}].values(flow=True)))
+    #cat_err = (sum(sum(histo_dict[var_name][{"systematic":"nominal", "category":cat}].variances(flow=True))))**0.5
+    #print(cat_yld, cat_err)
+    #exit()
+
+    wgts = []
+    for i in range(120):
+        idx_name = f"idx{i}"
+        cat_yld = sum(sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "rwgtidx":idx_name}].values(flow=True)))
+        cat_err = (sum(sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "rwgtidx":idx_name}].variances(flow=True))))**0.5
+        wgts.append(cat_yld)
+        print(i,cat_yld)
+
+    print(min(wgts))
+
+
+
+### Print the yields ###
+def print_yields(histo_dict,roundat=None):
+
+    var_name = "njets" # For yields
+    #var_name = "njets_counts" # If you want counts
+
+    # Get list of signal and bkg processes
+    grouping_dict = append_years(GRP_DICT_FULL,["UL16APV","UL16","UL17","UL18"])
+    sig_lst = grouping_dict["Signal"]
+    bkg_lst = []
+    for grp in grouping_dict:
+        if grp != "Signal":
+            bkg_lst = bkg_lst + grouping_dict[grp]
+
+    # Loop over cats and print yields
+    for cat in CAT_LST:
+
+        histo_base = histo_dict[var_name][{"systematic":"nominal", "category":cat}]
+        histo_sig = plt_tools.group(histo_base,"process","process",{"Signal":sig_lst})
+        histo_bkg = plt_tools.group(histo_base,"process","process",{"Background":bkg_lst})
+        yld_sig = sum(sum(histo_sig.values(flow=True)))
+        yld_bkg = sum(sum(histo_bkg.values(flow=True)))
+        var_sig = sum(sum(histo_sig.variances(flow=True)))
+        var_bkg = sum(sum(histo_bkg.variances(flow=True)))
+        perr_sig = 100*(((var_sig)**0.5)/yld_sig)
+        perr_bkg = 100*(((var_bkg)**0.5)/yld_bkg)
+        metric = yld_sig/(yld_bkg)**0.5
+        print(f"\n{cat}")
+        if roundat is not None:
+            print(f"{np.round(yld_sig,roundat)} +- {np.round(perr_sig,2)}%")
+            print(f"{np.round(yld_bkg,roundat)} +- {np.round(perr_bkg,2)}%")
+        else:
+            print(f"{yld_sig} +- {np.round(perr_sig,2)}%")
+            print(f"{yld_bkg} +- {np.round(perr_bkg,2)}%")
+        print(f"  ->{np.round(metric,3)}")
+
+
+
+### Make the plots ###
+def make_plots(histo_dict):
+
+    #cat_lst = ["exactly1lep_exactly1fj", "exactly1lep_exactly1fj550", "exactly1lep_exactly1fj550_2j", "exactly1lep_exactly1fj_2j"]
+
+    grouping_dict = append_years(GRP_DICT_FULL,["UL16APV","UL16","UL17","UL18"])
+    #grouping_dict = append_years(GRP_DICT_FULL,["UL18"])
+
+    for cat in CAT_LST:
+        print("\nCat:",cat)
+        for var in histo_dict.keys():
+            print("\nVar:",var)
+            #if var not in ["njets","njets_counts","scalarptsum_lepmet"]: continue # TMP
+
+            histo = copy.deepcopy(histo_dict[var][{"systematic":"nominal", "category":cat}])
+
+            # Clean up a bit (rebin, regroup, and handle overflow)
+            if var not in ["njets","nleps","nbtagsl","nbtagsm","njets_counts","nleps_counts","nfatjets","njets_forward","njets_tot"]:
+                histo = plt_tools.rebin(histo,6)
+            histo = plt_tools.group(histo,"process","process_grp",grouping_dict)
+            histo = plt_tools.merge_overflow(histo)
+
+            # Get one hist of just sig and one of just bkg
+            grp_names_bkg_lst = list(grouping_dict.keys()) # All names, still need to drop signal
+            grp_names_bkg_lst.remove("Signal")
+            histo_sig = histo[{"process_grp":["Signal"]}]
+            histo_bkg = plt_tools.group(histo,"process_grp","process_grp",{"Background":grp_names_bkg_lst})
+
+            # Make the figure
+            title = f"{cat}__{var}"
+            fig,ext_tup = make_vvh_fig(
+                histo_mc = histo,
+                histo_mc_sig = histo_sig,
+                histo_mc_bkg = histo_bkg,
+                title=title
+            )
+
+            # Save
+            save_dir_path = "plots"
+            save_dir_path_cat = os.path.join(save_dir_path,cat)
+            if not os.path.exists(save_dir_path_cat): os.mkdir(save_dir_path_cat)
+            fig.savefig(os.path.join(save_dir_path_cat,title+".png"),bbox_extra_artists=ext_tup,bbox_inches='tight')
+            shutil.copyfile(HTML_PC, os.path.join(save_dir_path_cat,"index.php"))
+
 
 
 def main():
-
-    get_ylds = 0
-    make_plots = 1
-    check_rwgt = 0
 
     pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/tmp_full.pkl.gz"
     #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/tmp_small.pkl.gz"
@@ -248,159 +360,16 @@ def main():
     # Get the counts from the input hiso
     histo_dict = pickle.load(gzip.open(pkl_file_path))
 
+    # Print total raw events
+    tot_raw = sum(sum(histo_dict["njets_counts"][{"systematic":"nominal", "category":"all_events"}].values(flow=True)))
+    print("Tot raw events:",tot_raw)
+    #exit()
 
 
-    #### Print the yields ####
-    if get_ylds:
-
-        var_name = "njets"
-        #var_name = "njets_counts"
-
-        tot_raw = sum(sum(histo_dict["njets_counts"][{"systematic":"nominal", "category":"all_events"}].values(flow=True)))
-        print("Tot raw events:",tot_raw)
-        #exit()
-
-        for cat in CAT_LST:
-
-            '''
-            cat_yld = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat}].values(flow=True))
-            cat_yld_raw = sum(histo_dict["njets_counts"][{"systematic":"nominal", "category":cat}].values(flow=True))
-
-            yld_sig_WWH_OS = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWWH_OS_VBSCuts"}].values(flow=True))
-            yld_sig_WWH_SS = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWWH_SS_VBSCuts"}].values(flow=True))
-            yld_sig_WZH    = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWZH_VBSCuts"}].values(flow=True))
-            yld_sig_ZZH    = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSZZH_VBSCuts"}].values(flow=True))
-            yld_bkg_ttbar  = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_TTToSemiLeptonic"}].values(flow=True))
-
-            sumw2_sig_WWH_OS = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWWH_OS_VBSCuts"}].variances(flow=True))
-            sumw2_sig_WWH_SS = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWWH_SS_VBSCuts"}].variances(flow=True))
-            sumw2_sig_WZH    = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWZH_VBSCuts"}].variances(flow=True))
-            sumw2_sig_ZZH    = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSZZH_VBSCuts"}].variances(flow=True))
-            sumw2_bkg_ttbar  = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_TTToSemiLeptonic"}].variances(flow=True))
-
-            yld_sig = yld_sig_WWH_OS + yld_sig_WWH_SS + yld_sig_WZH + yld_sig_ZZH
-            yld_bkg = yld_bkg_ttbar
-            #metric = yld_sig/(yld_bkg**0.5)
-
-            sumw2_sig = sumw2_sig_WWH_OS + sumw2_sig_WWH_SS + sumw2_sig_WZH + sumw2_sig_ZZH
-            sumw2_bkg = sumw2_bkg_ttbar
-
-            #print(yld_sig_WWH_OS)
-            #print(yld_sig_WWH_SS)
-            #print(yld_sig_WZH)
-            #print(yld_sig_ZZH)
-            #print(metric)
-
-            perr_sig = 100*(((sumw2_sig)**0.5)/yld_sig)
-            perr_bkg = 100*(((sumw2_bkg)**0.5)/yld_bkg)
-            print("\n",cat)
-            print(f"{yld_sig} +- {np.round(perr_sig,2)}%")
-            print(f"{yld_bkg} +- {np.round(perr_bkg,2)}%")
-            #print(f"{cat}: {yld_sig}")
-            #print(f"{cat}: {yld_bkg}")
-            '''
-
-            #############################
-
-            # Get list of signal and bkg processes
-            grouping_dict = append_years(GRP_DICT_FULL,["UL16APV","UL16","UL17","UL18"])
-            sig_lst = grouping_dict["Signal"]
-            bkg_lst = []
-            for grp in grouping_dict:
-                if grp != "Signal":
-                    bkg_lst = bkg_lst + grouping_dict[grp]
-
-            histo_base = histo_dict[var_name][{"systematic":"nominal", "category":cat}]
-            histo_sig = plt_tools.group(histo_base,"process","process",{"Signal":sig_lst})
-            histo_bkg = plt_tools.group(histo_base,"process","process",{"Background":bkg_lst})
-            yld_sig = sum(sum(histo_sig.values(flow=True)))
-            yld_bkg = sum(sum(histo_bkg.values(flow=True)))
-            var_sig = sum(sum(histo_sig.variances(flow=True)))
-            var_bkg = sum(sum(histo_bkg.variances(flow=True)))
-            perr_sig = 100*(((var_sig)**0.5)/yld_sig)
-            perr_bkg = 100*(((var_bkg)**0.5)/yld_bkg)
-            print("\n",cat)
-            print(f"{yld_sig} +- {np.round(perr_sig,2)}%")
-            print(f"{yld_bkg} +- {np.round(perr_bkg,2)}%")
-
-            #############################
-
-
-    #### Make the plots ####
-    if make_plots:
-
-        #cat_lst = ["exactly1lep_exactly1fj", "exactly1lep_exactly1fj550", "exactly1lep_exactly1fj550_2j", "exactly1lep_exactly1fj_2j"]
-
-        #grouping_dict = append_years(GRP_DICT_FULL,["UL16APV","UL16","UL17","UL18"])
-        grouping_dict = append_years(GRP_DICT_FULL,["UL18"])
-        #grouping_dict = GRP_DICT_SUM
-
-        for cat in CAT_LST:
-            print("\nCat:",cat)
-            for var in histo_dict.keys():
-                print("\nVar:",var)
-                if var not in ["njets","njets_counts","scalarptsum_lepmet"]: continue # TMP
-
-                #print("this",histo_dict[var])
-
-                histo = copy.deepcopy(histo_dict[var][{"systematic":"nominal", "category":cat}])
-
-                # Clean up a bit (rebin, regroup, and handle overflow)
-                if var not in ["njets","nleps","nbtagsl","nbtagsm","njets_counts","nleps_counts","nfatjets","njets_forward","njets_tot"]:
-                    histo = plt_tools.rebin(histo,6)
-                histo = plt_tools.group(histo,"process","process_grp",grouping_dict)
-                histo = plt_tools.merge_overflow(histo)
-
-                # Get one hist of just sig and one of just bkg
-                grp_names_bkg_lst = list(grouping_dict.keys()) # All names, still need to drop signal
-                grp_names_bkg_lst.remove("Signal")
-                histo_sig = histo[{"process_grp":["Signal"]}]
-                histo_bkg = plt_tools.group(histo,"process_grp","process_grp",{"Background":grp_names_bkg_lst})
-
-                # Make the figure
-                title = f"{cat}__{var}"
-                fig,ext_tup = make_vvh_fig(
-                    histo_mc = histo,
-                    histo_mc_sig = histo_sig,
-                    histo_mc_bkg = histo_bkg,
-                    title=title
-                )
-
-                # Save
-                save_dir_path = "plots"
-                save_dir_path_cat = os.path.join(save_dir_path,cat)
-                if not os.path.exists(save_dir_path_cat): os.mkdir(save_dir_path_cat)
-                fig.savefig(os.path.join(save_dir_path_cat,title+".png"),bbox_extra_artists=ext_tup,bbox_inches='tight')
-                shutil.copyfile(HTML_PC, os.path.join(save_dir_path_cat,"index.php"))
-
-
-    ##### Sanity check of the different reweight points (for a hist that has extra axis to store that) ####
-    if check_rwgt:
-
-        #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/check_wgt_genw.pkl.gz"
-        #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/check_wgt_sm.pkl.gz"
-        #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/check_wgt_rwgtscan.pkl.gz"
-
-        var_name = "njets"
-        #var_name = "njets_counts"
-        cat = "exactly1lep_exactly1fj_STmet1100"
-
-        #cat_yld = sum(sum(histo_dict[var_name][{"systematic":"nominal", "category":cat}].values(flow=True)))
-        #cat_err = (sum(sum(histo_dict[var_name][{"systematic":"nominal", "category":cat}].variances(flow=True))))**0.5
-        #print(cat_yld, cat_err)
-        #exit()
-
-        wgts = []
-        for i in range(120):
-            idx_name = f"idx{i}"
-            cat_yld = sum(sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "rwgtidx":idx_name}].values(flow=True)))
-            cat_err = (sum(sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "rwgtidx":idx_name}].variances(flow=True))))**0.5
-            wgts.append(cat_yld)
-            print(i,cat_yld)
-
-        print(min(wgts))
-
-
+    # Which main function to run
+    #check_rwgt(histo_dict)
+    #print_yields(histo_dict,roundat=4)
+    make_plots(histo_dict)
 
 
 main()
