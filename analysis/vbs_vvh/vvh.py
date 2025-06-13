@@ -37,13 +37,13 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Create the dense axes for the histograms
         self._dense_axes_dict = {
-            "met"   : axis.Regular(180, 0, 1000, name="met",  label="met"),
+            "met"   : axis.Regular(180, 0, 2000, name="met",  label="met"),
             "metphi": axis.Regular(180, -3.1416, 3.1416, name="metphi", label="met phi"),
-            "scalarptsum_jetCentFwd" : axis.Regular(180, 0, 1500, name="scalarptsum_jetCentFwd", label="H_T small radius"),
-            "scalarptsum_lep" : axis.Regular(180, 0, 800, name="scalarptsum_lep", label="S_T"),
-            "scalarptsum_lepmet" : axis.Regular(180, 0, 1200, name="scalarptsum_lepmet", label="S_T + metpt"),
-            "scalarptsum_lepmetFJ" : axis.Regular(180, 0, 1900, name="scalarptsum_lepmetFJ", label="S_T + metpt + FJ pt"),
-            "l0_pt"  : axis.Regular(180, 0, 1000, name="l0_pt", label="l0_pt"),
+            "scalarptsum_jetCentFwd" : axis.Regular(180, 0, 2000, name="scalarptsum_jetCentFwd", label="H_T small radius"),
+            "scalarptsum_lep" : axis.Regular(180, 0, 2000, name="scalarptsum_lep", label="S_T"),
+            "scalarptsum_lepmet" : axis.Regular(180, 0, 2000, name="scalarptsum_lepmet", label="S_T + metpt"),
+            "scalarptsum_lepmetFJ" : axis.Regular(180, 0, 2000, name="scalarptsum_lepmetFJ", label="S_T + metpt + FJ pt"),
+            "l0_pt"  : axis.Regular(180, 0, 2000, name="l0_pt", label="l0_pt"),
             "l0_eta"  : axis.Regular(180, -3,3, name="l0_eta", label="l0 eta"),
 
             #"mlb_min" : axis.Regular(180, 0, 300, name="mlb_min",  label="min mass(b+l)"),
@@ -63,20 +63,21 @@ class AnalysisProcessor(processor.ProcessorABC):
             "njets_tot"   : axis.Regular(8, 0, 8, name="njets_tot",   label="Jet multiplicity (central and forward)"),
 
             "fj0_pt"  : axis.Regular(180, 0, 2000, name="fj0_pt", label="fj0 pt"),
-            "fj0_mass"  : axis.Regular(180, 0, 400, name="fj0_mass", label="fj0 mass"),
+            "fj0_mass"  : axis.Regular(180, 0, 800, name="fj0_mass", label="fj0 mass"),
+            "fj0_msoftdrop"  : axis.Regular(180, 0, 800, name="fj0_msoftdrop", label="fj0 softdrop mass"),
             "fj0_eta" : axis.Regular(180, -5, 5, name="fj0_eta", label="fj0 eta"),
             "fj0_phi" : axis.Regular(180, -3.1416, 3.1416, name="fj0_phi", label="j0 phi"),
 
-            "j0central_pt"  : axis.Regular(180, 0, 800, name="j0central_pt", label="j0 pt (central jets)"), # Naming
+            "j0central_pt"  : axis.Regular(180, 0, 2000, name="j0central_pt", label="j0 pt (central jets)"), # Naming
             "j0central_eta" : axis.Regular(180, -5, 5, name="j0central_eta", label="j0 eta (central jets)"), # Naming
             "j0central_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0central_phi", label="j0 phi (central jets)"), # Naming
 
 
-            "j0forward_pt"  : axis.Regular(180, 0, 800, name="j0forward_pt", label="j0 pt (forward jets)"),
+            "j0forward_pt"  : axis.Regular(180, 0, 500, name="j0forward_pt", label="j0 pt (forward jets)"),
             "j0forward_eta" : axis.Regular(180, -5, 5, name="j0forward_eta", label="j0 eta (forward jets)"),
             "j0forward_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0forward_phi", label="j0 phi (forward jets)"),
 
-            "j0any_pt"  : axis.Regular(180, 0, 800, name="j0any_pt", label="j0 pt (all regular jets)"),
+            "j0any_pt"  : axis.Regular(180, 0, 2000, name="j0any_pt", label="j0 pt (all regular jets)"),
             "j0any_eta" : axis.Regular(180, -5, 5, name="j0any_eta", label="j0 eta (all regular jets)"),
             "j0any_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0any_phi", label="j0 phi (all regular jets)"),
 
@@ -210,7 +211,8 @@ class AnalysisProcessor(processor.ProcessorABC):
         if (is2022 or is2023):
             rho = events.Rho.fixedGridRhoFastjetAll
         else:
-            rho = events.fixedGridRhoFastjetAll
+            #rho = events.fixedGridRhoFastjetAll
+            rho = None # TEMPORARY FIXME TODO
 
         # Assigns some original values that will be changed via kinematic corrections
         met["pt_original"] = met.pt
@@ -379,8 +381,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             cleanedJets["rho"] = ak.broadcast_arrays(rho, cleanedJets.pt)[0]
 
             events_cache = events.caches[0] # used for storing intermediary values for corrections
-            cleanedJets = cor_ec.ApplyJetCorrections(year,isData, era).build(cleanedJets,lazy_cache=events_cache)
-            cleanedJets = cor_ec.ApplyJetSystematics(year,cleanedJets,obj_corr_syst_var)
+            #cleanedJets = cor_ec.ApplyJetCorrections(year,isData, era).build(cleanedJets,lazy_cache=events_cache) # TODO FIXME turn back on
+            #cleanedJets = cor_ec.ApplyJetSystematics(year,cleanedJets,obj_corr_syst_var) # TODO FIXME turn back on
 
             # Grab the correctable jets
             correctionJets = os_ec.get_correctable_jets(cleanedJets)
@@ -637,6 +639,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "njets_tot" : njets_tot,
                 "fj0_pt" : fj0.pt,
                 "fj0_mass" : fj0.mass,
+                "fj0_msoftdrop" : fj0.msoftdrop,
                 "fj0_eta" : fj0.eta,
                 "fj0_phi" : fj0.phi,
 
@@ -764,7 +767,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
                         # Skip filling if this variable is not relevant for this selection
                         if (dense_axis_name in exclude_var_dict) and (sr_cat in exclude_var_dict[dense_axis_name]): continue
-                        if (dense_axis_name not in ["njets","njets_counts"]) and (sr_cat in ["all_events","filters","exactly1lep"]): continue # TMP TODO, only fill njets for the cats that dont have all objects
+                        #if (dense_axis_name not in ["njets","njets_counts"]) and (sr_cat in ["all_events","filters","exactly1lep"]): continue # TMP TODO, only fill njets for the cats that dont have all objects
 
                         # If this is a counts hist, forget the weights and just fill with unit weights
                         if dense_axis_name.endswith("_counts"): weight = events.nom
