@@ -111,10 +111,10 @@ GRP_DICT_FULL = {
 
 
 GRP_DICT_INDIV = {
-    "WWH_OS" : ["UL18_VBSWWH_OS"],
-    "WWH_SS" : ["UL18_VBSWWH_SS"],
-    "WZH" : ["UL18_VBSWZH"],
-    "ZZH" : ["UL18_VBSZZH"],
+    "WWH_OS" : ["UL18_VBSWWH_OS_VBSCuts"],
+    "WWH_SS" : ["UL18_VBSWWH_SS_VBSCuts"],
+    "WZH" : ["UL18_VBSWZH_VBSCuts"],
+    "ZZH" : ["UL18_VBSZZH_VBSCuts"],
     "ttbar" : ["UL18_TTToSemiLeptonic"],
 }
 
@@ -131,7 +131,7 @@ GRP_DICT_SUM = {
 #cat_lst = ["all_events", "filters", "exactly1lep"]
 CAT_LST = [
     "all_events",
-    "filters",
+    #"filters",
     "exactly1lep",
     "exactly1lep_exactly1fj",
     #"exactly1lep_exactly1fj550",
@@ -212,7 +212,9 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
     # Draw legend, scale the axis, set labels, etc
     extr = ax1.legend(loc="upper left", bbox_to_anchor=(1, 1), fontsize="12", frameon=False)
     extr = ax2.legend(loc="upper left", bbox_to_anchor=(1, 1), fontsize="12", frameon=False)
-    plt.text(0.15,0.85, f"[Signal overlay scaled by {np.round(yld_bkg/yld_sig,2)}]", fontsize = 12, transform=fig.transFigure)
+    plt.text(0.15,0.85, f"Sig. yield: {np.round(yld_sig,2)}", fontsize = 12, transform=fig.transFigure)
+    plt.text(0.15,0.82, f"Bkg. yield: {np.round(yld_bkg,2)}", fontsize = 12, transform=fig.transFigure)
+    plt.text(0.15,0.79, f"[Note: sig. overlay scaled {np.round(yld_bkg/yld_sig,1)}x]", fontsize = 12, transform=fig.transFigure)
 
     extt = ax1.set_title(title)
     extb = ax1.set_xlabel(None)
@@ -240,11 +242,8 @@ def main():
     make_plots = 1
     check_rwgt = 0
 
-    # Regular histos
-    #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/tmp_vvh_plots_8.pkl.gz"
-    #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/tmp.pkl.gz"
-    #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/jun12_ref.pkl.gz"
     pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/tmp_full.pkl.gz"
+    #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/tmp_small.pkl.gz"
 
     # Get the counts from the input hiso
     histo_dict = pickle.load(gzip.open(pkl_file_path))
@@ -254,27 +253,29 @@ def main():
     #### Print the yields ####
     if get_ylds:
 
-        #var_name = "njets"
-        var_name = "njets_counts"
+        var_name = "njets"
+        #var_name = "njets_counts"
 
         tot_raw = sum(sum(histo_dict["njets_counts"][{"systematic":"nominal", "category":"all_events"}].values(flow=True)))
         print("Tot raw events:",tot_raw)
         #exit()
 
         for cat in CAT_LST:
+
+            '''
             cat_yld = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat}].values(flow=True))
             cat_yld_raw = sum(histo_dict["njets_counts"][{"systematic":"nominal", "category":cat}].values(flow=True))
 
-            yld_sig_WWH_OS = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWWH_OS"}].values(flow=True))
-            yld_sig_WWH_SS = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWWH_SS"}].values(flow=True))
-            yld_sig_WZH    = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWZH"}].values(flow=True))
-            yld_sig_ZZH    = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSZZH"}].values(flow=True))
+            yld_sig_WWH_OS = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWWH_OS_VBSCuts"}].values(flow=True))
+            yld_sig_WWH_SS = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWWH_SS_VBSCuts"}].values(flow=True))
+            yld_sig_WZH    = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWZH_VBSCuts"}].values(flow=True))
+            yld_sig_ZZH    = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSZZH_VBSCuts"}].values(flow=True))
             yld_bkg_ttbar  = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_TTToSemiLeptonic"}].values(flow=True))
 
-            sumw2_sig_WWH_OS = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWWH_OS"}].variances(flow=True))
-            sumw2_sig_WWH_SS = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWWH_SS"}].variances(flow=True))
-            sumw2_sig_WZH    = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWZH"}].variances(flow=True))
-            sumw2_sig_ZZH    = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSZZH"}].variances(flow=True))
+            sumw2_sig_WWH_OS = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWWH_OS_VBSCuts"}].variances(flow=True))
+            sumw2_sig_WWH_SS = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWWH_SS_VBSCuts"}].variances(flow=True))
+            sumw2_sig_WZH    = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSWZH_VBSCuts"}].variances(flow=True))
+            sumw2_sig_ZZH    = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_VBSZZH_VBSCuts"}].variances(flow=True))
             sumw2_bkg_ttbar  = sum(histo_dict[var_name][{"systematic":"nominal", "category":cat, "process":"UL18_TTToSemiLeptonic"}].variances(flow=True))
 
             yld_sig = yld_sig_WWH_OS + yld_sig_WWH_SS + yld_sig_WZH + yld_sig_ZZH
@@ -297,7 +298,32 @@ def main():
             print(f"{yld_bkg} +- {np.round(perr_bkg,2)}%")
             #print(f"{cat}: {yld_sig}")
             #print(f"{cat}: {yld_bkg}")
+            '''
 
+            #############################
+
+            # Get list of signal and bkg processes
+            grouping_dict = append_years(GRP_DICT_FULL,["UL16APV","UL16","UL17","UL18"])
+            sig_lst = grouping_dict["Signal"]
+            bkg_lst = []
+            for grp in grouping_dict:
+                if grp != "Signal":
+                    bkg_lst = bkg_lst + grouping_dict[grp]
+
+            histo_base = histo_dict[var_name][{"systematic":"nominal", "category":cat}]
+            histo_sig = plt_tools.group(histo_base,"process","process",{"Signal":sig_lst})
+            histo_bkg = plt_tools.group(histo_base,"process","process",{"Background":bkg_lst})
+            yld_sig = sum(sum(histo_sig.values(flow=True)))
+            yld_bkg = sum(sum(histo_bkg.values(flow=True)))
+            var_sig = sum(sum(histo_sig.variances(flow=True)))
+            var_bkg = sum(sum(histo_bkg.variances(flow=True)))
+            perr_sig = 100*(((var_sig)**0.5)/yld_sig)
+            perr_bkg = 100*(((var_bkg)**0.5)/yld_bkg)
+            print("\n",cat)
+            print(f"{yld_sig} +- {np.round(perr_sig,2)}%")
+            print(f"{yld_bkg} +- {np.round(perr_bkg,2)}%")
+
+            #############################
 
 
     #### Make the plots ####
@@ -305,14 +331,17 @@ def main():
 
         #cat_lst = ["exactly1lep_exactly1fj", "exactly1lep_exactly1fj550", "exactly1lep_exactly1fj550_2j", "exactly1lep_exactly1fj_2j"]
 
-        grouping_dict = append_years(GRP_DICT_FULL,["UL16APV","UL16","UL17","UL18"])
+        #grouping_dict = append_years(GRP_DICT_FULL,["UL16APV","UL16","UL17","UL18"])
+        grouping_dict = append_years(GRP_DICT_FULL,["UL18"])
         #grouping_dict = GRP_DICT_SUM
 
         for cat in CAT_LST:
             print("\nCat:",cat)
             for var in histo_dict.keys():
                 print("\nVar:",var)
-                if var != "njets": continue # TMP
+                if var not in ["njets","njets_counts","scalarptsum_lepmet"]: continue # TMP
+
+                #print("this",histo_dict[var])
 
                 histo = copy.deepcopy(histo_dict[var][{"systematic":"nominal", "category":cat}])
 
@@ -327,10 +356,6 @@ def main():
                 grp_names_bkg_lst.remove("Signal")
                 histo_sig = histo[{"process_grp":["Signal"]}]
                 histo_bkg = plt_tools.group(histo,"process_grp","process_grp",{"Background":grp_names_bkg_lst})
-                sig_yld = sum(sum(histo_sig.values(flow=True)))
-                bkg_yld = sum(sum(histo_bkg.values(flow=True)))
-                #scale_dict = {"ttbar" : 0.0001}
-                #histo = plt_tools.scale(histo,"process_grp",scale_dict)
 
                 # Make the figure
                 title = f"{cat}__{var}"
