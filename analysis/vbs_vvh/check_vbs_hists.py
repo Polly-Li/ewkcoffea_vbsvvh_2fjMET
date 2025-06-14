@@ -38,7 +38,7 @@ GRP_DICT_FULL = {
         "QCD_HT200to300",
         "QCD_HT300to500",
         "QCD_HT500to700",
-        ##"QCD_HT50to100", # Has a spike
+        "QCD_HT50to100", # Has a spike
         "QCD_HT700to1000",
     ],
 
@@ -134,6 +134,7 @@ CAT_LST = [
     #"filters",
     #"exactly1lep",
     "exactly1lep_exactly1fj",
+
     #"exactly1lep_exactly1fj550",
     #"exactly1lep_exactly1fj550_2j",
     #"exactly1lep_exactly1fj_2j",
@@ -143,13 +144,39 @@ CAT_LST = [
     #"exactly1lep_exactly1fj700_0jcent1jcent",
     #"exactly1lep_exactly1fj700_0j",
 
-    #"exactly1lep_exactly1fj_STmet900",
-    #"exactly1lep_exactly1fj_STmet1100",
     #"exactly1lep_exactly1fj_ST600",
 
     #"exactly1lep_exactly1fj_STmetFjpt1000",
     #"exactly1lep_exactly1fj_STmetFjpt1500",
     #"exactly1lep_exactly1fj_STmetFjpt1700",
+
+    #"exactly1lep_exactly1fj_massj0centj1cent180",
+    #"exactly1lep_exactly1fj_massj0centj1cent100",
+    #"exactly1lep_exactly1fj_massj0centj1cent180_STmet700",
+    #"exactly1lep_exactly1fj_massj0centj1cent100_STmet700",
+    #"exactly1lep_exactly1fj_massj0centj1cent180_STmet1100",
+    #"exactly1lep_exactly1fj_massj0centj1cent180_STmet1100_msd175",
+    #"exactly1lep_exactly1fj_massj0centj1cent180_STmet1500",
+    #"exactly1lep_exactly1fj_massj0centj1cent180_STmet1500_msd175",
+
+    #"exactly1lep_exactly1fj_STmet400",
+    #"exactly1lep_exactly1fj_STmetFjpt1750"
+
+    #"exactly1lep_exactly1fj_STmetFjpt1750_msd175",
+    #"exactly1lep_exactly1fj_STmetFjpt3000",
+
+    #"exactly1lep_exactly1fj_STmet600",
+    #"exactly1lep_exactly1fj_STmet700",
+    #"exactly1lep_exactly1fj_STmet800",
+    #"exactly1lep_exactly1fj_STmet900",
+    "exactly1lep_exactly1fj_STmet1000",
+    #"exactly1lep_exactly1fj_STmet1100",
+
+    "exactly1lep_exactly1fj_STmet1000_msd170",
+    #"exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan4",
+    "exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan3",
+    #"exactly1lep_exactly1fj_STmet1000_msd170_j0fwdEta4",
+
 ]
 
 
@@ -303,6 +330,7 @@ def print_yields(histo_dict,roundat=None):
             print(f"{yld_sig} +- {np.round(perr_sig,2)}%")
             print(f"{yld_bkg} +- {np.round(perr_bkg,2)}%")
         print(f"  ->{np.round(metric,3)}")
+        print(f"python dump_toy_card.py {yld_sig} {yld_bkg}")
 
 
 
