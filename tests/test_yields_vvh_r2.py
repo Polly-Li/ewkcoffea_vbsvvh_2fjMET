@@ -9,9 +9,8 @@ def test_make_yields_after_processor_vvh_r2():
     args = [
         "python",
         "analysis/vbs_vvh/check_vvh_hists.py",
-        "-f",
         "analysis/vbs_vvh/histos/output_check_yields.pkl.gz",
-        "-n",
+        "-o",
         "analysis/vbs_vvh/output_check_yields"
     ]
 
