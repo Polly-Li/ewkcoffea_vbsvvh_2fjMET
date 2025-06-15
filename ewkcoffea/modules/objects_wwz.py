@@ -300,7 +300,7 @@ def is_tight_vvh_ele(ele):
         (ele.hoe < 0.1) &
         (ele.eInvMinusPInv > -0.04) &
         (( (abs(ele_eta_sc) <= 1.479) & (ele.sieie < 0.011)) | (ele.sieie <= 0.030)) &
-        (ele.convVeto == True) &
+        (ele.convVeto is True) &
         (ele.tightCharge == 2) &
         (ele.lostHits == 0)
     )

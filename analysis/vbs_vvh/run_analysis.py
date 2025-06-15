@@ -12,7 +12,7 @@ from coffea.nanoevents import NanoAODSchema
 NanoAODSchema.warn_missing_crossrefs = False
 import topcoffea.modules.remote_environment as remote_environment
 
-import vvh
+import analysis_processor
 
 LST_OF_KNOWN_EXECUTORS = ["futures","work_queue","iterative"]
 
@@ -263,7 +263,7 @@ if __name__ == '__main__':
     else:
         print('No Wilson coefficients specified')
 
-    processor_instance = vvh.AnalysisProcessor(samplesdict,wc_lst,hist_lst,ecut_threshold,do_errors,do_systs,skip_obj_systs,split_lep_flavor,skip_sr,skip_cr,siphon_bdt_data=siphon)
+    processor_instance = analysis_processor.AnalysisProcessor(samplesdict,wc_lst,hist_lst,ecut_threshold,do_errors,do_systs,skip_obj_systs,split_lep_flavor,skip_sr,skip_cr,siphon_bdt_data=siphon)
 
     if executor == "work_queue":
         executor_args = {
@@ -282,7 +282,7 @@ if __name__ == '__main__':
                 extra_pip=["mt2","xgboost"],
                 extra_pip_local = {"ewkcoffea": ["ewkcoffea", "setup.py"]},
             ),
-            'extra_input_files': ["vvh.py"],
+            'extra_input_files': ["analysis_processor.py"],
 
             'retries': 5,
 
