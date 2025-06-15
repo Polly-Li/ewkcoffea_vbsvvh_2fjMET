@@ -73,15 +73,19 @@ Please see the [FITTING.md]() readme.
 
 ## For the VBS VVH analysis
 
-The main processor is the `vvh.py` file. This can be run with the `run_vvh.py` script. The command line argument can be a json file (that points to the root files you wish to process) or a config file (that lists a set of json files). 
+The main processor is the `analysis_processor.py` file. This can be run with the `run_analysis.py` script. The command line argument can be a json file (that points to the root files you wish to process) or a config file (that lists a set of json files). 
 
 For example, to run a small test over a single file:
 ```
 wget -nc http://uaf-10.t2.ucsd.edu/~mdittric/for_ci/for_wwz/WWZJetsTo4L2Nu_4F_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_WWZ_MC_2024_0811/output_2.root
-python run_vvh.py ../../input_samples/sample_jsons/test_samples/UL17_WWZJetsTo4L2Nu_forCI.json -x iterative
+python run_analysis.py ../../input_samples/sample_jsons/test_samples/UL17_WWZJetsTo4L2Nu_forCI.json -x iterative -o vvh_test
 ```
 To run at scale over Full Run 2 samples (note this assumes the site is UAF, because the paths to the root files are specific to UAF):
 ```
-python run_vvh.py input_cfg_r2.cfg -x futures -n 64 -o vvh_hists
+python run_analysis.py input_cfg_r2.cfg -x futures -n 64 -o vvh_hists
 ```
-The output of this is a pickle file containing a dictionary of histograms for all of the categories specified in the processor. 
+This should take ~5-10 minutes with 64 cores (`-n 64`). The output is a pickle file containing a dictionary of histograms for all of the categories specified in the processor. 
+Next, run the `check_vvh_hists.py` script to print yields (`-y`) or make plots (`-p) of the output histograms. E.g.:
+```
+python check_vvh_hists.py histos/vvh_hists.pkl.gz -y
+```
