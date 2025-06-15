@@ -12,8 +12,7 @@ from coffea.analysis_tools import PackedSelection
 from coffea.lumi_tools import LumiMask
 
 from topcoffea.modules.paths import topcoffea_path
-import topcoffea.modules.event_selection as es_tc
-import topcoffea.modules.object_selection as os_tc
+#import topcoffea.modules.event_selection as es_tc
 import topcoffea.modules.corrections as cor_tc
 
 from ewkcoffea.modules.paths import ewkcoffea_path as ewkcoffea_path
@@ -394,7 +393,6 @@ class AnalysisProcessor(processor.ProcessorABC):
             ##### End of JME #####
 
             # Selecting jets and cleaning them
-            ##cleanedJets["is_good"] = os_tc.is_tight_jet(getattr(cleanedJets, jetptname), cleanedJets.eta, cleanedJets.jetId, pt_cut=20., eta_cut=get_ec_param("wwz_eta_j_cut"), id_cut=get_ec_param("wwz_jet_id_cut"))
             cleanedJets["is_good"] = os_ec.is_good_vbs_jet(cleanedJets,year)
             goodJets = cleanedJets[cleanedJets.is_good & (abs(cleanedJets.eta) <= 2.4)]
             goodJets_forward = cleanedJets[cleanedJets.is_good & (abs(cleanedJets.eta) > 2.4)] # TODO probably not corrected properly
@@ -588,7 +586,6 @@ class AnalysisProcessor(processor.ProcessorABC):
             j0central_phi = j0.phi
             mll_01 = (l0+l1).mass
             scalarptsum_lep = ak.sum(l_vvh_t.pt,axis=-1)
-            ##scalarptsum_lep = l0.pt + l1.pt 
             scalarptsum_lepmet = scalarptsum_lep + met.pt
             scalarptsum_lepmetFJ = scalarptsum_lep + met.pt + fj0.pt
             #scalarptsum_lepmetjet = l0.pt + l1.pt + met.pt + ak.sum(goodJets.pt,axis=-1)
@@ -887,18 +884,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                         self.accumulator[dense_axis_name].fill(**axes_fill_info_dict)
 
             # Fill the list accumulator
-            if self._siphon_bdt_data:
-                for chan,mask in {"of": sr_4l_bdt_of_trn, "sf": sr_4l_bdt_sf_trn}.items():
-                    if isData: mask = mask & lumi_mask # Apply golden json to data
-                    self.accumulator[f"list_bdt_{chan}_wwz"]  += dense_variables_dict[f"bdt_{chan}_wwz"][mask].to_list()
-                    self.accumulator[f"list_bdt_{chan}_zh"]   += dense_variables_dict[f"bdt_{chan}_zh"][mask].to_list()
-                    self.accumulator[f"list_bdt_{chan}_bkg"]  += dense_variables_dict[f"bdt_{chan}_bkg"][mask].to_list()
-                    self.accumulator[f"list_bdt_{chan}_evt"]  += events.event[mask].to_list()
-                    self.accumulator[f"list_bdt_{chan}_wgt"]  += weights_obj_base_for_kinematic_syst.weight(None)[mask]
-                    self.accumulator[f"list_bdt_{chan}_proc"] += [histAxisName] * len(dense_variables_dict[f"bdt_{chan}_bkg"][mask])
-                    for ivar, var in enumerate(get_ec_param(f"{chan}_bdt_var_lst")):
-                        if chan == "of": self.accumulator[f"list_{chan}_bdt_{var}"] += bdt_vars_of_wwz[ivar][mask]
-                        if chan == "sf": self.accumulator[f"list_{chan}_bdt_{var}"] += bdt_vars_sf_wwz[ivar][mask]
+            #if self._siphon_bdt_data:
+            #    Add code to siphon output if wanted
 
         return self.accumulator
 
