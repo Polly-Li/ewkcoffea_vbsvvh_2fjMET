@@ -31,7 +31,9 @@ pip install -e .
 ```
 Now all of the dependencies have been installed and the `ewkcoffea` repository is ready to be used. The next time you want to use it, all you have to do is to activate the environment via `conda activate coffea-env`. 
 
-## Learning how to run the processor 
+## For the WWZ analysis
+
+### Learning how to run the processor 
 
 The core functionality of this analysis repository is to process NanoAOD formatted data and perform selection and produce output histograms. Assuming you are starting from the toplevel `ewkcoffea` directory and your conda environment has been activated, you can run the processor as in the following example: 
 ```
@@ -44,11 +46,11 @@ This example will process a single root file (the `output_1.root` file that you 
 condor_submit_workers -M ${USER}-workqueue-coffea -t 900 --cores 4 --memory 18000 --disk 24000 1
 slurm_submit_workers --cores 64 --memory 500000 -M ${USER}-workqueue-coffea -p "--partition hpg-default  --account avery --qos avery-b --time 2:00:00" 1
 ```
-## Running the WWZ analysis at scale
+### Running the WWZ analysis at scale
 
 This section explains how to run the processor at scale for the WWZ analysis. Either the work queue executor or the futures executor can be used. This section contains an example of each. 
 
-### Run at scale with work queue
+#### Run at scale with work queue
 The submission of workers can be done either before or after running the run script, and it is usually most convenient to submit the workers from a different terminal from where you intend to run the run script. Things to remember before submitting workers:
 * Make sure you have activated the same conda environment from which you run the run script. 
 * Make sure your grid proxy is activated. 
@@ -59,12 +61,27 @@ slurm_submit_workers --cores 64 --memory 500000 -M ${USER}-workqueue-coffea -p  
 To run the processor at scale with work queue, try one of the example commands in `full_run2_run.sh` or in `full_run3_run.sh`. 
 
 
-### Run at scale with futures 
+#### Run at scale with futures 
 Note, DO NOT run with futures at scale on the login node. First srun:
 ```
 srun -t 600 --qos=avery --account=avery --cpus-per-task=128 --mem=512gb --pty bash -i
 ```
 Then make sure your grid proxy is activated. To run the processor at scale, try one of the example commands in `full_run2_run.sh` or in `full_run3_run.sh`. 
 
-## Statistical analysis
+### Statistical analysis
 Please see the [FITTING.md]() readme. 
+
+## For the VBS VVH analysis
+
+The main processor is the `vvh.py` file. This can be run with the `run_vvh.py` script. The command line argument can be a json file (that points to the root files you wish to process) or a config file (that lists a set of json files). 
+
+For example, to run a small test over a single file:
+```
+wget -nc http://uaf-10.t2.ucsd.edu/~mdittric/for_ci/for_wwz/WWZJetsTo4L2Nu_4F_TuneCP5_13TeV-amcatnlo-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v2_NANOAODSIM_WWZ_MC_2024_0811/output_2.root
+python run_vvh.py ../../input_samples/sample_jsons/test_samples/UL17_WWZJetsTo4L2Nu_forCI.json -x iterative
+```
+To run at scale over Full Run 2 samples (note this assumes the site is UAF, because the paths to the root files are specific to UAF):
+```
+python run_vvh.py input_cfg_r2.cfg -x futures -n 64 -o vvh_hists
+```
+The output of this is a pickle file containing a dictionary of histograms for all of the categories specified in the processor. 
