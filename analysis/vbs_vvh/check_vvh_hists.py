@@ -102,75 +102,19 @@ GRP_DICT_FULL = {
 }
 
 
-GRP_DICT_INDIV = {
-    "WWH_OS" : ["UL18_VBSWWH_OS_VBSCuts"],
-    "WWH_SS" : ["UL18_VBSWWH_SS_VBSCuts"],
-    "WZH" : ["UL18_VBSWZH_VBSCuts"],
-    "ZZH" : ["UL18_VBSZZH_VBSCuts"],
-    "ttbar" : ["UL18_TTToSemiLeptonic"],
-}
-
-GRP_DICT_SUM = {
-    "sig" : [
-        "UL18_VBSWWH_OS",
-        "UL18_VBSWWH_SS",
-        "UL18_VBSWZH",
-        "UL18_VBSZZH",
-    ],
-    "ttbar" : ["UL18_TTToSemiLeptonic"],
-}
-
-#cat_lst = ["all_events", "filters", "exactly1lep"]
 CAT_LST = [
-    #"all_events",
-    #"filters",
-    #"exactly1lep",
+    "all_events",
+    "filters",
+    "exactly1lep",
     "exactly1lep_exactly1fj",
-
-    #"exactly1lep_exactly1fj550",
-    #"exactly1lep_exactly1fj550_2j",
-    #"exactly1lep_exactly1fj_2j",
-
-    #"exactly1lep_exactly1fj1100",
-    #"exactly1lep_exactly1fj800_0j1j",
-    #"exactly1lep_exactly1fj700_0jcent1jcent",
-    #"exactly1lep_exactly1fj700_0j",
-
-    #"exactly1lep_exactly1fj_ST600",
-
-    #"exactly1lep_exactly1fj_STmetFjpt1000",
-    #"exactly1lep_exactly1fj_STmetFjpt1500",
-    #"exactly1lep_exactly1fj_STmetFjpt1700",
-
-    #"exactly1lep_exactly1fj_massj0centj1cent180",
-    #"exactly1lep_exactly1fj_massj0centj1cent100",
-    #"exactly1lep_exactly1fj_massj0centj1cent180_STmet700",
-    #"exactly1lep_exactly1fj_massj0centj1cent100_STmet700",
-    #"exactly1lep_exactly1fj_massj0centj1cent180_STmet1100",
-    #"exactly1lep_exactly1fj_massj0centj1cent180_STmet1100_msd175",
-    #"exactly1lep_exactly1fj_massj0centj1cent180_STmet1500",
-    #"exactly1lep_exactly1fj_massj0centj1cent180_STmet1500_msd175",
-
-    #"exactly1lep_exactly1fj_STmet400",
-    #"exactly1lep_exactly1fj_STmetFjpt1750"
-
-    #"exactly1lep_exactly1fj_STmetFjpt1750_msd175",
-    #"exactly1lep_exactly1fj_STmetFjpt3000",
-
-    #"exactly1lep_exactly1fj_STmet600",
-    #"exactly1lep_exactly1fj_STmet700",
-    #"exactly1lep_exactly1fj_STmet800",
-    #"exactly1lep_exactly1fj_STmet900",
     "exactly1lep_exactly1fj_STmet1000",
-    #"exactly1lep_exactly1fj_STmet1100",
-
     "exactly1lep_exactly1fj_STmet1000_msd170",
-    #"exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan4",
     "exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan3",
-    #"exactly1lep_exactly1fj_STmet1000_msd170_j0fwdEta4",
-
 ]
 
+
+########################
+### Helper functions ###
 
 # Append the years to sample names dict
 def append_years(sample_dict_base,year_lst):
@@ -182,6 +126,37 @@ def append_years(sample_dict_base,year_lst):
                 out_dict[proc_group].append(f"{year_str}_{proc_base_name}")
     return out_dict
 
+
+# Get sig and bkg yield in all categories
+def get_yields_per_cat(histo_dict,var_name):
+    out_dict = {}
+
+    # Get list of signal and bkg processes
+    grouping_dict = append_years(GRP_DICT_FULL,["UL16APV","UL16","UL17","UL18"])
+    sig_lst = grouping_dict["Signal"]
+    bkg_lst = []
+    for grp in grouping_dict:
+        if grp != "Signal":
+            bkg_lst = bkg_lst + grouping_dict[grp]
+
+    # Loop over cats and fill dict of sig and bkg
+    for cat in CAT_LST:
+        out_dict[cat] = {}
+
+        histo_base = histo_dict[var_name][{"systematic":"nominal", "category":cat}]
+        histo_sig = plt_tools.group(histo_base,"process","process",{"Signal":sig_lst})
+        histo_bkg = plt_tools.group(histo_base,"process","process",{"Background":bkg_lst})
+        yld_sig = sum(sum(histo_sig.values(flow=True)))
+        yld_bkg = sum(sum(histo_bkg.values(flow=True)))
+        var_sig = sum(sum(histo_sig.variances(flow=True)))
+        var_bkg = sum(sum(histo_bkg.variances(flow=True)))
+        metric = yld_sig/(yld_bkg)**0.5
+
+        out_dict[cat]["signal"] = [yld_sig,(var_sig)**0.5]
+        out_dict[cat]["background"] = [yld_bkg,(var_bkg)**0.5]
+        out_dict[cat]["metric"] = [metric,None] # Don't bother propagating error
+
+    return out_dict
 
 
 # Make the figures for the vvh sudy
@@ -255,11 +230,12 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
 
 
 
-##########################################################################################################
-### Main wrapper functions for each of the main functionalities (probably should be different scripts) ###
+##############################################################
+### Wrapper functions for each of the main functionalities ###
 
 
-#### Sanity check of the different reweight points (for a hist that has extra axis to store that) ####
+### Sanity check of the different reweight points (for a hist that has extra axis to store that) ###
+# Old
 def check_rwgt(histo_dict):
 
     #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/check_wgt_genw.pkl.gz"
@@ -287,42 +263,57 @@ def check_rwgt(histo_dict):
 
 
 
-### Print the yields ###
-def print_yields(histo_dict,roundat=None):
+### Dumps the yields and counts for a couple categories into a json ###
+# The output of this is used for the CI check
+def dump_json_simple(histo_dict,out_name="vvh_yields_simple"):
+    out_dict = {}
+    hist_to_use = "njets"
+    cats_to_check = ["all_events","exactly1lep_exactly1fj","exactly1lep_exactly1fj_STmet1000","exactly1lep_exactly1fj_STmet1000_msd170"]
+    for proc_name in histo_dict[hist_to_use].axes["process"]:
+        out_dict[proc_name] = {}
+        for cat_name in cats_to_check:
+            yld = sum(sum(histo_dict[hist_to_use][{"systematic":"nominal", "category":cat_name}].values(flow=True)))
+            out_dict[proc_name][cat_name] = [yld,None]
 
-    var_name = "njets" # For yields
-    #var_name = "njets_counts" # If you want counts
+    # Dump counts dict to json
+    output_name = f"{out_name}.json"
+    with open(output_name,"w") as out_file: json.dump(out_dict, out_file, indent=4)
+    print(f"\nSaved json file: {output_name}\n")
 
-    # Get list of signal and bkg processes
-    grouping_dict = append_years(GRP_DICT_FULL,["UL16APV","UL16","UL17","UL18"])
-    sig_lst = grouping_dict["Signal"]
-    bkg_lst = []
-    for grp in grouping_dict:
-        if grp != "Signal":
-            bkg_lst = bkg_lst + grouping_dict[grp]
 
-    # Loop over cats and print yields
-    for cat in CAT_LST:
 
-        histo_base = histo_dict[var_name][{"systematic":"nominal", "category":cat}]
-        histo_sig = plt_tools.group(histo_base,"process","process",{"Signal":sig_lst})
-        histo_bkg = plt_tools.group(histo_base,"process","process",{"Background":bkg_lst})
-        yld_sig = sum(sum(histo_sig.values(flow=True)))
-        yld_bkg = sum(sum(histo_bkg.values(flow=True)))
-        var_sig = sum(sum(histo_sig.variances(flow=True)))
-        var_bkg = sum(sum(histo_bkg.variances(flow=True)))
-        perr_sig = 100*(((var_sig)**0.5)/yld_sig)
-        perr_bkg = 100*(((var_bkg)**0.5)/yld_bkg)
-        metric = yld_sig/(yld_bkg)**0.5
-        print(f"\n{cat}")
-        if roundat is not None:
-            print(f"{np.round(yld_sig,roundat)} +- {np.round(perr_sig,2)}%")
-            print(f"{np.round(yld_bkg,roundat)} +- {np.round(perr_bkg,2)}%")
-        else:
-            print(f"{yld_sig} +- {np.round(perr_sig,2)}%")
-            print(f"{yld_bkg} +- {np.round(perr_bkg,2)}%")
-        print(f"  ->{np.round(metric,3)}")
-        print(f"python dump_toy_card.py {yld_sig} {yld_bkg}")
+### Get the sig and bkg yields and print or dump to json ###
+def print_yields(histo_dict,roundat=None,print_counts=False,dump_to_json=True,quiet=False,out_name="yields"):
+
+    # Get ahold of the yields
+    yld_dict    = get_yields_per_cat(histo_dict,"njets")
+    counts_dict = get_yields_per_cat(histo_dict,"njets_counts")
+
+    # Print to screen
+    if not quiet:
+        for cat in yld_dict:
+            yld_sig, err_sig = yld_dict[cat]["signal"]
+            yld_bkg, err_bkg = yld_dict[cat]["background"]
+            perr_sig = 100*(err_sig/yld_sig)
+            perr_bkg = 100*(err_bkg/yld_bkg)
+            metric, _ = yld_dict[cat]["metric"]
+            print(f"\n{cat}")
+            if roundat is not None:
+                print(f"{np.round(yld_sig,roundat)} +- {np.round(perr_sig,2)}%")
+                print(f"{np.round(yld_bkg,roundat)} +- {np.round(perr_bkg,2)}%")
+            else:
+                print(f"{yld_sig} +- {np.round(perr_sig,2)}%")
+                print(f"{yld_bkg} +- {np.round(perr_bkg,2)}%")
+            print(f"  -> Metric: {np.round(metric,3)}")
+            print(f"  -> For copy pasting: python dump_toy_card.py {yld_sig} {yld_bkg}")
+
+    # Dump to json
+    if dump_to_json:
+        out_dict = {"yields":yld_dict, "counts":counts_dict}
+        output_name = f"{out_name}.json"
+        with open(output_name,"w") as out_file: json.dump(out_dict, out_file, indent=4)
+        print(f"\nSaved json file: {output_name}\n")
+
 
 
 
@@ -371,23 +362,8 @@ def make_plots(histo_dict):
             shutil.copyfile(HTML_PC, os.path.join(save_dir_path_cat,"index.php"))
 
 
-# Dumps the yields and counts for some categories into a json
-# Use the output for the CI check
-def dump_json_simple(histo_dict,out_name="vvh_yields"):
-    out_dict = {}
-    hist_to_use = "njets"
-    cats_to_check = ["all_events","exactly1lep_exactly1fj","exactly1lep_exactly1fj_STmet1000","exactly1lep_exactly1fj_STmet1000_msd170"]
-    for proc_name in histo_dict[hist_to_use].axes["process"]:
-        out_dict[proc_name] = {}
-        for cat_name in cats_to_check:
-            yld = sum(sum(histo_dict[hist_to_use][{"systematic":"nominal", "category":cat_name}].values(flow=True)))
-            out_dict[proc_name][cat_name] = [yld,None]
 
-    # Dump counts dict to json
-    output_name = f"{out_name}.json"
-    with open(output_name,"w") as out_file: json.dump(out_dict, out_file, indent=4)
-    print(f"\nSaved json file: {output_name}\n")
-
+##################################### Main #####################################
 
 def main():
 
@@ -411,16 +387,10 @@ def main():
     if args.dump_json:
         dump_json_simple(histo_dict,args.output_name)
     if args.get_yields:
-        print_yields(histo_dict,roundat=4)
+        print_yields(histo_dict,out_name=args.output_name+"_yields_sig_bkg",roundat=4,print_counts=False,dump_to_json=True)
     if args.make_plots:
         make_plots(histo_dict)
 
 
 main()
-
-
-
-
-
-
 
