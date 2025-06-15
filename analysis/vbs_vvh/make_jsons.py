@@ -259,7 +259,7 @@ def main():
                 dataset_xsec = xsec_dict[xsec_name]
                 match_xsec = True
                 break
-        if not match_xsec: 
+        if not match_xsec:
             raise Exception("Failed to find xsec for sample",dataset_name)
 
         # Get the year, and assign a hist axis name

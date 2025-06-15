@@ -1,20 +1,13 @@
 import argparse
 import pickle
-import json
 import gzip
+import json
 import os
 import shutil
 import numpy as np
-import math
 import matplotlib.pyplot as plt
 import copy
-import hist
 
-from topcoffea.scripts.make_html import make_html
-from topcoffea.modules import utils
-import topcoffea.modules.MakeLatexTable as mlt
-
-import ewkcoffea.modules.yield_tools as yt
 import ewkcoffea.modules.sample_groupings as sg
 import ewkcoffea.modules.plotting_tools as plt_tools
 
@@ -268,7 +261,7 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
 
 
 #### Sanity check of the different reweight points (for a hist that has extra axis to store that) ####
-def check_rwgt():
+def check_rwgt(histo_dict):
 
     #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/check_wgt_genw.pkl.gz"
     #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/check_wgt_sm.pkl.gz"
@@ -379,25 +372,49 @@ def make_plots(histo_dict):
             shutil.copyfile(HTML_PC, os.path.join(save_dir_path_cat,"index.php"))
 
 
+# Dumps the yields and counts for some categories into a json
+# Use the output for the CI check
+def dump_json_simple(histo_dict,out_name="vvh_yields"):
+    out_dict = {}
+    hist_to_use = "njets"
+    cats_to_check = ["all_events","exactly1lep_exactly1fj","exactly1lep_exactly1fj_STmet1000","exactly1lep_exactly1fj_STmet1000_msd170"]
+    for proc_name in histo_dict[hist_to_use].axes["process"]:
+        out_dict[proc_name] = {}
+        for cat_name in cats_to_check:
+            yld = sum(sum(histo_dict[hist_to_use][{"systematic":"nominal", "category":cat_name}].values(flow=True)))
+            out_dict[proc_name][cat_name] = [yld,None]
+
+    # Dump counts dict to json
+    output_name = f"{out_name}.json"
+    with open(output_name,"w") as out_file: json.dump(out_dict, out_file, indent=4)
+    print(f"\nSaved json file: {output_name}\n")
+
 
 def main():
 
-    pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/tmp_full.pkl.gz"
-    #pkl_file_path = "/home/users/kmohrman/vbs_vvh/ewkcoffea_for_vbs_vvh/ewkcoffea/analysis/vbs_vvh/histos/tmp_small.pkl.gz"
+    # Set up the command line parser
+    parser = argparse.ArgumentParser()
+    parser.add_argument("pkl_file_path", help = "The path to the pkl file")
+    parser.add_argument('-y', "--get-yields", action='store_true', help = "Get yields from the pkl file")
+    parser.add_argument('-p', "--make-plots", action='store_true', help = "Make plots from the pkl file")
+    parser.add_argument('-j', "--dump-json", action='store_true', help = "Dump some yield numbers into a json file")
+    parser.add_argument('-o', "--output-name", default='vvh', help = "What to name the outputs")
+    args = parser.parse_args()
 
-    # Get the counts from the input hiso
-    histo_dict = pickle.load(gzip.open(pkl_file_path))
+    # Get the dictionary of histograms from the input pkl file
+    histo_dict = pickle.load(gzip.open(args.pkl_file_path))
 
     # Print total raw events
-    tot_raw = sum(sum(histo_dict["njets_counts"][{"systematic":"nominal", "category":"all_events"}].values(flow=True)))
-    print("Tot raw events:",tot_raw)
-    #exit()
+    #tot_raw = sum(sum(histo_dict["njets_counts"][{"systematic":"nominal", "category":"all_events"}].values(flow=True)))
+    #print("Tot raw events:",tot_raw)
 
-
-    # Which main function to run
-    #check_rwgt(histo_dict)
-    #print_yields(histo_dict,roundat=4)
-    make_plots(histo_dict)
+    # Which main functionalities to run
+    if args.dump_json:
+        dump_json_simple(histo_dict,args.output_name)
+    if args.get_yields:
+        print_yields(histo_dict,roundat=4)
+    if args.make_plots:
+        make_plots(histo_dict)
 
 
 main()
