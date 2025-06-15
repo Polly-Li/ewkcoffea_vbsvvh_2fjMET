@@ -11,7 +11,8 @@ def test_make_yields_after_processor_vvh_r2():
         "analysis/vbs_vvh/check_vvh_hists.py",
         "analysis/vbs_vvh/histos/output_check_yields.pkl.gz",
         "-o",
-        "analysis/vbs_vvh/output_check_yields"
+        "analysis/vbs_vvh/output_check_yields",
+        "-j"
     ]
 
     # Produce json
@@ -23,7 +24,7 @@ def test_compare_yields_after_processor_vvh_r2():
         "python",
         "ewkcoffea/scripts/comp_json_yields.py",
         "analysis/vbs_vvh/output_check_yields.json",
-        "analysis/vbs_vvh/ref_for_ci/counts_vvh_ref.json",
+        "analysis/vbs_vvh/ref_for_ci/vvh_yld_for_ci.json",
         "-t1",
         "New yields",
         "-t2",
