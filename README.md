@@ -17,7 +17,7 @@ Now we can install the `ewkcoffea` package into our new conda environment. This 
 ```
 pip install -e .
 ```
-Two of the packages this analysis depends on are not conda installed (i.e. they were not included in the `environment.yml` where most of the dependencies were specified), so we can go ahead and install those into our new `conda` environment via `pip`. 
+Two of the packages the WWZ analysis depends on are not conda installed (i.e. they were not included in the `environment.yml` where most of the dependencies were specified), so we can go ahead and install those into our new `conda` environment via `pip`. 
 ```
 pip install xgboost
 pip install mt2
