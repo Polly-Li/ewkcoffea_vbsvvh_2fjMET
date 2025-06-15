@@ -8,7 +8,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import copy
 
-import ewkcoffea.modules.sample_groupings as sg
 import ewkcoffea.modules.plotting_tools as plt_tools
 
 
