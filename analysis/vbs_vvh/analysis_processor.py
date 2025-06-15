@@ -16,8 +16,7 @@ from topcoffea.modules.paths import topcoffea_path
 import topcoffea.modules.corrections as cor_tc
 
 from ewkcoffea.modules.paths import ewkcoffea_path as ewkcoffea_path
-#import ewkcoffea.modules.selection_wwz as es_ec
-import ewkcoffea.modules.selection_vvh as es_ec
+import ewkcoffea.modules.selection_wwz as es_ec
 import ewkcoffea.modules.objects_wwz as os_ec
 import ewkcoffea.modules.corrections as cor_ec
 
@@ -56,7 +55,6 @@ class AnalysisProcessor(processor.ProcessorABC):
             "njets_counts"   : axis.Regular(30, 0, 30, name="njets_counts",   label="Jet multiplicity counts (central)"),
             "nleps_counts"   : axis.Regular(30, 0, 30, name="nleps_counts",   label="Lep multiplicity counts (central)"),
 
-            #
             "nfatjets"   : axis.Regular(8, 0, 8, name="nfatjets",   label="Fat jet multiplicity"),
             "njets_forward"   : axis.Regular(8, 0, 8, name="njets_forward",   label="Jet multiplicity (forward)"),
             "njets_tot"   : axis.Regular(8, 0, 8, name="njets_tot",   label="Jet multiplicity (central and forward)"),
@@ -111,26 +109,9 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         # Adding list accumulators for BDT output variables and weights
         if siphon_bdt_data:
-            list_output_names = [
-                "list_bdt_of_wwz",
-                "list_bdt_of_zh",
-                "list_bdt_of_bkg",
-                "list_bdt_of_proc",
-                "list_bdt_of_wgt",
-                "list_bdt_of_evt",
-                "list_bdt_sf_wwz",
-                "list_bdt_sf_zh",
-                "list_bdt_sf_bkg",
-                "list_bdt_sf_proc",
-                "list_bdt_sf_wgt",
-                "list_bdt_sf_evt",
-            ]
+            list_output_names = []
             for list_output_name in list_output_names:
                 dout[list_output_name] = processor.list_accumulator([])
-            for of_bdt_var_name in get_ec_param("of_bdt_var_lst"):
-                dout[f"list_of_bdt_{of_bdt_var_name}"] = processor.list_accumulator([])
-            for sf_bdt_var_name in get_ec_param("sf_bdt_var_lst"):
-                dout[f"list_sf_bdt_{sf_bdt_var_name}"] = processor.list_accumulator([])
 
         # Set the accumulator
         self._accumulator = processor.dict_accumulator(dout)
@@ -260,18 +241,12 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         l_vvh_t = ak.with_name(ak.concatenate([ele_vvh_t,mu_vvh_t],axis=1),'PtEtaPhiMCandidate')
         l_vvh_t = l_vvh_t[ak.argsort(l_vvh_t.pt, axis=-1,ascending=False)] # Sort by pt
+        events["l_vvh_t"] = l_vvh_t
 
-
-        # For WWZ
         l_vvh_t_padded = ak.pad_none(l_vvh_t, 4)
         l0 = l_vvh_t_padded[:,0]
         l1 = l_vvh_t_padded[:,1]
-
         nleps = ak.num(l_vvh_t)
-
-        # Put njets and l_fo_conept_sorted into events and get 4l event selection mask
-        events["l_vvh_t"] = l_vvh_t
-        #es_ec.add4lmask_vvh(events, year, isData, histAxisName, is2022,is2023)
 
 
         ######### Normalization and weights ###########
@@ -392,6 +367,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             met = cor_ec.CorrectedMETFactory(correctionJets,year,met,obj_corr_syst_var,isData)
             ##### End of JME #####
 
+
             # Selecting jets and cleaning them
             cleanedJets["is_good"] = os_ec.is_good_vbs_jet(cleanedJets,year)
             goodJets = cleanedJets[cleanedJets.is_good & (abs(cleanedJets.eta) <= 2.4)]
@@ -403,8 +379,6 @@ class AnalysisProcessor(processor.ProcessorABC):
             njets_tot = njets + njets_forward
             nfatjets = ak.num(goodfatjets)
             ht = ak.sum(goodJets.pt,axis=-1)
-            #j0 = goodJets[ak.argmax(goodJets.pt,axis=-1,keepdims=True)]
-            #fj0 = goodfatjets[ak.argmax(goodfatjets.pt,axis=-1,keepdims=True)]
 
             goodJets_ptordered = goodJets[ak.argsort(goodJets.pt,axis=-1,ascending=False)]
             goodJets_ptordered_padded = ak.pad_none(goodJets_ptordered, 2)
@@ -566,10 +540,6 @@ class AnalysisProcessor(processor.ProcessorABC):
             bmask_atleast2loose = (nbtagsl>=2)
 
 
-            ######### VVH event selection stuff #########
-
-            filter_mask = es_ec.get_filter_flag_mask(events,year,is2022,is2023)
-
             ######### Get variables we haven't already calculated #########
 
             # Replace with 0 when there are not a pair of jets
@@ -588,8 +558,6 @@ class AnalysisProcessor(processor.ProcessorABC):
             scalarptsum_lep = ak.sum(l_vvh_t.pt,axis=-1)
             scalarptsum_lepmet = scalarptsum_lep + met.pt
             scalarptsum_lepmetFJ = scalarptsum_lep + met.pt + fj0.pt
-            #scalarptsum_lepmetjet = l0.pt + l1.pt + met.pt + ak.sum(goodJets.pt,axis=-1)
-            #scalarptsum_jet = ak.sum(goodJets.pt,axis=-1)
 
             # lb pairs (i.e. always one lep, one bjet)
             bjets = goodJets[isBtagJetsLoose]
@@ -603,7 +571,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             b1 = bjets_ptordered_padded[:,1]
             mass_b0b1 = (b0+b1).mass
 
-            # Put the variables into a dictionary for easy access later
+            # Put the variables we'll plot into a dictionary for easy access later
             dense_variables_dict = {
                 "met" : met.pt,
                 "metphi" : met.phi,
@@ -611,8 +579,6 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "scalarptsum_jetCentFwd" : scalarptsum_jetCentFwd,
                 "scalarptsum_lepmet" : scalarptsum_lepmet,
                 "scalarptsum_lepmetFJ" : scalarptsum_lepmetFJ,
-                #"scalarptsum_lepmetjet" : scalarptsum_lepmetjet,
-                #"scalarptsum_jet" : scalarptsum_jet,
                 "l0_pt" : l0_pt,
                 "l0_eta" : l0_eta,
 
@@ -635,8 +601,6 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "nleps_counts" : nleps,
                 "njets_counts" : njets,
                 "nbtagsl_counts" : nbtagsl,
-
-                ###
 
                 "nbtagsm" : nbtagsm,
                 "nbtagsl" : nbtagsl,
@@ -678,9 +642,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Lumi mask (for data)
             selections.add("is_good_lumi",lumi_mask)
 
-            zeroj = (njets==0)
+            # Event filter masks
+            filter_mask = es_ec.get_filter_flag_mask_vvh(events,year,is2022,is2023)
 
-            # For Cut Based SRs
+            # Selections for SRs
+            # TODO get rid of the ones we're not using
 
             selections.add("all_events", (veto_map_mask | (~veto_map_mask))) # All events.. this logic is a bit roundabout to just get an array of True
             selections.add("filters"                      , veto_map_mask & filter_mask)
@@ -714,7 +680,6 @@ class AnalysisProcessor(processor.ProcessorABC):
             selections.add("exactly1lep_exactly1fj_massj0centj1cent180_STmet1500"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (mass_j0centj1cent<180) & (scalarptsum_lepmet>1500))
             selections.add("exactly1lep_exactly1fj_massj0centj1cent180_STmet1500_msd175"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (mass_j0centj1cent<180) & (scalarptsum_lepmet>1500) & (fj0.msoftdrop<175))
 
-            #
             selections.add("exactly1lep_exactly1fj_STmet400"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>400))
             selections.add("exactly1lep_exactly1fj_STmetFjpt1750"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmetFJ>1750))
 
@@ -769,7 +734,6 @@ class AnalysisProcessor(processor.ProcessorABC):
                     "exactly1lep_exactly1fj_massj0centj1cent180_STmet1500",
                     "exactly1lep_exactly1fj_massj0centj1cent180_STmet1500_msd175",
 
-                    #
                     "exactly1lep_exactly1fj_STmet400",
                     "exactly1lep_exactly1fj_STmetFjpt1750",
 
@@ -795,9 +759,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             ######### Fill histos #########
 
-            exclude_var_dict = {
-                "mt2" : ["all_events"],
-            }
+            exclude_var_dict = {} # Any particular ones to skip
 
             # Set up the list of weight fluctuations to loop over
             # For now the syst do not depend on the category, so we can figure this out outside of the filling loop
@@ -819,8 +781,6 @@ class AnalysisProcessor(processor.ProcessorABC):
                 if dense_axis_name not in self._hist_lst:
                     #print(f"Skipping \"{dense_axis_name}\", it is not in the list of hists to include.")
                     continue
-                #print("\ndense_axis_name,vals",dense_axis_name)
-                #print("\ndense_axis_name,vals",vals)
 
                 # Loop over weight fluctuations
                 for wgt_fluct in wgt_var_lst:
@@ -842,8 +802,6 @@ class AnalysisProcessor(processor.ProcessorABC):
 
                         # If this is a counts hist, forget the weights and just fill with unit weights
                         if dense_axis_name.endswith("_counts"): weight = events.nom
-                        #else: weights = weights_obj_base_for_kinematic_syst.partial_weight(include=["norm"]) # For testing
-                        #else: weights = weights_obj_base_for_kinematic_syst.weight(None) # For testing
 
                         # Make the cuts mask
                         cuts_lst = [sr_cat]
@@ -867,16 +825,10 @@ class AnalysisProcessor(processor.ProcessorABC):
                         #print("dense_axis_vals[all_cuts_mask]",dense_axis_vals[all_cuts_mask])
                         #print("end")
 
-                        #print("this")
-                        #print("\ndense_axis_name",dense_axis_name)
-                        #print("\nvals",dense_axis_vals[all_cuts_mask])
-                        #print("\ncat",sr_cat)
-                        #print("this")
-
                         # Fill the histos
                         axes_fill_info_dict = {
-                            dense_axis_name : ak.fill_none(dense_axis_vals[all_cuts_mask],0),
-                            "weight"        : ak.fill_none(weight[all_cuts_mask],0),
+                            dense_axis_name : ak.fill_none(dense_axis_vals[all_cuts_mask],0), # Don't like this fill_none
+                            "weight"        : ak.fill_none(weight[all_cuts_mask],0),          # Don't like this fill_none
                             "process"       : histAxisName,
                             "category"      : sr_cat,
                             "systematic"    : wgt_fluct,

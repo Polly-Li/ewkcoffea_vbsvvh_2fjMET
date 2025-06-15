@@ -85,7 +85,7 @@ To run at scale over Full Run 2 samples (note this assumes the site is UAF, beca
 python run_analysis.py input_cfg_r2.cfg -x futures -n 64 -o vvh_hists
 ```
 This should take ~5-10 minutes with 64 cores (`-n 64`). The output is a pickle file containing a dictionary of histograms for all of the categories specified in the processor. 
-Next, run the `check_vvh_hists.py` script to print yields (`-y`) or make plots (`-p) of the output histograms. E.g.:
+Next, run the `check_vvh_hists.py` script to print yields (`-y`) or make plots (`-p`) of the output histograms (note, this script generally assumes signals and backgrounds are included). E.g.:
 ```
 python check_vvh_hists.py histos/vvh_hists.pkl.gz -y
 ```

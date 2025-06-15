@@ -356,6 +356,7 @@ def make_plots(histo_dict):
 
             # Save
             save_dir_path = "plots"
+            if not os.path.exists("./plots"): os.mkdir("./plots")
             save_dir_path_cat = os.path.join(save_dir_path,cat)
             if not os.path.exists(save_dir_path_cat): os.mkdir(save_dir_path_cat)
             fig.savefig(os.path.join(save_dir_path_cat,title+".png"),bbox_extra_artists=ext_tup,bbox_inches='tight')
