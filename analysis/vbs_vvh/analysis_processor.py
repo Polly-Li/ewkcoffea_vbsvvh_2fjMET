@@ -62,8 +62,17 @@ class AnalysisProcessor(processor.ProcessorABC):
             "fj0_pt"  : axis.Regular(180, 0, 2000, name="fj0_pt", label="fj0 pt"),
             "fj0_mass"  : axis.Regular(180, 0, 800, name="fj0_mass", label="fj0 mass"),
             "fj0_msoftdrop"  : axis.Regular(180, 0, 800, name="fj0_msoftdrop", label="fj0 softdrop mass"),
+            "fj0_mparticlenet"  : axis.Regular(180, 0, 800, name="fj0_mparticlenet", label="fj0 particleNet mass"),
             "fj0_eta" : axis.Regular(180, -5, 5, name="fj0_eta", label="fj0 eta"),
             "fj0_phi" : axis.Regular(180, -3.1416, 3.1416, name="fj0_phi", label="j0 phi"),
+
+            "fj0_pNetH4qvsQCD": axis.Regular(180, 0, 1, name="fj0_pNetH4qvsQCD", label="fj0 pNet H4qvsQCD"),
+            "fj0_pNetHbbvsQCD": axis.Regular(180, 0, 1, name="fj0_pNetHbbvsQCD", label="fj0 pNet HbbvsQCD"),
+            "fj0_pNetHccvsQCD": axis.Regular(180, 0, 1, name="fj0_pNetHccvsQCD", label="fj0 pNet HccvsQCD"),
+            "fj0_pNetQCD"     : axis.Regular(180, 0, 1, name="fj0_pNetQCD",    label="fj0 pNet QCD"),
+            "fj0_pNetTvsQCD"  : axis.Regular(180, 0, 1, name="fj0_pNetTvsQCD", label="fj0 pNet TvsQCD"),
+            "fj0_pNetWvsQCD"  : axis.Regular(180, 0, 1, name="fj0_pNetWvsQCD", label="fj0 pNet WvsQCD"),
+            "fj0_pNetZvsQCD"  : axis.Regular(180, 0, 1, name="fj0_pNetZvsQCD", label="fj0 pNet ZvsQCD"),
 
             "j0central_pt"  : axis.Regular(180, 0, 2000, name="j0central_pt", label="j0 pt (central jets)"), # Naming
             "j0central_eta" : axis.Regular(180, -5, 5, name="j0central_eta", label="j0 eta (central jets)"), # Naming
@@ -631,6 +640,15 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "mass_j0anyj1any" : (j0any+j1any).mass,
 
                 "mass_b0b1" : mass_b0b1,
+
+                "fj0_pNetH4qvsQCD" : fj0.particleNet_H4qvsQCD,
+                "fj0_pNetHbbvsQCD" : fj0.particleNet_HbbvsQCD,
+                "fj0_pNetHccvsQCD" : fj0.particleNet_HccvsQCD,
+                "fj0_pNetQCD" : fj0.particleNet_QCD,
+                "fj0_pNetTvsQCD" : fj0.particleNet_TvsQCD,
+                "fj0_pNetWvsQCD" : fj0.particleNet_WvsQCD,
+                "fj0_pNetZvsQCD" : fj0.particleNet_ZvsQCD,
+                "fj0_mparticlenet" : fj0.particleNet_mass,
 
             }
 
