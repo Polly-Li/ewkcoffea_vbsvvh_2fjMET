@@ -9,6 +9,7 @@ import matplotlib.patches as mp
 
 from topcoffea.scripts.make_html import make_html
 import ewkcoffea.modules.sample_groupings as sg
+import ewkcoffea.modules.plotting_tools as plt_tools
 import get_wwz_yields as gy
 
 
@@ -466,7 +467,7 @@ def make_plots(histo_dict,grouping_mc,grouping_data,out_dir_map,save_dir_path,ye
                     rebin_factor = STYLE_DICT[group_name]["rebin"][cat_name][year]
                     if "rebin" in STYLE_DICT[group_name]["var_dict"][var_name]:
                         rebin_factor = STYLE_DICT[group_name]["var_dict"][var_name]["rebin"][cat_name][year]
-                    histo_cat = gy.rebin(histo_cat,rebin_factor)
+                    histo_cat = plt_tools.rebin(histo_cat,rebin_factor)
 
                 # Set special values
                 logscale=False
@@ -477,12 +478,12 @@ def make_plots(histo_dict,grouping_mc,grouping_data,out_dir_map,save_dir_path,ye
                     maxxticks = STYLE_DICT[group_name]["var_dict"][var_name]["maxxticks"]
 
                 # Group the mc and data samples
-                histo_grouped_mc = gy.group(histo_cat,"process","process_grp",grouping_mc)
-                histo_grouped_data = gy.group(histo_cat,"process","process_grp",grouping_data)
+                histo_grouped_mc = plt_tools.group(histo_cat,"process","process_grp",grouping_mc)
+                histo_grouped_data = plt_tools.group(histo_cat,"process","process_grp",grouping_data)
 
                 # Merge overflow into last bin (so it shows up in the plot)
-                histo_grouped_data = gy.merge_overflow(histo_grouped_data)
-                histo_grouped_mc = gy.merge_overflow(histo_grouped_mc)
+                histo_grouped_data = plt_tools.merge_overflow(histo_grouped_data)
+                histo_grouped_mc = plt_tools.merge_overflow(histo_grouped_mc)
 
                 # Make and save figure
                 title = f"{group_name}__{cat_name}__{var_name}"

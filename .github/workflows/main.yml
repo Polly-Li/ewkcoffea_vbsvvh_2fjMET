@@ -61,7 +61,7 @@ jobs:
           # W391 blank line at end of file
           # W605 invalid escape sequence '\s'
 
-  Full_Analysis:
+  Full_Analyses:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -136,3 +136,15 @@ jobs:
       - name: Check WWZ yields R3
         run: |
           conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_compare_yields_after_processor_wwz_r3
+
+      - name: Run VVH processors over test R2 file
+        run: |
+          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append tests/test_futures_vvh_r2.py
+
+      - name: Get VVH yields R2
+        run: |
+          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_make_yields_after_processor_vvh_r2
+
+      - name: Check VVH yields R2
+        run: |
+          conda run -n coffea-env pytest --cov=./ --cov-report=xml -rP --cov-append -k test_compare_yields_after_processor_vvh_r2

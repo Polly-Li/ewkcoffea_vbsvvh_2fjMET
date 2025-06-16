@@ -15,6 +15,7 @@ import topcoffea.modules.MakeLatexTable as mlt
 
 import ewkcoffea.modules.yield_tools as yt
 import ewkcoffea.modules.sample_groupings as sg
+import ewkcoffea.modules.plotting_tools as plt_tools
 
 import yld_dicts_for_comp as yd
 import for_jec_27_var as jecref
@@ -303,59 +304,7 @@ def print_counts(counts_dict):
     )
 
 
-# This should maybe be in a different script
-################### Hist manipulation and plotting ###################
-
-
-# Get the list of categories on the sparese axis
-def get_axis_cats(histo,axis_name):
-    process_list = [x for x in histo.axes[axis_name]]
-    return process_list
-
-
-# Merges the last bin (overflow) into the second to last bin, zeros the content of the last bin, returns a new hist
-# Note assumes just one axis!
-def merge_overflow(hin):
-    hout = copy.deepcopy(hin)
-    for cat_idx,arr in enumerate(hout.values(flow=True)):
-        hout.values(flow=True)[cat_idx][-2] += hout.values(flow=True)[cat_idx][-1]
-        hout.values(flow=True)[cat_idx][-1] = 0
-        hout.variances(flow=True)[cat_idx][-2] += hout.variances(flow=True)[cat_idx][-1]
-        hout.variances(flow=True)[cat_idx][-1] = 0
-    return hout
-
-
-# Rebin according to https://github.com/CoffeaTeam/coffea/discussions/705
-def rebin(histo,factor):
-    return histo[..., ::hist.rebin(factor)]
-
-
-# Regroup categories (e.g. processes)
-def group(h, oldname, newname, grouping):
-
-    # Build up a grouping dict that drops any proc that is not in our h
-    grouping_slim = {}
-    proc_lst = get_axis_cats(h,oldname)
-    for grouping_name in grouping.keys():
-        for proc in grouping[grouping_name]:
-            if proc in proc_lst:
-                if grouping_name not in grouping_slim:
-                    grouping_slim[grouping_name] = []
-                grouping_slim[grouping_name].append(proc)
-            #else:
-            #    print(f"WARNING: process {proc} not in this hist")
-
-    # From Nick: https://github.com/CoffeaTeam/coffea/discussions/705#discussioncomment-4604211
-    hnew = hist.Hist(
-        hist.axis.StrCategory(grouping_slim, name=newname),
-        *(ax for ax in h.axes if ax.name != oldname),
-        storage=h.storage_type(),
-    )
-    for i, indices in enumerate(grouping_slim.values()):
-        hnew.view(flow=True)[i] = h[{oldname: indices}][{oldname: sum}].view(flow=True)
-
-    return hnew
-
+################### Hist plotting ###################
 
 # Takes a mc hist and data hist and plots both
 def make_cr_fig(histo_mc,histo_data=None,title="test",unit_norm_bool=False,axisrangex=None):
@@ -540,7 +489,7 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
 
         # Rebin if continous variable
         if var_name not in ["njets","nbtagsl","nleps","bdt_of_bin","bdt_sf_bin","abs_pdgid_sum"]:
-            histo = rebin(histo,6)
+            histo = plt_tools.rebin(histo,6)
 
         # Get the list of systematic base names (i.e. without the up and down tags)
         # Assumes each syst has a "systnameUp" and a "systnameDown" category on the systematic axis
@@ -556,11 +505,11 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
             print("\n",cat)
             if "cr_4l_of" not in cat and var_name == "j0pt": continue
             histo_cat = histo[{"category":cat}]
-            histo_grouped_mc = group(histo_cat,"process","process_grp",grouping_mc)
-            histo_grouped_data = group(histo_cat,"process","process_grp",grouping_data)
+            histo_grouped_mc = plt_tools.group(histo_cat,"process","process_grp",grouping_mc)
+            histo_grouped_data = plt_tools.group(histo_cat,"process","process_grp",grouping_data)
 
-            mc_nom   = merge_overflow(histo_grouped_mc[{"systematic":"nominal"}])
-            data_nom = merge_overflow(histo_grouped_data[{"systematic":"nominal"}])
+            mc_nom   = plt_tools.merge_overflow(histo_grouped_mc[{"systematic":"nominal"}])
+            data_nom = plt_tools.merge_overflow(histo_grouped_data[{"systematic":"nominal"}])
 
             for syst in syst_var_lst:
                 if syst not in jecref.JERC_LST: continue
@@ -593,10 +542,10 @@ def make_syst_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,year):
                 if year == "all": yeartag = "FullR2"
                 else: yeartag = year
 
-                mc_up     = merge_overflow(histo_grouped_mc[{"systematic":f"{syst}Up"}])
-                mc_down   = merge_overflow(histo_grouped_mc[{"systematic":f"{syst}Down"}])
-                data_up   = merge_overflow(histo_grouped_data[{"systematic":f"{syst}Up"}])
-                data_down = merge_overflow(histo_grouped_data[{"systematic":f"{syst}Down"}])
+                mc_up     = plt_tools.merge_overflow(histo_grouped_mc[{"systematic":f"{syst}Up"}])
+                mc_down   = plt_tools.merge_overflow(histo_grouped_mc[{"systematic":f"{syst}Down"}])
+                data_up   = plt_tools.merge_overflow(histo_grouped_data[{"systematic":f"{syst}Up"}])
+                data_down = plt_tools.merge_overflow(histo_grouped_data[{"systematic":f"{syst}Down"}])
 
                 mc_up_arr = mc_up[{"process_grp":sum}].values()
                 mc_down_arr = mc_down[{"process_grp":sum}].values()
@@ -742,33 +691,33 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
             if var_name not in ["njets","nbtagsl","nleps","bdt_of_bin","bdt_sf_bin","bdt_of_bin_coarse","bdt_sf_bin_coarse","abs_pdgid_sum","w_lep0_genPartFlav","w_lep1_genPartFlav","z_lep0_genPartFlav","z_lep1_genPartFlav"]:
                 # Zoom in on mll around Z for Z CR
                 if (cat_name == "cr_4l_sf") and (var_name in ["mll_zl0_zl1","mll_wl0_wl1"]):
-                    histo = rebin(histo,1)
+                    histo = plt_tools.rebin(histo,1)
                     rangex = [50,150]
                 # Zoom in on mll for the higgs validation region
                 elif (cat_name == "cr_4l_sf_higgs"):
-                    histo = rebin(histo,1)
+                    histo = plt_tools.rebin(histo,1)
                     if var_name == "mllll":
                         rangex = [110,140]
                     elif var_name == "mll_zl0_zl1":
                         rangex = [50,150]
-                        histo = rebin(histo,2)
+                        histo = plt_tools.rebin(histo,2)
                     elif var_name == "mll_wl0_wl1":
                         rangex = [0,100]
-                        histo = rebin(histo,2)
+                        histo = plt_tools.rebin(histo,2)
                     else:
-                        histo = rebin(histo,8)
+                        histo = plt_tools.rebin(histo,8)
                 # Fewer bins for low stats CRs
                 elif cat_name in ["cr_4l_btag_sf_offZ_met80","cr_4l_btag_of"]:
-                    histo = rebin(histo,15)
+                    histo = plt_tools.rebin(histo,15)
                 # Otherwise bin a bit more finely
                 else:
-                    histo = rebin(histo,6)
+                    histo = plt_tools.rebin(histo,6)
 
             histo_cat = histo[{"category":cat_name}]
 
             # Group the mc and data samples
-            histo_grouped_mc = group(histo_cat,"process","process_grp",grouping_mc)
-            histo_grouped_data = group(histo_cat,"process","process_grp",grouping_data)
+            histo_grouped_mc = plt_tools.group(histo_cat,"process","process_grp",grouping_mc)
+            histo_grouped_data = plt_tools.group(histo_cat,"process","process_grp",grouping_data)
 
             # Apply the NSF (the NSF dict is set up for SRs, not CRs but we can just grab the ones we need)
             if apply_nsf_to_cr:
@@ -803,8 +752,8 @@ def make_plots(histo_dict,grouping_mc,grouping_data,save_dir_path,apply_nsf_to_c
             #####
 
             # Merge overflow into last bin (so it shows up in the plot)
-            histo_grouped_data = merge_overflow(histo_grouped_data)
-            histo_grouped_mc = merge_overflow(histo_grouped_mc)
+            histo_grouped_data = plt_tools.merge_overflow(histo_grouped_data)
+            histo_grouped_mc = plt_tools.merge_overflow(histo_grouped_mc)
 
             # Make figure
             title = f"{cat_name}_{var_name}"

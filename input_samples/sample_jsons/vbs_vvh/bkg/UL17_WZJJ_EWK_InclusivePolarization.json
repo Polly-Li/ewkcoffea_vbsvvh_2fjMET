@@ -1,0 +1,27 @@
+{
+    "xsec": "0.01701",
+    "year": "2017",
+    "treeName": "Events",
+    "histAxisName": "UL17_WZJJ_EWK_InclusivePolarization",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "WZJJ_EWK_InclusivePolarization_TuneCP5_13TeV_madgraph-madspin-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_13Jun2025_v1/merged/merged.root"
+    ],
+    "nEvents": 265476,
+    "nGenEvents": 2000000,
+    "nSumOfWeights": 31195.062866480002,
+    "isData": false,
+    "path": "WZJJ_EWK_InclusivePolarization_TuneCP5_13TeV_madgraph-madspin-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_13Jun2025_v1/merged",
+    "nSumOfLheWeights": [
+        33295.33381056991,
+        31195.062866480002,
+        29373.50870748353,
+        33295.33381056991,
+        31195.062866480002,
+        29373.50870748353,
+        33295.33381056991,
+        31195.062866480002,
+        29373.50870748353
+    ]
+}

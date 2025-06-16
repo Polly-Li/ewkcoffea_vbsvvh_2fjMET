@@ -1,0 +1,27 @@
+{
+    "xsec": "377.96",
+    "year": "2018",
+    "treeName": "Events",
+    "histAxisName": "UL18_TTToHadronic",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "TTToHadronic_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_13Jun2025_v1/merged/merged.root"
+    ],
+    "nEvents": 1238119,
+    "nGenEvents": 334206000,
+    "nSumOfWeights": 104910439190.4039,
+    "isData": false,
+    "path": "TTToHadronic_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_13Jun2025_v1/merged",
+    "nSumOfLheWeights": [
+        118171625433.27112,
+        116121157398.5434,
+        114797820170.99548,
+        107489808682.52182,
+        104911765215.18008,
+        102926968897.79683,
+        97271793819.24323,
+        94482610600.96466,
+        92191558825.72408
+    ]
+}

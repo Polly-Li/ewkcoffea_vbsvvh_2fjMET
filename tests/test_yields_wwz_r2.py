@@ -22,7 +22,7 @@ def test_make_yields_after_processor_wwz_r2():
 def test_compare_yields_after_processor_wwz_r2():
     args = [
         "python",
-        "analysis/wwz/comp_json_yields.py",
+        "ewkcoffea/scripts/comp_json_yields.py",
         "analysis/wwz/output_check_yields.json",
         "analysis/wwz/ref_for_ci/counts_wwz_ref.json",
         "-t1",

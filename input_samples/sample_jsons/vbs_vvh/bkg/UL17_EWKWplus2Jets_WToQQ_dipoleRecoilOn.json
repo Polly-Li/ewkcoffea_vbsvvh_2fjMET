@@ -1,0 +1,26 @@
+{
+    "xsec": "10.67",
+    "year": "2017",
+    "treeName": "Events",
+    "histAxisName": "UL17_EWKWplus2Jets_WToQQ_dipoleRecoilOn",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "EWKWplus2Jets_WToQQ_dipoleRecoilOn_TuneCP5_13TeV-madgraph-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_13Jun2025_v1/merged/merged.root"
+    ],
+    "nEvents": 13167,
+    "nGenEvents": 7994000,
+    "nSumOfWeights": 7994000.0,
+    "isData": false,
+    "path": "EWKWplus2Jets_WToQQ_dipoleRecoilOn_TuneCP5_13TeV-madgraph-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_13Jun2025_v1/merged",
+    "nSumOfLheWeights": [
+        8103917.561663995,
+        7994000.0,
+        7848755.317798181,
+        8103917.561663995,
+        7848755.317798181,
+        8103917.561663995,
+        7994000.0,
+        7848755.317798181
+    ]
+}

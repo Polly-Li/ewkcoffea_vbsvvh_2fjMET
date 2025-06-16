@@ -1,0 +1,27 @@
+{
+    "xsec": "0.0115",
+    "year": "2017",
+    "treeName": "Events",
+    "histAxisName": "UL17_TTWW",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "TTWW_TuneCP5_13TeV-madgraph-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_13Jun2025_v1/merged/merged.root"
+    ],
+    "nEvents": 169919,
+    "nGenEvents": 698000,
+    "nSumOfWeights": 698000.0,
+    "isData": false,
+    "path": "TTWW_TuneCP5_13TeV-madgraph-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_13Jun2025_v1/merged",
+    "nSumOfLheWeights": [
+        914770.252458323,
+        837399.111180762,
+        771499.8476447919,
+        762546.9415150809,
+        698000.0,
+        643029.2985867218,
+        645819.1216087745,
+        591116.550698571,
+        544533.8347758983
+    ]
+}

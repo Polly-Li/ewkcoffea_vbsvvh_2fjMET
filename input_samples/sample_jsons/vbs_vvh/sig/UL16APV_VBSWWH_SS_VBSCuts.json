@@ -1,0 +1,27 @@
+{
+    "xsec": "0.001526",
+    "year": "2016APV",
+    "treeName": "Events",
+    "histAxisName": "UL16APV_VBSWWH_SS_VBSCuts",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "VBSWWH_SS_VBSCuts_TuneCP5_RunIISummer20UL16APV-106X_privateMC_NANOGEN_v2/merged.root"
+    ],
+    "nEvents": 99800,
+    "nGenEvents": 99800,
+    "nSumOfWeights": 99800.0,
+    "isData": false,
+    "path": "VBSWWH_SS_VBSCuts_TuneCP5_RunIISummer20UL16APV-106X_privateMC_NANOGEN_v2",
+    "nSumOfLheWeights": [
+        118576.0718835754,
+        99800.0,
+        85918.33420091654,
+        118576.0718835754,
+        99800.0,
+        85918.33420091654,
+        118576.0718835754,
+        99800.0,
+        85918.33420091654
+    ]
+}

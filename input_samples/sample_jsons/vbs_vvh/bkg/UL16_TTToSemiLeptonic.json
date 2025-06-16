@@ -1,0 +1,27 @@
+{
+    "xsec": "365.34",
+    "year": "2016",
+    "treeName": "Events",
+    "histAxisName": "UL16_TTToSemiLeptonic",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_13Jun2025_v1/merged/merged.root"
+    ],
+    "nEvents": 6653632,
+    "nGenEvents": 144722000,
+    "nSumOfWeights": 43548253725.284035,
+    "isData": false,
+    "path": "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8_RunIISummer20UL16NanoAODv9-106X_mcRun2_asymptotic_v17-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_13Jun2025_v1/merged",
+    "nSumOfLheWeights": [
+        49053805931.488754,
+        48201880248.23975,
+        47651807849.15231,
+        44619515549.66085,
+        43548540833.28005,
+        42724338095.96873,
+        40377834988.45356,
+        39219611101.1061,
+        38268157214.96274
+    ]
+}

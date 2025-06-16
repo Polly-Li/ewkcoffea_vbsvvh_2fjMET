@@ -1,0 +1,26 @@
+{
+    "xsec": "3.451",
+    "year": "2018",
+    "treeName": "Events",
+    "histAxisName": "UL18_ZZTo4Q",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "ZZTo4Q_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_13Jun2025_v1/merged/merged.root"
+    ],
+    "nEvents": 2076,
+    "nGenEvents": 2535895,
+    "nSumOfWeights": 14508182.721835008,
+    "isData": false,
+    "path": "ZZTo4Q_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8_RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_13Jun2025_v1/merged",
+    "nSumOfLheWeights": [
+        15447376.546537042,
+        15463427.092650374,
+        15548007.284021458,
+        14458558.47680153,
+        14588542.582631413,
+        13544635.173737872,
+        13612796.089435603,
+        13687666.63997414
+    ]
+}

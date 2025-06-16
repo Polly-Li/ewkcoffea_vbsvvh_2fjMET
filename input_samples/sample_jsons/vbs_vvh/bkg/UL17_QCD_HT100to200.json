@@ -1,0 +1,27 @@
+{
+    "xsec": "27849880",
+    "year": "2017",
+    "treeName": "Events",
+    "histAxisName": "UL17_QCD_HT100to200",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "QCD_HT100to200_TuneCP5_PSWeights_13TeV-madgraph-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_13Jun2025_v1/merged/merged.root"
+    ],
+    "nEvents": 7,
+    "nGenEvents": 54381393,
+    "nSumOfWeights": 54381393.0,
+    "isData": false,
+    "path": "QCD_HT100to200_TuneCP5_PSWeights_13TeV-madgraph-pythia8_RunIISummer20UL17NanoAODv9-106X_mc2017_realistic_v9-v1_NANOAODSIM_nanoaodv9_bkg_1FJ1Lep_13Jun2025_v1/merged",
+    "nSumOfLheWeights": [
+        58690818.61681588,
+        61642844.13978809,
+        63416316.96651023,
+        51778916.18100272,
+        54381393.0,
+        55945115.01953694,
+        46357737.94781768,
+        48686401.72171549,
+        50085762.91102557
+    ]
+}
