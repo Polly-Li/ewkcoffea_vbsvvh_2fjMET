@@ -13,6 +13,8 @@ import ewkcoffea.modules.plotting_tools as plt_tools
 
 HTML_PC = "/home/users/kmohrman/ref_scripts/html_stuff/index.php"
 
+CLR_LST = ""
+
 GRP_DICT_FULL = {
 
     "Signal" : [
@@ -103,14 +105,16 @@ GRP_DICT_FULL = {
 
 
 CAT_LST = [
-    "all_events",
-    "filters",
-    "exactly1lep",
-    "exactly1lep_exactly1fj",
-    "exactly1lep_exactly1fj_STmet600",
-    "exactly1lep_exactly1fj_STmet1000",
-    "exactly1lep_exactly1fj_STmet1000_msd170",
-    "exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan3",
+    #"all_events",
+    #"filters",
+    #"exactly1lep",
+    #"exactly1lep_exactly1fj",
+    #"exactly1lep_exactly1fj_STmet600",
+    #"exactly1lep_exactly1fj_STmet1000",
+    #"exactly1lep_exactly1fj_STmet1000_msd170",
+    #"exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan3",
+    "exactly1lep_exactly1fj_HbbGt0p5",
+    "exactly1lep_exactly1fj_HbbLt0p5",
 ]
 
 
@@ -164,11 +168,11 @@ def get_yields_per_cat(histo_dict,var_name):
 def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None):
 
     # Create the figure
-    fig, (ax1, ax2, ax3) = plt.subplots(
-        nrows=3,
+    fig, (ax1, ax2, ax3, ax4) = plt.subplots(
+        nrows=4,
         ncols=1,
-        figsize=(7,9),
-        gridspec_kw={"height_ratios": (3, 1, 1)},
+        figsize=(7,10),
+        gridspec_kw={"height_ratios": (3, 1, 1, 1)},
         sharex=True
     )
     fig.subplots_adjust(hspace=.07)
@@ -179,6 +183,7 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
         histtype="fill",
         #color=CLR_LST,
         ax=ax1,
+        zorder=100,
     )
 
     # Get the errs on MC and plot them by hand on the stack plot
@@ -192,67 +197,104 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
     ax1.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', alpha=0.5, linewidth=0.0, label='MC stat', hatch='/////')
 
 
+    ## Draw the normalized shapes ##
+
     # Get normalized hists of sig and bkg
     yld_sig = sum(sum(histo_mc_sig.values(flow=True)))
     yld_bkg = sum(sum(histo_mc_bkg.values(flow=True)))
+    metric = yld_sig/(yld_bkg**0.5)
     histo_mc_sig_scale_to_bkg = plt_tools.scale(copy.deepcopy(histo_mc_sig), "process_grp", {"Signal":yld_bkg/yld_sig})
     histo_mc_sig_norm         = plt_tools.scale(copy.deepcopy(histo_mc_sig), "process_grp", {"Signal":1.0/yld_sig})
     histo_mc_bkg_norm         = plt_tools.scale(copy.deepcopy(histo_mc_bkg), "process_grp", {"Background":1.0/yld_bkg})
 
-    # Plot the normalized shapes
-    histo_mc_sig_scale_to_bkg.plot1d(color=["red"], ax=ax1,)
-    histo_mc_sig_norm.plot1d(color="red",  ax=ax2,)
-    histo_mc_bkg_norm.plot1d(color="gray", ax=ax2,)
+    histo_mc_sig_scale_to_bkg.plot1d(color=["red"], ax=ax1, zorder=100)
+    histo_mc_sig_norm.plot1d(color="red",  ax=ax2, zorder=100)
+    histo_mc_bkg_norm.plot1d(color="gray", ax=ax2, zorder=100)
 
 
     ## Draw the significance ##
 
-    yld_sig_arr = sum(histo_mc_sig.values()) # Not including flow bins here (overflow should already be handled, and if we have underflow, why?)
-    yld_bkg_arr = sum(histo_mc_bkg.values()) # Not including flow bins here (overflow should already be handled, and if we have underflow, why?)
+    # Get the sig and bkg arrays (Not including flow bins here, overflow should already be handled, and if we have underflow, why?)
+    yld_sig_arr = sum(histo_mc_sig.values())
+    yld_bkg_arr = sum(histo_mc_bkg.values())
 
     # Get the cumulative signifiance, starting from left
     yld_sig_arr_cum = np.cumsum(yld_sig_arr)
     yld_bkg_arr_cum = np.cumsum(yld_bkg_arr)
     metric_cum = yld_sig_arr_cum/np.sqrt(yld_bkg_arr_cum)
+    metric_cum = np.nan_to_num(metric_cum,nan=0,posinf=0) # Set the nan (from sig and bkg both being 0) to 0
 
     # Get the cumulative signifiance, starting from right
     yld_sig_arr_cum_ud = np.cumsum(np.flipud(yld_sig_arr))
     yld_bkg_arr_cum_ud = np.cumsum(np.flipud(yld_bkg_arr))
     metric_cum_ud = np.flipud(yld_sig_arr_cum_ud/np.sqrt(yld_bkg_arr_cum_ud))
+    metric_cum_ud = np.nan_to_num(metric_cum_ud,nan=0,posinf=0) # Set the nan (from sig and bkg both being 0) to 0
 
     # Draw it on the third plot
-    ax3.scatter(bin_centers_arr,metric_cum,   facecolor='none',edgecolor='black',marker=">",label="From left")
-    ax3.scatter(bin_centers_arr,metric_cum_ud,facecolor='none',edgecolor='black',marker="<",label="From right")
+    ax3.scatter(bin_centers_arr,metric_cum,   facecolor='none',edgecolor='black',marker=">",label="Cum. from left", zorder=100)
+    ax3.scatter(bin_centers_arr,metric_cum_ud,facecolor='none',edgecolor='black',marker="<",label="Cum. from right", zorder=100)
+
+    # Write the max values on the plot
+    max_metric_from_left_idx  = np.argmax(metric_cum)
+    max_metric_from_right_idx = np.argmax(metric_cum_ud)
+    left_max_y  = metric_cum[max_metric_from_left_idx]
+    right_max_y = metric_cum_ud[max_metric_from_right_idx]
+    left_max_x  = bin_centers_arr[max_metric_from_left_idx]
+    right_max_x = bin_centers_arr[max_metric_from_right_idx]
+    left_s_at_max  = yld_sig_arr_cum_ud[max_metric_from_left_idx]
+    right_s_at_max = yld_sig_arr_cum_ud[max_metric_from_right_idx]
+    left_b_at_max  = yld_bkg_arr_cum_ud[max_metric_from_left_idx]
+    right_b_at_max = yld_bkg_arr_cum_ud[max_metric_from_right_idx]
+    plt.text(0.15,0.35, f"Max from left:  {np.round(left_max_y,3)} (at x={np.round(left_max_x)}, sig: {np.round(left_s_at_max,2)}, bkg: {np.round(left_b_at_max,1)})", fontsize=9, transform=fig.transFigure)
+    plt.text(0.15,0.33, f"Max from right: {np.round(right_max_y,3)} (at x={np.round(right_max_x)} , sig: {np.round(right_s_at_max,2)}, bkg: {np.round(right_b_at_max,1)})", fontsize=9, transform=fig.transFigure)
 
 
-    ## Draw legend, scale the axis, set labels, etc ##
+    ## Draw on the fraction of signal retained ##
+    yld_sig_arr_cum_frac    = np.cumsum(yld_sig_arr)/yld_sig
+    yld_sig_arr_cum_frac_ud = np.flipud(np.cumsum(np.flipud(yld_sig_arr)))/yld_sig
+    ax4.scatter(bin_centers_arr,yld_sig_arr_cum_frac,   facecolor='none',edgecolor='black',marker=">",label="Cum. from left", zorder=100)
+    ax4.scatter(bin_centers_arr,yld_sig_arr_cum_frac_ud,facecolor='none',edgecolor='black',marker="<",label="Cum. from right", zorder=100)
+
+
+    ## Legend, scale the axis, set labels, etc ##
 
     extr = ax1.legend(loc="upper left", bbox_to_anchor=(1, 1), fontsize="12", frameon=False)
-    extr = ax2.legend(loc="upper left", bbox_to_anchor=(1, 1), fontsize="12", frameon=False)
-    extr = ax3.legend(loc="upper left", bbox_to_anchor=(1, 1), fontsize="12", frameon=False)
-    plt.text(0.15,0.85, f"Sig. yield: {np.round(yld_sig,2)}", fontsize = 12, transform=fig.transFigure)
-    plt.text(0.15,0.82, f"Bkg. yield: {np.round(yld_bkg,2)}", fontsize = 12, transform=fig.transFigure)
+    extr = ax2.legend(loc="upper left", bbox_to_anchor=(1, 1), fontsize="10", frameon=False)
+    extr = ax3.legend(loc="upper left", bbox_to_anchor=(1, 1), fontsize="10", frameon=False)
+    extr = ax4.legend(loc="upper left", bbox_to_anchor=(1, 1), fontsize="10", frameon=False)
+    plt.text(0.15,0.85, f"Sig. yield: {np.round(yld_sig,2)}", fontsize = 11, transform=fig.transFigure)
+    plt.text(0.15,0.83, f"Bkg. yield: {np.round(yld_bkg,2)}", fontsize = 11, transform=fig.transFigure)
+    plt.text(0.15,0.81, f"Metric: {np.round(metric,3)}", fontsize = 11, transform=fig.transFigure)
     plt.text(0.15,0.79, f"[Note: sig. overlay scaled {np.round(yld_bkg/yld_sig,1)}x]", fontsize = 12, transform=fig.transFigure)
 
     extt = ax1.set_title(title)
     ax1.set_xlabel(None)
     ax2.set_xlabel(None)
-    extb = ax2.set_xlabel(None)
-    # Plot a dummy hist on ax3 to get the label to show up
-    histo_mc.plot1d(alpha=0, ax=ax3)
+    extb = ax3.set_xlabel(None)
+    # Plot a dummy hist on ax4 to get the label to show up
+    histo_mc.plot1d(alpha=0, ax=ax4)
 
     extl = ax2.set_ylabel('Shapes')
     ax3.set_ylabel('Significance')
+    ax4.set_ylabel('Signal kept (%)')
     ax1.tick_params(axis='y', labelsize=16)
     ax2.tick_params(axis='x', labelsize=16)
     ax3.axhline(0.0,linestyle="-",color="k",linewidth=0.5)
+    ax4.axhline(0.0,linestyle="-",color="k",linewidth=0.5)
+    #ax1.grid() # Note: grid does not respect z order :(
+    #ax2.grid()
+    #ax3.grid()
+    #ax4.grid()
 
     shapes_ymax = max( max(sum(histo_mc_sig_norm.values(flow=True))) , max(sum(histo_mc_bkg_norm.values(flow=True))) )
     significance_max = max(max(metric_cum),max(metric_cum_ud))
     significance_min = 0-0.1*significance_max
+    print("max",significance_max)
+    print("min",significance_min)
     ax1.autoscale(axis='y')
-    ax2.set_ylim(0.0,1.8*shapes_ymax)
-    ax3.set_ylim(significance_min,1.8*significance_max)
+    ax2.set_ylim(0.0,1.5*shapes_ymax)
+    ax3.set_ylim(significance_min,2.5*significance_max)
+    ax4.set_ylim(-0.1,1.2)
     #ax1.set_yscale('log')
 
     if axisrangex is not None:
@@ -359,9 +401,14 @@ def make_plots(histo_dict):
     grouping_dict = append_years(GRP_DICT_FULL,["UL16APV","UL16","UL17","UL18"])
     #grouping_dict = append_years(GRP_DICT_FULL,["UL18"])
 
-    for cat in CAT_LST:
+    cat_lst = CAT_LST
+    var_lst = histo_dict.keys()
+    #cat_lst = ["exactly1lep_exactly1fj_STmet1000"]
+    #var_lst = ["j0any_eta"]
+
+    for cat in cat_lst:
         print("\nCat:",cat)
-        for var in histo_dict.keys():
+        for var in var_lst:
             print("\nVar:",var)
             #if var not in ["njets","njets_counts","scalarptsum_lepmet"]: continue # TMP
 
