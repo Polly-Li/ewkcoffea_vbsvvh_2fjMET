@@ -30,7 +30,7 @@ GRP_DICT_FULL = {
         "QCD_HT200to300",
         "QCD_HT300to500",
         "QCD_HT500to700",
-        "QCD_HT50to100", # Has a spike
+        #"QCD_HT50to100", # Has a spike
         "QCD_HT700to1000",
     ],
 
@@ -107,6 +107,7 @@ CAT_LST = [
     "filters",
     "exactly1lep",
     "exactly1lep_exactly1fj",
+    "exactly1lep_exactly1fj_STmet600",
     "exactly1lep_exactly1fj_STmet1000",
     "exactly1lep_exactly1fj_STmet1000_msd170",
     "exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan3",
@@ -163,11 +164,11 @@ def get_yields_per_cat(histo_dict,var_name):
 def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None):
 
     # Create the figure
-    fig, (ax1, ax2) = plt.subplots(
-        nrows=2,
+    fig, (ax1, ax2, ax3) = plt.subplots(
+        nrows=3,
         ncols=1,
-        figsize=(7,7),
-        gridspec_kw={"height_ratios": (3, 1)},
+        figsize=(7,9),
+        gridspec_kw={"height_ratios": (3, 1, 1)},
         sharex=True
     )
     fig.subplots_adjust(hspace=.07)
@@ -203,22 +204,55 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
     histo_mc_sig_norm.plot1d(color="red",  ax=ax2,)
     histo_mc_bkg_norm.plot1d(color="gray", ax=ax2,)
 
-    # Draw legend, scale the axis, set labels, etc
+
+    ## Draw the significance ##
+
+    yld_sig_arr = sum(histo_mc_sig.values()) # Not including flow bins here (overflow should already be handled, and if we have underflow, why?)
+    yld_bkg_arr = sum(histo_mc_bkg.values()) # Not including flow bins here (overflow should already be handled, and if we have underflow, why?)
+
+    # Get the cumulative signifiance, starting from left
+    yld_sig_arr_cum = np.cumsum(yld_sig_arr)
+    yld_bkg_arr_cum = np.cumsum(yld_bkg_arr)
+    metric_cum = yld_sig_arr_cum/np.sqrt(yld_bkg_arr_cum)
+
+    # Get the cumulative signifiance, starting from right
+    yld_sig_arr_cum_ud = np.cumsum(np.flipud(yld_sig_arr))
+    yld_bkg_arr_cum_ud = np.cumsum(np.flipud(yld_bkg_arr))
+    metric_cum_ud = np.flipud(yld_sig_arr_cum_ud/np.sqrt(yld_bkg_arr_cum_ud))
+
+    # Draw it on the third plot
+    ax3.scatter(bin_centers_arr,metric_cum,   facecolor='none',edgecolor='black',marker=">",label="From left")
+    ax3.scatter(bin_centers_arr,metric_cum_ud,facecolor='none',edgecolor='black',marker="<",label="From right")
+
+
+    ## Draw legend, scale the axis, set labels, etc ##
+
     extr = ax1.legend(loc="upper left", bbox_to_anchor=(1, 1), fontsize="12", frameon=False)
     extr = ax2.legend(loc="upper left", bbox_to_anchor=(1, 1), fontsize="12", frameon=False)
+    extr = ax3.legend(loc="upper left", bbox_to_anchor=(1, 1), fontsize="12", frameon=False)
     plt.text(0.15,0.85, f"Sig. yield: {np.round(yld_sig,2)}", fontsize = 12, transform=fig.transFigure)
     plt.text(0.15,0.82, f"Bkg. yield: {np.round(yld_bkg,2)}", fontsize = 12, transform=fig.transFigure)
     plt.text(0.15,0.79, f"[Note: sig. overlay scaled {np.round(yld_bkg/yld_sig,1)}x]", fontsize = 12, transform=fig.transFigure)
 
     extt = ax1.set_title(title)
-    extb = ax1.set_xlabel(None)
+    ax1.set_xlabel(None)
+    ax2.set_xlabel(None)
+    extb = ax2.set_xlabel(None)
+    # Plot a dummy hist on ax3 to get the label to show up
+    histo_mc.plot1d(alpha=0, ax=ax3)
+
     extl = ax2.set_ylabel('Shapes')
+    ax3.set_ylabel('Significance')
     ax1.tick_params(axis='y', labelsize=16)
     ax2.tick_params(axis='x', labelsize=16)
+    ax3.axhline(0.0,linestyle="-",color="k",linewidth=0.5)
 
     shapes_ymax = max( max(sum(histo_mc_sig_norm.values(flow=True))) , max(sum(histo_mc_bkg_norm.values(flow=True))) )
-    ax2.set_ylim(0.0,1.8*shapes_ymax)
+    significance_max = max(max(metric_cum),max(metric_cum_ud))
+    significance_min = 0-0.1*significance_max
     ax1.autoscale(axis='y')
+    ax2.set_ylim(0.0,1.8*shapes_ymax)
+    ax3.set_ylim(significance_min,1.8*significance_max)
     #ax1.set_yscale('log')
 
     if axisrangex is not None:
