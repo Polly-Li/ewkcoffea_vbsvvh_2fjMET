@@ -13,7 +13,7 @@ import ewkcoffea.modules.plotting_tools as plt_tools
 
 HTML_PC = "/home/users/kmohrman/ref_scripts/html_stuff/index.php"
 
-CLR_LST = ""
+CLR_LST = ['#d55e00', '#e69f00', '#f0e442', '#009e73', '#0072b2', '#56b4e9', '#cc79a7', '#6e3600', '#a17500'] #, '#a39b2f', '#00664f', '#005d87', '#999999', '#8c5d77']
 
 GRP_DICT_FULL = {
 
@@ -108,13 +108,17 @@ CAT_LST = [
     #"all_events",
     #"filters",
     #"exactly1lep",
-    #"exactly1lep_exactly1fj",
+    "exactly1lep_exactly1fj",
     #"exactly1lep_exactly1fj_STmet600",
     #"exactly1lep_exactly1fj_STmet1000",
     #"exactly1lep_exactly1fj_STmet1000_msd170",
     #"exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan3",
-    "exactly1lep_exactly1fj_HbbGt0p5",
-    "exactly1lep_exactly1fj_HbbLt0p5",
+    #"exactly1lep_exactly1fj_HbbGt0p5",
+    #"exactly1lep_exactly1fj_HbbLt0p5",
+    #"exactly1lep_exactly1fj_HbbGt0p5_nj01",
+    #"exactly1lep_exactly1fj_HbbGt0p5_nj2p",
+    #"exactly1lep_exactly1fj_HbbLt0p5_nj01",
+    #"exactly1lep_exactly1fj_HbbLt0p5_nj2p",
 ]
 
 
@@ -181,7 +185,7 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
     histo_mc.plot1d(
         stack=True,
         histtype="fill",
-        #color=CLR_LST,
+        color=CLR_LST,
         ax=ax1,
         zorder=100,
     )
@@ -229,6 +233,8 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
     yld_bkg_arr_cum_ud = np.cumsum(np.flipud(yld_bkg_arr))
     metric_cum_ud = np.flipud(yld_sig_arr_cum_ud/np.sqrt(yld_bkg_arr_cum_ud))
     metric_cum_ud = np.nan_to_num(metric_cum_ud,nan=0,posinf=0) # Set the nan (from sig and bkg both being 0) to 0
+    yld_sig_arr_cum_ud = np.flipud(yld_sig_arr_cum_ud) # Flip back so the order is as expected for later use
+    yld_bkg_arr_cum_ud = np.flipud(yld_bkg_arr_cum_ud) # Flip back so the order is as expected for later use
 
     # Draw it on the third plot
     ax3.scatter(bin_centers_arr,metric_cum,   facecolor='none',edgecolor='black',marker=">",label="Cum. from left", zorder=100)
@@ -241,9 +247,9 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
     right_max_y = metric_cum_ud[max_metric_from_right_idx]
     left_max_x  = bin_centers_arr[max_metric_from_left_idx]
     right_max_x = bin_centers_arr[max_metric_from_right_idx]
-    left_s_at_max  = yld_sig_arr_cum_ud[max_metric_from_left_idx]
+    left_s_at_max  = yld_sig_arr_cum[max_metric_from_left_idx]
     right_s_at_max = yld_sig_arr_cum_ud[max_metric_from_right_idx]
-    left_b_at_max  = yld_bkg_arr_cum_ud[max_metric_from_left_idx]
+    left_b_at_max  = yld_bkg_arr_cum[max_metric_from_left_idx]
     right_b_at_max = yld_bkg_arr_cum_ud[max_metric_from_right_idx]
     plt.text(0.15,0.35, f"Max from left:  {np.round(left_max_y,3)} (at x={np.round(left_max_x)}, sig: {np.round(left_s_at_max,2)}, bkg: {np.round(left_b_at_max,1)})", fontsize=9, transform=fig.transFigure)
     plt.text(0.15,0.33, f"Max from right: {np.round(right_max_y,3)} (at x={np.round(right_max_x)} , sig: {np.round(right_s_at_max,2)}, bkg: {np.round(right_b_at_max,1)})", fontsize=9, transform=fig.transFigure)
@@ -405,6 +411,7 @@ def make_plots(histo_dict):
     var_lst = histo_dict.keys()
     #cat_lst = ["exactly1lep_exactly1fj_STmet1000"]
     #var_lst = ["j0any_eta"]
+    #var_lst = ["scalarptsum_lepmet"]
 
     for cat in cat_lst:
         print("\nCat:",cat)
