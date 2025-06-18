@@ -73,6 +73,10 @@ Please see the [FITTING.md]() readme.
 
 ## For the VBS VVH analysis
 
+First `cd` to the directory for this analysis:
+```
+cd analysis/vbs_vvh/
+```
 The main processor is the `analysis_processor.py` file. This can be run with the `run_analysis.py` script. The command line argument can be a json file (that points to the root files you wish to process) or a config file (that lists a set of json files). 
 
 For example, to run a small test over a single file:
