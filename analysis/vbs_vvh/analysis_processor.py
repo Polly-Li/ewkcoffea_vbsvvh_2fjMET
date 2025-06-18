@@ -194,17 +194,29 @@ class AnalysisProcessor(processor.ProcessorABC):
                 raise Exception(f"ERROR: Unexpected dataset name for data file: {dataset}")
 
         # Initialize objects
-        #met  = events.MET
-        met  = events.PuppiMET
+        ##met  = events.MET
+        #met  = events.PuppiMET
+        #ele  = events.Electron
+        #mu   = events.Muon
+        ##tau  = events.Tau
+        #jets = events.Jet
+
+        #ele  = events.electron # Tight ele
         ele  = events.Electron
+        #mu   = events.muon # Tight muon
         mu   = events.Muon
-        tau  = events.Tau
+        #jets = events.goodAK4Jets
         jets = events.Jet
+        fatjets = events.CorrFatJet
+        met  = events.MET
         fatjets = events.FatJet
+        higgs = events.Higgs
+
         if (is2022 or is2023):
             rho = events.Rho.fixedGridRhoFastjetAll
         else:
-            rho = events.fixedGridRhoFastjetAll
+            #rho = events.fixedGridRhoFastjetAll
+            rho = None  # TMP
 
         # Assigns some original values that will be changed via kinematic corrections
         met["pt_original"] = met.pt
@@ -296,7 +308,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             #weights_obj_base.add('QCDscale_fac', events.nom, events.factUp*(sow/sow_factUp), events.factDown*(sow/sow_factDown))
             if not (is2022 or is2023):
                 # Misc other experimental SFs and systs
-                weights_obj_base.add('CMS_l1_ecal_prefiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
+                #weights_obj_base.add('CMS_l1_ecal_prefiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
                 weights_obj_base.add('CMS_pileup', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
             else:
                 weights_obj_base.add("CMS_pileup", cor_ec.run3_pu_attach(events.Pileup,year,"nominal"), cor_ec.run3_pu_attach(events.Pileup,year,"hi"), cor_ec.run3_pu_attach(events.Pileup,year,"lo"))
@@ -364,11 +376,11 @@ class AnalysisProcessor(processor.ProcessorABC):
                 cleanedJets["pt_gen"] =ak.ones_like(cleanedJets.pt)
 
             # Need to broadcast Rho to have same structure as cleanedJets
-            cleanedJets["rho"] = ak.broadcast_arrays(rho, cleanedJets.pt)[0]
+            #cleanedJets["rho"] = ak.broadcast_arrays(rho, cleanedJets.pt)[0]
 
             events_cache = events.caches[0] # used for storing intermediary values for corrections
-            cleanedJets = cor_ec.ApplyJetCorrections(year,isData, era).build(cleanedJets,lazy_cache=events_cache)
-            cleanedJets = cor_ec.ApplyJetSystematics(year,cleanedJets,obj_corr_syst_var)
+            #cleanedJets = cor_ec.ApplyJetCorrections(year,isData, era).build(cleanedJets,lazy_cache=events_cache)
+            #cleanedJets = cor_ec.ApplyJetSystematics(year,cleanedJets,obj_corr_syst_var)
 
             # Grab the correctable jets
             correctionJets = os_ec.get_correctable_jets(cleanedJets)
