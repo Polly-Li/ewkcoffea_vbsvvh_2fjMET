@@ -251,8 +251,8 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
     right_s_at_max = yld_sig_arr_cum_ud[max_metric_from_right_idx]
     left_b_at_max  = yld_bkg_arr_cum[max_metric_from_left_idx]
     right_b_at_max = yld_bkg_arr_cum_ud[max_metric_from_right_idx]
-    plt.text(0.15,0.35, f"Max from left:  {np.round(left_max_y,3)} (at x={np.round(left_max_x)}, sig: {np.round(left_s_at_max,2)}, bkg: {np.round(left_b_at_max,1)})", fontsize=9, transform=fig.transFigure)
-    plt.text(0.15,0.33, f"Max from right: {np.round(right_max_y,3)} (at x={np.round(right_max_x)} , sig: {np.round(right_s_at_max,2)}, bkg: {np.round(right_b_at_max,1)})", fontsize=9, transform=fig.transFigure)
+    plt.text(0.15,0.35, f"Max from left:  {np.round(left_max_y,3)} (at x={np.round(left_max_x,2)}, sig: {np.round(left_s_at_max,2)}, bkg: {np.round(left_b_at_max,1)})", fontsize=9, transform=fig.transFigure)
+    plt.text(0.15,0.33, f"Max from right: {np.round(right_max_y,3)} (at x={np.round(right_max_x,2)} , sig: {np.round(right_s_at_max,2)}, bkg: {np.round(right_b_at_max,1)})", fontsize=9, transform=fig.transFigure)
 
 
     ## Draw on the fraction of signal retained ##
@@ -410,7 +410,6 @@ def make_plots(histo_dict):
     cat_lst = CAT_LST
     var_lst = histo_dict.keys()
     #cat_lst = ["exactly1lep_exactly1fj_STmet1000"]
-    #var_lst = ["j0any_eta"]
     #var_lst = ["scalarptsum_lepmet"]
 
     for cat in cat_lst:
