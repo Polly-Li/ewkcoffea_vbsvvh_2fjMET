@@ -407,7 +407,7 @@ def print_yields(histo_dict,roundat=None,print_counts=False,dump_to_json=True,qu
                 if group_name == "metric": continue
                 yld, err = yld_dict[cat][group_name]
                 perr = 100*(err/yld)
-                line_str = line_str + f" , {np.round(yld,roundat)} , ± , {np.round(perr,2)}%"
+                line_str = line_str + f" , {np.round(yld,roundat)} , +- , {np.round(perr,2)}%"
             # And also append the metric
             metric = yld_dict[cat]["metric"][0]
             line_str = line_str + f" , {np.round(metric,3)}"
