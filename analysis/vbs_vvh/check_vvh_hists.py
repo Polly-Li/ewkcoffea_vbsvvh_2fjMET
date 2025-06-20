@@ -373,30 +373,60 @@ def print_yields(histo_dict,roundat=None,print_counts=False,dump_to_json=True,qu
     yld_dict    = get_yields_per_cat(histo_dict,"njets")
     counts_dict = get_yields_per_cat(histo_dict,"njets_counts")
 
+    group_lst_order = ['Signal', 'Background', 'ttbar', 'VV', 'Vjets', 'QCD', 'single-t', 'ttX', 'VH', 'VVV']
+
     # Print to screen
     if not quiet:
-        for cat in yld_dict:
-            yld_sig, err_sig = yld_dict[cat]["Signal"]
-            yld_bkg, err_bkg = yld_dict[cat]["Background"]
-            perr_sig = 100*(err_sig/yld_sig)
-            perr_bkg = 100*(err_bkg/yld_bkg)
-            metric, _ = yld_dict[cat]["metric"]
-            print(f"\n{cat}")
-            if roundat is not None:
-                print(f"{np.round(yld_sig,roundat)} +- {np.round(perr_sig,2)}%")
-                print(f"{np.round(yld_bkg,roundat)} +- {np.round(perr_bkg,2)}%")
-            else:
-                print(f"{yld_sig} +- {np.round(perr_sig,2)}%")
-                print(f"{yld_bkg} +- {np.round(perr_bkg,2)}%")
-            print(f"  -> Metric: {np.round(metric,3)}")
-            print(f"  -> For copy pasting: python dump_toy_card.py {yld_sig} {yld_bkg}")
 
-    # Dump to json
+        ### Print readably ###
+        print(f"\n--- Yields ---")
+        for cat in yld_dict:
+            print(f"\n{cat}")
+            for group_name in group_lst_order:
+                if group_name == "metric": continue
+                yld, err = yld_dict[cat][group_name]
+                perr = 100*(err/yld)
+                print(f"    {group_name}:  {np.round(yld,roundat)} +- {np.round(perr,2)}%")
+            print(f"    -> Metric: {np.round(yld_dict[cat]['metric'][0],3)}")
+
+
+        ### Print csv, build op as an out string ###
+
+        # Append the header
+        out_str = ""
+        header = "cat name"
+        for proc_name in group_lst_order:
+            header = header + f", {proc_name}_val , pm , {proc_name}_pm"
+        header = header + ", metric"
+        out_str = out_str + header
+
+        # Appead a line for each category, with yields and metric
+        for cat in yld_dict:
+            line_str = cat
+            for group_name in yld_dict[cat]:
+                if group_name == "metric": continue
+                yld, err = yld_dict[cat][group_name]
+                perr = 100*(err/yld)
+                line_str = line_str + f" , {np.round(yld,roundat)} , ± , {np.round(perr,2)}%"
+            # And also append the metric
+            metric = yld_dict[cat]["metric"][0]
+            line_str = line_str + f" , {np.round(metric,3)}"
+            # Append the string for this line to the out string
+            out_str = out_str + f"\n{line_str}"
+
+        # Print the out string to the screen
+        print(f"\n\n--- Yields CSV formatted ---\n")
+        print(out_str)
+
+
+    # Dump directly to json
     if dump_to_json:
         out_dict = {"yields":yld_dict, "counts":counts_dict}
         output_name = f"{out_name}.json"
         with open(output_name,"w") as out_file: json.dump(out_dict, out_file, indent=4)
-        print(f"\nSaved json file: {output_name}\n")
+        if not quiet:
+            print(f"\n\n--- Yields json formatted ---")
+            print(f"\nSaved json file: {output_name}\n")
 
 
 
