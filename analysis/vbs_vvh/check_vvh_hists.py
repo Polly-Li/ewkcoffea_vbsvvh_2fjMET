@@ -106,16 +106,16 @@ GRP_DICT_FULL = {
 
 CAT_LST = [
     # The ones we store in the ref file
-    #"all_events",
-    #"filters",
-    #"exactly1lep",
-    #"exactly1lep_exactly1fj",
+    "all_events",
+    "filters",
+    "exactly1lep",
+    "exactly1lep_exactly1fj",
     #"exactly1lep_exactly1fj_STmet1000",
     #"exactly1lep_exactly1fj_STmet1000_msd170",
     #"exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan3",
 
-    "exactly1lep_exactly1fj",
-    "exactly1lep_exactly1fj_STmet600",
+    #"exactly1lep_exactly1fj",
+    #"exactly1lep_exactly1fj_STmet600",
 
 ]
 
@@ -379,7 +379,7 @@ def print_yields(histo_dict,roundat=None,print_counts=False,dump_to_json=True,qu
     if not quiet:
 
         ### Print readably ###
-        print(f"\n--- Yields ---")
+        print("\n--- Yields ---")
         for cat in yld_dict:
             print(f"\n{cat}")
             for group_name in group_lst_order:
@@ -415,7 +415,7 @@ def print_yields(histo_dict,roundat=None,print_counts=False,dump_to_json=True,qu
             out_str = out_str + f"\n{line_str}"
 
         # Print the out string to the screen
-        print(f"\n\n--- Yields CSV formatted ---\n")
+        print("\n\n--- Yields CSV formatted ---\n")
         print(out_str)
 
 
@@ -425,7 +425,7 @@ def print_yields(histo_dict,roundat=None,print_counts=False,dump_to_json=True,qu
         output_name = f"{out_name}.json"
         with open(output_name,"w") as out_file: json.dump(out_dict, out_file, indent=4)
         if not quiet:
-            print(f"\n\n--- Yields json formatted ---")
+            print("\n\n--- Yields json formatted ---")
             print(f"\nSaved json file: {output_name}\n")
 
 
