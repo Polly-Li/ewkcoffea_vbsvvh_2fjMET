@@ -60,9 +60,9 @@ class AnalysisProcessor(processor.ProcessorABC):
             "njets_tot"   : axis.Regular(8, 0, 8, name="njets_tot",   label="Jet multiplicity (central and forward)"),
 
             "fj0_pt"  : axis.Regular(180, 0, 2000, name="fj0_pt", label="fj0 pt"),
-            "fj0_mass"  : axis.Regular(180, 0, 800, name="fj0_mass", label="fj0 mass"),
-            "fj0_msoftdrop"  : axis.Regular(180, 0, 800, name="fj0_msoftdrop", label="fj0 softdrop mass"),
-            "fj0_mparticlenet"  : axis.Regular(180, 0, 800, name="fj0_mparticlenet", label="fj0 particleNet mass"),
+            "fj0_mass"  : axis.Regular(180, 0, 250, name="fj0_mass", label="fj0 mass"),
+            "fj0_msoftdrop"  : axis.Regular(180, 0, 250, name="fj0_msoftdrop", label="fj0 softdrop mass"),
+            "fj0_mparticlenet"  : axis.Regular(180, 0, 250, name="fj0_mparticlenet", label="fj0 particleNet mass"),
             "fj0_eta" : axis.Regular(180, -5, 5, name="fj0_eta", label="fj0 eta"),
             "fj0_phi" : axis.Regular(180, -3.1416, 3.1416, name="fj0_phi", label="j0 phi"),
 
@@ -337,11 +337,11 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Fat jets
             goodfatjets = fatjets[os_ec.is_good_fatjet(fatjets)]
-            goodfatjets = os_ec.get_cleaned_collection(l_vvh_t,goodfatjets)
+            goodfatjets = os_ec.get_cleaned_collection(l_vvh_t,goodfatjets,drcut=0.8)
 
             # Clean with dr (though another option is to use jetIdx)
             cleanedJets = os_ec.get_cleaned_collection(l_vvh_t,jets) # Clean against leps
-            cleanedJets = os_ec.get_cleaned_collection(goodfatjets,cleanedJets) # Clean against fat jets
+            cleanedJets = os_ec.get_cleaned_collection(goodfatjets,cleanedJets,drcut=0.8) # Clean against fat jets
             jetptname = "pt_nom" if hasattr(cleanedJets, "pt_nom") else "pt"
 
             # Jet Veto Maps
