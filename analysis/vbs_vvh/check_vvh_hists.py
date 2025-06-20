@@ -289,8 +289,6 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
     shapes_ymax = max( max(sum(histo_mc_sig_norm.values(flow=True))) , max(sum(histo_mc_bkg_norm.values(flow=True))) )
     significance_max = max(max(metric_cum),max(metric_cum_ud))
     significance_min = 0-0.1*significance_max
-    print("max",significance_max)
-    print("min",significance_min)
     ax1.autoscale(axis='y')
     ax2.set_ylim(0.0,1.5*shapes_ymax)
     ax3.set_ylim(significance_min,2.5*significance_max)
