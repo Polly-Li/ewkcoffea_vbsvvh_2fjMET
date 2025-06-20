@@ -105,14 +105,18 @@ GRP_DICT_FULL = {
 
 
 CAT_LST = [
+    # The ones we store in the ref file
     #"all_events",
     #"filters",
     #"exactly1lep",
-    "exactly1lep_exactly1fj",
-    #"exactly1lep_exactly1fj_STmet600",
+    #"exactly1lep_exactly1fj",
     #"exactly1lep_exactly1fj_STmet1000",
     #"exactly1lep_exactly1fj_STmet1000_msd170",
     #"exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan3",
+
+    "exactly1lep_exactly1fj",
+    "exactly1lep_exactly1fj_STmet600",
+
 ]
 
 
