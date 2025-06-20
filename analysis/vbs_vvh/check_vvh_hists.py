@@ -138,29 +138,35 @@ def append_years(sample_dict_base,year_lst):
 def get_yields_per_cat(histo_dict,var_name):
     out_dict = {}
 
-    # Get list of signal and bkg processes
+    # Get the initial grouping dict
     grouping_dict = append_years(GRP_DICT_FULL,["UL16APV","UL16","UL17","UL18"])
-    sig_lst = grouping_dict["Signal"]
+
+    # Get list of all of the backgrounds together
     bkg_lst = []
     for grp in grouping_dict:
         if grp != "Signal":
             bkg_lst = bkg_lst + grouping_dict[grp]
 
+    # Make the dictionary to get yields for, it includes what's in grouping_dict, plus the backgrounds grouped as one
+    groups_to_get_yields_for_dict = copy.deepcopy(grouping_dict)
+    groups_to_get_yields_for_dict["Background"] = bkg_lst
+
     # Loop over cats and fill dict of sig and bkg
     for cat in CAT_LST:
         out_dict[cat] = {}
-
         histo_base = histo_dict[var_name][{"systematic":"nominal", "category":cat}]
-        histo_sig = plt_tools.group(histo_base,"process","process",{"Signal":sig_lst})
-        histo_bkg = plt_tools.group(histo_base,"process","process",{"Background":bkg_lst})
-        yld_sig = sum(sum(histo_sig.values(flow=True)))
-        yld_bkg = sum(sum(histo_bkg.values(flow=True)))
-        var_sig = sum(sum(histo_sig.variances(flow=True)))
-        var_bkg = sum(sum(histo_bkg.variances(flow=True)))
-        metric = yld_sig/(yld_bkg)**0.5
 
-        out_dict[cat]["signal"] = [yld_sig,(var_sig)**0.5]
-        out_dict[cat]["background"] = [yld_bkg,(var_bkg)**0.5]
+        # Get values per proc
+        for group_name,group_lst in groups_to_get_yields_for_dict.items():
+            histo = plt_tools.group(histo_base,"process","process",{group_name:group_lst})
+            yld = sum(sum(histo.values(flow=True)))
+            var = sum(sum(histo.variances(flow=True)))
+            out_dict[cat][group_name] = [yld,(var)**0.5]
+
+        # Get the metric
+        sig = out_dict[cat]["Signal"][0]
+        bkg = out_dict[cat]["Background"][0]
+        metric = sig/(bkg)**0.5
         out_dict[cat]["metric"] = [metric,None] # Don't bother propagating error
 
     return out_dict
@@ -370,8 +376,8 @@ def print_yields(histo_dict,roundat=None,print_counts=False,dump_to_json=True,qu
     # Print to screen
     if not quiet:
         for cat in yld_dict:
-            yld_sig, err_sig = yld_dict[cat]["signal"]
-            yld_bkg, err_bkg = yld_dict[cat]["background"]
+            yld_sig, err_sig = yld_dict[cat]["Signal"]
+            yld_bkg, err_bkg = yld_dict[cat]["Background"]
             perr_sig = 100*(err_sig/yld_sig)
             perr_bkg = 100*(err_bkg/yld_bkg)
             metric, _ = yld_dict[cat]["metric"]
