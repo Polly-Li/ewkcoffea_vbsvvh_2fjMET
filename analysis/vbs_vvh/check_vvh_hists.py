@@ -106,16 +106,16 @@ GRP_DICT_FULL = {
 
 CAT_LST = [
     # The ones we store in the ref file
-    #"all_events",
-    #"filters",
-    #"exactly1lep",
-    #"exactly1lep_exactly1fj",
+    "all_events",
+    "filters",
+    "exactly1lep",
+    "exactly1lep_exactly1fj",
     #"exactly1lep_exactly1fj_STmet1000",
     #"exactly1lep_exactly1fj_STmet1000_msd170",
     #"exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan3",
 
-    "exactly1lep_exactly1fj",
-    "exactly1lep_exactly1fj_STmet600",
+    #"exactly1lep_exactly1fj",
+    #"exactly1lep_exactly1fj_STmet600",
 
 ]
 
@@ -138,29 +138,35 @@ def append_years(sample_dict_base,year_lst):
 def get_yields_per_cat(histo_dict,var_name):
     out_dict = {}
 
-    # Get list of signal and bkg processes
+    # Get the initial grouping dict
     grouping_dict = append_years(GRP_DICT_FULL,["UL16APV","UL16","UL17","UL18"])
-    sig_lst = grouping_dict["Signal"]
+
+    # Get list of all of the backgrounds together
     bkg_lst = []
     for grp in grouping_dict:
         if grp != "Signal":
             bkg_lst = bkg_lst + grouping_dict[grp]
 
+    # Make the dictionary to get yields for, it includes what's in grouping_dict, plus the backgrounds grouped as one
+    groups_to_get_yields_for_dict = copy.deepcopy(grouping_dict)
+    groups_to_get_yields_for_dict["Background"] = bkg_lst
+
     # Loop over cats and fill dict of sig and bkg
     for cat in CAT_LST:
         out_dict[cat] = {}
-
         histo_base = histo_dict[var_name][{"systematic":"nominal", "category":cat}]
-        histo_sig = plt_tools.group(histo_base,"process","process",{"Signal":sig_lst})
-        histo_bkg = plt_tools.group(histo_base,"process","process",{"Background":bkg_lst})
-        yld_sig = sum(sum(histo_sig.values(flow=True)))
-        yld_bkg = sum(sum(histo_bkg.values(flow=True)))
-        var_sig = sum(sum(histo_sig.variances(flow=True)))
-        var_bkg = sum(sum(histo_bkg.variances(flow=True)))
-        metric = yld_sig/(yld_bkg)**0.5
 
-        out_dict[cat]["signal"] = [yld_sig,(var_sig)**0.5]
-        out_dict[cat]["background"] = [yld_bkg,(var_bkg)**0.5]
+        # Get values per proc
+        for group_name,group_lst in groups_to_get_yields_for_dict.items():
+            histo = plt_tools.group(histo_base,"process","process",{group_name:group_lst})
+            yld = sum(sum(histo.values(flow=True)))
+            var = sum(sum(histo.variances(flow=True)))
+            out_dict[cat][group_name] = [yld,(var)**0.5]
+
+        # Get the metric
+        sig = out_dict[cat]["Signal"][0]
+        bkg = out_dict[cat]["Background"][0]
+        metric = sig/(bkg)**0.5
         out_dict[cat]["metric"] = [metric,None] # Don't bother propagating error
 
     return out_dict
@@ -367,30 +373,60 @@ def print_yields(histo_dict,roundat=None,print_counts=False,dump_to_json=True,qu
     yld_dict    = get_yields_per_cat(histo_dict,"njets")
     counts_dict = get_yields_per_cat(histo_dict,"njets_counts")
 
+    group_lst_order = ['Signal', 'Background', 'ttbar', 'VV', 'Vjets', 'QCD', 'single-t', 'ttX', 'VH', 'VVV']
+
     # Print to screen
     if not quiet:
-        for cat in yld_dict:
-            yld_sig, err_sig = yld_dict[cat]["signal"]
-            yld_bkg, err_bkg = yld_dict[cat]["background"]
-            perr_sig = 100*(err_sig/yld_sig)
-            perr_bkg = 100*(err_bkg/yld_bkg)
-            metric, _ = yld_dict[cat]["metric"]
-            print(f"\n{cat}")
-            if roundat is not None:
-                print(f"{np.round(yld_sig,roundat)} +- {np.round(perr_sig,2)}%")
-                print(f"{np.round(yld_bkg,roundat)} +- {np.round(perr_bkg,2)}%")
-            else:
-                print(f"{yld_sig} +- {np.round(perr_sig,2)}%")
-                print(f"{yld_bkg} +- {np.round(perr_bkg,2)}%")
-            print(f"  -> Metric: {np.round(metric,3)}")
-            print(f"  -> For copy pasting: python dump_toy_card.py {yld_sig} {yld_bkg}")
 
-    # Dump to json
+        ### Print readably ###
+        print("\n--- Yields ---")
+        for cat in yld_dict:
+            print(f"\n{cat}")
+            for group_name in group_lst_order:
+                if group_name == "metric": continue
+                yld, err = yld_dict[cat][group_name]
+                perr = 100*(err/yld)
+                print(f"    {group_name}:  {np.round(yld,roundat)} +- {np.round(perr,2)}%")
+            print(f"    -> Metric: {np.round(yld_dict[cat]['metric'][0],3)}")
+
+
+        ### Print csv, build op as an out string ###
+
+        # Append the header
+        out_str = ""
+        header = "cat name"
+        for proc_name in group_lst_order:
+            header = header + f", {proc_name}_val , pm , {proc_name}_pm"
+        header = header + ", metric"
+        out_str = out_str + header
+
+        # Appead a line for each category, with yields and metric
+        for cat in yld_dict:
+            line_str = cat
+            for group_name in yld_dict[cat]:
+                if group_name == "metric": continue
+                yld, err = yld_dict[cat][group_name]
+                perr = 100*(err/yld)
+                line_str = line_str + f" , {np.round(yld,roundat)} , ± , {np.round(perr,2)}%"
+            # And also append the metric
+            metric = yld_dict[cat]["metric"][0]
+            line_str = line_str + f" , {np.round(metric,3)}"
+            # Append the string for this line to the out string
+            out_str = out_str + f"\n{line_str}"
+
+        # Print the out string to the screen
+        print("\n\n--- Yields CSV formatted ---\n")
+        print(out_str)
+
+
+    # Dump directly to json
     if dump_to_json:
         out_dict = {"yields":yld_dict, "counts":counts_dict}
         output_name = f"{out_name}.json"
         with open(output_name,"w") as out_file: json.dump(out_dict, out_file, indent=4)
-        print(f"\nSaved json file: {output_name}\n")
+        if not quiet:
+            print("\n\n--- Yields json formatted ---")
+            print(f"\nSaved json file: {output_name}\n")
 
 
 
