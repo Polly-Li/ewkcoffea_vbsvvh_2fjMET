@@ -105,7 +105,7 @@ GRP_DICT_FULL = {
 
 
 CAT_LST = [
-    #"all_events",
+    "all_events",
     "exactly1lep_exactly1fj",
     "presel",
 
@@ -391,7 +391,7 @@ def print_yields(histo_dict,roundat=None,print_counts=False,dump_to_json=True,qu
                 print(f"    {group_name}:  {np.round(yld,roundat)} +- {np.round(perr,2)}%")
             print(f"    -> Metric: {np.round(yld_dict[cat]['metric'][0],3)}")
             print(f"    -> For copy pasting: python dump_toy_card.py {yld_dict[cat]['Signal'][0]} {yld_dict[cat]['Background'][0]}")
-        exit()
+        #exit()
 
 
         ### Print csv, build op as an out string ###
