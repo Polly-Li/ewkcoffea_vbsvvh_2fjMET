@@ -353,7 +353,7 @@ def check_rwgt(histo_dict):
 def dump_json_simple(histo_dict,out_name="vvh_yields_simple"):
     out_dict = {}
     hist_to_use = "njets"
-    cats_to_check = ["all_events","exactly1lep_exactly1fj","exactly1lep_exactly1fj_STmet1000","exactly1lep_exactly1fj_STmet1000_msd170"]
+    cats_to_check = ["all_events", "exactly1lep_exactly1fj", "presel", "preselHFJ", "preselVFJ"]
     for proc_name in histo_dict[hist_to_use].axes["process"]:
         out_dict[proc_name] = {}
         for cat_name in cats_to_check:
@@ -384,14 +384,14 @@ def print_yields(histo_dict,roundat=None,print_counts=False,dump_to_json=True,qu
         for cat in yld_dict:
             print(f"\n{cat}")
             for group_name in group_lst_order:
-                #if group_name not in ["Signal","Background"]: continue
+                if group_name not in ["Signal","Background"]: continue
                 if group_name == "metric": continue
                 yld, err = yld_dict[cat][group_name]
                 perr = 100*(err/yld)
                 print(f"    {group_name}:  {np.round(yld,roundat)} +- {np.round(perr,2)}%")
             print(f"    -> Metric: {np.round(yld_dict[cat]['metric'][0],3)}")
             print(f"    -> For copy pasting: python dump_toy_card.py {yld_dict[cat]['Signal'][0]} {yld_dict[cat]['Background'][0]}")
-        #exit()
+        exit()
 
 
         ### Print csv, build op as an out string ###
