@@ -102,6 +102,23 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             "mass_b0b1" : axis.Regular(180, 0, 250, name="mass_b0b1", label="mjj of two leading b jets"),
 
+            "vbsj0_pt" : axis.Regular(180, 0, 500, name="vbsj0_pt", label="leading vbs jet pt"),
+            "vbsj0_eta" : axis.Regular(180, -5, 5, name="vbsj0_eta", label="leading vbs jet eta"),
+            "vbsj0_phi" : axis.Regular(180, -3.1416, 3.1416, name="vbsj0_phi", label="leading vbs jet phi"),
+            "vbsj1_pt" : axis.Regular(180, 0, 500, name="vbsj1_pt", label="subleading vbs jet pt"),
+            "vbsj1_eta" : axis.Regular(180, -5, 5, name="vbsj1_eta", label="subleading vbs jet eta"),
+            "vbsj1_abseta" : axis.Regular(180, 0, 5, name="vbsj1_abseta", label="subleading vbs jet abs(eta)"),
+            "vbsj1_phi" : axis.Regular(180, -3.1416, 3.1416, name="vbsj1_phi", label="subleading vbs jet phi"),
+            "vbs_mjj" : axis.Regular(180, -50, 2500, name="vbs_mjj", label="vbs mjj"),
+            "vbs_mjj_zoom" : axis.Regular(180, -50, 250, name="vbs_mjj_zoom", label="vbs mjj zoomed"),
+            "vbs_detajj" : axis.Regular(180, -1, 12, name="vbs_detajj", label="vbs detajj"),
+            "vqq_mjj" : axis.Regular(180, -50, 2500, name="vqq_mjj", label="vqq mjj"),
+            "vqq_mjj_zoom" : axis.Regular(180, -50, 250, name="vqq_mjj_zoom", label="vqq mjj zoomed"),
+            "vqq_drjj" : axis.Regular(180, 0, 6, name="vqq_drjj", label="vqq drjj"),
+
+            "n_cenjets" : axis.Regular(8, 0, 8, name="n_cenjets",   label="Jet multiplicity between tagged VBS jets"),
+            "lep_cent" : axis.Regular(180, 0, 1, name="lep_cent",   label="Lepton centrality"),
+
         }
 
         # Add histograms to dictionary that will be passed on to dict_accumulator
@@ -412,6 +429,79 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             scalarptsum_jetCentFwd = ak.sum(goodJetsCentFwd.pt,axis=-1)
 
+            # Tag VBS jets
+            vbsJets_padded = ak.pad_none(goodJetsCentFwd, 2)
+            vbsjet_pairs = ak.combinations(vbsJets_padded, 2, fields=["vbsj0", "vbsj1"] )
+
+            # Get all combiations mass values
+            mjjs = (vbsjet_pairs.vbsj0 + vbsjet_pairs.vbsj1).mass
+
+            # Get the one with maximum mjj
+            max_idx = ak.argmax(mjjs, keepdims=True, axis=1)
+
+            # Get the pair of vbs jets
+            max_pairs = vbsjet_pairs[max_idx]
+            vbsj0 = max_pairs.vbsj0
+            vbsj1 = max_pairs.vbsj1
+
+            # Tag Vqq jets
+            vqqJets_padded = ak.pad_none(goodJetsCentFwd, 2)
+            vqqjet_pairs = ak.combinations(vqqJets_padded, 2, fields=["vqqj0", "vqqj1"] )
+
+            # Get all combiations mass values
+            drjjs = vqqjet_pairs.vqqj0.delta_r(vqqjet_pairs.vqqj1)
+
+            # Get the one with minimum drjj
+            min_idx = ak.argmin(drjjs, keepdims=True, axis=1)
+
+            # Get the pair of vqq jets
+            min_pairs = vqqjet_pairs[min_idx]
+            vqqj0 = min_pairs.vqqj0
+            vqqj1 = min_pairs.vqqj1
+
+            # Compute some variables
+            vbsj0_pt = ak.flatten(ak.fill_none(vbsj0.pt, -999))
+            vbsj0_eta = ak.flatten(ak.fill_none(vbsj0.eta, -999))
+            vbsj0_phi = ak.flatten(ak.fill_none(vbsj0.phi, -999))
+            vbsj1_pt = ak.flatten(ak.fill_none(vbsj1.pt, -999))
+            vbsj1_eta = ak.flatten(ak.fill_none(vbsj1.eta, -999))
+            vbsj1_abseta = ak.flatten(ak.fill_none(abs(vbsj1.eta), -999))
+            vbsj1_phi = ak.flatten(ak.fill_none(vbsj1.phi, -999))
+
+            # Remove the vbs tagged jets from goodJetsCentFwd
+            vbs_cenjets = os_ec.get_cleaned_collection(vbsj0, goodJetsCentFwd, drcut=0.01)
+            vbs_cenjets = os_ec.get_cleaned_collection(vbsj1, vbs_cenjets, drcut=0.01)
+
+            # Remove the jets that are outside of vbs jets eta
+            vbs_hi_eta = ak.where(vbsj0_eta >= vbsj1_eta, vbsj0_eta, vbsj1_eta)
+            vbs_lo_eta = ak.where(vbsj0_eta >= vbsj1_eta, vbsj1_eta, vbsj0_eta)
+            vbs_cenjets = vbs_cenjets[(vbs_cenjets.eta > vbs_lo_eta) & (vbs_cenjets.eta < vbs_hi_eta)]
+
+            # Number of central jets between vbs jets
+            n_cenjets = ak.num(vbs_cenjets)
+
+            # Compute vbs pair kinematic variables
+            vbs_mjj = ak.flatten(ak.fill_none((vbsj0 + vbsj1).mass, -999))
+            vbs_detajj = ak.flatten(ak.fill_none(abs(vbsj0.eta - vbsj1.eta), -999))
+
+            # Lep Centrality
+            vbs_cent_eta = ak.fill_none((vbs_hi_eta + vbs_lo_eta) / 2., -999)
+            cent_diff = ak.where(vbs_cent_eta != -999, l0.eta - vbs_cent_eta, -999)
+            lep_cent = ak.where(cent_diff != -999, cent_diff / vbs_detajj, -999)
+
+            # Compute some variables
+            vqqj0_pt = ak.flatten(ak.fill_none(vqqj0.pt, -999))
+            vqqj0_eta = ak.flatten(ak.fill_none(vqqj0.eta, -999))
+            vqqj0_phi = ak.flatten(ak.fill_none(vqqj0.phi, -999))
+            vqqj1_pt = ak.flatten(ak.fill_none(vqqj1.pt, -999))
+            vqqj1_eta = ak.flatten(ak.fill_none(vqqj1.eta, -999))
+            vqqj1_abseta = ak.flatten(ak.fill_none(abs(vqqj1.eta), -999))
+            vqqj1_phi = ak.flatten(ak.fill_none(vqqj1.phi, -999))
+
+            # Compute vqq pair kinematic variables
+            vqq_mjj = ak.flatten(ak.fill_none((vqqj0 + vqqj1).mass, -999))
+            vqq_drjj = ak.flatten(ak.fill_none(vqqj0.delta_r(vqqj1), -999))
+
             # Loose DeepJet WP
             btagger = "btag" # For deep flavor WPs
             if year == "2017":
@@ -578,7 +668,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             bjets_ptordered_padded = ak.pad_none(bjets_ptordered, 2)
             b0 = bjets_ptordered_padded[:,0]
             b1 = bjets_ptordered_padded[:,1]
-            mass_b0b1 = (b0+b1).mass
+            mass_b0b1_tmp = (b0+b1).mass
+            mass_b0b1 = ak.where(nbtagsl>1,mass_b0b1_tmp,0)
 
             # Put the variables we'll plot into a dictionary for easy access later
             dense_variables_dict = {
@@ -650,6 +741,22 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "fj0_pNetZvsQCD" : fj0.particleNet_ZvsQCD,
                 "fj0_mparticlenet" : fj0.particleNet_mass,
 
+                "vbsj0_pt" : vbsj0_pt,
+                "vbsj0_eta" : vbsj0_eta,
+                "vbsj0_phi" : vbsj0_phi,
+                "vbsj1_pt" : vbsj1_pt,
+                "vbsj1_eta" : vbsj1_eta,
+                "vbsj1_abseta" : vbsj1_abseta,
+                "vbsj1_phi" : vbsj1_phi,
+
+                "vqq_mjj" : vqq_mjj,
+                "vqq_mjj_zoom" : vqq_mjj,
+                "vqq_drjj" : vqq_drjj,
+                "vbs_mjj" : vbs_mjj,
+                "vbs_mjj_zoom" : vbs_mjj,
+                "vbs_detajj" : vbs_detajj,
+                "n_cenjets" : n_cenjets,
+                "lep_cent" : lep_cent,
 
             }
 
@@ -664,39 +771,50 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Event filter masks
             filter_mask = es_ec.get_filter_flag_mask_vvh(events,year,is2022,is2023)
 
-            # Selections for SRs
-            # TODO get rid of the ones we're not using
+            # Form some other useful masks for SRs
 
+            mask_exactly1lep_exactly1fj = veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1)
+            mask_presel = mask_exactly1lep_exactly1fj & (scalarptsum_lepmet > 775)
+
+            mask_preselHFJ = mask_presel & (fj0.particleNet_mass >  100.) & (fj0.particleNet_mass <= 150.)
+            mask_preselVFJ = mask_presel & (fj0.particleNet_mass <= 100.) & (fj0.particleNet_mass > 65)
+
+            mask_preselHFJTag = mask_preselHFJ & (fj0.particleNet_HbbvsQCD > 0.98) & (fj0.particleNet_TvsQCD < 0.5) & (fj0.particleNet_WvsQCD < 0.5)
+            mask_preselVFJTag = mask_preselVFJ & (fj0.particleNet_WvsQCD > 0.95) & (fj0.particleNet_TvsQCD < 0.5)
+
+            # Pre selections
             selections.add("all_events", (veto_map_mask | (~veto_map_mask))) # All events.. this logic is a bit roundabout to just get an array of True
-            selections.add("exactly1lep_exactly1fj", veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1))
+            selections.add("exactly1lep_exactly1fj" , mask_exactly1lep_exactly1fj)
+            selections.add("presel", mask_presel)
 
-            selections.add("exactly1lep_exactly1fj_STmet1000",                          veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>1000))
-            selections.add("exactly1lep_exactly1fj_STmet1000_msd170",                   veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>1000) & (fj0.msoftdrop<170))
-            selections.add("exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan3",veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>1000) & (fj0.msoftdrop<170) & (njets<3))
+            # HFJ selections
+            selections.add("preselHFJ", mask_preselHFJ)
+            selections.add("preselHFJTag",mask_preselHFJTag)
+            selections.add("preselHFJTag_mjj115", mask_preselHFJTag & (mass_j0centj1cent < 115))
 
-            # Philip
-            mask_Presel = veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet > 775)
-            mask_HFJ = mask_Presel & (fj0.particleNet_mass >  100.) & (fj0.particleNet_mass <= 150.)
-            mask_HFJTag = mask_HFJ & (fj0.particleNet_HbbvsQCD > 0.98) & (fj0.particleNet_TvsQCD < 0.5) & (fj0.particleNet_WvsQCD < 0.5)
-            mask_HFJmjj115 = mask_HFJTag & (mass_j0centj1cent < 115)
-            selections.add("Presel", mask_Presel)
-            selections.add("HFJ", mask_HFJ)
-            selections.add("HFJTag", mask_HFJTag)
-            selections.add("HFJmjj115", mask_HFJmjj115)
+            # VFJ selections
+            selections.add("preselVFJ", mask_preselVFJ)
+            selections.add("preselVFJTag",                                  mask_preselVFJTag)
+            selections.add("preselVFJTag_mjjcent75to150",                   mask_preselVFJTag & (mass_j0centj1cent>75) & (mass_j0centj1cent<150))
+            selections.add("preselVFJTag_mjjcent75to150_mbb75to150",        mask_preselVFJTag & (mass_j0centj1cent>75) & (mass_j0centj1cent<150) & (mass_b0b1>75) & (mass_b0b1<150))
+            selections.add("preselVFJTag_mjjcent75to150_mbb75to150_mvqq75p",mask_preselVFJTag & (mass_j0centj1cent>75) & (mass_j0centj1cent<150) & (mass_b0b1>75) & (mass_b0b1<150) & (vqq_mjj > 75))
 
             cat_dict = {
                 "lep_chan_lst" : [
+
                     "all_events",
                     "exactly1lep_exactly1fj",
+                    "presel",
 
-                    "exactly1lep_exactly1fj_STmet1000",
-                    "exactly1lep_exactly1fj_STmet1000_msd170",
-                    "exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan3",
+                    "preselHFJ",
+                    "preselHFJTag",
+                    "preselHFJTag_mjj115",
 
-                    "Presel",
-                    "HFJ",
-                    "HFJTag",
-                    "HFJmjj115",
+                    "preselVFJ",
+                    "preselVFJTag",
+                    "preselVFJTag_mjjcent75to150",
+                    "preselVFJTag_mjjcent75to150_mbb75to150",
+                    "preselVFJTag_mjjcent75to150_mbb75to150_mvqq75p",
                 ]
             }
 
