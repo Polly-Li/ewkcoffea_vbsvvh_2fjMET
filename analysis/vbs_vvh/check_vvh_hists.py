@@ -105,18 +105,19 @@ GRP_DICT_FULL = {
 
 
 CAT_LST = [
-    # The ones we store in the ref file
     "all_events",
-    "filters",
-    "exactly1lep",
     "exactly1lep_exactly1fj",
-    #"exactly1lep_exactly1fj_STmet1000",
-    #"exactly1lep_exactly1fj_STmet1000_msd170",
-    #"exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan3",
+    "presel",
 
-    #"exactly1lep_exactly1fj",
-    #"exactly1lep_exactly1fj_STmet600",
+    "preselHFJ",
+    "preselHFJTag",
+    "preselHFJTag_mjj115",
 
+    "preselVFJ",
+    "preselVFJTag",
+    "preselVFJTag_mjjcent75to150",
+    "preselVFJTag_mjjcent75to150_mbb75to150",
+    "preselVFJTag_mjjcent75to150_mbb75to150_mvqq75p",
 ]
 
 
@@ -191,7 +192,7 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
         histtype="fill",
         color=CLR_LST,
         ax=ax1,
-        zorder=100,
+        zorder=10,
     )
 
     # Get the errs on MC and plot them by hand on the stack plot
@@ -202,7 +203,7 @@ def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None
     err_m = np.append(mc_arr - mc_err_arr, 0)
     bin_edges_arr = histo_mc_sum.axes[0].edges
     bin_centers_arr = histo_mc_sum.axes[0].centers
-    ax1.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', alpha=0.5, linewidth=0.0, label='MC stat', hatch='/////')
+    ax1.fill_between(bin_edges_arr,err_m,err_p, step='post', facecolor='none', edgecolor='gray', alpha=0.5, linewidth=0.0, label='MC stat', hatch='/////', zorder=11)
 
 
     ## Draw the normalized shapes ##
@@ -352,7 +353,7 @@ def check_rwgt(histo_dict):
 def dump_json_simple(histo_dict,out_name="vvh_yields_simple"):
     out_dict = {}
     hist_to_use = "njets"
-    cats_to_check = ["all_events","exactly1lep_exactly1fj","exactly1lep_exactly1fj_STmet1000","exactly1lep_exactly1fj_STmet1000_msd170"]
+    cats_to_check = ["all_events", "exactly1lep_exactly1fj", "presel", "preselHFJ", "preselVFJ"]
     for proc_name in histo_dict[hist_to_use].axes["process"]:
         out_dict[proc_name] = {}
         for cat_name in cats_to_check:
@@ -383,11 +384,14 @@ def print_yields(histo_dict,roundat=None,print_counts=False,dump_to_json=True,qu
         for cat in yld_dict:
             print(f"\n{cat}")
             for group_name in group_lst_order:
+                if group_name not in ["Signal","Background"]: continue
                 if group_name == "metric": continue
                 yld, err = yld_dict[cat][group_name]
                 perr = 100*(err/yld)
                 print(f"    {group_name}:  {np.round(yld,roundat)} +- {np.round(perr,2)}%")
             print(f"    -> Metric: {np.round(yld_dict[cat]['metric'][0],3)}")
+            print(f"    -> For copy pasting: python dump_toy_card.py {yld_dict[cat]['Signal'][0]} {yld_dict[cat]['Background'][0]}")
+        #exit()
 
 
         ### Print csv, build op as an out string ###
@@ -396,18 +400,18 @@ def print_yields(histo_dict,roundat=None,print_counts=False,dump_to_json=True,qu
         out_str = ""
         header = "cat name"
         for proc_name in group_lst_order:
-            header = header + f", {proc_name}_val , pm , {proc_name}_pm"
+            header = header + f", {proc_name}"
         header = header + ", metric"
         out_str = out_str + header
 
         # Appead a line for each category, with yields and metric
         for cat in yld_dict:
             line_str = cat
-            for group_name in yld_dict[cat]:
+            for group_name in group_lst_order:
                 if group_name == "metric": continue
                 yld, err = yld_dict[cat][group_name]
                 perr = 100*(err/yld)
-                line_str = line_str + f" , {np.round(yld,roundat)} , ± , {np.round(perr,2)}%"
+                line_str = line_str + f" , {np.round(yld,roundat)} ± {np.round(perr,2)}%"
             # And also append the metric
             metric = yld_dict[cat]["metric"][0]
             line_str = line_str + f" , {np.round(metric,3)}"

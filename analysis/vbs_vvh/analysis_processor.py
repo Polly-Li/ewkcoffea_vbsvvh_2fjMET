@@ -74,16 +74,16 @@ class AnalysisProcessor(processor.ProcessorABC):
             "fj0_pNetWvsQCD"  : axis.Regular(180, 0, 1, name="fj0_pNetWvsQCD", label="fj0 pNet WvsQCD"),
             "fj0_pNetZvsQCD"  : axis.Regular(180, 0, 1, name="fj0_pNetZvsQCD", label="fj0 pNet ZvsQCD"),
 
-            "j0central_pt"  : axis.Regular(180, 0, 2000, name="j0central_pt", label="j0 pt (central jets)"), # Naming
+            "j0central_pt"  : axis.Regular(180, 0, 250, name="j0central_pt", label="j0 pt (central jets)"), # Naming
             "j0central_eta" : axis.Regular(180, -5, 5, name="j0central_eta", label="j0 eta (central jets)"), # Naming
             "j0central_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0central_phi", label="j0 phi (central jets)"), # Naming
 
 
-            "j0forward_pt"  : axis.Regular(180, 0, 500, name="j0forward_pt", label="j0 pt (forward jets)"),
+            "j0forward_pt"  : axis.Regular(180, 0, 150, name="j0forward_pt", label="j0 pt (forward jets)"),
             "j0forward_eta" : axis.Regular(180, -5, 5, name="j0forward_eta", label="j0 eta (forward jets)"),
             "j0forward_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0forward_phi", label="j0 phi (forward jets)"),
 
-            "j0any_pt"  : axis.Regular(180, 0, 2000, name="j0any_pt", label="j0 pt (all regular jets)"),
+            "j0any_pt"  : axis.Regular(180, 0, 250, name="j0any_pt", label="j0 pt (all regular jets)"),
             "j0any_eta" : axis.Regular(180, -5, 5, name="j0any_eta", label="j0 eta (all regular jets)"),
             "j0any_phi" : axis.Regular(180, -3.1416, 3.1416, name="j0any_phi", label="j0 phi (all regular jets)"),
 
@@ -96,11 +96,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             "absdphi_j0centj1cent" : axis.Regular(180, 0, 3.1416, name="absdphi_j0centj1cent", label="abs dphi between leading two central jets"),
             "absdphi_j0anyj1any"   : axis.Regular(180, 0, 3.1416, name="absdphi_j0anyj1any", label="abs dphi between leading two jets"),
 
-            "mass_j0centj1cent" : axis.Regular(180, 0, 1500, name="mass_j0centj1cent", label="mjj of two leading non-forward jets"),
+            "mass_j0centj1cent" : axis.Regular(180, 0, 250, name="mass_j0centj1cent", label="mjj of two leading non-forward jets"),
             "mass_j0fwdj1fwd" : axis.Regular(180, 0, 1500, name="mass_j0fwdj1fwd", label="mjj of two leading forward jets"),
             "mass_j0anyj1any" : axis.Regular(180, 0, 1500, name="mass_j0anyj1any", label="mjj of two leading jets"),
 
-            "mass_b0b1" : axis.Regular(180, 0, 500, name="mass_b0b1", label="mjj of two leading b jets"),
+            "mass_b0b1" : axis.Regular(180, 0, 250, name="mass_b0b1", label="mjj of two leading b jets"),
 
         }
 
@@ -412,6 +412,7 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             scalarptsum_jetCentFwd = ak.sum(goodJetsCentFwd.pt,axis=-1)
 
+
             # Loose DeepJet WP
             btagger = "btag" # For deep flavor WPs
             if year == "2017":
@@ -557,6 +558,13 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             j0forward_eta = ak.where(njets_forward>0,j0forward.eta,0)
 
+            # Find the mjj of the pair of jets (central + fwd) that have the min delta R
+            jj_pairs = ak.combinations(goodJetsCentFwd_ptordered_padded, 2, fields=["j0", "j1"] )
+            jj_pairs_dr = jj_pairs.j0.delta_r(jj_pairs.j1)
+            jj_pairs_idx_mindr = ak.argmin(jj_pairs_dr,axis=1,keepdims=True)
+            jj_pairs_atmindr = jj_pairs[jj_pairs_idx_mindr]
+            jj_pairs_atmindr_mjj = (jj_pairs_atmindr.j0 + jj_pairs_atmindr.j1).mass
+            jj_pairs_atmindr_mjj = ak.flatten(ak.fill_none(jj_pairs_atmindr_mjj,-999)) # Replace Nones, flatten (so e.g. [[None],[x],[y]] -> [-999,x,y])
 
             l0_pt = l0.pt
             l0_eta = l0.eta
@@ -578,7 +586,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             bjets_ptordered_padded = ak.pad_none(bjets_ptordered, 2)
             b0 = bjets_ptordered_padded[:,0]
             b1 = bjets_ptordered_padded[:,1]
-            mass_b0b1 = (b0+b1).mass
+            mass_b0b1_tmp = (b0+b1).mass
+            mass_b0b1 = ak.where(nbtagsl>1,mass_b0b1_tmp,0)
 
             # Put the variables we'll plot into a dictionary for easy access later
             dense_variables_dict = {
@@ -650,6 +659,8 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "fj0_pNetZvsQCD" : fj0.particleNet_ZvsQCD,
                 "fj0_mparticlenet" : fj0.particleNet_mass,
 
+                "jj_pairs_atmindr_mjj" : jj_pairs_atmindr_mjj,
+
             }
 
 
@@ -663,114 +674,50 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Event filter masks
             filter_mask = es_ec.get_filter_flag_mask_vvh(events,year,is2022,is2023)
 
-            # Selections for SRs
-            # TODO get rid of the ones we're not using
+            # Form some other useful masks for SRs
 
+            mask_exactly1lep_exactly1fj = veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1)
+            mask_presel = mask_exactly1lep_exactly1fj & (scalarptsum_lepmet > 775)
+
+            mask_preselHFJ = mask_presel & (fj0.particleNet_mass >  100.) & (fj0.particleNet_mass <= 150.)
+            mask_preselVFJ = mask_presel & (fj0.particleNet_mass <= 100.) & (fj0.particleNet_mass > 65)
+
+            mask_preselHFJTag = mask_preselHFJ & (fj0.particleNet_HbbvsQCD > 0.98) & (fj0.particleNet_TvsQCD < 0.5) & (fj0.particleNet_WvsQCD < 0.5)
+            mask_preselVFJTag = mask_preselVFJ & (fj0.particleNet_WvsQCD > 0.95) & (fj0.particleNet_TvsQCD < 0.5)
+
+            # Pre selections
             selections.add("all_events", (veto_map_mask | (~veto_map_mask))) # All events.. this logic is a bit roundabout to just get an array of True
-            selections.add("filters"                      , veto_map_mask & filter_mask)
-            selections.add("exactly1lep"                  , veto_map_mask & filter_mask & (nleps==1))
-            selections.add("exactly1lep_exactly1fj"       , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1))
-            selections.add("exactly1lep_exactly1fj550"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>550))
-            selections.add("exactly1lep_exactly1fj550_2j" , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>550) & (njets_tot>=2))
+            selections.add("exactly1lep_exactly1fj" , mask_exactly1lep_exactly1fj)
+            selections.add("presel", mask_presel)
 
-            selections.add("exactly1lep_exactly1fj_2j"       , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (njets_tot>=2))
+            # HFJ selections
+            selections.add("preselHFJ", mask_preselHFJ)
+            selections.add("preselHFJTag",mask_preselHFJTag)
+            selections.add("preselHFJTag_mjj115", mask_preselHFJTag & (mass_j0centj1cent < 115))
 
-            selections.add("exactly1lep_exactly1fj1100"             , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>1100))
-            selections.add("exactly1lep_exactly1fj800_0j1j"         , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>800) & (njets_tot<=1))
-            selections.add("exactly1lep_exactly1fj700_0jcent1jcent" , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>700) & (njets<=1))
-            selections.add("exactly1lep_exactly1fj700_0j"           , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (fj0.pt>700) & (njets_tot==0))
-
-            selections.add("exactly1lep_exactly1fj_ST600"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lep>600))
-
-            selections.add("exactly1lep_exactly1fj_STmetFjpt1000"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmetFJ>1000))
-            selections.add("exactly1lep_exactly1fj_STmetFjpt1500"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmetFJ>1500))
-            selections.add("exactly1lep_exactly1fj_STmetFjpt1700"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmetFJ>1700))
-
-            selections.add("exactly1lep_exactly1fj_massj0centj1cent180"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (mass_j0centj1cent<180))
-
-            selections.add("exactly1lep_exactly1fj_massj0centj1cent100"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (mass_j0centj1cent<100))
-            selections.add("exactly1lep_exactly1fj_massj0centj1cent180_STmet700"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (mass_j0centj1cent<180) & (scalarptsum_lepmet>700))
-
-            selections.add("exactly1lep_exactly1fj_massj0centj1cent100_STmet700"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (mass_j0centj1cent<100) & (scalarptsum_lepmet>700))
-            selections.add("exactly1lep_exactly1fj_massj0centj1cent180_STmet1100"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (mass_j0centj1cent<180) & (scalarptsum_lepmet>1100))
-
-            selections.add("exactly1lep_exactly1fj_massj0centj1cent180_STmet1100_msd175"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (mass_j0centj1cent<180) & (scalarptsum_lepmet>1100) & (fj0.msoftdrop<175))
-            selections.add("exactly1lep_exactly1fj_massj0centj1cent180_STmet1500"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (mass_j0centj1cent<180) & (scalarptsum_lepmet>1500))
-            selections.add("exactly1lep_exactly1fj_massj0centj1cent180_STmet1500_msd175"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (mass_j0centj1cent<180) & (scalarptsum_lepmet>1500) & (fj0.msoftdrop<175))
-
-            selections.add("exactly1lep_exactly1fj_STmet400"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>400))
-            selections.add("exactly1lep_exactly1fj_STmetFjpt1750"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmetFJ>1750))
-
-            selections.add("exactly1lep_exactly1fj_STmetFjpt1750_msd175"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmetFJ>1750) & (fj0.msoftdrop<175))
-            selections.add("exactly1lep_exactly1fj_STmetFjpt3000"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmetFJ>3000))
-
-            selections.add("exactly1lep_exactly1fj_STmet600"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>600))
-            selections.add("exactly1lep_exactly1fj_STmet700"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>700))
-            selections.add("exactly1lep_exactly1fj_STmet800"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>800))
-            selections.add("exactly1lep_exactly1fj_STmet900"    , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>900))
-            selections.add("exactly1lep_exactly1fj_STmet1000"   , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>1000))
-            selections.add("exactly1lep_exactly1fj_STmet1100"   , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>1100))
-
-            selections.add("exactly1lep_exactly1fj_STmet1000_msd170"   , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>1000) & (fj0.msoftdrop<170))
-
-            selections.add("exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan4"   , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>1000) & (fj0.msoftdrop<170) & (njets<4))
-            selections.add("exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan3"   , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>1000) & (fj0.msoftdrop<170) & (njets<3))
-            selections.add("exactly1lep_exactly1fj_STmet1000_msd170_j0fwdEta4"            , veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1) & (scalarptsum_lepmet>1000) & (fj0.msoftdrop<170) & (abs(j0forward_eta)>4))
-
+            # VFJ selections
+            selections.add("preselVFJ", mask_preselVFJ)
+            selections.add("preselVFJTag",                                  mask_preselVFJTag)
+            selections.add("preselVFJTag_mjjcent75to150",                   mask_preselVFJTag & (mass_j0centj1cent>75) & (mass_j0centj1cent<150))
+            selections.add("preselVFJTag_mjjcent75to150_mbb75to150",        mask_preselVFJTag & (mass_j0centj1cent>75) & (mass_j0centj1cent<150) & (mass_b0b1>75) & (mass_b0b1<150))
+            selections.add("preselVFJTag_mjjcent75to150_mbb75to150_mvqq75p",mask_preselVFJTag & (mass_j0centj1cent>75) & (mass_j0centj1cent<150) & (mass_b0b1>75) & (mass_b0b1<150) & (jj_pairs_atmindr_mjj > 75))
 
             cat_dict = {
                 "lep_chan_lst" : [
+
                     "all_events",
-                    "filters",
-                    "exactly1lep",
                     "exactly1lep_exactly1fj",
-                    "exactly1lep_exactly1fj550",
-                    "exactly1lep_exactly1fj550_2j",
+                    "presel",
 
-                    "exactly1lep_exactly1fj_2j",
+                    "preselHFJ",
+                    "preselHFJTag",
+                    "preselHFJTag_mjj115",
 
-                    "exactly1lep_exactly1fj1100",
-                    "exactly1lep_exactly1fj800_0j1j",
-                    "exactly1lep_exactly1fj700_0jcent1jcent",
-                    "exactly1lep_exactly1fj700_0j",
-
-                    "exactly1lep_exactly1fj_ST600",
-
-                    "exactly1lep_exactly1fj_STmetFjpt1000",
-                    "exactly1lep_exactly1fj_STmetFjpt1500",
-                    "exactly1lep_exactly1fj_STmetFjpt1700",
-
-                    "exactly1lep_exactly1fj_massj0centj1cent180",
-
-                    "exactly1lep_exactly1fj_massj0centj1cent100",
-                    "exactly1lep_exactly1fj_massj0centj1cent180_STmet700",
-
-                    "exactly1lep_exactly1fj_massj0centj1cent100_STmet700",
-                    "exactly1lep_exactly1fj_massj0centj1cent180_STmet1100",
-
-                    "exactly1lep_exactly1fj_massj0centj1cent180_STmet1100_msd175",
-                    "exactly1lep_exactly1fj_massj0centj1cent180_STmet1500",
-                    "exactly1lep_exactly1fj_massj0centj1cent180_STmet1500_msd175",
-
-                    "exactly1lep_exactly1fj_STmet400",
-                    "exactly1lep_exactly1fj_STmetFjpt1750",
-
-                    "exactly1lep_exactly1fj_STmetFjpt1750_msd175",
-                    "exactly1lep_exactly1fj_STmetFjpt3000",
-
-                    "exactly1lep_exactly1fj_STmet1100",
-                    "exactly1lep_exactly1fj_STmet1000",
-                    "exactly1lep_exactly1fj_STmet900",
-                    "exactly1lep_exactly1fj_STmet800",
-                    "exactly1lep_exactly1fj_STmet700",
-                    "exactly1lep_exactly1fj_STmet600",
-
-                    "exactly1lep_exactly1fj_STmet1000_msd170",
-
-                    "exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan4",
-                    "exactly1lep_exactly1fj_STmet1000_msd170_NjCentralLessThan3",
-                    "exactly1lep_exactly1fj_STmet1000_msd170_j0fwdEta4",
-
+                    "preselVFJ",
+                    "preselVFJTag",
+                    "preselVFJTag_mjjcent75to150",
+                    "preselVFJTag_mjjcent75to150_mbb75to150",
+                    "preselVFJTag_mjjcent75to150_mbb75to150_mvqq75p",
                 ]
             }
 
