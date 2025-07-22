@@ -143,7 +143,6 @@ class AnalysisProcessor(processor.ProcessorABC):
         self._split_by_lepton_flavor = split_by_lepton_flavor # Whether to keep track of lepton flavors individually
         self._skip_signal_regions = skip_signal_regions # Whether to skip the SR categories
         self._skip_control_regions = skip_control_regions # Whether to skip the CR categories
-        self._siphon_bdt_data = siphon_bdt_data # Whether to write out bdt data or not
 
     @property
     def accumulator(self):
@@ -159,24 +158,17 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Dataset parameters
         json_name = events.metadata["dataset"]
 
-        isData             = self._samples[json_name]["isData"]
-        histAxisName       = self._samples[json_name]["histAxisName"]
-        year               = self._samples[json_name]["year"]
-        xsec               = self._samples[json_name]["xsec"]
-        sow                = self._samples[json_name]["nSumOfWeights"]
+        isData       = self._samples[json_name]["isData"]
+        histAxisName = events.name
+        year         = events.year
+        xsec         = events.xsec
+        sow          = events.sumws
 
-        # Set a flag for Run3 years
-        is2022 = year in ["2022","2022EE"]
-        is2023 = year in ["2023","2023BPix"]
-
-        if is2022 or is2023:
-            run_tag = "run3"
-            com_tag = "13p6TeV"
-        elif year in ["2016","2016APV","2017","2018"]:
-            run_tag = "run2"
-            com_tag = "13TeV"
-        else:
-            raise Exception(f"ERROR: Unknown year {year}.")
+        # FIXME Temp fix since only R2
+        is2022 = False
+        is2023 = False
+        run_tag = "run2"
+        com_tag = "13TeV"
 
         # Era Needed for all samples
         if isData:
@@ -194,59 +186,24 @@ class AnalysisProcessor(processor.ProcessorABC):
                 raise Exception(f"ERROR: Unexpected dataset name for data file: {dataset}")
 
         # Initialize objects
-        #met  = events.MET
-        met  = events.PuppiMET
-        ele  = events.Electron
-        mu   = events.Muon
-        tau  = events.Tau
-        jets = events.Jet
+        ele     = events.Electron
+        mu      = events.Muon
+        jets    = events.Jet
+        fatjets = events.CorrFatJet
+        met     = events.MET
         fatjets = events.FatJet
-        if (is2022 or is2023):
-            rho = events.Rho.fixedGridRhoFastjetAll
-        else:
-            rho = events.fixedGridRhoFastjetAll
-
-        # Assigns some original values that will be changed via kinematic corrections
-        met["pt_original"] = met.pt
-        met["phi_original"] = met.phi
-        jets["pt_original"] = jets.pt
-        jets["mass_original"] = jets.mass
-
+        higgs   = events.Higgs
 
         # An array of lenght events that is just 1 for each event
         # Probably there's a better way to do this, but we use this method elsewhere so I guess why not..
         events.nom = ak.ones_like(met.pt)
 
-        # Get the lumi mask for data
-        if year == "2016" or year == "2016APV":
-            golden_json_path = topcoffea_path("data/goldenJsons/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt")
-        elif year == "2017":
-            golden_json_path = topcoffea_path("data/goldenJsons/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt")
-        elif year == "2018":
-            golden_json_path = topcoffea_path("data/goldenJsons/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt")
-        elif year == "2022" or year == "2022EE":
-            golden_json_path = topcoffea_path("data/goldenJsons/Cert_Collisions2022_355100_362760_Golden.txt")
-        elif year == "2023" or year == "2023BPix":
-            golden_json_path = topcoffea_path("data/goldenJsons/Cert_Collisions2023_366442_370790_Golden.txt")
-        else:
-            raise ValueError(f"Error: Unknown year \"{year}\".")
-        lumi_mask = LumiMask(golden_json_path)(events.run,events.luminosityBlock)
 
         ################### Lepton selection ####################
 
-        # Do the object selection for the VVH eleectrons
-        ele["is_tight_lep_for_vvh"] = os_ec.is_loose_vvh_ele(ele) & os_ec.is_tight_vvh_ele(ele)
-
-        # Do the object selection for the WWZ muons
-        mu["is_tight_lep_for_vvh"] = os_ec.is_loose_vvh_muo(mu) & os_ec.is_tight_vvh_muo(mu)
-
-        # Get tight leptons for WWZ selection
-        ele_vvh_t = ele[ele.is_tight_lep_for_vvh]
-        mu_vvh_t = mu[mu.is_tight_lep_for_vvh]
-
-        # Attach the lepton SFs to the electron and muons collections
-        #cor_ec.AttachElectronSF(ele_wwz_t,year=year)
-        #cor_ec.AttachMuonSF(mu_wwz_t,year=year)
+        # Get tight leptons for VVH selection, using mask from RDF
+        ele_vvh_t = ele[ele.vvhTightMask]
+        mu_vvh_t  = mu[mu.vvhTightMask]
 
         l_vvh_t = ak.with_name(ak.concatenate([ele_vvh_t,mu_vvh_t],axis=1),'PtEtaPhiMCandidate')
         l_vvh_t = l_vvh_t[ak.argsort(l_vvh_t.pt, axis=-1,ascending=False)] # Sort by pt
@@ -260,7 +217,6 @@ class AnalysisProcessor(processor.ProcessorABC):
 
         ######### Normalization and weights ###########
 
-
         # These weights can go outside of the outside sys loop since they do not depend on pt of mu or jets
         # We only calculate these values if not isData
         # Note: add() will generally modify up/down weights, so if these are needed for any reason after this point, we should instead pass copies to add()
@@ -271,45 +227,10 @@ class AnalysisProcessor(processor.ProcessorABC):
                 genw = events["LHEReweightingWeight"][:,60]
             else:
                 genw = events["genWeight"]
+            genw_raw = events["genWeight"]
 
-            # If it's an EFT sample, just take SM piece
-            sm_wgt = 1.0
-            eft_coeffs = ak.to_numpy(events["EFTfitCoefficients"]) if hasattr(events, "EFTfitCoefficients") else None
-            if eft_coeffs is not None:
-                sm_wgt = eft_coeffs[:,0]
-
-            # Normalize by (xsec/sow)*genw where genw is 1 for EFT samples
-            # Note that for theory systs, will need to multiply by sow/sow_wgtUP to get (xsec/sow_wgtUp)*genw and same for Down
-            lumi = 1000.0*get_tc_param(f"lumi_{year}")
-            weights_obj_base.add("norm",(xsec/sow)*genw*lumi*sm_wgt)
-
-
-            # Scale weights
-            cor_tc.AttachPSWeights(events)
-            cor_tc.AttachScaleWeights(events)
-            # FSR/ISR weights
-            # For now only consider variations in the numerator
-            #weights_obj_base.add('ps_isr', events.nom, events.ISRUp, events.ISRDown)
-            #weights_obj_base.add('ps_fsr', events.nom, events.FSRUp, events.FSRDown)
-            # Renorm/fact scale
-            #weights_obj_base.add('QCDscale_ren', events.nom, events.renormUp*(sow/sow_renormUp), events.renormDown*(sow/sow_renormDown))
-            #weights_obj_base.add('QCDscale_fac', events.nom, events.factUp*(sow/sow_factUp), events.factDown*(sow/sow_factDown))
-            if not (is2022 or is2023):
-                # Misc other experimental SFs and systs
-                weights_obj_base.add('CMS_l1_ecal_prefiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
-                weights_obj_base.add('CMS_pileup', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
-            else:
-                weights_obj_base.add("CMS_pileup", cor_ec.run3_pu_attach(events.Pileup,year,"nominal"), cor_ec.run3_pu_attach(events.Pileup,year,"hi"), cor_ec.run3_pu_attach(events.Pileup,year,"lo"))
-
-            # Lepton SFs and systs
-            #weights_obj_base.add(f"CMS_eff_m_{com_tag}", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
-            #weights_obj_base.add(f"CMS_eff_e_{com_tag}", events.sf_4l_elec, copy.deepcopy(events.sf_4l_hi_elec), copy.deepcopy(events.sf_4l_lo_elec))
-
-
-        # Set up the list of systematics that are handled via event weight variations
-        wgt_correction_syst_lst_common = []
-        wgt_correction_syst_lst = wgt_correction_syst_lst_common
-        #wgt_correction_syst_lst = append_up_down_to_sys_base(wgt_correction_syst_lst)
+            # Normalize to the weight from RDF
+            weights_obj_base.add("norm",events.weight * genw/genw_raw)
 
 
         ######### The rest of the processor is inside this loop over systs that affect object kinematics  ###########
@@ -350,35 +271,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             veto_map_array = cor_ec.ApplyJetVetoMaps(cleanedJets, year) if (is2022 or is2023) else ak.zeros_like(met.pt)
             veto_map_mask = (veto_map_array == 0)
 
-            ##### JME Stuff #####
-
-            # Getting the raw pT and raw mass for jets
-            cleanedJets["pt_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.pt_original
-            cleanedJets["mass_raw"] = (1 - cleanedJets.rawFactor)*cleanedJets.mass_original
-
-            # Getting the generated pT (zeros for unmatched jets)
-            # Note this is not used for data, so we use ak.ones_like to create a dummy object
-            if not isData:
-                cleanedJets["pt_gen"] =ak.values_astype(ak.fill_none(cleanedJets.matched_gen.pt, 0), np.float32)
-            else:
-                cleanedJets["pt_gen"] =ak.ones_like(cleanedJets.pt)
-
-            # Need to broadcast Rho to have same structure as cleanedJets
-            cleanedJets["rho"] = ak.broadcast_arrays(rho, cleanedJets.pt)[0]
-
-            events_cache = events.caches[0] # used for storing intermediary values for corrections
-            cleanedJets = cor_ec.ApplyJetCorrections(year,isData, era).build(cleanedJets,lazy_cache=events_cache)
-            cleanedJets = cor_ec.ApplyJetSystematics(year,cleanedJets,obj_corr_syst_var)
-
-            # Grab the correctable jets
-            correctionJets = os_ec.get_correctable_jets(cleanedJets)
-
-            met = cor_ec.CorrectedMETFactory(correctionJets,year,met,obj_corr_syst_var,isData)
-            ##### End of JME #####
-
-
             # Selecting jets and cleaning them
-            cleanedJets["is_good"] = os_ec.is_good_vbs_jet(cleanedJets,year)
+            cleanedJets["is_good"] = os_ec.is_good_vbs_jet(cleanedJets,events.is2016)
             goodJets = cleanedJets[cleanedJets.is_good & (abs(cleanedJets.eta) <= 2.4)]
             goodJets_forward = cleanedJets[cleanedJets.is_good & (abs(cleanedJets.eta) > 2.4)] # TODO probably not corrected properly
 
@@ -415,32 +309,37 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Loose DeepJet WP
             btagger = "btag" # For deep flavor WPs
-            if year == "2017":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_UL17")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_UL17")
-            elif year == "2018":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_UL18")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_UL18")
-            elif year=="2016":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_UL16")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_UL16")
-            elif year=="2016APV":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_UL16APV")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_UL16APV")
-            elif year=="2022":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_2022")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_2022")
-            elif year=="2022EE":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_2022EE")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_2022EE")
-            elif year=="2023":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_2023")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_2023")
-            elif year=="2023BPix":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_2023BPix")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_2023BPix")
-            else:
-                raise ValueError(f"Error: Unknown year \"{year}\".")
+            #if year == "2017":
+            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_UL17")
+            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_UL17")
+            #elif year == "2018":
+            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_UL18")
+            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_UL18")
+            #elif year=="2016":
+            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_UL16")
+            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_UL16")
+            #elif year=="2016APV":
+            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_UL16APV")
+            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_UL16APV")
+            #elif year=="2022":
+            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_2022")
+            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_2022")
+            #elif year=="2022EE":
+            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_2022EE")
+            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_2022EE")
+            #elif year=="2023":
+            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_2023")
+            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_2023")
+            #elif year=="2023BPix":
+            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_2023BPix")
+            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_2023BPix")
+            #else:
+            #    raise ValueError(f"Error: Unknown year \"{year}\".")
+
+            ### TEMPORARY ###
+            ### TODO FIXME Need to figure out how to handle the years
+            btagwpl = get_tc_param(f"{btagger}_wp_loose_UL17")
+            btagwpm = get_tc_param(f"{btagger}_wp_medium_UL17")
 
             if btagger == "btag":
                 isBtagJetsLoose = (goodJets.btagDeepFlavB > btagwpl)
@@ -451,79 +350,6 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             isNotBtagJetsMedium = np.invert(isBtagJetsMedium)
             nbtagsm = ak.num(goodJets[isBtagJetsMedium])
-
-
-            ######### Apply SFs #########
-
-            if not isData:
-
-                ### Evaluate btag weights ###
-                jets_light = goodJets[goodJets.hadronFlavour==0]
-                jets_bc    = goodJets[goodJets.hadronFlavour>0]
-
-                # Workaround to use UL16APV SFs for UL16 for light jets
-                year_light = year
-                if year == "2016": year_light = "2016APV"
-
-                if not (is2022 or is2023):
-                    btag_sf_light = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl","central")
-                else:
-                    btag_sf_light = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_light","central")
-                btag_sf_bc = cor_tc.btag_sf_eval(jets_bc,"L",year,"deepJet_comb","central")
-
-                btag_eff_light = cor_ec.btag_eff_eval(jets_light,"L",year)
-                btag_eff_bc = cor_ec.btag_eff_eval(jets_bc,"L",year)
-
-                wgt_light = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light, jets_light.btagDeepFlavB>btagwpl)
-                wgt_bc    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc,    jets_bc.btagDeepFlavB>btagwpl)
-
-                wgt_btag_nom = wgt_light*wgt_bc
-                ##weights_obj_base_for_kinematic_syst.add("btagSF", wgt_btag_nom)
-
-                # Put the btagging up and down weight variations into the weights object
-                if self._do_systematics:
-
-                    # Run3 2022 btagging systematics stuff
-                    # Note light correlated and uncorrelated are missing, so just using total, as suggested by the pog
-                    # See this for more info: https://cms-talk.web.cern.ch/t/2022-btag-sf-recommendations/42262
-                    if (is2022 or is2023):
-                        for corr_str in ["correlated", "uncorrelated"]:
-                            year_tag = f"_{year}"
-                            if corr_str == "correlated": year_tag = ""
-                            btag_sf_bc_up      = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb",f"up_{corr_str}")
-                            btag_sf_bc_down    = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb",f"down_{corr_str}")
-                            wgt_bc_up      = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_up,    jets_bc.btagDeepFlavB>btagwpl)
-                            wgt_bc_down    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_down,    jets_bc.btagDeepFlavB>btagwpl)
-                            # Note, up and down weights scaled by 1/wgt_btag_nom so that don't double count the central btag correction (i.e. don't apply it also in the case of up and down variations)
-                            ##weights_obj_base_for_kinematic_syst.add(f"CMS_btag_fixedWP_comb_bc_{corr_str}{year_tag}",    events.nom, wgt_light*wgt_bc_up/wgt_btag_nom, wgt_light*wgt_bc_down/wgt_btag_nom)
-
-                        # Light have no correlated/uncorrelated so just use total:
-                        btag_sf_light_up   = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_light","up")
-                        btag_sf_light_down = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_light","down")
-                        wgt_light_up   = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light_up, jets_light.btagDeepFlavB>btagwpl)
-                        wgt_light_down = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light_down, jets_light.btagDeepFlavB>btagwpl)
-                        # Note, up and down weights scaled by 1/wgt_btag_nom so that don't double count the central btag correction (i.e. don't apply it also in the case of up and down variations)
-                        ##weights_obj_base_for_kinematic_syst.add("CMS_btag_fixedWP_incl_light_correlated", events.nom, wgt_light_up*wgt_bc/wgt_btag_nom, wgt_light_down*wgt_bc/wgt_btag_nom)
-
-                    # Run2 btagging systematics stuff
-                    else:
-                        for corr_str in ["correlated", "uncorrelated"]:
-                            year_tag = f"_{year}"
-                            if corr_str == "correlated": year_tag = ""
-
-                            btag_sf_light_up   = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl",f"up_{corr_str}")
-                            btag_sf_light_down = cor_tc.btag_sf_eval(jets_light, "L",year_light,"deepJet_incl",f"down_{corr_str}")
-                            btag_sf_bc_up      = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb",f"up_{corr_str}")
-                            btag_sf_bc_down    = cor_tc.btag_sf_eval(jets_bc,    "L",year,      "deepJet_comb",f"down_{corr_str}")
-
-                            wgt_light_up   = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light_up, jets_light.btagDeepFlavB>btagwpl)
-                            wgt_bc_up      = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_up,    jets_bc.btagDeepFlavB>btagwpl)
-                            wgt_light_down = cor_tc.get_method1a_wgt_singlewp(btag_eff_light,btag_sf_light_down, jets_light.btagDeepFlavB>btagwpl)
-                            wgt_bc_down    = cor_tc.get_method1a_wgt_singlewp(btag_eff_bc,   btag_sf_bc_down,    jets_bc.btagDeepFlavB>btagwpl)
-
-                            # Note, up and down weights scaled by 1/wgt_btag_nom so that don't double count the central btag correction (i.e. don't apply it also in the case of up and down variations)
-                            ##weights_obj_base_for_kinematic_syst.add(f"CMS_btag_fixedWP_incl_light_{corr_str}{year_tag}", events.nom, wgt_light_up*wgt_bc/wgt_btag_nom, wgt_light_down*wgt_bc/wgt_btag_nom)
-                            ##weights_obj_base_for_kinematic_syst.add(f"CMS_btag_fixedWP_comb_bc_{corr_str}{year_tag}",    events.nom, wgt_light*wgt_bc_up/wgt_btag_nom, wgt_light*wgt_bc_down/wgt_btag_nom)
 
 
             ######### Masks we need for the selection ##########
@@ -669,10 +495,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             selections = PackedSelection(dtype='uint64')
 
             # Lumi mask (for data)
-            selections.add("is_good_lumi",lumi_mask)
+            #selections.add("is_good_lumi",lumi_mask)
 
             # Event filter masks
-            filter_mask = es_ec.get_filter_flag_mask_vvh(events,year,is2022,is2023)
+            #filter_mask = es_ec.get_filter_flag_mask_vvh(events,year,is2022,is2023)
+            filter_mask = (veto_map_mask | (~veto_map_mask))
 
             # Form some other useful masks for SRs
 
@@ -770,7 +597,6 @@ class AnalysisProcessor(processor.ProcessorABC):
 
                         # Make the cuts mask
                         cuts_lst = [sr_cat]
-                        if isData: cuts_lst.append("is_good_lumi") # Apply golden json requirements if this is data
                         all_cuts_mask = selections.all(*cuts_lst)
 
                         # Print info about the events
@@ -794,15 +620,12 @@ class AnalysisProcessor(processor.ProcessorABC):
                         axes_fill_info_dict = {
                             dense_axis_name : ak.fill_none(dense_axis_vals[all_cuts_mask],0), # Don't like this fill_none
                             "weight"        : ak.fill_none(weight[all_cuts_mask],0),          # Don't like this fill_none
-                            "process"       : histAxisName,
+                            #"weight"        : ak.fill_none(events.weight[all_cuts_mask],0),          # Don't like this fill_none
+                            "process"       : histAxisName[all_cuts_mask],
                             "category"      : sr_cat,
                             "systematic"    : wgt_fluct,
                         }
                         self.accumulator[dense_axis_name].fill(**axes_fill_info_dict)
-
-            # Fill the list accumulator
-            #if self._siphon_bdt_data:
-            #    Add code to siphon output if wanted
 
         return self.accumulator
 
