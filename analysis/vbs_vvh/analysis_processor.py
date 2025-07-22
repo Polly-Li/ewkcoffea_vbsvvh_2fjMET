@@ -160,23 +160,34 @@ class AnalysisProcessor(processor.ProcessorABC):
         json_name = events.metadata["dataset"]
 
         isData             = self._samples[json_name]["isData"]
-        histAxisName       = self._samples[json_name]["histAxisName"]
-        year               = self._samples[json_name]["year"]
-        xsec               = self._samples[json_name]["xsec"]
-        sow                = self._samples[json_name]["nSumOfWeights"]
+        #histAxisName       = self._samples[json_name]["histAxisName"]
+        #year               = self._samples[json_name]["year"]
+        #xsec               = self._samples[json_name]["xsec"]
+        #sow                = self._samples[json_name]["nSumOfWeights"]
+
+        histAxisName = events.name
+        year = events.year
+        xsec = events.xsec
+        sow = events.sumws
 
         # Set a flag for Run3 years
-        is2022 = year in ["2022","2022EE"]
-        is2023 = year in ["2023","2023BPix"]
+        #is2022 = year in ["2022","2022EE"]
+        #is2023 = year in ["2023","2023BPix"]
 
-        if is2022 or is2023:
-            run_tag = "run3"
-            com_tag = "13p6TeV"
-        elif year in ["2016","2016APV","2017","2018"]:
-            run_tag = "run2"
-            com_tag = "13TeV"
-        else:
-            raise Exception(f"ERROR: Unknown year {year}.")
+        #if is2022 or is2023:
+        #    run_tag = "run3"
+        #    com_tag = "13p6TeV"
+        #elif year in ["2016","2016APV","2017","2018"]:
+        #    run_tag = "run2"
+        #    com_tag = "13TeV"
+        #else:
+        #    raise Exception(f"ERROR: Unknown year {year}.")
+
+        # FIXME Temp fix since only R2
+        is2022 = False
+        is2023 = False
+        run_tag = "run2"
+        com_tag = "13TeV"
 
         # Era Needed for all samples
         if isData:
@@ -229,32 +240,43 @@ class AnalysisProcessor(processor.ProcessorABC):
         # Probably there's a better way to do this, but we use this method elsewhere so I guess why not..
         events.nom = ak.ones_like(met.pt)
 
-        # Get the lumi mask for data
-        if year == "2016" or year == "2016APV":
-            golden_json_path = topcoffea_path("data/goldenJsons/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt")
-        elif year == "2017":
-            golden_json_path = topcoffea_path("data/goldenJsons/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt")
-        elif year == "2018":
-            golden_json_path = topcoffea_path("data/goldenJsons/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt")
-        elif year == "2022" or year == "2022EE":
-            golden_json_path = topcoffea_path("data/goldenJsons/Cert_Collisions2022_355100_362760_Golden.txt")
-        elif year == "2023" or year == "2023BPix":
-            golden_json_path = topcoffea_path("data/goldenJsons/Cert_Collisions2023_366442_370790_Golden.txt")
-        else:
-            raise ValueError(f"Error: Unknown year \"{year}\".")
-        lumi_mask = LumiMask(golden_json_path)(events.run,events.luminosityBlock)
+        # Don't need goldend json if doing rdf
+        ## Get the lumi mask for data
+        #if year == "2016" or year == "2016APV":
+        #    golden_json_path = topcoffea_path("data/goldenJsons/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt")
+        #elif year == "2017":
+        #    golden_json_path = topcoffea_path("data/goldenJsons/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt")
+        #elif year == "2018":
+        #    golden_json_path = topcoffea_path("data/goldenJsons/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt")
+        #elif year == "2022" or year == "2022EE":
+        #    golden_json_path = topcoffea_path("data/goldenJsons/Cert_Collisions2022_355100_362760_Golden.txt")
+        #elif year == "2023" or year == "2023BPix":
+        #    golden_json_path = topcoffea_path("data/goldenJsons/Cert_Collisions2023_366442_370790_Golden.txt")
+        #else:
+        #    raise ValueError(f"Error: Unknown year \"{year}\".")
+        #lumi_mask = LumiMask(golden_json_path)(events.run,events.luminosityBlock)
 
         ################### Lepton selection ####################
 
         # Do the object selection for the VVH eleectrons
-        ele["is_tight_lep_for_vvh"] = os_ec.is_loose_vvh_ele(ele) & os_ec.is_tight_vvh_ele(ele)
+        #ele["is_tight_lep_for_vvh"] = os_ec.is_loose_vvh_ele(ele) & os_ec.is_tight_vvh_ele(ele)
 
         # Do the object selection for the WWZ muons
-        mu["is_tight_lep_for_vvh"] = os_ec.is_loose_vvh_muo(mu) & os_ec.is_tight_vvh_muo(mu)
+        #mu["is_tight_lep_for_vvh"] = os_ec.is_loose_vvh_muo(mu) & os_ec.is_tight_vvh_muo(mu)
 
         # Get tight leptons for WWZ selection
-        ele_vvh_t = ele[ele.is_tight_lep_for_vvh]
-        mu_vvh_t = mu[mu.is_tight_lep_for_vvh]
+        #ele_vvh_t = ele[ele.is_tight_lep_for_vvh]
+        #mu_vvh_t = mu[mu.is_tight_lep_for_vvh]
+        #ele_vvh_t = events.electron
+        #mu_vvh_t = events.muon
+        #mu_vvh_t["sceta"] = events.muon.eta # FIXME hack to get the concatenate to work
+        ele_vvh_t = ele[ele.vvhTightMask]
+        mu_vvh_t = mu[mu.vvhTightMask]
+
+        #print("this",mu_vvh_t.fields)
+        #print("this",ele_vvh_t.fields)
+        #print("this")
+        #exit()
 
         # Attach the lepton SFs to the electron and muons collections
         #cor_ec.AttachElectronSF(ele_wwz_t,year=year)
@@ -292,13 +314,14 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Normalize by (xsec/sow)*genw where genw is 1 for EFT samples
             # Note that for theory systs, will need to multiply by sow/sow_wgtUP to get (xsec/sow_wgtUp)*genw and same for Down
-            lumi = 1000.0*get_tc_param(f"lumi_{year}")
+            #lumi = 1000.0*get_tc_param(f"lumi_{year}")
+            lumi = events.lumi # TODO check RDF lumi values and update to official
             weights_obj_base.add("norm",(xsec/sow)*genw*lumi*sm_wgt)
 
 
             # Scale weights
-            cor_tc.AttachPSWeights(events)
-            cor_tc.AttachScaleWeights(events)
+            #cor_tc.AttachPSWeights(events)
+            #cor_tc.AttachScaleWeights(events)
             # FSR/ISR weights
             # For now only consider variations in the numerator
             #weights_obj_base.add('ps_isr', events.nom, events.ISRUp, events.ISRDown)
@@ -306,12 +329,12 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Renorm/fact scale
             #weights_obj_base.add('QCDscale_ren', events.nom, events.renormUp*(sow/sow_renormUp), events.renormDown*(sow/sow_renormDown))
             #weights_obj_base.add('QCDscale_fac', events.nom, events.factUp*(sow/sow_factUp), events.factDown*(sow/sow_factDown))
-            if not (is2022 or is2023):
-                # Misc other experimental SFs and systs
-                #weights_obj_base.add('CMS_l1_ecal_prefiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
-                weights_obj_base.add('CMS_pileup', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
-            else:
-                weights_obj_base.add("CMS_pileup", cor_ec.run3_pu_attach(events.Pileup,year,"nominal"), cor_ec.run3_pu_attach(events.Pileup,year,"hi"), cor_ec.run3_pu_attach(events.Pileup,year,"lo"))
+            #if not (is2022 or is2023):
+            #    # Misc other experimental SFs and systs
+            #    #weights_obj_base.add('CMS_l1_ecal_prefiring', events.L1PreFiringWeight.Nom,  events.L1PreFiringWeight.Up,  events.L1PreFiringWeight.Dn)
+            #    weights_obj_base.add('CMS_pileup', cor_tc.GetPUSF((events.Pileup.nTrueInt), year), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'up'), cor_tc.GetPUSF(events.Pileup.nTrueInt, year, 'down'))
+            #else:
+            #    weights_obj_base.add("CMS_pileup", cor_ec.run3_pu_attach(events.Pileup,year,"nominal"), cor_ec.run3_pu_attach(events.Pileup,year,"hi"), cor_ec.run3_pu_attach(events.Pileup,year,"lo"))
 
             # Lepton SFs and systs
             #weights_obj_base.add(f"CMS_eff_m_{com_tag}", events.sf_4l_muon, copy.deepcopy(events.sf_4l_hi_muon), copy.deepcopy(events.sf_4l_lo_muon))
@@ -390,7 +413,8 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
             # Selecting jets and cleaning them
-            cleanedJets["is_good"] = os_ec.is_good_vbs_jet(cleanedJets,year)
+            #cleanedJets["is_good"] = os_ec.is_good_vbs_jet(cleanedJets,year)
+            cleanedJets["is_good"] = os_ec.is_good_vbs_jet(cleanedJets,events.is2016)
             goodJets = cleanedJets[cleanedJets.is_good & (abs(cleanedJets.eta) <= 2.4)]
             goodJets_forward = cleanedJets[cleanedJets.is_good & (abs(cleanedJets.eta) > 2.4)] # TODO probably not corrected properly
 
@@ -426,32 +450,37 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Loose DeepJet WP
             btagger = "btag" # For deep flavor WPs
-            if year == "2017":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_UL17")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_UL17")
-            elif year == "2018":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_UL18")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_UL18")
-            elif year=="2016":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_UL16")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_UL16")
-            elif year=="2016APV":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_UL16APV")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_UL16APV")
-            elif year=="2022":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_2022")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_2022")
-            elif year=="2022EE":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_2022EE")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_2022EE")
-            elif year=="2023":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_2023")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_2023")
-            elif year=="2023BPix":
-                btagwpl = get_tc_param(f"{btagger}_wp_loose_2023BPix")
-                btagwpm = get_tc_param(f"{btagger}_wp_medium_2023BPix")
-            else:
-                raise ValueError(f"Error: Unknown year \"{year}\".")
+            #if year == "2017":
+            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_UL17")
+            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_UL17")
+            #elif year == "2018":
+            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_UL18")
+            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_UL18")
+            #elif year=="2016":
+            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_UL16")
+            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_UL16")
+            #elif year=="2016APV":
+            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_UL16APV")
+            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_UL16APV")
+            #elif year=="2022":
+            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_2022")
+            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_2022")
+            #elif year=="2022EE":
+            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_2022EE")
+            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_2022EE")
+            #elif year=="2023":
+            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_2023")
+            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_2023")
+            #elif year=="2023BPix":
+            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_2023BPix")
+            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_2023BPix")
+            #else:
+            #    raise ValueError(f"Error: Unknown year \"{year}\".")
+
+            ### TEMPORARY ###
+            ### TODO FIXME Need to figure out how to handle the years
+            btagwpl = get_tc_param(f"{btagger}_wp_loose_UL17")
+            btagwpm = get_tc_param(f"{btagger}_wp_medium_UL17")
 
             if btagger == "btag":
                 isBtagJetsLoose = (goodJets.btagDeepFlavB > btagwpl)
@@ -469,6 +498,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             if not isData:
 
                 ### Evaluate btag weights ###
+                '''
                 jets_light = goodJets[goodJets.hadronFlavour==0]
                 jets_bc    = goodJets[goodJets.hadronFlavour>0]
 
@@ -535,6 +565,7 @@ class AnalysisProcessor(processor.ProcessorABC):
                             # Note, up and down weights scaled by 1/wgt_btag_nom so that don't double count the central btag correction (i.e. don't apply it also in the case of up and down variations)
                             ##weights_obj_base_for_kinematic_syst.add(f"CMS_btag_fixedWP_incl_light_{corr_str}{year_tag}", events.nom, wgt_light_up*wgt_bc/wgt_btag_nom, wgt_light_down*wgt_bc/wgt_btag_nom)
                             ##weights_obj_base_for_kinematic_syst.add(f"CMS_btag_fixedWP_comb_bc_{corr_str}{year_tag}",    events.nom, wgt_light*wgt_bc_up/wgt_btag_nom, wgt_light*wgt_bc_down/wgt_btag_nom)
+                '''
 
 
             ######### Masks we need for the selection ##########
@@ -670,10 +701,11 @@ class AnalysisProcessor(processor.ProcessorABC):
             selections = PackedSelection(dtype='uint64')
 
             # Lumi mask (for data)
-            selections.add("is_good_lumi",lumi_mask)
+            #selections.add("is_good_lumi",lumi_mask)
 
             # Event filter masks
-            filter_mask = es_ec.get_filter_flag_mask_vvh(events,year,is2022,is2023)
+            #filter_mask = es_ec.get_filter_flag_mask_vvh(events,year,is2022,is2023)
+            filter_mask = (veto_map_mask | (~veto_map_mask))
 
             # Selections for SRs
             # TODO get rid of the ones we're not using
@@ -874,8 +906,12 @@ class AnalysisProcessor(processor.ProcessorABC):
                         # Fill the histos
                         axes_fill_info_dict = {
                             dense_axis_name : ak.fill_none(dense_axis_vals[all_cuts_mask],0), # Don't like this fill_none
-                            "weight"        : ak.fill_none(weight[all_cuts_mask],0),          # Don't like this fill_none
-                            "process"       : histAxisName,
+                            #"weight"        : ak.fill_none(weight[all_cuts_mask],0),          # Don't like this fill_none
+                            "weight"        : ak.fill_none(events.weight[all_cuts_mask],0),          # Don't like this fill_none
+                            #"process"       : histAxisName,
+                            #"category"      : sr_cat,
+                            #"systematic"    : wgt_fluct,
+                            "process"       : histAxisName[all_cuts_mask],
                             "category"      : sr_cat,
                             "systematic"    : wgt_fluct,
                         }
