@@ -378,7 +378,8 @@ class AnalysisProcessor(processor.ProcessorABC):
 
 
             # Selecting jets and cleaning them
-            cleanedJets["is_good"] = os_ec.is_good_vbs_jet(cleanedJets,year)
+            is2016 = (year == "2016") or (year=="2016APV")
+            cleanedJets["is_good"] = os_ec.is_good_vbs_jet(cleanedJets,is2016)
             goodJets = cleanedJets[cleanedJets.is_good & (abs(cleanedJets.eta) <= 2.4)]
             goodJets_forward = cleanedJets[cleanedJets.is_good & (abs(cleanedJets.eta) > 2.4)] # TODO probably not corrected properly
 

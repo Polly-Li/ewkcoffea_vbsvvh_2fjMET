@@ -159,7 +159,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         json_name = events.metadata["dataset"]
 
         isData       = self._samples[json_name]["isData"]
-        histAxisName = events.name
+        histAxisName = events.namewithyear
         year         = events.year
         xsec         = events.xsec
         sow          = events.sumws
@@ -189,7 +189,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         ele     = events.Electron
         mu      = events.Muon
         jets    = events.Jet
-        fatjets = events.CorrFatJet
+        #fatjets = events.CorrFatJet
         met     = events.MET
         fatjets = events.FatJet
         higgs   = events.Higgs
@@ -202,8 +202,8 @@ class AnalysisProcessor(processor.ProcessorABC):
         ################### Lepton selection ####################
 
         # Get tight leptons for VVH selection, using mask from RDF
-        ele_vvh_t = ele[ele.vvhTightMask]
-        mu_vvh_t  = mu[mu.vvhTightMask]
+        ele_vvh_t = ele[events.vvhTightMaskElectron]
+        mu_vvh_t  = mu[events.vvhTightMaskMuon]
 
         l_vvh_t = ak.with_name(ak.concatenate([ele_vvh_t,mu_vvh_t],axis=1),'PtEtaPhiMCandidate')
         l_vvh_t = l_vvh_t[ak.argsort(l_vvh_t.pt, axis=-1,ascending=False)] # Sort by pt
@@ -307,43 +307,23 @@ class AnalysisProcessor(processor.ProcessorABC):
             scalarptsum_jetCentFwd = ak.sum(goodJetsCentFwd.pt,axis=-1)
 
 
-            # Loose DeepJet WP
-            btagger = "btag" # For deep flavor WPs
-            #if year == "2017":
-            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_UL17")
-            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_UL17")
-            #elif year == "2018":
-            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_UL18")
-            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_UL18")
-            #elif year=="2016":
-            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_UL16")
-            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_UL16")
-            #elif year=="2016APV":
-            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_UL16APV")
-            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_UL16APV")
-            #elif year=="2022":
-            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_2022")
-            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_2022")
-            #elif year=="2022EE":
-            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_2022EE")
-            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_2022EE")
-            #elif year=="2023":
-            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_2023")
-            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_2023")
-            #elif year=="2023BPix":
-            #    btagwpl = get_tc_param(f"{btagger}_wp_loose_2023BPix")
-            #    btagwpm = get_tc_param(f"{btagger}_wp_medium_2023BPix")
-            #else:
-            #    raise ValueError(f"Error: Unknown year \"{year}\".")
-
-            ### TEMPORARY ###
+            ### Btag WPs, TEMPORARY ###
+            # Eventually we should just take the btag jet collection from the RDF output
+            # For now handle it with a hard-to-read series of ak.where
             ### TODO FIXME Need to figure out how to handle the years
-            btagwpl = get_tc_param(f"{btagger}_wp_loose_UL17")
-            btagwpm = get_tc_param(f"{btagger}_wp_medium_UL17")
+            btagwpl = events.nom
+            btagwpm = events.nom
+            btagwpl = ak.where(events.year=="2018",get_tc_param(f"btag_wp_loose_UL18"),btagwpl)
+            btagwpm = ak.where(events.year=="2018",get_tc_param(f"btag_wp_loose_UL18"),btagwpm)
+            btagwpl = ak.where(events.year=="2017",get_tc_param(f"btag_wp_loose_UL17"),btagwpl)
+            btagwpm = ak.where(events.year=="2017",get_tc_param(f"btag_wp_loose_UL17"),btagwpm)
+            btagwpl = ak.where(events.year=="2016postVFP",get_tc_param(f"btag_wp_loose_UL16"),btagwpl)
+            btagwpm = ak.where(events.year=="2016postVFP",get_tc_param(f"btag_wp_loose_UL16"),btagwpm)
+            btagwpl = ak.where(events.year=="2016preVFP",get_tc_param(f"btag_wp_loose_UL16APV"),btagwpl)
+            btagwpm = ak.where(events.year=="2016preVFP",get_tc_param(f"btag_wp_loose_UL16APV"),btagwpm)
 
-            if btagger == "btag":
-                isBtagJetsLoose = (goodJets.btagDeepFlavB > btagwpl)
-                isBtagJetsMedium = (goodJets.btagDeepFlavB > btagwpm)
+            isBtagJetsLoose = (goodJets.btagDeepFlavB > btagwpl)
+            isBtagJetsMedium = (goodJets.btagDeepFlavB > btagwpm)
 
             isNotBtagJetsLoose = np.invert(isBtagJetsLoose)
             nbtagsl = ak.num(goodJets[isBtagJetsLoose])

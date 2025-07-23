@@ -315,16 +315,21 @@ def is_good_fatjet(fatjets):
     )
     return mask
 
-def is_good_vbs_jet(jets,year):
-    is2016 = (year == "2016") or (year=="2016APV")
+def is_good_vbs_jet(jets,is2016):
     mask = (
         (jets.pt >= 20) &
         (abs(jets.eta) <= 4.7) &
         ( (jets.pt >= 50) | ( (jets.pt < 50) & (jets.puId != 0) ))
     )
-    if is2016:
-        mask = mask & (jets.jetId >= 1)
+    # If the year is an array per event
+    if isinstance(is2016,ak.Array):
+        jetId_mask = ak.where(is2016,jets.jetId >= 1,jets.jetId >= 2)
+        mask = mask & jetId_mask
+    # If the year is just a value
     else:
-        mask = mask & (jets.jetId >= 2)
+        if is2016:
+            mask = mask & (jets.jetId >= 1)
+        else:
+            mask = mask & (jets.jetId >= 2)
     return mask
 
