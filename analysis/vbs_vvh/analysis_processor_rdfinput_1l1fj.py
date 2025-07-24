@@ -190,7 +190,8 @@ class AnalysisProcessor(processor.ProcessorABC):
         mu      = events.Muon
         jets    = events.Jet
         #fatjets = events.CorrFatJet
-        met     = events.MET
+        #met     = events.MET
+        met     = events.PuppiMET
         fatjets = events.FatJet
         higgs   = events.Higgs
 
@@ -202,8 +203,10 @@ class AnalysisProcessor(processor.ProcessorABC):
         ################### Lepton selection ####################
 
         # Get tight leptons for VVH selection, using mask from RDF
-        ele_vvh_t = ele[events.vvhTightMaskElectron]
-        mu_vvh_t  = mu[events.vvhTightMaskMuon]
+        mask_vvhTightEl = ak.values_astype(events.vvhTightMaskElectron,bool)
+        mask_vvhTightMu = ak.values_astype(events.vvhTightMaskMuon,bool)
+        ele_vvh_t = ele[mask_vvhTightEl]
+        mu_vvh_t  = mu[mask_vvhTightMu]
 
         l_vvh_t = ak.with_name(ak.concatenate([ele_vvh_t,mu_vvh_t],axis=1),'PtEtaPhiMCandidate')
         l_vvh_t = l_vvh_t[ak.argsort(l_vvh_t.pt, axis=-1,ascending=False)] # Sort by pt
@@ -474,16 +477,9 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             selections = PackedSelection(dtype='uint64')
 
-            # Lumi mask (for data)
-            #selections.add("is_good_lumi",lumi_mask)
-
-            # Event filter masks
-            #filter_mask = es_ec.get_filter_flag_mask_vvh(events,year,is2022,is2023)
-            filter_mask = (veto_map_mask | (~veto_map_mask))
-
             # Form some other useful masks for SRs
 
-            mask_exactly1lep_exactly1fj = veto_map_mask & filter_mask & (nleps==1) & (nfatjets==1)
+            mask_exactly1lep_exactly1fj = (nleps==1) & (nfatjets==1)
             mask_presel = mask_exactly1lep_exactly1fj & (scalarptsum_lepmet > 775)
 
             mask_preselHFJ = mask_presel & (fj0.particleNet_mass >  100.) & (fj0.particleNet_mass <= 150.)
@@ -494,6 +490,9 @@ class AnalysisProcessor(processor.ProcessorABC):
 
             # Pre selections
             selections.add("all_events", (veto_map_mask | (~veto_map_mask))) # All events.. this logic is a bit roundabout to just get an array of True
+            selections.add("exactly1lep" , nleps==1)
+            selections.add("exactly1fj" , nfatjets==1)
+
             selections.add("exactly1lep_exactly1fj" , mask_exactly1lep_exactly1fj)
             selections.add("presel", mask_presel)
 
@@ -513,6 +512,9 @@ class AnalysisProcessor(processor.ProcessorABC):
                 "lep_chan_lst" : [
 
                     "all_events",
+                    "exactly1fj",
+                    "exactly1lep",
+
                     "exactly1lep_exactly1fj",
                     "presel",
 
