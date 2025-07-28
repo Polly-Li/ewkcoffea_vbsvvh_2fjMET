@@ -189,11 +189,11 @@ class AnalysisProcessor(processor.ProcessorABC):
         ele     = events.Electron
         mu      = events.Muon
         jets    = events.Jet
-        #fatjets = events.CorrFatJet
         #met     = events.MET
         met     = events.PuppiMET
         fatjets = events.FatJet
-        higgs   = events.Higgs
+        #fatjets = events.CorrFatJet
+        #higgs   = events.Higgs
 
         # An array of lenght events that is just 1 for each event
         # Probably there's a better way to do this, but we use this method elsewhere so I guess why not..
@@ -203,8 +203,8 @@ class AnalysisProcessor(processor.ProcessorABC):
         ################### Lepton selection ####################
 
         # Get tight leptons for VVH selection, using mask from RDF
-        mask_vvhTightEl = ak.values_astype(events.vvhTightMaskElectron,bool)
-        mask_vvhTightMu = ak.values_astype(events.vvhTightMaskMuon,bool)
+        mask_vvhTightEl = ak.values_astype(events.vvhTightLepMaskElectron,bool)
+        mask_vvhTightMu = ak.values_astype(events.vvhTightLepMaskMuon,bool)
         ele_vvh_t = ele[mask_vvhTightEl]
         mu_vvh_t  = mu[mask_vvhTightMu]
 
