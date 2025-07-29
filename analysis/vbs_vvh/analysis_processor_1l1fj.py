@@ -9,14 +9,13 @@ from coffea import processor
 import hist
 from hist import axis
 from coffea.analysis_tools import PackedSelection
-from coffea.lumi_tools import LumiMask
 
 from topcoffea.modules.paths import topcoffea_path
 #import topcoffea.modules.event_selection as es_tc
-import topcoffea.modules.corrections as cor_tc
+#import topcoffea.modules.corrections as cor_tc
 
 from ewkcoffea.modules.paths import ewkcoffea_path as ewkcoffea_path
-import ewkcoffea.modules.selection_wwz as es_ec
+#import ewkcoffea.modules.selection_wwz as es_ec
 import ewkcoffea.modules.objects_wwz as os_ec
 import ewkcoffea.modules.corrections as cor_ec
 
@@ -162,7 +161,7 @@ class AnalysisProcessor(processor.ProcessorABC):
         xsec         = events.xsec
         sow          = events.sumws
 
-        # FIXME Temp fix since only R2
+        # FIXME Temp fix since only R2, maybe should specify in the input cfg
         is2022 = False
         is2023 = False
         run_tag = "run2"
@@ -275,7 +274,7 @@ class AnalysisProcessor(processor.ProcessorABC):
             # Selecting jets and cleaning them
             cleanedJets["is_good"] = os_ec.is_good_vbs_jet(cleanedJets,events.is2016)
             goodJets = cleanedJets[cleanedJets.is_good & (abs(cleanedJets.eta) <= 2.4)]
-            goodJets_forward = cleanedJets[cleanedJets.is_good & (abs(cleanedJets.eta) > 2.4)] # TODO probably not corrected properly
+            goodJets_forward = cleanedJets[cleanedJets.is_good & (abs(cleanedJets.eta) > 2.4)]
 
             # Count jets
             njets = ak.num(goodJets)
@@ -308,20 +307,19 @@ class AnalysisProcessor(processor.ProcessorABC):
             scalarptsum_jetCentFwd = ak.sum(goodJetsCentFwd.pt,axis=-1)
 
 
-            ### Btag WPs, TEMPORARY ###
-            # Eventually we should just take the btag jet collection from the RDF output
+            ### Btag WPs ###
+            # Eventually we should probably just take the btag jet collection from the RDF output
             # For now handle it with a hard-to-read series of ak.where
-            ### TODO FIXME Need to figure out how to handle the years
             btagwpl = events.nom
             btagwpm = events.nom
-            btagwpl = ak.where(events.year=="2018",get_tc_param(f"btag_wp_loose_UL18"),btagwpl)
-            btagwpm = ak.where(events.year=="2018",get_tc_param(f"btag_wp_loose_UL18"),btagwpm)
-            btagwpl = ak.where(events.year=="2017",get_tc_param(f"btag_wp_loose_UL17"),btagwpl)
-            btagwpm = ak.where(events.year=="2017",get_tc_param(f"btag_wp_loose_UL17"),btagwpm)
-            btagwpl = ak.where(events.year=="2016postVFP",get_tc_param(f"btag_wp_loose_UL16"),btagwpl)
-            btagwpm = ak.where(events.year=="2016postVFP",get_tc_param(f"btag_wp_loose_UL16"),btagwpm)
-            btagwpl = ak.where(events.year=="2016preVFP",get_tc_param(f"btag_wp_loose_UL16APV"),btagwpl)
-            btagwpm = ak.where(events.year=="2016preVFP",get_tc_param(f"btag_wp_loose_UL16APV"),btagwpm)
+            btagwpl = ak.where(events.year=="2018",get_tc_param("btag_wp_loose_UL18"),btagwpl)
+            btagwpm = ak.where(events.year=="2018",get_tc_param("btag_wp_loose_UL18"),btagwpm)
+            btagwpl = ak.where(events.year=="2017",get_tc_param("btag_wp_loose_UL17"),btagwpl)
+            btagwpm = ak.where(events.year=="2017",get_tc_param("btag_wp_loose_UL17"),btagwpm)
+            btagwpl = ak.where(events.year=="2016postVFP",get_tc_param("btag_wp_loose_UL16"),btagwpl)
+            btagwpm = ak.where(events.year=="2016postVFP",get_tc_param("btag_wp_loose_UL16"),btagwpm)
+            btagwpl = ak.where(events.year=="2016preVFP",get_tc_param("btag_wp_loose_UL16APV"),btagwpl)
+            btagwpm = ak.where(events.year=="2016preVFP",get_tc_param("btag_wp_loose_UL16APV"),btagwpm)
 
             isBtagJetsLoose = (goodJets.btagDeepFlavB > btagwpl)
             isBtagJetsMedium = (goodJets.btagDeepFlavB > btagwpm)
@@ -532,6 +530,8 @@ class AnalysisProcessor(processor.ProcessorABC):
             ######### Fill histos #########
 
             exclude_var_dict = {} # Any particular ones to skip
+
+            wgt_correction_syst_lst = []
 
             # Set up the list of weight fluctuations to loop over
             # For now the syst do not depend on the category, so we can figure this out outside of the filling loop
