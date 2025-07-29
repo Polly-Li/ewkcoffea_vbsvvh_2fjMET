@@ -1,7 +1,7 @@
 import copy
 import hist
 
-# Get the list of categories on the sparese axis
+# Get the list of categories on the sparse axis
 def get_axis_cats(histo,axis_name):
     process_list = [x for x in histo.axes[axis_name]]
     return process_list
