@@ -12,7 +12,7 @@ def test_ewkcoffea_vvh():
         "-o",
         "output_check_yields",
         "-outpath",
-        "analysis/vbs_vvh/histos/"
+        "analysis/vbs_vvh/histos/",
         "-p",
         "1lep1jf_nano",
     ]
