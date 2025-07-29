@@ -58,9 +58,9 @@ if __name__ == '__main__':
 
     # Import the proper processor, based on option specified
     if args.processor == "1lep1jf":
-        import analysis_processor_rdfinput_1l1fj as analysis_processor
+        import analysis_processor_1l1fj  as analysis_processor
     elif args.processor == "1lep1jf_nano":
-        import analysis_processor
+        import analysis_processor_1l1fj_fromnano as analysis_processor
 
     # Check that if on UF login node, we're using WQ
     hostname = socket.gethostname()
