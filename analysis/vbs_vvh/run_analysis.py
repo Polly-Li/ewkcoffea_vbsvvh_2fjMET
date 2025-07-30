@@ -12,51 +12,9 @@ from coffea.nanoevents import NanoAODSchema
 NanoAODSchema.warn_missing_crossrefs = False
 import topcoffea.modules.remote_environment as remote_environment
 
-import analysis_processor
-
 LST_OF_KNOWN_EXECUTORS = ["futures","work_queue","iterative"]
+LST_OF_KNOWN_PROCESSORS = ["1lep1jf","1lep1jf_nano"]
 
-BDT_VAR_NAMES = [
-    "mll_wl0_wl1",
-    "mllll",
-    "absdphi_4l_met",
-    "absdphi_zleps_met",
-    "absdphi_wleps_met",
-    "absdphi_wl0_met",
-    "absdphi_wl1_met",
-    "dr_wl0_wl1",
-    "dr_zl0_zl1",
-    "dr_wleps_zleps",
-    "met",
-    "mt2",
-    "ptl4",
-    "scalarptsum_jet",
-    "scalarptsum_lepmet",
-    "z_lep0_pt",
-    "z_lep1_pt",
-    "w_lep0_pt",
-    "w_lep1_pt",
-    "njets",
-    "cos_helicity_x",
-    "mt_wl0_met",
-    "mt_wl1_met",
-    "mt_wleps_met",
-    "mt_4l_met",
-    "dr_wl0_j_min",
-    "dr_wl1_j_min",
-    "bdt_of_wwz",
-    "bdt_sf_wwz",
-    "bdt_of_zh",
-    "bdt_sf_zh",
-    "bdt_of_bkg",
-    "bdt_sf_bkg",
-    "bdt_of_wwz_m_zh",
-    "bdt_sf_wwz_m_zh",
-    "bdt_of_bin",
-    "bdt_sf_bin",
-    "bdt_of_bin_coarse",
-    "bdt_sf_bin_coarse",
-]
 
 if __name__ == '__main__':
 
@@ -64,58 +22,45 @@ if __name__ == '__main__':
     parser.add_argument('jsonFiles'        , nargs='?', default='', help = 'Json file(s) containing files and metadata')
     parser.add_argument('--executor','-x'  , default='work_queue', help = 'Which executor to use', choices=LST_OF_KNOWN_EXECUTORS)
     parser.add_argument('--prefix', '-r'   , nargs='?', default='', help = 'Prefix or redirector to look for the files')
-    parser.add_argument('--test','-t'       , action='store_true'  , help = 'To perform a test, run over a few events in a couple of chunks')
-    parser.add_argument('--pretend'        , action='store_true', help = 'Read json files but, not execute the analysis')
     parser.add_argument('--nworkers','-n'   , default=8  , help = 'Number of workers')
     parser.add_argument('--chunksize','-s' , default=100000, help = 'Number of events per chunk')
     parser.add_argument('--nchunks','-c'   , default=None, help = 'You can choose to run only a number of chunks')
     parser.add_argument('--outname','-o'   , default='plotsTopEFT', help = 'Name of the output file with histograms')
-    parser.add_argument('--outpath','-p'   , default='histos', help = 'Name of the output directory')
+    parser.add_argument('--outpath',         default='histos', help = 'Name of the output directory')
     parser.add_argument('--treename'       , default='Events', help = 'Name of the tree inside the files')
-    parser.add_argument('--do-errors'      , action='store_true', help = 'Save the w**2 coefficients')
     parser.add_argument('--do-systs', action='store_true', help = 'Compute systematic variations')
     parser.add_argument('--skip-obj-systs', action='store_true', help = 'Skip systematic variations that impact obj kinematics')
-    parser.add_argument('--split-lep-flavor', action='store_true', help = 'Split up categories by lepton flavor')
     parser.add_argument('--skip-sr', action='store_true', help = 'Skip all signal region categories')
     parser.add_argument('--skip-cr', action='store_true', help = 'Skip all control region categories')
-    parser.add_argument('--do-np'  , action='store_true', help = 'Perform nonprompt estimation on the output hist, and save a new hist with the np contribution included. Note that signal, background and data samples should all be processed together in order for this option to make sense.')
     parser.add_argument('--siphon' , action='store_true', help = 'Siphon BDT data')
     parser.add_argument('--wc-list', action='extend', nargs='+', help = 'Specify a list of Wilson coefficients to use in filling histograms.')
     parser.add_argument('--hist-list', action='extend', nargs='+', help = 'Specify a list of histograms to fill.')
-    parser.add_argument('--ecut', default=None  , help = 'Energy cut threshold i.e. throw out events above this (GeV)')
     parser.add_argument('--port', default='9123-9130', help = 'Specify the Work Queue port. An integer PORT or an integer range PORT_MIN-PORT_MAX.')
+    parser.add_argument('--processor', '-p', default='1lep1jf', help = 'Which processor to execute', choices=LST_OF_KNOWN_PROCESSORS)
 
 
     args = parser.parse_args()
     jsonFiles  = args.jsonFiles
     prefix     = args.prefix
     executor   = args.executor
-    dotest     = args.test
     nworkers   = int(args.nworkers)
     chunksize  = int(args.chunksize)
     nchunks    = int(args.nchunks) if not args.nchunks is None else args.nchunks
     outname    = args.outname
     outpath    = args.outpath
-    pretend    = args.pretend
     treename   = args.treename
-    do_errors  = args.do_errors
     do_systs   = args.do_systs
     skip_obj_systs = args.skip_obj_systs
     siphon     = args.siphon
-    split_lep_flavor = args.split_lep_flavor
     skip_sr    = args.skip_sr
     skip_cr    = args.skip_cr
     wc_lst = args.wc_list if args.wc_list is not None else []
 
-    # Check if we have valid options
-    if dotest:
-        if executor == "futures":
-            nchunks = 2
-            chunksize = 10000
-            nworkers = 1
-            print('Running a fast test with %i workers, %i chunks of %i events'%(nworkers, nchunks, chunksize))
-        else:
-            raise Exception(f"The \"test\" option is not set up to work with the {executor} executor. Exiting.")
+    # Import the proper processor, based on option specified
+    if args.processor == "1lep1jf":
+        import analysis_processor_1l1fj  as analysis_processor
+    elif args.processor == "1lep1jf_nano":
+        import analysis_processor_1l1fj_fromnano as analysis_processor
 
     # Check that if on UF login node, we're using WQ
     hostname = socket.gethostname()
@@ -125,10 +70,6 @@ if __name__ == '__main__':
         if (executor != "work_queue"):
             raise Exception(f"\nError: We seem to be on a UF login node ({hostname}). If running from here, need to run with WQ.")
 
-
-    # Set the threshold for the ecut (if not applying a cut, should be None)
-    ecut_threshold = args.ecut
-    if ecut_threshold is not None: ecut_threshold = float(args.ecut)
 
     if executor == "work_queue":
         # construct wq port range
@@ -145,8 +86,6 @@ if __name__ == '__main__':
     if args.hist_list == ["few"]:
         # Here we hardcode a reduced list of a few hists
         hist_lst = ["j0pt", "njets", "njets_counts", "nbtagsl", "nleps", "met", "l0pt", "abs_pdgid_sum"]
-    elif args.hist_list == ["bdt"]:
-        hist_lst = ["j0pt", "njets", "njets_counts", "nbtagsl", "nleps", "met", "l0pt", "abs_pdgid_sum"] + BDT_VAR_NAMES
     else:
         # We want to specify a custom list
         # If we don't specify this argument, it will be None, and the processor will fill all hists
@@ -240,10 +179,6 @@ if __name__ == '__main__':
         print('   - nFiles       : %i'   %len(samplesdict[sname]['files']))
         for fname in samplesdict[sname]['files']: print('     %s'%fname)
 
-    if pretend:
-        print('pretending...')
-        exit()
-
     # Extract the list of all WCs, as long as we haven't already specified one.
     if len(wc_lst) == 0:
         for k in samplesdict.keys():
@@ -263,7 +198,7 @@ if __name__ == '__main__':
     else:
         print('No Wilson coefficients specified')
 
-    processor_instance = analysis_processor.AnalysisProcessor(samplesdict,wc_lst,hist_lst,ecut_threshold,do_errors,do_systs,skip_obj_systs,split_lep_flavor,skip_sr,skip_cr,siphon_bdt_data=siphon)
+    processor_instance = analysis_processor.AnalysisProcessor(samplesdict,wc_lst,hist_lst,do_systs,skip_obj_systs,skip_sr,skip_cr,siphon_bdt_data=siphon)
 
     if executor == "work_queue":
         executor_args = {

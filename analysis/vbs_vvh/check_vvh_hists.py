@@ -106,6 +106,7 @@ GRP_DICT_FULL = {
 
 CAT_LST = [
     "all_events",
+    #"filter",
     "exactly1lep_exactly1fj",
     "presel",
 
@@ -136,11 +137,11 @@ def append_years(sample_dict_base,year_lst):
 
 
 # Get sig and bkg yield in all categories
-def get_yields_per_cat(histo_dict,var_name):
+def get_yields_per_cat(histo_dict,var_name,year_name_lst_to_prepend):
     out_dict = {}
 
     # Get the initial grouping dict
-    grouping_dict = append_years(GRP_DICT_FULL,["UL16APV","UL16","UL17","UL18"])
+    grouping_dict = append_years(GRP_DICT_FULL,year_name_lst_to_prepend)
 
     # Get list of all of the backgrounds together
     bkg_lst = []
@@ -173,7 +174,7 @@ def get_yields_per_cat(histo_dict,var_name):
     return out_dict
 
 
-# Make the figures for the vvh sudy
+# Make the figures for the vvh study
 def make_vvh_fig(histo_mc,histo_mc_sig,histo_mc_bkg,title="test",axisrangex=None):
 
     # Create the figure
@@ -368,11 +369,12 @@ def dump_json_simple(histo_dict,out_name="vvh_yields_simple"):
 
 
 ### Get the sig and bkg yields and print or dump to json ###
-def print_yields(histo_dict,roundat=None,print_counts=False,dump_to_json=True,quiet=False,out_name="yields"):
+def print_yields(histo_dict,years_to_prepend,roundat=None,print_counts=False,dump_to_json=True,quiet=False,out_name="yields"):
 
     # Get ahold of the yields
-    yld_dict    = get_yields_per_cat(histo_dict,"njets")
-    counts_dict = get_yields_per_cat(histo_dict,"njets_counts")
+    yld_dict    = get_yields_per_cat(histo_dict,"njets",years_to_prepend)
+    counts_dict = get_yields_per_cat(histo_dict,"njets_counts",years_to_prepend)
+    #yld_dict = counts_dict
 
     group_lst_order = ['Signal', 'Background', 'ttbar', 'VV', 'Vjets', 'QCD', 'single-t', 'ttX', 'VH', 'VVV']
 
@@ -436,12 +438,11 @@ def print_yields(histo_dict,roundat=None,print_counts=False,dump_to_json=True,qu
 
 
 ### Make the plots ###
-def make_plots(histo_dict):
+def make_plots(histo_dict,year_name_lst_to_prepend):
 
     #cat_lst = ["exactly1lep_exactly1fj", "exactly1lep_exactly1fj550", "exactly1lep_exactly1fj550_2j", "exactly1lep_exactly1fj_2j"]
 
-    grouping_dict = append_years(GRP_DICT_FULL,["UL16APV","UL16","UL17","UL18"])
-    #grouping_dict = append_years(GRP_DICT_FULL,["UL18"])
+    grouping_dict = append_years(GRP_DICT_FULL,year_name_lst_to_prepend)
 
     cat_lst = CAT_LST
     var_lst = histo_dict.keys()
@@ -453,6 +454,7 @@ def make_plots(histo_dict):
         for var in var_lst:
             print("\nVar:",var)
             #if var not in ["njets","njets_counts","scalarptsum_lepmet"]: continue # TMP
+            #if var not in ["fj0_mparticlenet"]: continue
 
             histo = copy.deepcopy(histo_dict[var][{"systematic":"nominal", "category":cat}])
 
@@ -504,16 +506,22 @@ def main():
     histo_dict = pickle.load(gzip.open(args.pkl_file_path))
 
     # Print total raw events
-    #tot_raw = sum(sum(histo_dict["njets_counts"][{"systematic":"nominal", "category":"all_events"}].values(flow=True)))
-    #print("Tot raw events:",tot_raw)
+    tot_raw = sum(sum(histo_dict["njets_counts"][{"systematic":"nominal", "category":"all_events"}].values(flow=True)))
+    print("Tot raw events:",tot_raw)
+    print(histo_dict["njets"])
+
+    # Figure out the proc naming convention
+    proc_name = plt_tools.get_axis_cats(histo_dict["njets"],"process")[0]
+    if proc_name.startswith("UL"): years_to_prepend = ["UL16APV","UL16","UL17","UL18"] # Looks like ewkcoffea convention
+    else: years_to_prepend = ["2016postVFP","2016preVFP","2017","2018"] # Otherwise from RDF convention
 
     # Which main functionalities to run
     if args.dump_json:
         dump_json_simple(histo_dict,args.output_name)
     if args.get_yields:
-        print_yields(histo_dict,out_name=args.output_name+"_yields_sig_bkg",roundat=4,print_counts=False,dump_to_json=True)
+        print_yields(histo_dict,years_to_prepend,out_name=args.output_name+"_yields_sig_bkg",roundat=4,print_counts=False,dump_to_json=True)
     if args.make_plots:
-        make_plots(histo_dict)
+        make_plots(histo_dict,years_to_prepend)
 
 
 main()

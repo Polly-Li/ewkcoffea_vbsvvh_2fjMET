@@ -1,0 +1,19 @@
+{
+    "xsec": -999,
+    "year": "",
+    "treeName": "Events",
+    "histAxisName": "",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/ceph/cms/store/user/kmohrman/vbs_vvh/rdf_out_1lep1fj_jul28/rdf_out_1lep1fj_jul28_sig.root",
+        "/ceph/cms/store/user/kmohrman/vbs_vvh/rdf_out_1lep1fj_jul28/rdf_out_1lep1fj_jul28_bkg.root"
+    ],
+    "nEvents": -999,
+    "nGenEvents": -999,
+    "nSumOfWeights": -999,
+    "isData": false,
+    "path": "",
+    "nSumOfLheWeights": [
+    ]
+}
