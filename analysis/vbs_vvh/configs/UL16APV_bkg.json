@@ -1,0 +1,28 @@
+{
+    "xsec": "185300000",
+    "year": "2016APV",
+    "treeName": "Events",
+    "histAxisName": "UL16APV_bkg",
+    "options": "",
+    "WCnames": [],
+    "files": [
+        "/home/users/pyli/VVHjj/ntuples/2016preVFP_bkg.root"
+    ],
+    "nEvents": 0,
+    "nGenEvents": 11197186,
+    "nSumOfWeights": 11197186.0,
+    "isData": false,
+    "isSig":false,
+    "path": "./",
+    "nSumOfLheWeights": [
+        10948530.407120068,
+        12877374.841483139,
+        14437860.003244445,
+        9520996.062486636,
+        11197186.0,
+        12553321.974128349,
+        8430814.468117546,
+        9914294.028903218,
+        11114549.949698707
+    ]
+}

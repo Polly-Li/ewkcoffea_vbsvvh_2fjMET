@@ -1,4 +1,4 @@
-name: coffea-env
+name: coffenv
 channels:
   - conda-forge
 dependencies:

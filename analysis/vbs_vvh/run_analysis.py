@@ -12,9 +12,15 @@ from coffea.nanoevents import NanoAODSchema
 NanoAODSchema.warn_missing_crossrefs = False
 import topcoffea.modules.remote_environment as remote_environment
 
-LST_OF_KNOWN_EXECUTORS = ["futures","work_queue","iterative"]
-LST_OF_KNOWN_PROCESSORS = ["1lep1jf","1lep1jf_nano"]
+import analysis_processor_2fjMET as analysis_processor
+import warnings
+warnings.filterwarnings("ignore", message=".*as it is not interpretable by Uproot.*")
+from extra.configs.config_handling import get_cutflow
+from extra.configs.vars.paths import default_output_dir,cutflow_yamls_dir,default_cutflow_yaml 
 
+from coffea.nanoevents.schemas import BaseSchema
+
+LST_OF_KNOWN_EXECUTORS = ["futures","work_queue","iterative"]
 
 if __name__ == '__main__':
 
@@ -22,45 +28,72 @@ if __name__ == '__main__':
     parser.add_argument('jsonFiles'        , nargs='?', default='', help = 'Json file(s) containing files and metadata')
     parser.add_argument('--executor','-x'  , default='work_queue', help = 'Which executor to use', choices=LST_OF_KNOWN_EXECUTORS)
     parser.add_argument('--prefix', '-r'   , nargs='?', default='', help = 'Prefix or redirector to look for the files')
+    parser.add_argument('--test','-t'       , action='store_true'  , help = 'To perform a test, run over a few events in a couple of chunks')
+    parser.add_argument('--pretend'        , action='store_true', help = 'Read json files but, not execute the analysis')
     parser.add_argument('--nworkers','-n'   , default=8  , help = 'Number of workers')
     parser.add_argument('--chunksize','-s' , default=100000, help = 'Number of events per chunk')
-    parser.add_argument('--nchunks','-c'   , default=None, help = 'You can choose to run only a number of chunks')
-    parser.add_argument('--outname','-o'   , default='plotsTopEFT', help = 'Name of the output file with histograms')
-    parser.add_argument('--outpath',         default='histos', help = 'Name of the output directory')
+    parser.add_argument('--nchunks'   , default=None, help = 'You can choose to run only a number of chunks')
+    parser.add_argument('--outname','-o'   , default='hists', help = 'Name of the output file with histograms')
+    parser.add_argument('--outpath','-p'   , default=f'{default_output_dir}', help = 'Name of the output directory')
     parser.add_argument('--treename'       , default='Events', help = 'Name of the tree inside the files')
+    parser.add_argument('--do-errors'      , action='store_true', help = 'Save the w**2 coefficients')
     parser.add_argument('--do-systs', action='store_true', help = 'Compute systematic variations')
     parser.add_argument('--skip-obj-systs', action='store_true', help = 'Skip systematic variations that impact obj kinematics')
+    parser.add_argument('--split-lep-flavor', action='store_true', help = 'Split up categories by lepton flavor')
     parser.add_argument('--skip-sr', action='store_true', help = 'Skip all signal region categories')
     parser.add_argument('--skip-cr', action='store_true', help = 'Skip all control region categories')
+    parser.add_argument('--do-np'  , action='store_true', help = 'Perform nonprompt estimation on the output hist, and save a new hist with the np contribution included. Note that signal, background and data samples should all be processed together in order for this option to make sense.')
     parser.add_argument('--siphon' , action='store_true', help = 'Siphon BDT data')
     parser.add_argument('--wc-list', action='extend', nargs='+', help = 'Specify a list of Wilson coefficients to use in filling histograms.')
     parser.add_argument('--hist-list', action='extend', nargs='+', help = 'Specify a list of histograms to fill.')
+    parser.add_argument('--ecut', default=None  , help = 'Energy cut threshold i.e. throw out events above this (GeV)')
     parser.add_argument('--port', default='9123-9130', help = 'Specify the Work Queue port. An integer PORT or an integer range PORT_MIN-PORT_MAX.')
-    parser.add_argument('--processor', '-p', default='1lep1jf', help = 'Which processor to execute', choices=LST_OF_KNOWN_PROCESSORS)
+
+    #parser.add_argument('--varlist', default=None, help = "Not in use") 
+    parser.add_argument('--cutflow','-c', default=None, help = "Specify which cutflow to use")
+    parser.add_argument('--minus', action='store_true', help = "Use this to plot n-1 plots instead of cutflow")
+    parser.add_argument('--flag_one_cut', action='store_true', help = "Use this to plot with single cut instead of cutflow")
+    parser.add_argument('--flag_last_cut', action='store_true', help = "Use this to plot last cut only. useful when building cutflow")
+    parser.add_argument('--project', default=None, help = 'useful when building cutflow')
 
 
     args = parser.parse_args()
     jsonFiles  = args.jsonFiles
     prefix     = args.prefix
     executor   = args.executor
+    dotest     = args.test
     nworkers   = int(args.nworkers)
     chunksize  = int(args.chunksize)
     nchunks    = int(args.nchunks) if not args.nchunks is None else args.nchunks
     outname    = args.outname
     outpath    = args.outpath
+    pretend    = args.pretend
     treename   = args.treename
+    do_errors  = args.do_errors
     do_systs   = args.do_systs
     skip_obj_systs = args.skip_obj_systs
-    siphon     = args.siphon
+    siphon_bdt_data     = args.siphon
+
+    split_lep_flavor = args.split_lep_flavor
     skip_sr    = args.skip_sr
     skip_cr    = args.skip_cr
     wc_lst = args.wc_list if args.wc_list is not None else []
 
-    # Import the proper processor, based on option specified
-    if args.processor == "1lep1jf":
-        import analysis_processor_1l1fj  as analysis_processor
-    elif args.processor == "1lep1jf_nano":
-        import analysis_processor_1l1fj_fromnano as analysis_processor
+    cutflow_name = args.cutflow
+    n_minus_1 = args.minus
+    one_cut = args.flag_one_cut
+    last_cut = args.flag_last_cut
+    project = args.project
+
+    # Check if we have valid options
+    if dotest:
+        if executor == "futures":
+            nchunks = 2
+            chunksize = 10000
+            nworkers = 1
+            print('Running a fast test with %i workers, %i chunks of %i events'%(nworkers, nchunks, chunksize))
+        else:
+            raise Exception(f"The \"test\" option is not set up to work with the {executor} executor. Exiting.")
 
     # Check that if on UF login node, we're using WQ
     hostname = socket.gethostname()
@@ -70,6 +103,10 @@ if __name__ == '__main__':
         if (executor != "work_queue"):
             raise Exception(f"\nError: We seem to be on a UF login node ({hostname}). If running from here, need to run with WQ.")
 
+
+    # Set the threshold for the ecut (if not applying a cut, should be None)
+    ecut_threshold = args.ecut
+    if ecut_threshold is not None: ecut_threshold = float(args.ecut)
 
     if executor == "work_queue":
         # construct wq port range
@@ -85,6 +122,9 @@ if __name__ == '__main__':
     # Figure out which hists to include
     if args.hist_list == ["few"]:
         # Here we hardcode a reduced list of a few hists
+        hist_lst = ["j0pt", "njets", "njets_counts", "nbtagsl", "nleps", "met", "l0pt", "abs_pdgid_sum"]
+    elif args.hist_list == ["bdt"]:
+        #hist_lst = ["j0pt", "njets", "njets_counts", "nbtagsl", "nleps", "met", "l0pt", "abs_pdgid_sum"] + BDT_VAR_NAMES
         hist_lst = ["j0pt", "njets", "njets_counts", "nbtagsl", "nleps", "met", "l0pt", "abs_pdgid_sum"]
     else:
         # We want to specify a custom list
@@ -151,34 +191,39 @@ if __name__ == '__main__':
         redirector = samplesdict[sname]['redirector']
         flist[sname] = [(redirector+f) for f in samplesdict[sname]['files']]
         samplesdict[sname]['year'] = samplesdict[sname]['year']
-        samplesdict[sname]['xsec'] = float(samplesdict[sname]['xsec'])
-        samplesdict[sname]['nEvents'] = int(samplesdict[sname]['nEvents'])
-        nevts_total += samplesdict[sname]['nEvents']
-        samplesdict[sname]['nGenEvents'] = int(samplesdict[sname]['nGenEvents'])
-        samplesdict[sname]['nSumOfWeights'] = float(samplesdict[sname]['nSumOfWeights'])
-        if not samplesdict[sname]["isData"]:
-            # Check that MC samples have all needed weight sums (only needed if doing systs)
-            if do_systs:
-                if ("nSumOfLheWeights" not in samplesdict[sname]):
-                    raise Exception(f"Sample is missing scale variations: {sname}")
+        #samplesdict[sname]['xsec'] = float(samplesdict[sname]['xsec'])
+        #samplesdict[sname]['nEvents'] = int(samplesdict[sname]['nEvents'])
+        #nevts_total += samplesdict[sname]['nEvents']
+        #samplesdict[sname]['nGenEvents'] = int(samplesdict[sname]['nGenEvents'])
+        #samplesdict[sname]['nSumOfWeights'] = float(samplesdict[sname]['nSumOfWeights'])
+        #if not samplesdict[sname]["isData"]:
+        #    # Check that MC samples have all needed weight sums (only needed if doing systs)
+        #    if do_systs:
+        #        if ("nSumOfLheWeights" not in samplesdict[sname]):
+        #            raise Exception(f"Sample is missing scale variations: {sname}")
         # Print file info
         print('>> '+sname)
         print('   - isData?      : %s'   %('YES' if samplesdict[sname]['isData'] else 'NO'))
         print('   - year         : %s'   %samplesdict[sname]['year'])
-        print('   - xsec         : %f'   %samplesdict[sname]['xsec'])
-        print('   - histAxisName : %s'   %samplesdict[sname]['histAxisName'])
-        print('   - options      : %s'   %samplesdict[sname]['options'])
-        print('   - tree         : %s'   %samplesdict[sname]['treeName'])
-        print('   - nEvents      : %i'   %samplesdict[sname]['nEvents'])
-        print('   - nGenEvents   : %i'   %samplesdict[sname]['nGenEvents'])
-        print('   - SumWeights   : %i'   %samplesdict[sname]['nSumOfWeights'])
-        if not samplesdict[sname]["isData"]:
-            if "nSumOfLheWeights" in samplesdict[sname]:
-                print(f'   - nSumOfLheWeights : {samplesdict[sname]["nSumOfLheWeights"]}')
-        print('   - Prefix       : %s'   %samplesdict[sname]['redirector'])
+        #print('   - xsec         : %f'   %samplesdict[sname]['xsec'])
+        #print('   - histAxisName : %s'   %samplesdict[sname]['histAxisName'])
+        #print('   - options      : %s'   %samplesdict[sname]['options'])
+        #print('   - tree         : %s'   %samplesdict[sname]['treeName'])
+        #print('   - nEvents      : %i'   %samplesdict[sname]['nEvents'])
+        #print('   - nGenEvents   : %i'   %samplesdict[sname]['nGenEvents'])
+        #print('   - SumWeights   : %i'   %samplesdict[sname]['nSumOfWeights'])
+        #if not samplesdict[sname]["isData"]:
+        #    if "nSumOfLheWeights" in samplesdict[sname]:
+        #        print(f'   - nSumOfLheWeights : {samplesdict[sname]["nSumOfLheWeights"]}')
+        #print('   - Prefix       : %s'   %samplesdict[sname]['redirector'])
         print('   - nFiles       : %i'   %len(samplesdict[sname]['files']))
         for fname in samplesdict[sname]['files']: print('     %s'%fname)
 
+    if pretend:
+        print('pretending...')
+        exit()
+
+    ''' #wilson coeff. not in use
     # Extract the list of all WCs, as long as we haven't already specified one.
     if len(wc_lst) == 0:
         for k in samplesdict.keys():
@@ -197,8 +242,9 @@ if __name__ == '__main__':
             print('Wilson Coefficients: {}.'.format(wc_print))
     else:
         print('No Wilson coefficients specified')
+    '''
 
-    processor_instance = analysis_processor.AnalysisProcessor(samplesdict,wc_lst,hist_lst,do_systs,skip_obj_systs,skip_sr,skip_cr,siphon_bdt_data=siphon)
+    processor_instance = analysis_processor.AnalysisProcessor(samplesdict,wc_lst,hist_lst,ecut_threshold,do_errors,do_systs,skip_obj_systs,split_lep_flavor,skip_sr,skip_cr,siphon_bdt_data,n_minus_1,one_cut,last_cut,project,cutflow_name)
 
     if executor == "work_queue":
         executor_args = {
@@ -281,7 +327,8 @@ if __name__ == '__main__':
 
     if executor == "futures":
         exec_instance = processor.FuturesExecutor(workers=nworkers, merging=(1, 30, 10000))
-        runner = processor.Runner(exec_instance, schema=NanoAODSchema, chunksize=chunksize, maxchunks=nchunks)
+        #runner = processor.Runner(exec_instance, schema=NanoAODSchema, chunksize=chunksize, maxchunks=nchunks)
+        runner = processor.Runner(exec_instance, schema=BaseSchema, chunksize=chunksize, maxchunks=nchunks)
     elif executor == "iterative":
         exec_instance = processor.IterativeExecutor()
         runner = processor.Runner(exec_instance, schema=NanoAODSchema, chunksize=chunksize, maxchunks=nchunks)
@@ -296,16 +343,54 @@ if __name__ == '__main__':
     if executor == "work_queue":
         print('Processed {} events in {} seconds ({:.2f} evts/sec).'.format(nevts_total,dt,nevts_total/dt))
 
-    #nbins = sum(sum(arr.size for arr in h._sumw.values()) for h in output.values() if isinstance(h, hist.Hist))
-    #nfilled = sum(sum(np.sum(arr > 0) for arr in h._sumw.values()) for h in output.values() if isinstance(h, hist.Hist))
-    #print("Filled %.0f bins, nonzero bins: %1.1f %%" % (nbins, 100*nfilled/nbins,))
-
     if executor == "futures":
         print("Processing time: %1.2f s with %i workers (%.2f s cpu overall)" % (dt, nworkers, dt*nworkers, ))
 
-    # Save the output
-    if not os.path.isdir(outpath): os.system("mkdir -p %s"%outpath)
-    out_pkl_file = os.path.join(outpath,outname+".pkl.gz")
+    if project is not None: #add a subdir 
+        outpath = outpath+f'/{project}/histos/'
+    else:
+        outpath = outpath+'/histos/'
+
+    if args.cutflow is not None:
+        outname = args.cutflow
+    elif args.project is not None:
+        outname = args.project
+    else:
+        outname = 'histo'
+
+    if n_minus_1:
+        # Save the output
+        if not os.path.isdir(outpath): os.system("mkdir -p %s"%outpath)
+        out_pkl_file = os.path.join(outpath,outname+"_m.pkl.gz")
+        
+    elif one_cut:
+        # Save the output
+        if not os.path.isdir(outpath): os.system("mkdir -p %s"%outpath)
+        out_pkl_file = os.path.join(outpath,outname+"_singlecut.pkl.gz")
+        
+        
+    elif last_cut:
+        # Save the output
+        #cut in different cutflow can have same names: label project as dir name, cutflow + cut_name as file name
+        if project is not None:
+            yaml_file_name = project 
+        else:
+            yaml_file_name = default_cutflow_yaml
+        
+        print(f"using {yaml_file_name}")
+
+        cutflow_dict=get_cutflow(f'{cutflow_yamls_dir}/{yaml_file_name}.yaml')
+        if cutflow_name is not None:
+            cut_name= list(cutflow_dict[cutflow_name].keys())[-1] #name of last cut
+        else:
+            cut_name="defaultlast"
+        if not os.path.isdir(outpath): os.system("mkdir -p %s"%outpath)
+        out_pkl_file = os.path.join(outpath,f"{cutflow_name}_lastcut.pkl.gz")
+
+    else:
+        if not os.path.isdir(outpath): os.system("mkdir -p %s"%outpath)
+        out_pkl_file = os.path.join(outpath,outname+".pkl.gz")
+
     print(f"\nSaving output in {out_pkl_file}...")
     with gzip.open(out_pkl_file, "wb") as fout:
         cloudpickle.dump(output, fout)
